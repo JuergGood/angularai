@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
@@ -50,7 +50,7 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
 
             <mat-form-field appearance="fill">
               <mat-label>Due Date</mat-label>
-              <input matInput [matDatepicker]="picker" name="dueDate" [(ngModel)]="currentTask.dueDate" required>
+              <input matInput [matDatepicker]="picker" name="dueDate" [(ngModel)]="currentTask.dueDate">
               <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
@@ -82,18 +82,23 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
             <mat-card-header>
               <mat-card-title>{{ task.title }}</mat-card-title>
               <mat-card-subtitle>
-                Due: {{ task.dueDate }} | Priority: <span [class]="'priority-' + task.priority.toLowerCase()">{{ task.priority }}</span>
+                @if (task.dueDate) {
+                  Due: {{ task.dueDate }} |
+                }
+                Priority: <span [class]="'priority-' + task.priority.toLowerCase()">{{ task.priority }}</span>
               </mat-card-subtitle>
             </mat-card-header>
             <mat-card-content>
               <p>{{ task.description }}</p>
             </mat-card-content>
             <mat-card-actions align="end">
-              <button mat-icon-button color="primary" (click)="editTask(task)">
+              <button mat-button color="primary" (click)="editTask(task)">
                 <mat-icon>edit</mat-icon>
+                <span>Edit</span>
               </button>
-              <button mat-icon-button color="warn" (click)="deleteTask(task)">
+              <button mat-button color="warn" (click)="deleteTask(task)">
                 <mat-icon>delete</mat-icon>
+                <span>Delete</span>
               </button>
             </mat-card-actions>
           </mat-card>
@@ -128,6 +133,12 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
     .task-item {
       border-left: 5px solid #ccc;
     }
+    mat-card-actions {
+      padding: 8px 16px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
     .priority-low { color: green; }
     .priority-medium { color: orange; }
     .priority-high { color: red; }
@@ -140,14 +151,21 @@ export class TasksComponent implements OnInit {
   currentTask: Task = this.initNewTask();
   editingTask = false;
 
-  constructor(private taskService: TaskService, private dialog: MatDialog) {}
+  constructor(
+    private taskService: TaskService,
+    private dialog: MatDialog,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.loadTasks();
   }
 
   loadTasks() {
-    this.taskService.getTasks().subscribe(tasks => this.tasks = tasks);
+    this.taskService.getTasks().subscribe(tasks => {
+      this.tasks = tasks;
+      this.cdr.detectChanges();
+    });
   }
 
   initNewTask(): Task {

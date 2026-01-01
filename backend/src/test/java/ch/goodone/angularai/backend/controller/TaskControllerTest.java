@@ -97,6 +97,22 @@ public class TaskControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    void shouldCreateTaskWithNullDueDate() throws Exception {
+        TaskDTO taskDTO = new TaskDTO(null, "No Date Task", "Desc", null, Priority.LOW);
+        Task savedTask = new Task("No Date Task", "Desc", null, Priority.LOW, testUser);
+        savedTask.setId(2L);
+        when(taskRepository.save(any())).thenReturn(savedTask);
+
+        mockMvc.perform(post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(taskDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("No Date Task"))
+                .andExpect(jsonPath("$.dueDate").isEmpty());
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
     void shouldDeleteTask() throws Exception {
         when(taskRepository.findById(1L)).thenReturn(Optional.of(testTask));
 

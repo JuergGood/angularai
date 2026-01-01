@@ -67,6 +67,16 @@ describe('TasksComponent', () => {
     expect(taskServiceSpy.getTasks).toHaveBeenCalledTimes(2);
   });
 
+  it('should create a new task without dueDate', () => {
+    component.currentTask = { title: 'No Date', description: 'No Date Desc', dueDate: '', priority: Priority.LOW };
+    component.onSubmit();
+    expect(taskServiceSpy.createTask).toHaveBeenCalledWith(expect.objectContaining({
+      title: 'No Date',
+      dueDate: ''
+    }));
+    expect(taskServiceSpy.getTasks).toHaveBeenCalledTimes(2);
+  });
+
   it('should delete a task after confirmation', () => {
     component.deleteTask(mockTasks[0]);
     expect(dialogSpy.open).toHaveBeenCalled();
