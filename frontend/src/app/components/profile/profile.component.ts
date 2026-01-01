@@ -50,6 +50,11 @@ import { provideNativeDateAdapter } from '@angular/material/core';
             </mat-form-field>
 
             <mat-form-field appearance="fill">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" name="email" [(ngModel)]="user.email" required email>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
               <mat-label>Birth Date</mat-label>
               <input matInput [matDatepicker]="picker" name="birthDate" [(ngModel)]="user.birthDate" required>
               <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>

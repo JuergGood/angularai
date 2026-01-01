@@ -1,5 +1,5 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -40,6 +40,10 @@ import { CommonModule } from '@angular/common';
             <mat-icon matListItemIcon>admin_panel_settings</mat-icon>
             <span matListItemTitle>User Admin</span>
           </a>
+          <a mat-list-item (click)="onLogout()" style="cursor: pointer;">
+            <mat-icon matListItemIcon>exit_to_app</mat-icon>
+            <span matListItemTitle>Logout</span>
+          </a>
         </mat-nav-list>
       </mat-sidenav>
       <mat-sidenav-content>
@@ -77,5 +81,10 @@ import { CommonModule } from '@angular/common';
 })
 export class App {
   protected readonly title = signal('frontend');
-  constructor(public authService: AuthService) {}
+  constructor(public authService: AuthService, private router: Router) {}
+
+  onLogout() {
+    this.authService.logout();
+    this.router.navigate(['/login']);
+  }
 }

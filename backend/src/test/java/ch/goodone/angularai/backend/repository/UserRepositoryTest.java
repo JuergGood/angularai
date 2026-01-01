@@ -18,7 +18,7 @@ class UserRepositoryTest {
 
     @Test
     void findByLogin_shouldReturnUser_whenUserExists() {
-        User user = new User("John", "Doe", "johndoe", "password", LocalDate.of(1990, 1, 1), "123 Main St");
+        User user = new User("John", "Doe", "johndoe", "password", "john@example.com", LocalDate.of(1990, 1, 1), "123 Main St");
         userRepository.save(user);
 
         Optional<User> found = userRepository.findByLogin("johndoe");

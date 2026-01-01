@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 import { AuthService } from './services/auth.service';
-import { provideRouter } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { vi } from 'vitest';
@@ -11,7 +11,8 @@ describe('App', () => {
 
   beforeEach(async () => {
     authServiceSpy = {
-      isLoggedIn: vi.fn().mockReturnValue(true)
+      isLoggedIn: vi.fn().mockReturnValue(true),
+      logout: vi.fn()
     };
 
     await TestBed.configureTestingModule({
@@ -36,5 +37,19 @@ describe('App', () => {
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
     expect(compiled.querySelector('mat-toolbar span')?.textContent).toContain('User Management System');
+  });
+
+  it('should logout and navigate to login', () => {
+    const fixture = TestBed.createComponent(App);
+    const app = fixture.componentInstance;
+    const router = TestBed.inject(Router);
+    const authService = TestBed.inject(AuthService);
+    const navigateSpy = vi.spyOn(router, 'navigate');
+    const logoutSpy = vi.spyOn(authService, 'logout');
+
+    app.onLogout();
+
+    expect(logoutSpy).toHaveBeenCalled();
+    expect(navigateSpy).toHaveBeenCalledWith(['/login']);
   });
 });

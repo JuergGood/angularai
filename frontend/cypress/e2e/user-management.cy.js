@@ -58,4 +58,31 @@ describe('User Management System', () => {
     cy.url().should('include', '/login');
     cy.get('mat-card-title').should('contain', 'Login');
   });
+
+  it('should register a new user successfully', () => {
+    cy.get('a[routerLink="/register"]').click();
+    cy.url().should('include', '/register');
+
+    cy.get('input[name="firstName"]').type('Cypress');
+    cy.get('input[name="lastName"]').type('Test');
+    cy.get('input[name="login"]').type('cytest');
+    cy.get('#password').type('cytest123');
+    cy.get('#confirm-password').type('cytest123');
+    cy.get('input[name="email"]').type('cytest@example.com');
+
+    cy.get('#register-btn').should('not.be.disabled').click();
+
+    cy.get('.success').should('be.visible').and('contain', 'Registration successful');
+    cy.url({ timeout: 5000 }).should('include', '/login');
+  });
+
+  it('should show error when passwords do not match during registration', () => {
+    cy.get('a[routerLink="/register"]').click();
+
+    cy.get('#password').type('pass1');
+    cy.get('#confirm-password').type('pass2');
+
+    cy.get('.error').should('be.visible').and('contain', 'Passwords do not match');
+    cy.get('#register-btn').should('be.disabled');
+  });
 });

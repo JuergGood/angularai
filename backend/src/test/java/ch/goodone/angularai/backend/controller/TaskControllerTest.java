@@ -63,7 +63,7 @@ public class TaskControllerTest {
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
 
-        testUser = new User("Test", "User", "testuser", "password", LocalDate.now(), "Address");
+        testUser = new User("Test", "User", "testuser", "password", "test@example.com", LocalDate.now(), "Address");
         testUser.setId(1L);
 
         testTask = new Task("Test Task", "Description", LocalDate.now(), Priority.MEDIUM, testUser);

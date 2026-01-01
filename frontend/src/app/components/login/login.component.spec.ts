@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { LoginComponent } from './login.component';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
+import { Router, provideRouter } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -25,12 +25,14 @@ describe('LoginComponent', () => {
       imports: [LoginComponent, FormsModule],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
-        { provide: Router, useValue: routerSpy }
+        provideRouter([])
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
+    routerSpy = TestBed.inject(Router);
+    vi.spyOn(routerSpy, 'navigate');
     fixture.detectChanges();
   });
 
@@ -55,5 +57,22 @@ describe('LoginComponent', () => {
     component.onSubmit();
 
     expect(component.error).toBe('Invalid login or password');
+  });
+
+  it('should toggle password visibility', () => {
+    expect(component.hidePassword).toBe(true);
+
+    const toggleBtn = fixture.nativeElement.querySelector('button[mat-icon-button]');
+    toggleBtn.click();
+    fixture.detectChanges();
+
+    expect(component.hidePassword).toBe(false);
+    expect(fixture.nativeElement.querySelector('input[name="password"]').type).toBe('text');
+
+    toggleBtn.click();
+    fixture.detectChanges();
+
+    expect(component.hidePassword).toBe(true);
+    expect(fixture.nativeElement.querySelector('input[name="password"]').type).toBe('password');
   });
 });

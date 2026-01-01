@@ -31,6 +31,7 @@ public class UserController {
         
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
         user.setBirthDate(userDTO.getBirthDate());
         user.setAddress(userDTO.getAddress());
         
@@ -40,6 +41,6 @@ public class UserController {
 
     private UserDTO convertToDTO(User user) {
         return new UserDTO(user.getId(), user.getFirstName(), user.getLastName(), 
-                user.getLogin(), user.getBirthDate(), user.getAddress());
+                user.getLogin(), user.getEmail(), user.getBirthDate(), user.getAddress());
     }
 }

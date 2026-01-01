@@ -19,6 +19,7 @@ describe('ProfileComponent', () => {
     firstName: 'John',
     lastName: 'Doe',
     login: 'johndoe',
+    email: 'john@example.com',
     birthDate: '1990-01-01',
     address: '123 St'
   } as User;

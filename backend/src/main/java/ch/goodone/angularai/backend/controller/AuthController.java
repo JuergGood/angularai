@@ -30,8 +30,28 @@ public class AuthController {
         return ResponseEntity.ok(convertToDTO(user));
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody UserDTO userDTO) {
+        if (userRepository.findByLogin(userDTO.getLogin()).isPresent()) {
+            return ResponseEntity.badRequest().body("User already exists");
+        }
+
+        User user = new User(
+                userDTO.getFirstName(),
+                userDTO.getLastName(),
+                userDTO.getLogin(),
+                passwordEncoder.encode(userDTO.getPassword()),
+                userDTO.getEmail(),
+                userDTO.getBirthDate(),
+                userDTO.getAddress()
+        );
+
+        userRepository.save(user);
+        return ResponseEntity.ok(convertToDTO(user));
+    }
+
     private UserDTO convertToDTO(User user) {
         return new UserDTO(user.getId(), user.getFirstName(), user.getLastName(), 
-                user.getLogin(), user.getBirthDate(), user.getAddress());
+                user.getLogin(), user.getEmail(), user.getBirthDate(), user.getAddress());
     }
 }

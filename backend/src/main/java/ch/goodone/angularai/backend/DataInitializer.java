@@ -24,6 +24,7 @@ public class DataInitializer {
                         "User",
                         "admin",
                         passwordEncoder.encode("admin123"),
+                        "admin@example.com",
                         LocalDate.of(1990, 1, 1),
                         "123 Main St"
                 );

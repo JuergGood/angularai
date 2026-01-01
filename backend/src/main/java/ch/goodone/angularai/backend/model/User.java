@@ -16,16 +16,18 @@ public class User {
     @Column(unique = true)
     private String login;
     private String password;
+    private String email;
     private LocalDate birthDate;
     private String address;
 
     public User() {}
 
-    public User(String firstName, String lastName, String login, String password, LocalDate birthDate, String address) {
+    public User(String firstName, String lastName, String login, String password, String email, LocalDate birthDate, String address) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;
         this.password = password;
+        this.email = email;
         this.birthDate = birthDate;
         this.address = address;
     }
@@ -44,6 +46,9 @@ public class User {
 
     public String getPassword() { return password; }
     public void setPassword(String password) { this.password = password; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
     public LocalDate getBirthDate() { return birthDate; }
     public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }

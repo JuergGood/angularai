@@ -39,7 +39,7 @@ describe('AuthService', () => {
   });
 
   it('should login and set current user', () => {
-    const mockUser: User = { login: 'test', firstName: 'Test' } as User;
+    const mockUser: User = { login: 'test', firstName: 'Test', email: 'test@example.com' } as User;
     service.login('test', 'password').subscribe(user => {
       expect(user).toEqual(mockUser);
       expect(service.currentUser()).toEqual(mockUser);

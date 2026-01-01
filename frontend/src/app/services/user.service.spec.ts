@@ -35,7 +35,7 @@ describe('UserService', () => {
   });
 
   it('should get current user', () => {
-    const mockUser: User = { login: 'test', firstName: 'Test' } as User;
+    const mockUser: User = { login: 'test', firstName: 'Test', email: 'test@example.com' } as User;
     service.getCurrentUser().subscribe(user => {
       expect(user).toEqual(mockUser);
     });
@@ -47,7 +47,7 @@ describe('UserService', () => {
   });
 
   it('should update current user', () => {
-    const mockUser: User = { login: 'test', firstName: 'Updated' } as User;
+    const mockUser: User = { login: 'test', firstName: 'Updated', email: 'updated@example.com' } as User;
     service.updateCurrentUser(mockUser).subscribe(user => {
       expect(user).toEqual(mockUser);
     });

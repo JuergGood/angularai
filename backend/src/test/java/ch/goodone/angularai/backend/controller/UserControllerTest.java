@@ -45,7 +45,7 @@ class UserControllerTest {
     void getCurrentUser_shouldReturnUser_whenAuthenticated() throws Exception {
         String login = "testuser";
         String password = "password";
-        User user = new User("Test", "User", login, passwordEncoder.encode(password), LocalDate.of(1990, 1, 1), "Address");
+        User user = new User("Test", "User", login, passwordEncoder.encode(password), "test@example.com", LocalDate.of(1990, 1, 1), "Address");
         
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
 
@@ -53,19 +53,20 @@ class UserControllerTest {
                         .with(httpBasic(login, password)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.login").value(login))
-                .andExpect(jsonPath("$.firstName").value("Test"));
+                .andExpect(jsonPath("$.firstName").value("Test"))
+                .andExpect(jsonPath("$.email").value("test@example.com"));
     }
 
     @Test
     void updateCurrentUser_shouldUpdateAndReturnUser() throws Exception {
         String login = "testuser";
         String password = "password";
-        User user = new User("Test", "User", login, passwordEncoder.encode(password), LocalDate.of(1990, 1, 1), "Address");
+        User user = new User("Test", "User", login, passwordEncoder.encode(password), "test@example.com", LocalDate.of(1990, 1, 1), "Address");
         
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        UserDTO updateDTO = new UserDTO(null, "Updated", "Name", login, LocalDate.of(1995, 5, 5), "New Address");
+        UserDTO updateDTO = new UserDTO(null, "Updated", "Name", login, "updated@example.com", LocalDate.of(1995, 5, 5), "New Address");
 
         mockMvc.perform(put("/api/users/me")
                         .with(httpBasic(login, password))
@@ -73,6 +74,7 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value("Updated"))
+                .andExpect(jsonPath("$.email").value("updated@example.com"))
                 .andExpect(jsonPath("$.address").value("New Address"));
     }
 }
