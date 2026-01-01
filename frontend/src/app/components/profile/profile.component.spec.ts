@@ -1,0 +1,76 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ProfileComponent } from './profile.component';
+import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
+import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { of, throwError } from 'rxjs';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { User } from '../../models/user.model';
+
+describe('ProfileComponent', () => {
+  let component: ProfileComponent;
+  let fixture: ComponentFixture<ProfileComponent>;
+  let userServiceSpy: any;
+  let authServiceSpy: any;
+  let routerSpy: any;
+
+  const mockUser: User = {
+    firstName: 'John',
+    lastName: 'Doe',
+    login: 'johndoe',
+    birthDate: '1990-01-01',
+    address: '123 St'
+  } as User;
+
+  beforeEach(async () => {
+    userServiceSpy = {
+      getCurrentUser: vi.fn().mockReturnValue(of(mockUser)),
+      updateCurrentUser: vi.fn().mockReturnValue(of(mockUser))
+    };
+    authServiceSpy = {
+      logout: vi.fn()
+    };
+    routerSpy = {
+      navigate: vi.fn()
+    };
+
+    await TestBed.configureTestingModule({
+      imports: [ProfileComponent, FormsModule],
+      providers: [
+        { provide: UserService, useValue: userServiceSpy },
+        { provide: AuthService, useValue: authServiceSpy },
+        { provide: Router, useValue: routerSpy }
+      ]
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(ProfileComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
+
+  it('should create', () => {
+    expect(component).toBeTruthy();
+    expect(userServiceSpy.getCurrentUser).toHaveBeenCalled();
+  });
+
+  it('should update profile', () => {
+    component.user = { ...mockUser, firstName: 'Updated' };
+    component.onSubmit();
+
+    expect(userServiceSpy.updateCurrentUser).toHaveBeenCalledWith(component.user);
+    expect(component.message).toBe('Profile updated successfully!');
+  });
+
+  it('should logout and navigate to login', () => {
+    component.onLogout();
+    expect(authServiceSpy.logout).toHaveBeenCalled();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
+  });
+
+  it('should navigate to login on error loading user', () => {
+    userServiceSpy.getCurrentUser.mockReturnValue(throwError(() => new Error('Not auth')));
+    component.ngOnInit();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
+  });
+});
