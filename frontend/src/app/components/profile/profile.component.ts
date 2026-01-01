@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,8 +11,10 @@ import { AuthService } from '../../services/auth.service';
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="profile-container" *ngIf="user">
-      <h2>User Profile</h2>
+    <h2>User Profile</h2>
+    @if (user) {
+    <div class="profile-container">
+      <h2>User Profile Details</h2>
       <form (ngSubmit)="onSubmit()">
         <div class="form-group">
           <label>First Name</label>
@@ -39,6 +41,7 @@ import { AuthService } from '../../services/auth.service';
         <p *ngIf="message" class="success">{{ message }}</p>
       </form>
     </div>
+    }
   `,
   styles: [`
     .profile-container { max-width: 500px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
@@ -59,13 +62,22 @@ export class ProfileComponent implements OnInit {
   constructor(
     private userService: UserService,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
+    console.log('Fetching user profile...');
     this.userService.getCurrentUser().subscribe({
-      next: (user) => this.user = user,
-      error: () => this.router.navigate(['/login'])
+      next: (user) => {
+        console.log('User profile received:', user);
+        this.user = user;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error fetching user profile:', err);
+        this.router.navigate(['/login']);
+      }
     });
   }
 
