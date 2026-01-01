@@ -40,7 +40,7 @@ describe('UserService', () => {
       expect(user).toEqual(mockUser);
     });
 
-    const req = httpMock.expectOne('http://localhost:8080/api/users/me');
+    const req = httpMock.expectOne('/api/users/me');
     expect(req.request.method).toBe('GET');
     expect(req.request.headers.get('Authorization')).toBe('Basic mock-token');
     req.flush(mockUser);
@@ -52,7 +52,7 @@ describe('UserService', () => {
       expect(user).toEqual(mockUser);
     });
 
-    const req = httpMock.expectOne('http://localhost:8080/api/users/me');
+    const req = httpMock.expectOne('/api/users/me');
     expect(req.request.method).toBe('PUT');
     req.flush(mockUser);
   });

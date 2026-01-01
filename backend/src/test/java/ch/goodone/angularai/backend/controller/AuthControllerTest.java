@@ -1,8 +1,8 @@
-package com.example.aibackend.controller;
+package ch.goodone.angularai.backend.controller;
 
-import com.example.aibackend.config.SecurityConfig;
-import com.example.aibackend.model.User;
-import com.example.aibackend.repository.UserRepository;
+import ch.goodone.angularai.backend.config.SecurityConfig;
+import ch.goodone.angularai.backend.model.User;
+import ch.goodone.angularai.backend.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;

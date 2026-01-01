@@ -33,4 +33,4 @@ Navigate to `backend/` and run `./mvnw spring-boot:run`.
 
 ### Frontend
 Navigate to `frontend/` and run `npm install` and then `npm start`.
-Note: For local development without Docker, you might need to revert the API URLs in frontend services if you don't use a proxy.
+The Angular development server is configured to proxy `/api` requests to `http://localhost:8080`. Ensure the backend is running.

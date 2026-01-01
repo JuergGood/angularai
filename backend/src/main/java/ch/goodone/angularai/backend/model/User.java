@@ -1,4 +1,4 @@
-package com.example.aibackend.model;
+package ch.goodone.angularai.backend.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDate;

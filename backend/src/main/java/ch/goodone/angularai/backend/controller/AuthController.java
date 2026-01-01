@@ -1,8 +1,8 @@
-package com.example.aibackend.controller;
+package ch.goodone.angularai.backend.controller;
 
-import com.example.aibackend.dto.UserDTO;
-import com.example.aibackend.model.User;
-import com.example.aibackend.repository.UserRepository;
+import ch.goodone.angularai.backend.dto.UserDTO;
+import ch.goodone.angularai.backend.model.User;
+import ch.goodone.angularai.backend.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;

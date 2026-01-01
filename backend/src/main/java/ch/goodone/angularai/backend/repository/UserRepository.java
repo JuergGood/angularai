@@ -1,6 +1,6 @@
-package com.example.aibackend.repository;
+package ch.goodone.angularai.backend.repository;
 
-import com.example.aibackend.model.User;
+import ch.goodone.angularai.backend.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.Optional;
 

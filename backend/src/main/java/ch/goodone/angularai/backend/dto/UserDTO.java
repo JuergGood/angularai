@@ -1,4 +1,4 @@
-package com.example.aibackend.dto;
+package ch.goodone.angularai.backend.dto;
 
 
 import com.fasterxml.jackson.annotation.JsonFormat;

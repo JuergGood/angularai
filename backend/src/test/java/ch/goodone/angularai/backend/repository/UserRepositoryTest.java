@@ -1,6 +1,6 @@
-package com.example.aibackend.repository;
+package ch.goodone.angularai.backend.repository;
 
-import com.example.aibackend.model.User;
+import ch.goodone.angularai.backend.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;

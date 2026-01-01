@@ -1,7 +1,7 @@
-package com.example.aibackend;
+package ch.goodone.angularai.backend;
 
-import com.example.aibackend.model.User;
-import com.example.aibackend.repository.UserRepository;
+import ch.goodone.angularai.backend.model.User;
+import ch.goodone.angularai.backend.repository.UserRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

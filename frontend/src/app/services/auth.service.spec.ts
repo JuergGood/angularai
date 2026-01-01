@@ -46,7 +46,7 @@ describe('AuthService', () => {
       expect(localStorage.getItem('auth')).toBeTruthy();
     });
 
-    const req = httpMock.expectOne('http://localhost:8080/api/auth/login');
+    const req = httpMock.expectOne('/api/auth/login');
     expect(req.request.method).toBe('POST');
     req.flush(mockUser);
   });
