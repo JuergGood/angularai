@@ -1,0 +1,65 @@
+package com.example.aibackend.controller;
+
+import com.example.aibackend.dto.UserDTO;
+import com.example.aibackend.model.User;
+import com.example.aibackend.repository.UserRepository;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.web.servlet.MockMvc;
+import tools.jackson.databind.ObjectMapper;
+
+import java.time.LocalDate;
+import java.util.Optional;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@WebMvcTest(UserController.class)
+class UserControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc;
+
+    @MockitoBean
+    private UserRepository userRepository;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
+    @Test
+    @WithMockUser(username = "testuser")
+    void getCurrentUser_shouldReturnUser_whenAuthenticated() throws Exception {
+        User user = new User("Test", "User", "testuser", "password", LocalDate.of(1990, 1, 1), "Address");
+        when(userRepository.findByLogin("testuser")).thenReturn(Optional.of(user));
+
+        mockMvc.perform(get("/api/users/me"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.login").value("testuser"))
+                .andExpect(jsonPath("$.firstName").value("Test"));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
+    void updateCurrentUser_shouldUpdateAndReturnUser() throws Exception {
+        User user = new User("Test", "User", "testuser", "password", LocalDate.of(1990, 1, 1), "Address");
+        when(userRepository.findByLogin("testuser")).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        UserDTO updateDTO = new UserDTO(null, "Updated", "Name", "testuser", LocalDate.of(1995, 5, 5), "New Address");
+
+        mockMvc.perform(put("/api/users/me")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.firstName").value("Updated"))
+                .andExpect(jsonPath("$.address").value("New Address"));
+    }
+}
