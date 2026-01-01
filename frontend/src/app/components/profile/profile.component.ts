@@ -62,12 +62,12 @@ import { provideNativeDateAdapter } from '@angular/material/core';
             </mat-form-field>
 
             <div class="actions">
-              <button mat-raised-button color="primary" type="submit">Save Changes</button>
-              <button mat-button color="warn" type="button" (click)="onLogout()">Logout</button>
+              <button mat-raised-button color="primary" type="submit" id="save-btn">Save Changes</button>
+              <button mat-button color="warn" type="button" (click)="onLogout()" id="logout-btn">Logout</button>
             </div>
 
             @if (message) {
-              <p [class.success]="!message.includes('Error')" [class.error]="message.includes('Error')">
+              <p id="profile-message" [class.success]="!message.includes('Error')" [class.error]="message.includes('Error')">
                 {{ message }}
               </p>
             }
@@ -112,10 +112,8 @@ export class ProfileComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    console.log('Fetching user profile...');
     this.userService.getCurrentUser().subscribe({
       next: (user) => {
-        console.log('User profile received:', user);
         this.user = user;
         this.cdr.detectChanges();
       },
@@ -128,9 +126,27 @@ export class ProfileComponent implements OnInit {
 
   onSubmit() {
     if (this.user) {
-      this.userService.updateCurrentUser(this.user).subscribe({
-        next: () => this.message = 'Profile updated successfully!',
-        error: () => this.message = 'Error updating profile.'
+      const userToSave = { ...this.user };
+      if (userToSave.birthDate) {
+        const d = new Date(userToSave.birthDate);
+        if (!isNaN(d.getTime())) {
+          // Format to YYYY-MM-DD
+          const year = d.getFullYear();
+          const month = String(d.getMonth() + 1).padStart(2, '0');
+          const day = String(d.getDate()).padStart(2, '0');
+          userToSave.birthDate = `${year}-${month}-${day}`;
+        }
+      }
+
+      this.userService.updateCurrentUser(userToSave).subscribe({
+        next: () => {
+          this.message = 'Profile updated successfully!';
+          this.cdr.detectChanges();
+        },
+        error: () => {
+          this.message = 'Error updating profile.';
+          this.cdr.detectChanges();
+        }
       });
     }
   }

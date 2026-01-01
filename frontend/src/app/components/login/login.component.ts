@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -31,11 +31,11 @@ import { MatButtonModule } from '@angular/material/button';
             </mat-form-field>
 
             <div class="actions">
-              <button mat-raised-button color="primary" type="submit">Login</button>
+              <button mat-raised-button color="primary" type="submit" id="login-btn">Login</button>
             </div>
 
             @if (error) {
-              <p class="error">{{ error }}</p>
+              <p id="login-error" class="error">{{ error }}</p>
             }
           </form>
         </mat-card-content>
@@ -72,12 +72,21 @@ export class LoginComponent {
   password = '';
   error = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   onSubmit() {
     this.authService.login(this.login, this.password).subscribe({
-      next: () => this.router.navigate(['/profile']),
-      error: () => this.error = 'Invalid login or password'
+      next: () => {
+        this.router.navigate(['/profile']);
+      },
+      error: () => {
+        this.error = 'Invalid login or password';
+        this.cdr.detectChanges();
+      }
     });
   }
 }
