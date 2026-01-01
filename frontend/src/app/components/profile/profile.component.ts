@@ -5,54 +5,99 @@ import { Router } from '@angular/router';
 import { User } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { provideNativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-profile',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatDatepickerModule
+  ],
+  providers: [provideNativeDateAdapter()],
   template: `
-    <h2>User Profile</h2>
-    @if (user) {
-    <div class="profile-container">
-      <h2>User Profile Details</h2>
-      <form (ngSubmit)="onSubmit()">
-        <div class="form-group">
-          <label>First Name</label>
-          <input type="text" name="firstName" [(ngModel)]="user.firstName" required>
-        </div>
-        <div class="form-group">
-          <label>Last Name</label>
-          <input type="text" name="lastName" [(ngModel)]="user.lastName" required>
-        </div>
-        <div class="form-group">
-          <label>Login</label>
-          <input type="text" name="login" [(ngModel)]="user.login" disabled>
-        </div>
-        <div class="form-group">
-          <label>Birth Date</label>
-          <input type="date" name="birthDate" [(ngModel)]="user.birthDate" required>
-        </div>
-        <div class="form-group">
-          <label>Address</label>
-          <textarea name="address" [(ngModel)]="user.address" required></textarea>
-        </div>
-        <button type="submit">Save Changes</button>
-        <button type="button" (click)="onLogout()" class="logout-btn">Logout</button>
-        <p *ngIf="message" class="success">{{ message }}</p>
-      </form>
+    <div class="profile-page">
+      @if (user) {
+      <mat-card class="profile-card">
+        <mat-card-header>
+          <mat-card-title>User Profile Details</mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <form (ngSubmit)="onSubmit()">
+            <mat-form-field appearance="fill">
+              <mat-label>First Name</mat-label>
+              <input matInput name="firstName" [(ngModel)]="user.firstName" required>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+              <mat-label>Last Name</mat-label>
+              <input matInput name="lastName" [(ngModel)]="user.lastName" required>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+              <mat-label>Login</mat-label>
+              <input matInput name="login" [(ngModel)]="user.login" disabled>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+              <mat-label>Birth Date</mat-label>
+              <input matInput [matDatepicker]="picker" name="birthDate" [(ngModel)]="user.birthDate" required>
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+              <mat-label>Address</mat-label>
+              <textarea matInput name="address" [(ngModel)]="user.address" required></textarea>
+            </mat-form-field>
+
+            <div class="actions">
+              <button mat-raised-button color="primary" type="submit">Save Changes</button>
+              <button mat-button color="warn" type="button" (click)="onLogout()">Logout</button>
+            </div>
+
+            @if (message) {
+              <p [class.success]="!message.includes('Error')" [class.error]="message.includes('Error')">
+                {{ message }}
+              </p>
+            }
+          </form>
+        </mat-card-content>
+      </mat-card>
+      }
     </div>
-    }
   `,
   styles: [`
-    .profile-container { max-width: 500px; margin: 50px auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
-    .form-group { margin-bottom: 15px; }
-    label { display: block; margin-bottom: 5px; }
-    input, textarea { width: 100%; padding: 8px; box-sizing: border-box; }
-    button { width: 100%; padding: 10px; background-color: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; margin-bottom: 10px;}
-    button:hover { background-color: #218838; }
-    .logout-btn { background-color: #dc3545; }
-    .logout-btn:hover { background-color: #c82333; }
-    .success { color: green; margin-top: 10px; }
+    .profile-page {
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    .profile-card {
+      width: 100%;
+      max-width: 500px;
+    }
+    mat-form-field {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    .actions {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .success { color: #4caf50; margin-top: 10px; text-align: center; }
+    .error { color: #f44336; margin-top: 10px; text-align: center; }
   `]
 })
 export class ProfileComponent implements OnInit {
