@@ -42,3 +42,4 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 /cypress/screenshots/
+/target/aifrontend-0.0.1-SNAPSHOT.jar
