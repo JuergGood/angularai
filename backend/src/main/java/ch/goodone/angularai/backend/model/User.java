@@ -5,23 +5,37 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "users")
+@SuppressWarnings("JpaDataSourceORMInspection")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "first_name")
     private String firstName;
+
+    @Column(name = "last_name")
     private String lastName;
-    @Column(unique = true, nullable = false)
+
+    @Column(name = "login", unique = true, nullable = false)
     private String login;
+
+    @Column(name = "password")
     private String password;
-    @Column(unique = true, nullable = false)
+
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
+
+    @Column(name = "birth_date")
     private LocalDate birthDate;
+
+    @Column(name = "address")
     private String address;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "role")
     private Role role;
 
     public User() {}

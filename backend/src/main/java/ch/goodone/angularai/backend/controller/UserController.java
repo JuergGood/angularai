@@ -21,7 +21,7 @@ public class UserController {
     public ResponseEntity<UserDTO> getCurrentUser(Authentication authentication) {
         User user = userRepository.findByLogin(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        return ResponseEntity.ok(convertToDTO(user));
+        return ResponseEntity.ok(UserDTO.fromEntity(user));
     }
 
     @PutMapping("/me")
@@ -36,12 +36,6 @@ public class UserController {
         user.setAddress(userDTO.getAddress());
         
         userRepository.save(user);
-        return ResponseEntity.ok(convertToDTO(user));
-    }
-
-    private UserDTO convertToDTO(User user) {
-        return new UserDTO(user.getId(), user.getFirstName(), user.getLastName(), 
-                user.getLogin(), user.getEmail(), user.getBirthDate(), user.getAddress(),
-                user.getRole() != null ? user.getRole().name() : null);
+        return ResponseEntity.ok(UserDTO.fromEntity(user));
     }
 }

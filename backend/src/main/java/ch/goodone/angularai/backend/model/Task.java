@@ -5,17 +5,25 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "tasks")
+@SuppressWarnings("JpaDataSourceORMInspection")
 public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "description", length = 1000)
     private String description;
+
+    @Column(name = "due_date")
     private LocalDate dueDate;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "priority")
     private Priority priority;
 
     @ManyToOne(fetch = FetchType.LAZY)

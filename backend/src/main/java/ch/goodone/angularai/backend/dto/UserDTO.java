@@ -1,7 +1,8 @@
 package ch.goodone.angularai.backend.dto;
 
-
+import ch.goodone.angularai.backend.model.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.time.LocalDate;
 
@@ -10,6 +11,7 @@ public class UserDTO {
     private String firstName;
     private String lastName;
     private String login;
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String email;
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -28,6 +30,19 @@ public class UserDTO {
         this.birthDate = birthDate;
         this.address = address;
         this.role = role;
+    }
+
+    public static UserDTO fromEntity(User user) {
+        return new UserDTO(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getLogin(),
+                user.getEmail(),
+                user.getBirthDate(),
+                user.getAddress(),
+                user.getRole() != null ? user.getRole().name() : null
+        );
     }
 
     // Getters and Setters

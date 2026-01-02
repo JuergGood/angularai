@@ -6,6 +6,7 @@ import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.UserRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,9 +17,9 @@ import java.util.stream.Collectors;
 public class AdminUserController {
 
     private final UserRepository userRepository;
-    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    public AdminUserController(UserRepository userRepository, org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
+    public AdminUserController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -26,7 +27,7 @@ public class AdminUserController {
     @GetMapping
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream()
-                .map(this::convertToDTO)
+                .map(UserDTO::fromEntity)
                 .collect(Collectors.toList());
     }
 
@@ -35,6 +36,7 @@ public class AdminUserController {
         if (userRepository.findAll().stream().anyMatch(u -> userDTO.getLogin().equals(u.getLogin()))) {
             return ResponseEntity.badRequest().body("Login already exists");
         }
+        // Responds if email already exists
         if (userDTO.getEmail() != null && userRepository.findAll().stream().anyMatch(u -> userDTO.getEmail().equals(u.getEmail()))) {
             return ResponseEntity.badRequest().body("Email already exists");
         }
@@ -54,7 +56,7 @@ public class AdminUserController {
         }
 
         userRepository.save(user);
-        return ResponseEntity.ok(convertToDTO(user));
+        return ResponseEntity.ok(UserDTO.fromEntity(user));
     }
 
     @PutMapping("/{id}")
@@ -70,6 +72,7 @@ public class AdminUserController {
 
                     // Self-protection: Prevent admin from removing their own admin privileges
                     if (user.getLogin().equals(authentication.getName())) {
+                        // Prevents admin from removing own admin role
                         if (userDTO.getRole() != null && !Role.ROLE_ADMIN.name().equals(userDTO.getRole())) {
                             return ResponseEntity.badRequest().body("Cannot remove your own admin role");
                         }
@@ -85,7 +88,7 @@ public class AdminUserController {
                     }
 
                     userRepository.save(user);
-                    return ResponseEntity.ok(convertToDTO(user));
+                    return ResponseEntity.ok(UserDTO.fromEntity(user));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -102,11 +105,5 @@ public class AdminUserController {
                     return ResponseEntity.noContent().build();
                 })
                 .orElse(ResponseEntity.notFound().build());
-    }
-
-    private UserDTO convertToDTO(User user) {
-        return new UserDTO(user.getId(), user.getFirstName(), user.getLastName(), 
-                user.getLogin(), user.getEmail(), user.getBirthDate(), user.getAddress(),
-                user.getRole() != null ? user.getRole().name() : null);
     }
 }

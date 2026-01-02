@@ -28,7 +28,7 @@ public class TaskController {
     public List<TaskDTO> getMyTasks(Authentication authentication) {
         User user = getCurrentUser(authentication);
         return taskRepository.findByUser(user).stream()
-                .map(this::convertToDTO)
+                .map(TaskDTO::fromEntity)
                 .collect(Collectors.toList());
     }
 
@@ -42,7 +42,7 @@ public class TaskController {
                 taskDTO.getPriority(),
                 user
         );
-        return convertToDTO(taskRepository.save(task));
+        return TaskDTO.fromEntity(taskRepository.save(task));
     }
 
     @PutMapping("/{id}")
@@ -55,7 +55,7 @@ public class TaskController {
                     task.setDescription(taskDTO.getDescription());
                     task.setDueDate(taskDTO.getDueDate());
                     task.setPriority(taskDTO.getPriority());
-                    return ResponseEntity.ok(convertToDTO(taskRepository.save(task)));
+                    return ResponseEntity.ok(TaskDTO.fromEntity(taskRepository.save(task)));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -75,15 +75,5 @@ public class TaskController {
     private User getCurrentUser(Authentication authentication) {
         return userRepository.findByLogin(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
-    }
-
-    private TaskDTO convertToDTO(Task task) {
-        return new TaskDTO(
-                task.getId(),
-                task.getTitle(),
-                task.getDescription(),
-                task.getDueDate(),
-                task.getPriority()
-        );
     }
 }

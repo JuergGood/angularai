@@ -1,6 +1,7 @@
 package ch.goodone.angularai.backend.dto;
 
 import ch.goodone.angularai.backend.model.Priority;
+import ch.goodone.angularai.backend.model.Task;
 import java.time.LocalDate;
 
 public class TaskDTO {
@@ -18,6 +19,16 @@ public class TaskDTO {
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
+    }
+
+    public static TaskDTO fromEntity(Task task) {
+        return new TaskDTO(
+                task.getId(),
+                task.getTitle(),
+                task.getDescription(),
+                task.getDueDate(),
+                task.getPriority()
+        );
     }
 
     public Long getId() { return id; }
