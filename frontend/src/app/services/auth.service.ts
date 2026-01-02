@@ -14,7 +14,7 @@ export class AuthService {
 
   login(login: string, password: string): Observable<User> {
     const headers = new HttpHeaders({
-      authorization: 'Basic ' + btoa(login + ':' + password)
+      'Authorization': 'Basic ' + btoa(login + ':' + password)
     });
     return this.http.post<User>(`${this.apiUrl}/login`, {}, { headers }).pipe(
       tap(user => {

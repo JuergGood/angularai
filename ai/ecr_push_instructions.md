@@ -15,9 +15,7 @@ This guide provides step-by-step instructions on how to build your AngularAI Doc
 Before pushing, you must authenticate your Docker client to your AWS registry. Replace `<REGION>` with your AWS region (e.g., `us-east-1`) and `<AWS_ACCOUNT_ID>` with your 12-digit account ID.
 
 ```bash
-aws ecr get-login-password --region <REGION> | docker login --username AWS --password-stdin <AWS_ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com
-```
-
+aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 426141506813.dkr.ecr.eu-central-1.amazonaws.com
 ---
 
 ## Step 2: Create ECR Repositories
@@ -26,10 +24,10 @@ If you haven't already created the repositories in the AWS Console, you can do i
 
 ```bash
 # Create Backend Repository
-aws ecr create-repository --repository-name angularai-backend --region <REGION>
+aws ecr create-repository --repository-name angularai-backend --region eu-central-1
 
 # Create Frontend Repository
-aws ecr create-repository --repository-name angularai-frontend --region <REGION>
+aws ecr create-repository --repository-name angularai-frontend --region eu-central-1
 ```
 
 ---
@@ -44,7 +42,7 @@ Navigate to the project root directory.
 docker build -t angularai-backend -f backend/Dockerfile .
 
 # Tag for ECR
-docker tag angularai-backend:latest <AWS_ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/angularai-backend:latest
+docker tag angularai-backend:latest 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:latest
 ```
 
 ### 3.2 Frontend Image
@@ -53,7 +51,7 @@ docker tag angularai-backend:latest <AWS_ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.
 docker build -t angularai-frontend -f frontend/Dockerfile .
 
 # Tag for ECR
-docker tag angularai-frontend:latest <AWS_ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/angularai-frontend:latest
+docker tag angularai-frontend:latest 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-frontend:latest
 ```
 
 ---
@@ -64,10 +62,10 @@ Now push the tagged images to your AWS registry.
 
 ```bash
 # Push Backend
-docker push <AWS_ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/angularai-backend:latest
+docker push 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:latest
 
 # Push Frontend
-docker push <AWS_ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/angularai-frontend:latest
+docker push 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-frontend:latest
 ```
 
 ---
