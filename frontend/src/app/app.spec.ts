@@ -1,9 +1,9 @@
 import { TestBed } from '@angular/core/testing';
 import { App } from './app';
 import { AuthService } from './services/auth.service';
-import { Router, provideRouter } from '@angular/router';
+import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { vi } from 'vitest';
 
 describe('App', () => {
@@ -21,7 +21,7 @@ describe('App', () => {
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
         provideRouter(routes),
-        provideAnimationsAsync()
+        provideAnimations()
       ]
     }).compileComponents();
   });

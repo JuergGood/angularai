@@ -1,8 +1,8 @@
 <mat-sidenav-container class="sidenav-container">
-  <mat-sidenav #drawer class="sidenav" fixedInViewport
-      [attr.role]="'navigation'"
-      [mode]="'side'"
-      [opened]="authService.isLoggedIn()">
+  <mat-sidenav class="sidenav" fixedInViewport
+               [attr.role]="'navigation'"
+               [mode]="'side'"
+               [opened]="authService.isLoggedIn()">
     <mat-toolbar>
       <div class="logo-container">
         <span class="logo-text">

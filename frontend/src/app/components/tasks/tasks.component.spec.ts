@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { Priority, Task } from '../../models/task.model';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { provideNativeDateAdapter } from '@angular/material/core';
 
@@ -34,7 +34,8 @@ describe('TasksComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, TasksComponent],
+      imports: [TasksComponent],
+      providers: [provideNoopAnimations()]
     }).overrideComponent(TasksComponent, {
       set: {
         providers: [

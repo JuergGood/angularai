@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { User } from '../../models/user.model';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
@@ -20,10 +20,11 @@ describe('RegisterComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [RegisterComponent, FormsModule, NoopAnimationsModule],
+      imports: [RegisterComponent, FormsModule],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
-        provideRouter([])
+        provideRouter([]),
+        provideNoopAnimations()
       ]
     }).compileComponents();
 

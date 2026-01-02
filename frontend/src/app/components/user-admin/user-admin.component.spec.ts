@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { User } from '../../models/user.model';
-import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
 
 describe('UserAdminComponent', () => {
@@ -40,7 +40,8 @@ describe('UserAdminComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [NoopAnimationsModule, UserAdminComponent, FormsModule],
+      imports: [UserAdminComponent, FormsModule],
+      providers: [provideNoopAnimations()]
     }).overrideComponent(UserAdminComponent, {
       set: {
         providers: [

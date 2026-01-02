@@ -3,7 +3,7 @@ import { SidenavComponent } from './sidenav.component';
 import { AuthService } from '../../services/auth.service';
 import { Router, provideRouter } from '@angular/router';
 import { routes } from '../../app.routes';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { provideAnimations } from '@angular/platform-browser/animations';
 import { vi } from 'vitest';
 
 describe('SidenavComponent', () => {
@@ -21,7 +21,7 @@ describe('SidenavComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
         provideRouter(routes),
-        provideAnimationsAsync()
+        provideAnimations()
       ]
     }).compileComponents();
   });
