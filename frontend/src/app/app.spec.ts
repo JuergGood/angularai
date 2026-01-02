@@ -37,20 +37,6 @@ describe('App', () => {
     fixture.detectChanges();
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('mat-toolbar span')?.textContent).toContain('User Management System');
-  });
-
-  it('should logout and navigate to login', () => {
-    const fixture = TestBed.createComponent(App);
-    const app = fixture.componentInstance;
-    const router = TestBed.inject(Router);
-    const authService = TestBed.inject(AuthService);
-    const navigateSpy = vi.spyOn(router, 'navigate');
-    const logoutSpy = vi.spyOn(authService, 'logout');
-
-    app.onLogout();
-
-    expect(logoutSpy).toHaveBeenCalled();
-    expect(navigateSpy).toHaveBeenCalledWith(['/login']);
+    expect(compiled.querySelector('app-sidenav')).toBeTruthy();
   });
 });

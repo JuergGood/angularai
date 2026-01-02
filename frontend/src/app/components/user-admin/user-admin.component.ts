@@ -29,102 +29,11 @@ import { ConfirmDialogComponent } from '../tasks/confirm-dialog.component';
     MatSelectModule,
     MatDialogModule
   ],
-  template: `
-    <div class="admin-container">
-      @if (authService.isAdmin()) {
-        <mat-card>
-          <mat-card-header>
-            <mat-card-title>User Administration</mat-card-title>
-          </mat-card-header>
-          <mat-card-content>
-            <table mat-table [dataSource]="users" class="mat-elevation-z8">
-              <ng-container matColumnDef="login">
-                <th mat-header-cell *matHeaderCellDef> Login </th>
-                <td mat-cell *matCellDef="let user"> {{user.login}} </td>
-              </ng-container>
-
-              <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef> Name </th>
-                <td mat-cell *matCellDef="let user"> {{user.firstName}} {{user.lastName}} </td>
-              </ng-container>
-
-              <ng-container matColumnDef="email">
-                <th mat-header-cell *matHeaderCellDef> Email </th>
-                <td mat-cell *matCellDef="let user"> {{user.email}} </td>
-              </ng-container>
-
-              <ng-container matColumnDef="role">
-                <th mat-header-cell *matHeaderCellDef> Role </th>
-                <td mat-cell *matCellDef="let user"> {{user.role}} </td>
-              </ng-container>
-
-              <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef> Actions </th>
-                <td mat-cell *matCellDef="let user">
-                  <button mat-icon-button color="primary" (click)="editUser(user)">
-                    <mat-icon>edit</mat-icon>
-                  </button>
-                  <button mat-icon-button color="warn" (click)="deleteUser(user)" [disabled]="user.login === authService.currentUser()?.login">
-                    <mat-icon>delete</mat-icon>
-                  </button>
-                </td>
-              </ng-container>
-
-              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-            </table>
-
-            @if (editingUser) {
-              <mat-card class="edit-card">
-                <mat-card-header>
-                  <mat-card-title>Edit User: {{editingUser.login}}</mat-card-title>
-                </mat-card-header>
-                <mat-card-content>
-                  <form (ngSubmit)="saveUser()">
-                    <mat-form-field appearance="fill">
-                      <mat-label>First Name</mat-label>
-                      <input matInput name="firstName" [(ngModel)]="editingUser.firstName" required>
-                    </mat-form-field>
-                    <mat-form-field appearance="fill">
-                      <mat-label>Last Name</mat-label>
-                      <input matInput name="lastName" [(ngModel)]="editingUser.lastName" required>
-                    </mat-form-field>
-                    <mat-form-field appearance="fill">
-                      <mat-label>Email</mat-label>
-                      <input matInput type="email" name="email" [(ngModel)]="editingUser.email" required email>
-                    </mat-form-field>
-                    <mat-form-field appearance="fill">
-                      <mat-label>Role</mat-label>
-                      <mat-select name="role" [(ngModel)]="editingUser.role" required [disabled]="editingUser.login === authService.currentUser()?.login">
-                        <mat-option value="ROLE_USER">User</mat-option>
-                        <mat-option value="ROLE_ADMIN">Admin</mat-option>
-                      </mat-select>
-                    </mat-form-field>
-                    <div class="form-actions">
-                      <button mat-raised-button color="primary" type="submit">Save</button>
-                      <button mat-button type="button" (click)="cancelEdit()">Cancel</button>
-                    </div>
-                    @if (error) {
-                      <p class="error">{{error}}</p>
-                    }
-                  </form>
-                </mat-card-content>
-              </mat-card>
-            }
-          </mat-card-content>
-        </mat-card>
-      } @else {
-        <mat-card>
-          <mat-card-content>
-            <p>Access Denied. Admin privileges required.</p>
-          </mat-card-content>
-        </mat-card>
-      }
-    </div>
-  `,
+  templateUrl: './user-admin.component.html',
   styles: [`
     .admin-container { padding: 20px; }
-    table { width: 100%; margin-top: 20px; }
+    .admin-actions { margin-bottom: 20px; }
+    table { width: 100%; }
     .edit-card { margin-top: 30px; }
     mat-form-field { width: 100%; margin-bottom: 10px; }
     .form-actions { display: flex; gap: 10px; }
@@ -136,6 +45,7 @@ export class UserAdminComponent implements OnInit {
   displayedColumns: string[] = ['login', 'name', 'email', 'role', 'actions'];
   editingUser: User | null = null;
   error: string | null = null;
+  isCreating = false;
 
   constructor(
     public authService: AuthService,
@@ -157,25 +67,50 @@ export class UserAdminComponent implements OnInit {
     });
   }
 
+  createNewUser() {
+    this.editingUser = {
+      firstName: '',
+      lastName: '',
+      login: '',
+      password: '',
+      email: '',
+      role: 'ROLE_USER',
+      birthDate: '',
+      address: ''
+    };
+    this.isCreating = true;
+    this.error = null;
+    this.cdr.detectChanges();
+  }
+
   editUser(user: User) {
     this.editingUser = { ...user };
+    this.isCreating = false;
     this.error = null;
+    this.cdr.detectChanges();
   }
 
   cancelEdit() {
     this.editingUser = null;
+    this.isCreating = false;
     this.error = null;
+    this.cdr.detectChanges();
   }
 
   saveUser() {
-    if (this.editingUser && this.editingUser.id) {
-      this.adminService.updateUser(this.editingUser.id, this.editingUser).subscribe({
+    if (this.editingUser) {
+      const operation = this.isCreating
+        ? this.adminService.createUser(this.editingUser)
+        : this.adminService.updateUser(this.editingUser.id!, this.editingUser);
+
+      operation.subscribe({
         next: () => {
           this.loadUsers();
           this.editingUser = null;
+          this.isCreating = false;
         },
         error: (err) => {
-          this.error = err.error || 'Failed to update user';
+          this.error = err.error || 'Operation failed';
           this.cdr.detectChanges();
         }
       });

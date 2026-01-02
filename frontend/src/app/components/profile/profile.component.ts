@@ -25,63 +25,7 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatDatepickerModule
   ],
   providers: [provideNativeDateAdapter()],
-  template: `
-    <div class="profile-page">
-      @if (user) {
-      <mat-card class="profile-card">
-        <mat-card-header>
-          <mat-card-title>User Profile Details</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form (ngSubmit)="onSubmit()">
-            <mat-form-field appearance="fill">
-              <mat-label>First Name</mat-label>
-              <input matInput name="firstName" [(ngModel)]="user.firstName" required>
-            </mat-form-field>
-
-            <mat-form-field appearance="fill">
-              <mat-label>Last Name</mat-label>
-              <input matInput name="lastName" [(ngModel)]="user.lastName" required>
-            </mat-form-field>
-
-            <mat-form-field appearance="fill">
-              <mat-label>Login</mat-label>
-              <input matInput name="login" [(ngModel)]="user.login" disabled>
-            </mat-form-field>
-
-            <mat-form-field appearance="fill">
-              <mat-label>Email</mat-label>
-              <input matInput type="email" name="email" [(ngModel)]="user.email" required email>
-            </mat-form-field>
-
-            <mat-form-field appearance="fill">
-              <mat-label>Birth Date</mat-label>
-              <input matInput [matDatepicker]="picker" name="birthDate" [(ngModel)]="user.birthDate" required>
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
-
-            <mat-form-field appearance="fill">
-              <mat-label>Address</mat-label>
-              <textarea matInput name="address" [(ngModel)]="user.address" required></textarea>
-            </mat-form-field>
-
-            <div class="actions">
-              <button mat-raised-button color="primary" type="submit" id="save-btn">Save Changes</button>
-              <button mat-button color="warn" type="button" (click)="onLogout()" id="logout-btn">Logout</button>
-            </div>
-
-            @if (message) {
-              <p id="profile-message" [class.success]="!message.includes('Error')" [class.error]="message.includes('Error')">
-                {{ message }}
-              </p>
-            }
-          </form>
-        </mat-card-content>
-      </mat-card>
-      }
-    </div>
-  `,
+  templateUrl: './profile.component.html',
   styles: [`
     .profile-page {
       display: flex;

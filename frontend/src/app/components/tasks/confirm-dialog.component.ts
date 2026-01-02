@@ -11,15 +11,6 @@ import {
   selector: 'app-confirm-dialog',
   standalone: true,
   imports: [MatButtonModule, MatDialogActions, MatDialogClose, MatDialogContent, MatDialogTitle],
-  template: `
-    <h2 mat-dialog-title>Confirm Action</h2>
-    <mat-dialog-content>
-      Are you sure you want to delete this task?
-    </mat-dialog-content>
-    <mat-dialog-actions align="end">
-      <button mat-button mat-dialog-close>Cancel</button>
-      <button mat-raised-button color="warn" [mat-dialog-close]="true">Delete</button>
-    </mat-dialog-actions>
-  `,
+  templateUrl: './confirm-dialog.component.html',
 })
 export class ConfirmDialogComponent {}

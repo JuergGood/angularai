@@ -16,9 +16,11 @@ import java.util.stream.Collectors;
 public class AdminUserController {
 
     private final UserRepository userRepository;
+    private final org.springframework.security.crypto.password.PasswordEncoder passwordEncoder;
 
-    public AdminUserController(UserRepository userRepository) {
+    public AdminUserController(UserRepository userRepository, org.springframework.security.crypto.password.PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping
@@ -26,6 +28,33 @@ public class AdminUserController {
         return userRepository.findAll().stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
+    }
+
+    @PostMapping
+    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) {
+        if (userRepository.findAll().stream().anyMatch(u -> userDTO.getLogin().equals(u.getLogin()))) {
+            return ResponseEntity.badRequest().body("Login already exists");
+        }
+        if (userDTO.getEmail() != null && userRepository.findAll().stream().anyMatch(u -> userDTO.getEmail().equals(u.getEmail()))) {
+            return ResponseEntity.badRequest().body("Email already exists");
+        }
+
+        User user = new User();
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setLogin(userDTO.getLogin());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword() != null ? userDTO.getPassword() : "password123"));
+        user.setEmail(userDTO.getEmail());
+        user.setBirthDate(userDTO.getBirthDate());
+        user.setAddress(userDTO.getAddress());
+        if (userDTO.getRole() != null) {
+            user.setRole(Role.valueOf(userDTO.getRole()));
+        } else {
+            user.setRole(Role.ROLE_USER);
+        }
+
+        userRepository.save(user);
+        return ResponseEntity.ok(convertToDTO(user));
     }
 
     @PutMapping("/{id}")

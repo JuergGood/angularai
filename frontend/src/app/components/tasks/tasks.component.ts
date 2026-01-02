@@ -30,84 +30,7 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
     MatDialogModule
   ],
   providers: [provideNativeDateAdapter()],
-  template: `
-    <div class="tasks-container">
-      <mat-card class="add-task-card">
-        <mat-card-header>
-          <mat-card-title>{{ editingTask ? 'Edit Task' : 'Add New Task' }}</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form (ngSubmit)="onSubmit()" #taskForm="ngForm">
-            <mat-form-field appearance="fill">
-              <mat-label>Title</mat-label>
-              <input matInput name="title" [(ngModel)]="currentTask.title" required>
-            </mat-form-field>
-
-            <mat-form-field appearance="fill">
-              <mat-label>Description</mat-label>
-              <textarea matInput name="description" [(ngModel)]="currentTask.description" required></textarea>
-            </mat-form-field>
-
-            <mat-form-field appearance="fill">
-              <mat-label>Due Date</mat-label>
-              <input matInput [matDatepicker]="picker" name="dueDate" [(ngModel)]="currentTask.dueDate">
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
-
-            <mat-form-field appearance="fill">
-              <mat-label>Priority</mat-label>
-              <mat-select name="priority" [(ngModel)]="currentTask.priority" required>
-                @for (p of priorities; track p) {
-                  <mat-option [value]="p">{{ p }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-
-            <div class="form-actions">
-              <button mat-raised-button color="primary" type="submit" [disabled]="!taskForm.form.valid">
-                {{ editingTask ? 'Update Task' : 'Add Task' }}
-              </button>
-              @if (editingTask) {
-                <button mat-button type="button" (click)="cancelEdit()">Cancel</button>
-              }
-            </div>
-          </form>
-        </mat-card-content>
-      </mat-card>
-
-      <div class="tasks-list">
-        @for (task of tasks; track task.id) {
-          <mat-card class="task-item">
-            <mat-card-header>
-              <mat-card-title>{{ task.title }}</mat-card-title>
-              <mat-card-subtitle>
-                @if (task.dueDate) {
-                  Due: {{ task.dueDate }} |
-                }
-                Priority: <span [class]="'priority-' + task.priority.toLowerCase()">{{ task.priority }}</span>
-              </mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>
-              <p>{{ task.description }}</p>
-            </mat-card-content>
-            <mat-card-actions align="end">
-              <button mat-button color="primary" (click)="editTask(task)">
-                <mat-icon>edit</mat-icon>
-                <span>Edit</span>
-              </button>
-              <button mat-button color="warn" (click)="deleteTask(task)">
-                <mat-icon>delete</mat-icon>
-                <span>Delete</span>
-              </button>
-            </mat-card-actions>
-          </mat-card>
-        } @empty {
-          <p>No tasks found.</p>
-        }
-      </div>
-    </div>
-  `,
+  templateUrl: './tasks.component.html',
   styles: [`
     .tasks-container {
       max-width: 800px;
@@ -150,6 +73,7 @@ export class TasksComponent implements OnInit {
   priorities = Object.values(Priority);
   currentTask: Task = this.initNewTask();
   editingTask = false;
+  showForm = false;
 
   constructor(
     private taskService: TaskService,
@@ -177,6 +101,13 @@ export class TasksComponent implements OnInit {
     };
   }
 
+  showAddTaskForm() {
+    this.showForm = true;
+    this.editingTask = false;
+    this.currentTask = this.initNewTask();
+    this.cdr.detectChanges();
+  }
+
   onSubmit() {
     const taskToSave = { ...this.currentTask };
     if (taskToSave.dueDate) {
@@ -198,6 +129,8 @@ export class TasksComponent implements OnInit {
       this.taskService.createTask(taskToSave).subscribe(() => {
         this.loadTasks();
         this.currentTask = this.initNewTask();
+        this.showForm = false;
+        this.cdr.detectChanges();
       });
     }
   }
@@ -205,11 +138,15 @@ export class TasksComponent implements OnInit {
   editTask(task: Task) {
     this.currentTask = { ...task };
     this.editingTask = true;
+    this.showForm = true;
+    this.cdr.detectChanges();
   }
 
   cancelEdit() {
     this.currentTask = this.initNewTask();
     this.editingTask = false;
+    this.showForm = false;
+    this.cdr.detectChanges();
   }
 
   deleteTask(task: Task) {

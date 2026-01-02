@@ -24,6 +24,10 @@ export class AdminService {
     return this.http.get<User[]>(this.apiUrl, { headers: this.getHeaders() });
   }
 
+  createUser(user: User): Observable<User> {
+    return this.http.post<User>(this.apiUrl, user, { headers: this.getHeaders() });
+  }
+
   updateUser(id: number, user: User): Observable<User> {
     return this.http.put<User>(`${this.apiUrl}/${id}`, user, { headers: this.getHeaders() });
   }

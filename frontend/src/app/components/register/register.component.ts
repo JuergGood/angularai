@@ -25,63 +25,7 @@ import { User } from '../../models/user.model';
     MatDatepickerModule
   ],
   providers: [provideNativeDateAdapter()],
-  template: `
-    <div class="register-page">
-      <mat-card class="register-card">
-        <mat-card-header>
-          <mat-card-title>Register New User</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
-            <mat-form-field appearance="fill">
-              <mat-label>First Name</mat-label>
-              <input matInput name="firstName" [(ngModel)]="user.firstName" required>
-            </mat-form-field>
-
-            <mat-form-field appearance="fill">
-              <mat-label>Last Name</mat-label>
-              <input matInput name="lastName" [(ngModel)]="user.lastName" required>
-            </mat-form-field>
-
-            <mat-form-field appearance="fill">
-              <mat-label>Login</mat-label>
-              <input matInput name="login" [(ngModel)]="user.login" required>
-            </mat-form-field>
-
-            <mat-form-field appearance="fill">
-              <mat-label>Password</mat-label>
-              <input matInput type="password" name="password" [(ngModel)]="user.password" required id="password">
-            </mat-form-field>
-
-            <mat-form-field appearance="fill">
-              <mat-label>Confirm Password</mat-label>
-              <input matInput type="password" name="confirmPassword" [(ngModel)]="confirmPassword" required id="confirm-password">
-            </mat-form-field>
-
-            <mat-form-field appearance="fill">
-              <mat-label>Email</mat-label>
-              <input matInput type="email" name="email" [(ngModel)]="user.email" required email>
-            </mat-form-field>
-
-            <div class="actions">
-              <button mat-raised-button color="primary" type="submit" [disabled]="!registerForm.form.valid || user.password !== confirmPassword" id="register-btn">Register</button>
-              <a mat-button routerLink="/login">Back to Login</a>
-            </div>
-
-            @if (user.password !== confirmPassword && confirmPassword) {
-              <p class="error">Passwords do not match</p>
-            }
-            @if (error) {
-              <p class="error">{{ error }}</p>
-            }
-            @if (message) {
-              <p class="success">{{ message }}</p>
-            }
-          </form>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  `,
+  templateUrl: './register.component.html',
   styles: [`
     .register-page {
       display: flex;

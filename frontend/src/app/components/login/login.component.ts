@@ -13,39 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
   selector: 'app-login',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink, MatCardModule, MatFormFieldModule, MatInputModule, MatButtonModule, MatIconModule],
-  template: `
-    <div class="login-page">
-      <mat-card class="login-card">
-        <mat-card-header>
-          <mat-card-title>Login</mat-card-title>
-        </mat-card-header>
-        <mat-card-content>
-          <form (ngSubmit)="onSubmit()">
-            <mat-form-field appearance="fill">
-              <mat-label>Login</mat-label>
-              <input matInput type="text" name="login" [(ngModel)]="login" required>
-            </mat-form-field>
-            <mat-form-field appearance="fill">
-              <mat-label>Password</mat-label>
-              <input matInput [type]="hidePassword ? 'password' : 'text'" name="password" [(ngModel)]="password" required>
-              <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword" type="button">
-                <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-              </button>
-            </mat-form-field>
-
-            <div class="actions">
-              <a mat-button routerLink="/register">Register</a>
-              <button mat-raised-button color="primary" type="submit" id="login-btn">Login</button>
-            </div>
-
-            @if (error) {
-              <p id="login-error" class="error">{{ error }}</p>
-            }
-          </form>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  `,
+  templateUrl: './login.component.html',
   styles: [`
     .login-page {
       display: flex;
