@@ -2,6 +2,7 @@ package ch.goodone.angularai.backend.controller;
 
 import ch.goodone.angularai.backend.dto.TaskDTO;
 import ch.goodone.angularai.backend.model.Priority;
+import ch.goodone.angularai.backend.model.Role;
 import ch.goodone.angularai.backend.model.Task;
 import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.TaskRepository;
@@ -63,7 +64,7 @@ public class TaskControllerTest {
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
 
-        testUser = new User("Test", "User", "testuser", "password", "test@example.com", LocalDate.now(), "Address");
+        testUser = new User("Test", "User", "testuser", "password", "test@example.com", LocalDate.now(), "Address", Role.ROLE_USER);
         testUser.setId(1L);
 
         testTask = new Task("Test Task", "Description", LocalDate.now(), Priority.MEDIUM, testUser);

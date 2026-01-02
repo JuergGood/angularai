@@ -41,6 +41,7 @@ public class UserController {
 
     private UserDTO convertToDTO(User user) {
         return new UserDTO(user.getId(), user.getFirstName(), user.getLastName(), 
-                user.getLogin(), user.getEmail(), user.getBirthDate(), user.getAddress());
+                user.getLogin(), user.getEmail(), user.getBirthDate(), user.getAddress(),
+                user.getRole() != null ? user.getRole().name() : null);
     }
 }

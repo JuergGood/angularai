@@ -36,7 +36,7 @@ import { CommonModule } from '@angular/common';
             <mat-icon matListItemIcon>assignment</mat-icon>
             <span matListItemTitle>Tasks</span>
           </a>
-          <a mat-list-item routerLink="/user-admin" routerLinkActive="active-link">
+          <a mat-list-item routerLink="/user-admin" routerLinkActive="active-link" *ngIf="authService.isAdmin()">
             <mat-icon matListItemIcon>admin_panel_settings</mat-icon>
             <span matListItemTitle>User Admin</span>
           </a>

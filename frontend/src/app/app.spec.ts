@@ -12,6 +12,7 @@ describe('App', () => {
   beforeEach(async () => {
     authServiceSpy = {
       isLoggedIn: vi.fn().mockReturnValue(true),
+      isAdmin: vi.fn().mockReturnValue(true),
       logout: vi.fn()
     };
 

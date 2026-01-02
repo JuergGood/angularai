@@ -2,6 +2,7 @@ package ch.goodone.angularai.backend.controller;
 
 import ch.goodone.angularai.backend.config.SecurityConfig;
 import ch.goodone.angularai.backend.dto.UserDTO;
+import ch.goodone.angularai.backend.model.Role;
 import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -39,7 +40,7 @@ class AuthControllerTest {
     void login_shouldReturnUser_whenAuthenticated() throws Exception {
         String login = "admin";
         String password = "password";
-        User user = new User("Admin", "User", login, passwordEncoder.encode(password), "admin@example.com", LocalDate.of(1980, 1, 1), "Admin Home");
+        User user = new User("Admin", "User", login, passwordEncoder.encode(password), "admin@example.com", LocalDate.of(1980, 1, 1), "Admin Home", Role.ROLE_ADMIN);
         
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
 
@@ -53,7 +54,7 @@ class AuthControllerTest {
 
     @Test
     void register_shouldCreateUser() throws Exception {
-        UserDTO userDTO = new UserDTO(null, "New", "User", "newuser", "new@example.com", LocalDate.of(2000, 1, 1), "New Address");
+        UserDTO userDTO = new UserDTO(null, "New", "User", "newuser", "new@example.com", LocalDate.of(2000, 1, 1), "New Address", "ROLE_USER");
         userDTO.setPassword("password123");
 
         when(userRepository.findByLogin("newuser")).thenReturn(Optional.empty());
@@ -68,7 +69,7 @@ class AuthControllerTest {
 
     @Test
     void register_shouldReturnBadRequest_whenUserExists() throws Exception {
-        UserDTO userDTO = new UserDTO(null, "Existing", "User", "admin", "admin@example.com", LocalDate.of(1990, 1, 1), "Address");
+        UserDTO userDTO = new UserDTO(null, "Existing", "User", "admin", "admin@example.com", LocalDate.of(1990, 1, 1), "Address", "ROLE_USER");
         
         when(userRepository.findByLogin("admin")).thenReturn(Optional.of(new User()));
 

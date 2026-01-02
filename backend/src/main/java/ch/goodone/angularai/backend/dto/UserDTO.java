@@ -15,10 +15,11 @@ public class UserDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
     private String address;
+    private String role;
 
     public UserDTO() {}
 
-    public UserDTO(Long id, String firstName, String lastName, String login, String email, LocalDate birthDate, String address) {
+    public UserDTO(Long id, String firstName, String lastName, String login, String email, LocalDate birthDate, String address, String role) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -26,6 +27,7 @@ public class UserDTO {
         this.email = email;
         this.birthDate = birthDate;
         this.address = address;
+        this.role = role;
     }
 
     // Getters and Setters
@@ -45,4 +47,6 @@ public class UserDTO {
     public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }

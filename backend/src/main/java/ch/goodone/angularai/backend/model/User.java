@@ -13,16 +13,20 @@ public class User {
 
     private String firstName;
     private String lastName;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String login;
     private String password;
+    @Column(unique = true, nullable = false)
     private String email;
     private LocalDate birthDate;
     private String address;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     public User() {}
 
-    public User(String firstName, String lastName, String login, String password, String email, LocalDate birthDate, String address) {
+    public User(String firstName, String lastName, String login, String password, String email, LocalDate birthDate, String address, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;
@@ -30,6 +34,7 @@ public class User {
         this.email = email;
         this.birthDate = birthDate;
         this.address = address;
+        this.role = role;
     }
 
     public Long getId() { return id; }
@@ -55,4 +60,7 @@ public class User {
 
     public String getAddress() { return address; }
     public void setAddress(String address) { this.address = address; }
+
+    public Role getRole() { return role; }
+    public void setRole(Role role) { this.role = role; }
 }

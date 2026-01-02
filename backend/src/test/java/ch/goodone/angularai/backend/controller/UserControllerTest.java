@@ -2,6 +2,7 @@ package ch.goodone.angularai.backend.controller;
 
 import ch.goodone.angularai.backend.config.SecurityConfig;
 import ch.goodone.angularai.backend.dto.UserDTO;
+import ch.goodone.angularai.backend.model.Role;
 import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.UserRepository;
 import org.junit.jupiter.api.Test;
@@ -45,10 +46,10 @@ class UserControllerTest {
     void getCurrentUser_shouldReturnUser_whenAuthenticated() throws Exception {
         String login = "testuser";
         String password = "password";
-        User user = new User("Test", "User", login, passwordEncoder.encode(password), "test@example.com", LocalDate.of(1990, 1, 1), "Address");
+        User user = new User("Test", "User", login, passwordEncoder.encode(password), "test@example.com", LocalDate.of(1990, 1, 1), "Address", Role.ROLE_USER);
         
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
-
+        
         mockMvc.perform(get("/api/users/me")
                         .with(httpBasic(login, password)))
                 .andExpect(status().isOk())
@@ -61,12 +62,12 @@ class UserControllerTest {
     void updateCurrentUser_shouldUpdateAndReturnUser() throws Exception {
         String login = "testuser";
         String password = "password";
-        User user = new User("Test", "User", login, passwordEncoder.encode(password), "test@example.com", LocalDate.of(1990, 1, 1), "Address");
+        User user = new User("Test", "User", login, passwordEncoder.encode(password), "test@example.com", LocalDate.of(1990, 1, 1), "Address", Role.ROLE_USER);
         
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        UserDTO updateDTO = new UserDTO(null, "Updated", "Name", login, "updated@example.com", LocalDate.of(1995, 5, 5), "New Address");
+        UserDTO updateDTO = new UserDTO(null, "Updated", "Name", login, "updated@example.com", LocalDate.of(1995, 5, 5), "New Address", "ROLE_USER");
 
         mockMvc.perform(put("/api/users/me")
                         .with(httpBasic(login, password))

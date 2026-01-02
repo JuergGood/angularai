@@ -43,7 +43,8 @@ public class AuthController {
                 passwordEncoder.encode(userDTO.getPassword()),
                 userDTO.getEmail(),
                 userDTO.getBirthDate(),
-                userDTO.getAddress()
+                userDTO.getAddress(),
+                ch.goodone.angularai.backend.model.Role.ROLE_USER
         );
 
         userRepository.save(user);
@@ -52,6 +53,7 @@ public class AuthController {
 
     private UserDTO convertToDTO(User user) {
         return new UserDTO(user.getId(), user.getFirstName(), user.getLastName(), 
-                user.getLogin(), user.getEmail(), user.getBirthDate(), user.getAddress());
+                user.getLogin(), user.getEmail(), user.getBirthDate(), user.getAddress(),
+                user.getRole() != null ? user.getRole().name() : null);
     }
 }

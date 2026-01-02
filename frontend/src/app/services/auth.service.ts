@@ -40,4 +40,8 @@ export class AuthService {
   isLoggedIn(): boolean {
     return this.currentUser() !== null || this.getAuthHeader() !== null;
   }
+
+  isAdmin(): boolean {
+    return this.currentUser()?.role === 'ROLE_ADMIN';
+  }
 }
