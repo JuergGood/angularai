@@ -6,6 +6,7 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AuthService } from '../../services/auth.service';
 
@@ -20,7 +21,8 @@ import { AuthService } from '../../services/auth.service';
     MatListModule,
     MatToolbarModule,
     MatIconModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSnackBarModule
   ],
   templateUrl: './sidenav.component.html',
   styles: [`
@@ -115,6 +117,7 @@ export class SidenavComponent {
   constructor(
     public authService: AuthService,
     private router: Router,
+    private snackBar: MatSnackBar,
     private breakpointObserver: BreakpointObserver
   ) {
     this.breakpointObserver.observe([
@@ -127,7 +130,11 @@ export class SidenavComponent {
   }
 
   onLogout() {
+    console.log('[DEBUG_LOG] onLogout called');
     this.authService.logout();
+    console.log('[DEBUG_LOG] after logout');
+    this.snackBar.open('Logout successful', 'Close', { duration: 3000 });
+    console.log('[DEBUG_LOG] after snackbar');
     this.router.navigate(['/login']);
   }
 }

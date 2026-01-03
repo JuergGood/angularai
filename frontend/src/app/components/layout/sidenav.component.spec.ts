@@ -4,10 +4,12 @@ import { AuthService } from '../../services/auth.service';
 import { Router, provideRouter } from '@angular/router';
 import { routes } from '../../app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { vi } from 'vitest';
 
 describe('SidenavComponent', () => {
   let authServiceSpy: any;
+  let snackBarSpy: any;
 
   beforeEach(async () => {
     authServiceSpy = {
@@ -16,10 +18,15 @@ describe('SidenavComponent', () => {
       logout: vi.fn()
     };
 
+    snackBarSpy = {
+      open: vi.fn()
+    };
+
     await TestBed.configureTestingModule({
       imports: [SidenavComponent],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
+        { provide: MatSnackBar, useValue: snackBarSpy },
         provideRouter(routes),
         provideAnimations()
       ]
@@ -36,13 +43,12 @@ describe('SidenavComponent', () => {
     const fixture = TestBed.createComponent(SidenavComponent);
     const component = fixture.componentInstance;
     const router = TestBed.inject(Router);
-    const authService = TestBed.inject(AuthService);
     const navigateSpy = vi.spyOn(router, 'navigate');
-    const logoutSpy = vi.spyOn(authService, 'logout');
 
     component.onLogout();
 
-    expect(logoutSpy).toHaveBeenCalled();
+    expect(authServiceSpy.logout).toHaveBeenCalled();
+    expect(snackBarSpy.open).toHaveBeenCalledWith('Logout successful', 'Close', { duration: 3000 });
     expect(navigateSpy).toHaveBeenCalledWith(['/login']);
   });
 });
