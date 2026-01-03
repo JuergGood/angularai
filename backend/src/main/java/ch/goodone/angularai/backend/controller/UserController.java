@@ -25,10 +25,14 @@ public class UserController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<UserDTO> updateCurrentUser(Authentication authentication, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> updateCurrentUser(Authentication authentication, @RequestBody UserDTO userDTO) {
         User user = userRepository.findByLogin(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         
+        if (userDTO.getEmail() != null && !userDTO.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            return ResponseEntity.badRequest().body("Invalid email format");
+        }
+
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
         user.setEmail(userDTO.getEmail());

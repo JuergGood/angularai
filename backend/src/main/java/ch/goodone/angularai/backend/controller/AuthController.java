@@ -32,6 +32,9 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<?> register(@RequestBody UserDTO userDTO) {
+        if (userDTO.getEmail() != null && !userDTO.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            return ResponseEntity.badRequest().body("Invalid email format");
+        }
         if (userRepository.findByLogin(userDTO.getLogin()).isPresent()) {
             return ResponseEntity.badRequest().body("User already exists");
         }

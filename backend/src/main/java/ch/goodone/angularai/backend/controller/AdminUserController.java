@@ -33,6 +33,9 @@ public class AdminUserController {
 
     @PostMapping
     public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) {
+        if (userDTO.getEmail() != null && !userDTO.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            return ResponseEntity.badRequest().body("Invalid email format");
+        }
         if (userRepository.findAll().stream().anyMatch(u -> userDTO.getLogin().equals(u.getLogin()))) {
             return ResponseEntity.badRequest().body("Login already exists");
         }
@@ -61,6 +64,9 @@ public class AdminUserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO, Authentication authentication) {
+        if (userDTO.getEmail() != null && !userDTO.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            return ResponseEntity.badRequest().body("Invalid email format");
+        }
         return userRepository.findById(id)
                 .map(user -> {
                     // Unique email check

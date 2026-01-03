@@ -130,11 +130,8 @@ export class SidenavComponent {
   }
 
   onLogout() {
-    console.log('[DEBUG_LOG] onLogout called');
     this.authService.logout();
-    console.log('[DEBUG_LOG] after logout');
     this.snackBar.open('Logout successful', 'Close', { duration: 3000 });
-    console.log('[DEBUG_LOG] after snackbar');
     this.router.navigate(['/login']);
   }
 }

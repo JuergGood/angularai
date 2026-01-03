@@ -45,6 +45,10 @@ describe('SidenavComponent', () => {
     const router = TestBed.inject(Router);
     const navigateSpy = vi.spyOn(router, 'navigate');
 
+    // Manually inject mocks if needed, but they should be there from TestBed
+    (component as any).authService = authServiceSpy;
+    (component as any).snackBar = snackBarSpy;
+
     component.onLogout();
 
     expect(authServiceSpy.logout).toHaveBeenCalled();

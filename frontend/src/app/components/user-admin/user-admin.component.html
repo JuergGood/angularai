@@ -80,7 +80,7 @@
               <mat-card-title>{{ isCreating ? 'Create New User' : 'Edit User: ' + editingUser.login }}</mat-card-title>
             </mat-card-header>
             <mat-card-content>
-              <form (ngSubmit)="saveUser()">
+              <form (ngSubmit)="saveUser()" #adminUserForm="ngForm">
                 <mat-form-field appearance="fill">
                   <mat-label>First Name</mat-label>
                   <input matInput name="firstName" [(ngModel)]="editingUser.firstName" required>
@@ -101,7 +101,10 @@
                 }
                 <mat-form-field appearance="fill">
                   <mat-label>Email</mat-label>
-                  <input matInput type="email" name="email" [(ngModel)]="editingUser.email" required email>
+                  <input matInput type="email" name="email" [(ngModel)]="editingUser.email" required email #email="ngModel">
+                  @if (email.invalid && (email.dirty || email.touched)) {
+                    <mat-error>Please enter a valid email address</mat-error>
+                  }
                 </mat-form-field>
                 <mat-form-field appearance="fill">
                   <mat-label>Role</mat-label>
@@ -111,7 +114,7 @@
                   </mat-select>
                 </mat-form-field>
                 <div class="form-actions">
-                  <button mat-raised-button color="primary" type="submit">{{ isCreating ? 'Create' : 'Save' }}</button>
+                  <button mat-raised-button color="primary" type="submit" [disabled]="!adminUserForm.form.valid">{{ isCreating ? 'Create' : 'Save' }}</button>
                   <button mat-button type="button" (click)="cancelEdit()">Cancel</button>
                 </div>
                 @if (error) {
