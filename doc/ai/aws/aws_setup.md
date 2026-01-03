@@ -16,7 +16,7 @@ You need to host your Docker images in a private registry.
     1. Create two ECR repositories: `angularai-frontend` and `angularai-backend`.
     2. Authenticate your local Docker CLI to ECR.
     3. Tag your local images with the ECR repository URLs.
-    4. Push the images: `docker push <aws_account_id>.dkr.ecr.<region>.amazonaws.com/angularai-backend`.
+    4. Push the images: `docker push <aws_account_id>.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend`.
 
 #### 2. Set Up the Database
 *   **AWS Service**: **Amazon RDS**.

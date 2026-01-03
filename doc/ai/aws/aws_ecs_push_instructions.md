@@ -73,7 +73,7 @@ docker push 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-frontend:l
 ## Summary of URLs
 
 After pushing, your image URLs will follow this pattern:
-- **Backend**: `<AWS_ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/angularai-backend:latest`
-- **Frontend**: `<AWS_ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/angularai-frontend:latest`
+- **Backend**: `426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:latest`
+- **Frontend**: `426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-frontend:latest`
 
 Use these URLs in your **ECS Task Definitions** (e.g., in `deploy/aws/backend-task-definition.json` and `deploy/aws/frontend-task-definition.json`).

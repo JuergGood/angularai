@@ -4,7 +4,7 @@
   "containerDefinitions": [
     {
       "name": "backend",
-      "image": "<AWS_ACCOUNT_ID>.dkr.ecr.<REGION>.amazonaws.com/angularai-backend:latest",
+      "image": "426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:latest",
       "essential": true,
       "portMappings": [
         {
@@ -23,7 +23,7 @@
         "logDriver": "awslogs",
         "options": {
           "awslogs-group": "/ecs/angularai-backend-test",
-          "awslogs-region": "<REGION>",
+          "awslogs-region": "eu-central-1",
           "awslogs-stream-prefix": "ecs"
         }
       }
@@ -34,6 +34,6 @@
   ],
   "cpu": "256",
   "memory": "512",
-  "executionRoleArn": "arn:aws:iam::<AWS_ACCOUNT_ID>:role/ecsTaskExecutionRole",
-  "taskRoleArn": "arn:aws:iam::<AWS_ACCOUNT_ID>:role/ecsTaskExecutionRole"
+  "executionRoleArn": "arn:aws:iam::426141506813:role/ecsTaskExecutionRole",
+  "taskRoleArn": "arn:aws:iam::426141506813:role/ecsTaskExecutionRole"
 }

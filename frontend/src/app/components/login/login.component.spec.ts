@@ -51,12 +51,20 @@ describe('LoginComponent', () => {
     expect(routerSpy.navigate).toHaveBeenCalledWith(['/profile']);
   });
 
-  it('should set error on failed login', () => {
-    authServiceSpy.login.mockReturnValue(throwError(() => new Error('Failed')));
+  it('should set error on failed login (401)', () => {
+    authServiceSpy.login.mockReturnValue(throwError(() => ({ status: 401 })));
 
     component.onSubmit();
 
     expect(component.error).toBe('Invalid login or password');
+  });
+
+  it('should set generic error on server failure', () => {
+    authServiceSpy.login.mockReturnValue(throwError(() => ({ status: 500, statusText: 'Internal Server Error' })));
+
+    component.onSubmit();
+
+    expect(component.error).toBe('An error occurred: Internal Server Error');
   });
 
   it('should toggle password visibility', () => {

@@ -22,14 +22,32 @@ The files are located in the new `deploy/aws/` directory:
 #### A. Prerequisites
 1.  **ECR Repositories**: Ensure you have pushed your Docker images to Amazon ECR.
 2.  **IAM Role**: Ensure the `ecsTaskExecutionRole` exists in your AWS account (standard role created by AWS).
-3.  **RDS Database**: Your PostgreSQL database should be running and accessible.
+3.  **CloudWatch Log Groups**: You must manually create the Log Groups in CloudWatch for both services to prevent a `ResourceInitializationError` at startup:
+    *   `/ecs/angularai-frontend`
+    *   `/ecs/angularai-backend`
+    *   `/ecs/angularai-backend-test` (if using the test definition)
+    
+    You can create them via the AWS Console or CLI:
+    ```bash
+    aws logs create-log-group --log-group-name /ecs/angularai-frontend
+    aws logs create-log-group --log-group-name /ecs/angularai-backend
+    aws logs create-log-group --log-group-name /ecs/angularai-backend-test
+    ```
+4.  **RDS Database**: Your PostgreSQL database should be running and accessible (Only required for `backend-task-definition.json`).
 
 #### B. Registering Tasks via CLI
-You can register these task definitions using the AWS CLI:
+**CRITICAL**: You must manually edit the `.json` files in `deploy/aws/` and replace all placeholders enclosed in angle brackets (e.g., `<AWS_ACCOUNT_ID>`, `<REGION>`, `<RDS_ENDPOINT>`) with your actual AWS values. 
+
+Failure to replace `<AWS_ACCOUNT_ID>` in the `executionRoleArn` and `taskRoleArn` fields will result in a `ClientException: Role is not valid` error.
+
+Once edited, you can register these task definitions using the AWS CLI:
 
 ```bash
 # Register Backend
 aws ecs register-task-definition --cli-input-json file://deploy/aws/backend-task-definition.json
+
+# Register Test Backend
+aws ecs register-task-definition --cli-input-json file://deploy/aws/backend-test-task-definition.json
 
 # Register Frontend
 aws ecs register-task-definition --cli-input-json file://deploy/aws/frontend-task-definition.json

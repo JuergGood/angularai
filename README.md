@@ -35,9 +35,13 @@ Navigate to `backend/` and run `./mvnw spring-boot:run`.
 Navigate to `frontend/` and run `npm install` and then `npm start`.
 The Angular development server is configured to proxy `/api` requests to `http://localhost:8080`. Ensure the backend is running.
 
-## Deployment to AWS
-For instructions on how to deploy this application to AWS (ECS Fargate, RDS PostgreSQL), please refer to the documentation in the `ai/` and `deploy/` directories:
-- [AWS Setup and Infrastructure](doc/ai/aws_setup.md)
+### AWS Deployment
+Detailed instructions for AWS deployment are located in the `doc/ai/` and `deploy/` directories.
+**Important**: Before registering task definitions, ensure you replace all placeholders (e.g., `<AWS_ACCOUNT_ID>`, `<REGION>`, `<RDS_ENDPOINT>`) with your actual AWS resource values.
+
+- [AWS Setup and Infrastructure](doc/ai/aws/aws_setup.md)
 - [PostgreSQL Setup](doc/ai/postgres_setup.md)
-- [ECS Fargate Configuration](doc/ai/aws_fargate_config.md)
-- [Pushing Images to Amazon ECR](doc/ai/ecr_push_instructions.md)
+- [ECS Fargate Configuration](doc/ai/aws/aws_fargate_config.md)
+- [Creating a Backend Target Group](doc/ai/aws/aws_create_target_group.md)
+- [ALB and Connectivity Troubleshooting](doc/ai/aws/aws_alb_troubleshooting.md)
+- [Pushing Images to Amazon ECR](doc/ai/aws/aws_ecs_push_instructions.md)
