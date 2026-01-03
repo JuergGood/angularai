@@ -10,7 +10,18 @@ export class AuthService {
   private apiUrl = '/api/auth';
   currentUser = signal<User | null>(null);
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    const auth = localStorage.getItem('auth');
+    if (auth) {
+      // Basic validation/restore session
+      this.http.post<User>(`${this.apiUrl}/login`, {}, {
+        headers: new HttpHeaders({ 'Authorization': 'Basic ' + auth })
+      }).subscribe({
+        next: (user) => this.currentUser.set(user),
+        error: () => this.logout()
+      });
+    }
+  }
 
   login(login: string, password: string): Observable<User> {
     const headers = new HttpHeaders({

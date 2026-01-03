@@ -37,7 +37,7 @@ The Angular development server is configured to proxy `/api` requests to `http:/
 
 ## Deployment to AWS
 For instructions on how to deploy this application to AWS (ECS Fargate, RDS PostgreSQL), please refer to the documentation in the `ai/` and `deploy/` directories:
-- [AWS Setup and Infrastructure](ai/aws_setup.md)
-- [PostgreSQL Setup](ai/postgres_setup.md)
-- [ECS Fargate Configuration](ai/aws_fargate_config.md)
-- [Pushing Images to Amazon ECR](ai/ecr_push_instructions.md)
+- [AWS Setup and Infrastructure](doc/ai/aws_setup.md)
+- [PostgreSQL Setup](doc/ai/postgres_setup.md)
+- [ECS Fargate Configuration](doc/ai/aws_fargate_config.md)
+- [Pushing Images to Amazon ECR](doc/ai/ecr_push_instructions.md)

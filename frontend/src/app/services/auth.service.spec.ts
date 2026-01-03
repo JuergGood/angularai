@@ -10,16 +10,6 @@ describe('AuthService', () => {
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
-    TestBed.configureTestingModule({
-      providers: [
-        AuthService,
-        provideHttpClient(),
-        provideHttpClientTesting()
-      ]
-    });
-    service = TestBed.inject(AuthService);
-    httpMock = TestBed.inject(HttpTestingController);
-
     // Mock localStorage on window object
     const store: Record<string, string> = {};
     const mockStorage = {
@@ -32,6 +22,16 @@ describe('AuthService', () => {
     };
 
     vi.stubGlobal('localStorage', mockStorage);
+
+    TestBed.configureTestingModule({
+      providers: [
+        AuthService,
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ]
+    });
+    service = TestBed.inject(AuthService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   afterEach(() => {

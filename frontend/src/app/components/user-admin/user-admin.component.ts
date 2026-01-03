@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { User } from '../../models/user.model';
 import { AdminService } from '../../services/admin.service';
 import { AuthService } from '../../services/auth.service';
@@ -38,6 +39,10 @@ import { ConfirmDialogComponent } from '../tasks/confirm-dialog.component';
     mat-form-field { width: 100%; margin-bottom: 10px; }
     .form-actions { display: flex; gap: 10px; }
     .error { color: #f44336; margin-top: 10px; }
+    .user-mobile-card {
+      margin-bottom: 16px;
+      border-left: 4px solid #303f9f;
+    }
   `]
 })
 export class UserAdminComponent implements OnInit {
@@ -46,15 +51,24 @@ export class UserAdminComponent implements OnInit {
   editingUser: User | null = null;
   error: string | null = null;
   isCreating = false;
+  isMobile = false;
 
   constructor(
     public authService: AuthService,
     private adminService: AdminService,
     private dialog: MatDialog,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private breakpointObserver: BreakpointObserver
   ) {}
 
   ngOnInit() {
+    this.breakpointObserver.observe([
+      Breakpoints.HandsetPortrait
+    ]).subscribe(result => {
+      this.isMobile = result.matches;
+      this.cdr.detectChanges();
+    });
+
     if (this.authService.isAdmin()) {
       this.loadUsers();
     }
