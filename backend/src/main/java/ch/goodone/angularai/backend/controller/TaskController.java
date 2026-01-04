@@ -6,6 +6,10 @@ import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.TaskRepository;
 import ch.goodone.angularai.backend.repository.UserRepository;
 import ch.goodone.angularai.backend.service.ActionLogService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +19,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/tasks")
+@Tag(name = "Tasks", description = "Endpoints for managing user tasks")
 public class TaskController {
 
     private final TaskRepository taskRepository;
@@ -28,6 +33,11 @@ public class TaskController {
     }
 
     @GetMapping
+    @Operation(summary = "Get current user's tasks")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "List of tasks retrieved successfully"),
+            @ApiResponse(responseCode = "401", description = "Unauthorized")
+    })
     public List<TaskDTO> getMyTasks(Authentication authentication) {
         User user = getCurrentUser(authentication);
         return taskRepository.findByUser(user).stream()
