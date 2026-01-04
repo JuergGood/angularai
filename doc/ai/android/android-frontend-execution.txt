@@ -1,0 +1,28 @@
+1. Backend Modifications:
+- Update `SecurityConfig.java` to allow CORS for mobile clients.
+2. Phase 1: Project Setup:
+- Create `android` directory and project structure.
+- Create base Gradle configuration files.
+- Create AndroidManifest.xml and Application class.
+3. Phase 2: Auth Module:
+- Implement Data Layer.
+- Implement Domain Layer.
+- Implement Logic Layer.
+- Implement UI Layer.
+4. Phase 3: Task Module:
+- Implement Local Database (Room).
+- Implement Task Data Layer.
+- Implement Logic Layer.
+- Implement UI Layer.
+5. Phase 4: Profile & Admin:
+- Implement User Data Layer.
+- Implement Logic Layer.
+- Implement UI Layer.
+6. Phase 5: UX Polish:
+- Implement Material 3 Theme.
+- Implement App Navigation and `MainActivity`.
+- Add System Info (Version/Mode) support.
+7. Phase 6: Testing & Verification:
+- Create basic unit tests for repositories.
+- Final Review.
+8. Final Submission.

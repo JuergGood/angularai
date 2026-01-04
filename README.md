@@ -33,6 +33,7 @@ PowerShell scripts are available in the `scripts/` folder for common deployment 
 
 - `backend/`: Spring Boot application.
 - `frontend/`: Angular application.
+- `android/`: Android Jetpack Compose application.
 - `docker-compose.yml`: Orchestration for both services.
 
 ## Development
@@ -40,9 +41,12 @@ PowerShell scripts are available in the `scripts/` folder for common deployment 
 ### Backend
 Navigate to `backend/` and run `./mvnw spring-boot:run`.
 
-### Frontend
+### Frontend (Web)
 Navigate to `frontend/` and run `npm install` and then `npm start`.
 The Angular development server is configured to proxy `/api` requests to `http://localhost:8080`. Ensure the backend is running.
+
+### Frontend (Android)
+See the [Android Build Instructions](doc/ai/android/android-build-instructions.md) for details on how to build and run the mobile application.
 
 ### AWS Deployment
 Detailed instructions for AWS deployment are located in the `doc/ai/` and `deploy/` directories.
