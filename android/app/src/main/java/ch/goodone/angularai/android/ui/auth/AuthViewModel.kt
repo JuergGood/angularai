@@ -20,8 +20,16 @@ class AuthViewModel @Inject constructor(
     private val _loginState = mutableStateOf(AuthUiState())
     val loginState: State<AuthUiState> = _loginState
 
+    val currentUser = repository.currentUser
+
     private val _eventFlow = MutableSharedFlow<UiEvent>()
     val eventFlow = _eventFlow.asSharedFlow()
+
+    init {
+        viewModelScope.launch {
+            repository.init()
+        }
+    }
 
     fun onLogin(login: String, pass: String) {
         viewModelScope.launch {
@@ -50,6 +58,12 @@ class AuthViewModel @Inject constructor(
                     error = result.exceptionOrNull()?.message ?: "Unknown error"
                 )
             }
+        }
+    }
+
+    fun onLogout() {
+        viewModelScope.launch {
+            repository.logout()
         }
     }
 

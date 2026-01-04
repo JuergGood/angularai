@@ -1,1 +1,5 @@
 /.idea/
+/android/build/
+/android/.idea/
+/android/.gradle/
+/android/app/build/

@@ -51,6 +51,10 @@ class TaskViewModel @Inject constructor(
         }
     }
 
+    fun getTask(id: Long): Task? {
+        return _state.value.tasks.find { it.id == id }
+    }
+
     data class TaskUiState(
         val tasks: List<Task> = emptyList(),
         val isLoading: Boolean = false,

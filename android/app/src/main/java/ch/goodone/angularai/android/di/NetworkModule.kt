@@ -8,6 +8,7 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import ch.goodone.angularai.android.data.local.AppDatabase
 import ch.goodone.angularai.android.data.local.TaskDao
 import ch.goodone.angularai.android.data.remote.AuthApi
+import ch.goodone.angularai.android.data.remote.SystemApi
 import ch.goodone.angularai.android.data.remote.TaskApi
 import ch.goodone.angularai.android.data.remote.UserApi
 import ch.goodone.angularai.android.data.repository.AuthRepository
@@ -26,7 +27,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
-@InstallIn(SingletonComponent)
+@InstallIn(SingletonComponent::class)
 object NetworkModule {
 
     @Provides
@@ -90,6 +91,12 @@ object NetworkModule {
     @Singleton
     fun provideUserApi(retrofit: Retrofit): UserApi {
         return retrofit.create(UserApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSystemApi(retrofit: Retrofit): SystemApi {
+        return retrofit.create(SystemApi::class.java)
     }
 
     @Provides

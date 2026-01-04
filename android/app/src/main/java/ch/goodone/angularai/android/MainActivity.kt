@@ -3,18 +3,25 @@ package ch.goodone.angularai.android
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import ch.goodone.angularai.android.ui.SystemViewModel
 import ch.goodone.angularai.android.domain.model.Task
 import ch.goodone.angularai.android.domain.model.User
 import ch.goodone.angularai.android.ui.admin.AdminUserEditScreen
@@ -44,23 +51,75 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainApp(
-    authViewModel: AuthViewModel = hiltViewModel()
+    authViewModel: AuthViewModel = hiltViewModel(),
+    systemViewModel: SystemViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     
-    val authToken by authViewModel.loginState // This should be observed from repository ideally
-    // Using a simpler approach for the demo:
-    var isLoggedIn by remember { mutableStateOf(false) }
-    var isAdmin by remember { mutableStateOf(false) }
+    val currentUser by authViewModel.currentUser.collectAsState()
+    val isLoggedIn = currentUser != null
+    val isAdmin = currentUser?.role == "ROLE_ADMIN"
+
+    var showSettingsMenu by remember { mutableStateOf(false) }
+    var showHelpDialog by remember { mutableStateOf(false) }
+    val systemInfo by systemViewModel.systemInfo
+
+    LaunchedEffect(isLoggedIn) {
+        if (isLoggedIn) {
+            systemViewModel.loadSystemInfo()
+        }
+    }
+
+    if (showHelpDialog) {
+        AlertDialog(
+            onDismissRequest = { showHelpDialog = false },
+            title = { Text("Application Help") },
+            text = {
+                Column {
+                    Text("This application allows you to manage tasks and user profiles.")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("• Tasks: Create, edit, and delete your tasks.")
+                    Text("• Profile: Manage your personal information.")
+                    Text("• Admin: Administrators can manage all users.")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("Note: This is a test application for AI code generation.", style = MaterialTheme.typography.bodySmall)
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showHelpDialog = false }) { Text("Close") }
+            }
+        )
+    }
 
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
-                Text("GoodOne", modifier = Modifier.padding(16.dp), style = MaterialTheme.typography.titleLarge)
-                HorizontalDivider()
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color(0xFF1A237E))
+                        .padding(16.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Filter1,
+                            contentDescription = null,
+                            tint = Color(0xFFFF4081),
+                            modifier = Modifier.size(32.dp)
+                        )
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(
+                            "GoodOne",
+                            color = Color.White,
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+                Divider()
                 NavigationDrawerItem(
                     label = { Text("Tasks") },
                     selected = false,
@@ -75,27 +134,26 @@ fun MainApp(
                 )
                 if (isAdmin) {
                     NavigationDrawerItem(
-                        label = { Text("Admin") },
+                        label = { Text("User Admin") },
                         selected = false,
                         onClick = { scope.launch { drawerState.close() }; navController.navigate("admin") },
-                        icon = { Icon(Icons.Default.Settings, contentDescription = null) }
+                        icon = { Icon(Icons.Default.SupervisorAccount, contentDescription = null) }
                     )
                 }
-                HorizontalDivider()
+                Divider()
                 NavigationDrawerItem(
                     label = { Text("Logout") },
                     selected = false,
                     onClick = { 
                         scope.launch { 
                             drawerState.close()
-                            // authViewModel.logout() 
-                            isLoggedIn = false
+                            authViewModel.onLogout() 
                             navController.navigate("login") {
                                 popUpTo(0)
                             }
                         }
                     },
-                    icon = { Icon(Icons.Default.ExitToApp, contentDescription = null) }
+                    icon = { Icon(Icons.Default.Logout, contentDescription = null) }
                 )
             }
         },
@@ -105,12 +163,61 @@ fun MainApp(
             topBar = {
                 if (isLoggedIn) {
                     TopAppBar(
-                        title = { Text("AngularAI") },
+                        title = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.Filter1,
+                                    contentDescription = null,
+                                    tint = Color(0xFFFF4081),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("GoodOne")
+                            }
+                        },
                         navigationIcon = {
                             IconButton(onClick = { scope.launch { drawerState.open() } }) {
                                 Icon(Icons.Default.Menu, contentDescription = "Menu")
                             }
-                        }
+                        },
+                        actions = {
+                            Box {
+                                IconButton(onClick = { showSettingsMenu = true }) {
+                                    Icon(Icons.Default.Settings, contentDescription = "Settings")
+                                }
+                                DropdownMenu(
+                                    expanded = showSettingsMenu,
+                                    onDismissRequest = { showSettingsMenu = false }
+                                ) {
+                                    DropdownMenuItem(
+                                        text = { Text("Version: ${systemInfo?.version ?: "..."}") },
+                                        onClick = { showSettingsMenu = false },
+                                        leadingIcon = { Icon(Icons.Default.Info, contentDescription = null) },
+                                        enabled = false
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text("Mode: ${systemInfo?.mode ?: "..."}") },
+                                        onClick = { showSettingsMenu = false },
+                                        leadingIcon = { Icon(Icons.Default.Layers, contentDescription = null) },
+                                        enabled = false
+                                    )
+                                    DropdownMenuItem(
+                                        text = { Text("Help") },
+                                        onClick = { 
+                                            showSettingsMenu = false
+                                            showHelpDialog = true
+                                        },
+                                        leadingIcon = { Icon(Icons.Default.Help, contentDescription = null) }
+                                    )
+                                }
+                            }
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = Color(0xFF1A237E),
+                            titleContentColor = Color.White,
+                            navigationIconContentColor = Color.White,
+                            actionIconContentColor = Color.White
+                        )
                     )
                 }
             }
@@ -123,8 +230,6 @@ fun MainApp(
                 composable("login") {
                     LoginScreen(
                         onLoginSuccess = { 
-                            isLoggedIn = true
-                            // Here we should fetch user to check if admin
                             navController.navigate("tasks") { popUpTo("login") { inclusive = true } }
                         },
                         onNavigateToRegister = { navController.navigate("register") }
@@ -144,7 +249,7 @@ fun MainApp(
                 }
                 composable("task_add") {
                     TaskEditScreen(
-                        task = null,
+                        taskId = null,
                         onSave = { navController.popBackStack() },
                         onBack = { navController.popBackStack() }
                     )
@@ -153,9 +258,9 @@ fun MainApp(
                     "task_edit/{taskId}",
                     arguments = listOf(navArgument("taskId") { type = NavType.LongType })
                 ) { backStackEntry ->
-                    // Simplified: In a real app we'd fetch the task from VM by ID
+                    val taskId = backStackEntry.arguments?.getLong("taskId")
                     TaskEditScreen(
-                        task = null, // Placeholder
+                        taskId = taskId,
                         onSave = { navController.popBackStack() },
                         onBack = { navController.popBackStack() }
                     )
@@ -171,7 +276,7 @@ fun MainApp(
                 }
                 composable("admin_user_add") {
                     AdminUserEditScreen(
-                        user = null,
+                        userId = null,
                         onSave = { navController.popBackStack() },
                         onBack = { navController.popBackStack() }
                     )
@@ -179,9 +284,10 @@ fun MainApp(
                 composable(
                     "admin_user_edit/{userId}",
                     arguments = listOf(navArgument("userId") { type = NavType.LongType })
-                ) {
+                ) { backStackEntry ->
+                    val userId = backStackEntry.arguments?.getLong("userId")
                     AdminUserEditScreen(
-                        user = null, // Placeholder
+                        userId = userId,
                         onSave = { navController.popBackStack() },
                         onBack = { navController.popBackStack() }
                     )

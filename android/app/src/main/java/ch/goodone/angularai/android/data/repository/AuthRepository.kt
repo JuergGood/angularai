@@ -10,17 +10,37 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class AuthRepository @Inject constructor(
     private val api: AuthApi,
+    private val userRepository: UserRepository,
     private val dataStore: DataStore<Preferences>
 ) {
     companion object {
         private val AUTH_KEY = stringPreferencesKey("auth_token")
     }
 
+    private val _currentUser = MutableStateFlow<User?>(null)
+    val currentUser: StateFlow<User?> = _currentUser.asStateFlow()
+
     val authToken: Flow<String?> = dataStore.data.map { it[AUTH_KEY] }
+
+    suspend fun init() {
+        authToken.firstOrNull()?.let {
+            try {
+                _currentUser.value = userRepository.getCurrentUser()
+            } catch (e: Exception) {
+                logout()
+            }
+        }
+    }
 
     suspend fun login(login: String, pass: String): Result<User> {
         return try {
@@ -29,7 +49,9 @@ class AuthRepository @Inject constructor(
             if (response.isSuccessful) {
                 val userDto = response.body()!!
                 dataStore.edit { it[AUTH_KEY] = token }
-                Result.success(userDto.toDomain())
+                val user = userDto.toDomain()
+                _currentUser.value = user
+                Result.success(user)
             } else {
                 Result.failure(Exception("Login failed: ${response.code()}"))
             }
@@ -65,6 +87,7 @@ class AuthRepository @Inject constructor(
             api.logout()
         } finally {
             dataStore.edit { it.remove(AUTH_KEY) }
+            _currentUser.value = null
         }
     }
 

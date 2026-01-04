@@ -60,6 +60,10 @@ class AdminViewModel @Inject constructor(
         }
     }
 
+    fun getUser(id: Long): User? {
+        return _state.value.users.find { it.id == id }
+    }
+
     data class AdminUiState(
         val users: List<User> = emptyList(),
         val isLoading: Boolean = false,

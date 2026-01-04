@@ -5,6 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -12,19 +13,34 @@ import ch.goodone.angularai.android.domain.model.User
 
 @Composable
 fun AdminUserEditScreen(
-    user: User?,
+    userId: Long?,
     onSave: () -> Unit,
     onBack: () -> Unit,
     viewModel: AdminViewModel = hiltViewModel()
 ) {
-    var firstName by remember { mutableStateOf(user?.firstName ?: "") }
-    var lastName by remember { mutableStateOf(user?.lastName ?: "") }
-    var login by remember { mutableStateOf(user?.login ?: "") }
-    var email by remember { mutableStateOf(user?.email ?: "") }
+    val state = viewModel.state.value
+    val user = remember(userId, state.users) { userId?.let { id -> state.users.find { it.id == id } } }
+    
+    var firstName by remember { mutableStateOf("") }
+    var lastName by remember { mutableStateOf("") }
+    var login by remember { mutableStateOf("") }
+    var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
-    var birthDate by remember { mutableStateOf(user?.birthDate ?: "") }
-    var address by remember { mutableStateOf(user?.address ?: "") }
-    var role by remember { mutableStateOf(user?.role ?: "ROLE_USER") }
+    var birthDate by remember { mutableStateOf("") }
+    var address by remember { mutableStateOf("") }
+    var role by remember { mutableStateOf("ROLE_USER") }
+
+    LaunchedEffect(user) {
+        user?.let {
+            firstName = it.firstName
+            lastName = it.lastName
+            login = it.login
+            email = it.email
+            birthDate = it.birthDate ?: ""
+            address = it.address ?: ""
+            role = it.role
+        }
+    }
 
     Column(
         modifier = Modifier
