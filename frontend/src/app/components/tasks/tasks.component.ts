@@ -37,6 +37,13 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
       margin: 0 auto;
       padding: 20px;
     }
+    .tasks-header {
+      margin: 20px 0;
+    }
+    .page-title {
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
     .add-task-card {
       margin-bottom: 30px;
     }

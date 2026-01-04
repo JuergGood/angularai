@@ -6,9 +6,13 @@ import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AuthService } from '../../services/auth.service';
+import { SystemService, SystemInfo } from '../../services/system.service';
 
 @Component({
   selector: 'app-sidenav',
@@ -22,7 +26,10 @@ import { AuthService } from '../../services/auth.service';
     MatToolbarModule,
     MatIconModule,
     MatButtonModule,
-    MatSnackBarModule
+    MatMenuModule,
+    MatTooltipModule,
+    MatSnackBarModule,
+    MatDialogModule
   ],
   templateUrl: './sidenav.component.html',
   styles: [`
@@ -74,6 +81,21 @@ import { AuthService } from '../../services/auth.service';
       top: 0;
       z-index: 2;
       box-shadow: 0 2px 4px rgba(0,0,0,.1);
+      display: flex;
+      justify-content: space-between;
+    }
+    .header-spacer {
+      flex: 1 1 auto;
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-left: 16px;
+    }
+    .user-name {
+      font-size: 14px;
+      font-weight: 500;
     }
     .mat-sidenav-content {
       background-color: #fafafa;
@@ -111,15 +133,19 @@ import { AuthService } from '../../services/auth.service';
 export class SidenavComponent {
   isMobile = signal(false);
   isHandheld = signal(false);
+  systemInfo = signal<SystemInfo | null>(null);
 
   isCollapsed = computed(() => this.isHandheld() && !this.isMobile());
 
   constructor(
     public authService: AuthService,
+    private systemService: SystemService,
     private router: Router,
     private snackBar: MatSnackBar,
+    private dialog: MatDialog,
     private breakpointObserver: BreakpointObserver
   ) {
+    this.systemService.getSystemInfo().subscribe(info => this.systemInfo.set(info));
     this.breakpointObserver.observe([
       Breakpoints.Handset,
       Breakpoints.Tablet
@@ -134,4 +160,30 @@ export class SidenavComponent {
     this.snackBar.open('Logout successful', 'Close', { duration: 3000 });
     this.router.navigate(['/login']);
   }
+
+  showHelp() {
+    this.dialog.open(HelpDialogComponent);
+  }
 }
+
+@Component({
+  selector: 'app-help-dialog',
+  standalone: true,
+  imports: [MatDialogModule, MatButtonModule],
+  template: `
+    <h2 mat-dialog-title>Application Help</h2>
+    <mat-dialog-content>
+      <p>This application allows you to manage tasks and user profiles.</p>
+      <ul>
+        <li><strong>Tasks:</strong> Create, edit, and delete your tasks.</li>
+        <li><strong>Profile:</strong> Manage your personal information.</li>
+        <li><strong>Admin:</strong> Users with admin role can manage all users.</li>
+      </ul>
+      <p><em>Note: This is a test application for AI code generation.</em></p>
+    </mat-dialog-content>
+    <mat-dialog-actions align="end">
+      <button mat-button mat-dialog-close>Close</button>
+    </mat-dialog-actions>
+  `
+})
+class HelpDialogComponent {}

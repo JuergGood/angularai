@@ -14,12 +14,6 @@
     </mat-toolbar>
     <mat-nav-list>
       @if (authService.isLoggedIn()) {
-        <a mat-list-item routerLink="/profile" routerLinkActive="active-link" [title]="isCollapsed() ? 'Profile' : ''">
-          <mat-icon matListItemIcon>account_circle</mat-icon>
-          @if (!isCollapsed()) {
-            <span matListItemTitle>Profile</span>
-          }
-        </a>
         <a mat-list-item routerLink="/tasks" routerLinkActive="active-link" [title]="isCollapsed() ? 'Tasks' : ''">
           <mat-icon matListItemIcon>list_alt</mat-icon>
           @if (!isCollapsed()) {
@@ -34,19 +28,6 @@
             }
           </a>
         }
-        <a mat-list-item (click)="onLogout()" style="cursor: pointer;" [title]="isCollapsed() ? 'Logout' : ''">
-          <mat-icon matListItemIcon>logout</mat-icon>
-          @if (!isCollapsed()) {
-            <span matListItemTitle>Logout</span>
-          }
-        </a>
-      } @else {
-        <a mat-list-item routerLink="/login" routerLinkActive="active-link" [title]="isCollapsed() ? 'Login' : ''">
-          <mat-icon matListItemIcon>login</mat-icon>
-          @if (!isCollapsed()) {
-            <span matListItemTitle>Login</span>
-          }
-        </a>
       }
     </mat-nav-list>
   </mat-sidenav>
@@ -58,6 +39,52 @@
         </button>
       }
       <span>GoodOne</span>
+      <div class="header-spacer"></div>
+
+      <div class="user-info">
+        @if (authService.currentUser()) {
+          <span class="user-name">{{ authService.currentUser()?.login }}</span>
+        }
+
+        <button mat-icon-button [matMenuTriggerFor]="profileMenu" title="Profile">
+          <mat-icon>account_circle</mat-icon>
+        </button>
+        <mat-menu #profileMenu="matMenu">
+          @if (authService.isLoggedIn()) {
+            <button mat-menu-item routerLink="/profile">
+              <mat-icon>person</mat-icon>
+              <span>Profile</span>
+            </button>
+            <button mat-menu-item (click)="onLogout()">
+              <mat-icon>logout</mat-icon>
+              <span>Logout</span>
+            </button>
+          } @else {
+            <button mat-menu-item routerLink="/login">
+              <mat-icon>login</mat-icon>
+              <span>Login</span>
+            </button>
+          }
+        </mat-menu>
+
+        <button mat-icon-button [matMenuTriggerFor]="settingsMenu" title="Settings">
+          <mat-icon>settings</mat-icon>
+        </button>
+        <mat-menu #settingsMenu="matMenu">
+          <button mat-menu-item disabled>
+            <mat-icon>info</mat-icon>
+            <span>Version: {{ systemInfo()?.version || 'Loading...' }}</span>
+          </button>
+          <button mat-menu-item disabled>
+            <mat-icon>layers</mat-icon>
+            <span>Mode: {{ systemInfo()?.mode || 'Loading...' }}</span>
+          </button>
+          <button mat-menu-item (click)="showHelp()">
+            <mat-icon>help</mat-icon>
+            <span>Help</span>
+          </button>
+        </mat-menu>
+      </div>
     </mat-toolbar>
     <main>
       <ng-content></ng-content>
