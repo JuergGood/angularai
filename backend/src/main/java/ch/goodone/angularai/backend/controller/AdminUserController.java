@@ -4,6 +4,7 @@ import ch.goodone.angularai.backend.dto.UserDTO;
 import ch.goodone.angularai.backend.model.Role;
 import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.UserRepository;
+import ch.goodone.angularai.backend.service.ActionLogService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,10 +19,12 @@ public class AdminUserController {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ActionLogService actionLogService;
 
-    public AdminUserController(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public AdminUserController(UserRepository userRepository, PasswordEncoder passwordEncoder, ActionLogService actionLogService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.actionLogService = actionLogService;
     }
 
     @GetMapping
@@ -32,7 +35,7 @@ public class AdminUserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO, Authentication authentication) {
         if (userDTO.getEmail() != null && !userDTO.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             return ResponseEntity.badRequest().body("Invalid email format");
         }
@@ -59,6 +62,7 @@ public class AdminUserController {
         }
 
         userRepository.save(user);
+        actionLogService.log(authentication.getName(), "USER_CREATED", "Admin created user: " + user.getLogin());
         return ResponseEntity.ok(UserDTO.fromEntity(user));
     }
 
@@ -94,6 +98,7 @@ public class AdminUserController {
                     }
 
                     userRepository.save(user);
+                    actionLogService.log(authentication.getName(), "USER_MODIFIED", "Admin modified user: " + user.getLogin());
                     return ResponseEntity.ok(UserDTO.fromEntity(user));
                 })
                 .orElse(ResponseEntity.notFound().build());
@@ -108,6 +113,7 @@ public class AdminUserController {
                         return ResponseEntity.badRequest().body("Cannot delete your own account");
                     }
                     userRepository.delete(user);
+                    actionLogService.log(authentication.getName(), "USER_DELETED", "Admin deleted user: " + user.getLogin());
                     return ResponseEntity.noContent().build();
                 })
                 .orElse(ResponseEntity.notFound().build());

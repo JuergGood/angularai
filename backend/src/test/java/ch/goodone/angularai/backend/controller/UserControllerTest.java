@@ -5,6 +5,7 @@ import ch.goodone.angularai.backend.dto.UserDTO;
 import ch.goodone.angularai.backend.model.Role;
 import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.UserRepository;
+import ch.goodone.angularai.backend.service.ActionLogService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -35,6 +36,9 @@ class UserControllerTest {
 
     @MockitoBean
     private UserRepository userRepository;
+
+    @MockitoBean
+    private ActionLogService actionLogService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;

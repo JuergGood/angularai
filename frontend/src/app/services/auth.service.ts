@@ -40,6 +40,7 @@ export class AuthService {
   }
 
   logout() {
+    this.http.post(`${this.apiUrl}/logout`, {}).subscribe();
     this.currentUser.set(null);
     localStorage.removeItem('auth');
   }

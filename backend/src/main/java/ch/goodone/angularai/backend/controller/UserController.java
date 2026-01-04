@@ -3,6 +3,7 @@ package ch.goodone.angularai.backend.controller;
 import ch.goodone.angularai.backend.dto.UserDTO;
 import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.UserRepository;
+import ch.goodone.angularai.backend.service.ActionLogService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -12,9 +13,11 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserRepository userRepository;
+    private final ActionLogService actionLogService;
 
-    public UserController(UserRepository userRepository) {
+    public UserController(UserRepository userRepository, ActionLogService actionLogService) {
         this.userRepository = userRepository;
+        this.actionLogService = actionLogService;
     }
 
     @GetMapping("/me")
@@ -40,6 +43,7 @@ public class UserController {
         user.setAddress(userDTO.getAddress());
         
         userRepository.save(user);
+        actionLogService.log(user.getLogin(), "USER_MODIFIED", "User updated own profile");
         return ResponseEntity.ok(UserDTO.fromEntity(user));
     }
 }

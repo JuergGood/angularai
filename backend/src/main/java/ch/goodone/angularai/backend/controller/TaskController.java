@@ -5,6 +5,7 @@ import ch.goodone.angularai.backend.model.Task;
 import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.TaskRepository;
 import ch.goodone.angularai.backend.repository.UserRepository;
+import ch.goodone.angularai.backend.service.ActionLogService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -18,10 +19,12 @@ public class TaskController {
 
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
+    private final ActionLogService actionLogService;
 
-    public TaskController(TaskRepository taskRepository, UserRepository userRepository) {
+    public TaskController(TaskRepository taskRepository, UserRepository userRepository, ActionLogService actionLogService) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
+        this.actionLogService = actionLogService;
     }
 
     @GetMapping
@@ -42,7 +45,9 @@ public class TaskController {
                 taskDTO.getPriority(),
                 user
         );
-        return TaskDTO.fromEntity(taskRepository.save(task));
+        Task savedTask = taskRepository.save(task);
+        actionLogService.log(user.getLogin(), "TASK_ADDED", "Task created: " + savedTask.getTitle());
+        return TaskDTO.fromEntity(savedTask);
     }
 
     @PutMapping("/{id}")
@@ -55,7 +60,9 @@ public class TaskController {
                     task.setDescription(taskDTO.getDescription());
                     task.setDueDate(taskDTO.getDueDate());
                     task.setPriority(taskDTO.getPriority());
-                    return ResponseEntity.ok(TaskDTO.fromEntity(taskRepository.save(task)));
+                    Task updatedTask = taskRepository.save(task);
+                    actionLogService.log(user.getLogin(), "TASK_UPDATED", "Task updated: " + updatedTask.getTitle());
+                    return ResponseEntity.ok(TaskDTO.fromEntity(updatedTask));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
@@ -66,7 +73,9 @@ public class TaskController {
         return taskRepository.findById(id)
                 .filter(task -> task.getUser().getId().equals(user.getId()))
                 .map(task -> {
+                    String title = task.getTitle();
                     taskRepository.delete(task);
+                    actionLogService.log(user.getLogin(), "TASK_REMOVED", "Task removed: " + title);
                     return ResponseEntity.noContent().<Void>build();
                 })
                 .orElse(ResponseEntity.notFound().build());
