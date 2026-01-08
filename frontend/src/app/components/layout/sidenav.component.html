@@ -27,6 +27,12 @@
               <span matListItemTitle>User Admin</span>
             }
           </a>
+          <a mat-list-item routerLink="/logs" routerLinkActive="active-link" [title]="isCollapsed() ? 'Logs' : ''">
+            <mat-icon matListItemIcon>history</mat-icon>
+            @if (!isCollapsed()) {
+              <span matListItemTitle>Logs</span>
+            }
+          </a>
         }
       }
     </mat-nav-list>

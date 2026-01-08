@@ -17,6 +17,8 @@ Write-Host "Authenticating with ECR..." -ForegroundColor Yellow
 aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $ECR_REGISTRY
 if ($LASTEXITCODE -ne 0) { Write-Error "ECR Authentication failed"; exit }
 
+#  aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 426141506813.dkr.ecr.eu-central-1.amazonaws.com
+
 # Step 2: Build and Tag Backend Image
 Write-Host "Building and tagging Backend image..." -ForegroundColor Yellow
 docker build -t angularai-backend -f backend/Dockerfile .

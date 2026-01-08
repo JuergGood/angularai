@@ -22,11 +22,11 @@ The application will be available at:
 
 ## Deployment Scripts
 
-PowerShell scripts are available in the `scripts/` folder for common deployment tasks:
+Scripts are available in the `scripts/` folder for common deployment tasks (PowerShell and Windows CMD):
 
-- **Local Docker Deployment**: `.\scripts\deploy-local.ps1`
+- **Local Docker Deployment**: `.\scripts\deploy-local.ps1` or `.\scripts\deploy-local.bat`
   - Runs `docker compose up --build -d` to start the application locally in the background.
-- **AWS Deployment**: `.\scripts\deploy-aws.ps1`
+- **AWS Deployment**: `.\scripts\deploy-aws.ps1` or `.\scripts\deploy-aws.bat`
   - Authenticates with AWS ECR, builds, tags, and pushes frontend and backend images, and forces a new deployment on ECS services.
 
 ## Project Structure

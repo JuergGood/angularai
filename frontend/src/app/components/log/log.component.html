@@ -1,0 +1,76 @@
+<div class="log-container">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>System Logs</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="filter-actions">
+        <mat-form-field appearance="fill">
+          <mat-label>Action Type</mat-label>
+          <mat-select [(value)]="filterType" (selectionChange)="onFilterChange()">
+            <mat-option value="all">All</mat-option>
+            <mat-option value="login">Login</mat-option>
+            <mat-option value="task">Tasks</mat-option>
+            <mat-option value="user admin">User Admin</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="fill">
+          <mat-label>Date Range</mat-label>
+          <mat-date-range-input [rangePicker]="picker">
+            <input matStartDate placeholder="Start date" [(ngModel)]="startDate" (dateChange)="onFilterChange()">
+            <input matEndDate placeholder="End date" [(ngModel)]="endDate" (dateChange)="onFilterChange()">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+
+        <button mat-button color="primary" (click)="clearFilter()">
+          <mat-icon>filter_alt_off</mat-icon>
+          Clear Filter
+        </button>
+
+        <div class="header-spacer"></div>
+
+        <button mat-raised-button color="warn" (click)="clearLog()">
+          <mat-icon>delete_sweep</mat-icon>
+          Clear Log
+        </button>
+      </div>
+
+      <div class="table-container mat-elevation-z8">
+        <table mat-table [dataSource]="logs()" matSort (matSortChange)="onSortChange($event)">
+          <ng-container matColumnDef="timestamp">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Timestamp </th>
+            <td mat-cell *matCellDef="let log"> {{log.timestamp}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="login">
+            <th mat-header-cell *matHeaderCellDef> Login </th>
+            <td mat-cell *matCellDef="let log"> {{log.login}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef> Action </th>
+            <td mat-cell *matCellDef="let log"> {{log.action}} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="details">
+            <th mat-header-cell *matHeaderCellDef> Details </th>
+            <td mat-cell *matCellDef="let log"> {{log.details}} </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+
+        <mat-paginator [length]="totalElements()"
+                       [pageSize]="pageSize()"
+                       [pageSizeOptions]="[10, 25, 50, 100]"
+                       (page)="onPageChange($event)"
+                       aria-label="Select page of logs">
+        </mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

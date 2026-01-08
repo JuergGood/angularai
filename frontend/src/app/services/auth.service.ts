@@ -9,16 +9,24 @@ import { User } from '../models/user.model';
 export class AuthService {
   private apiUrl = '/api/auth';
   currentUser = signal<User | null>(null);
+  isInitializing = signal<boolean>(false);
 
   constructor(private http: HttpClient) {
     const auth = localStorage.getItem('auth');
     if (auth) {
+      this.isInitializing.set(true);
       // Basic validation/restore session
       this.http.post<User>(`${this.apiUrl}/login`, {}, {
         headers: new HttpHeaders({ 'Authorization': 'Basic ' + auth })
       }).subscribe({
-        next: (user) => this.currentUser.set(user),
-        error: () => this.logout()
+        next: (user) => {
+          this.currentUser.set(user);
+          this.isInitializing.set(false);
+        },
+        error: () => {
+          this.logout();
+          this.isInitializing.set(false);
+        }
       });
     }
   }
@@ -50,7 +58,7 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return this.currentUser() !== null || this.getAuthHeader() !== null;
+    return this.currentUser() !== null;
   }
 
   isAdmin(): boolean {
