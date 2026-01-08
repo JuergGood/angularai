@@ -8,6 +8,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.goodone.angularai.android.domain.model.Task
+import ch.goodone.angularai.android.domain.model.TaskStatus
 
 @Composable
 fun TaskEditScreen(
@@ -23,13 +24,15 @@ fun TaskEditScreen(
     var description by remember { mutableStateOf("") }
     var dueDate by remember { mutableStateOf("") }
     var priority by remember { mutableStateOf("MEDIUM") }
+    var status by remember { mutableStateOf(TaskStatus.OPEN) }
 
     LaunchedEffect(task) {
         task?.let {
             title = it.title
-            description = it.description ?: ""
+            description = it.description
             dueDate = it.dueDate ?: ""
             priority = it.priority
+            status = it.status
         }
     }
 
@@ -58,11 +61,30 @@ fun TaskEditScreen(
             }
         }
         
+        Spacer(modifier = Modifier.height(8.dp))
+        Text("Status")
+        Row {
+            TaskStatus.values().forEach { s ->
+                Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                    RadioButton(selected = status == s, onClick = { status = s })
+                    Text(text = s.name.lowercase().replaceFirstChar { it.uppercase() })
+                }
+            }
+        }
+        
         Spacer(modifier = Modifier.height(16.dp))
         
         Button(
             onClick = {
-                val newTask = Task(id = task?.id, title = title, description = description, dueDate = dueDate.takeIf { it.isNotBlank() }, priority = priority)
+                val newTask = Task(
+                    id = task?.id,
+                    title = title,
+                    description = description,
+                    dueDate = dueDate.takeIf { it.isNotBlank() },
+                    priority = priority,
+                    status = status,
+                    position = task?.position ?: 0
+                )
                 viewModel.onSaveTask(newTask)
                 onSave()
             },

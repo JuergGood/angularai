@@ -29,6 +29,7 @@ import ch.goodone.angularai.android.ui.admin.AdminUserListScreen
 import ch.goodone.angularai.android.ui.auth.AuthViewModel
 import ch.goodone.angularai.android.ui.auth.LoginScreen
 import ch.goodone.angularai.android.ui.auth.RegisterScreen
+import ch.goodone.angularai.android.ui.log.LogScreen
 import ch.goodone.angularai.android.ui.profile.ProfileScreen
 import ch.goodone.angularai.android.ui.tasks.TaskEditScreen
 import ch.goodone.angularai.android.ui.tasks.TaskListScreen
@@ -120,44 +121,65 @@ fun MainApp(
                     }
                 }
                 Divider()
-                NavigationDrawerItem(
-                    label = { Text("Tasks") },
-                    selected = false,
-                    onClick = { scope.launch { drawerState.close() }; navController.navigate("tasks") },
-                    icon = { Icon(Icons.Default.List, contentDescription = null) }
-                )
-                NavigationDrawerItem(
-                    label = { Text("Profile") },
-                    selected = false,
-                    onClick = { scope.launch { drawerState.close() }; navController.navigate("profile") },
-                    icon = { Icon(Icons.Default.Person, contentDescription = null) }
-                )
-                if (isAdmin) {
+                if (isLoggedIn) {
                     NavigationDrawerItem(
-                        label = { Text("User Admin") },
+                        label = { Text("Tasks") },
                         selected = false,
-                        onClick = { scope.launch { drawerState.close() }; navController.navigate("admin") },
-                        icon = { Icon(Icons.Default.SupervisorAccount, contentDescription = null) }
+                        onClick = { scope.launch { drawerState.close() }; navController.navigate("tasks") },
+                        icon = { Icon(Icons.Default.List, contentDescription = null) }
+                    )
+                    NavigationDrawerItem(
+                        label = { Text("Profile") },
+                        selected = false,
+                        onClick = { scope.launch { drawerState.close() }; navController.navigate("profile") },
+                        icon = { Icon(Icons.Default.Person, contentDescription = null) }
+                    )
+                    if (isAdmin) {
+                        NavigationDrawerItem(
+                            label = { Text("User Admin") },
+                            selected = false,
+                            onClick = { scope.launch { drawerState.close() }; navController.navigate("admin") },
+                            icon = { Icon(Icons.Default.SupervisorAccount, contentDescription = null) }
+                        )
+                        NavigationDrawerItem(
+                            label = { Text("Logs") },
+                            selected = false,
+                            onClick = { scope.launch { drawerState.close() }; navController.navigate("logs") },
+                            icon = { Icon(Icons.Default.History, contentDescription = null) }
+                        )
+                    }
+                    Divider()
+                    NavigationDrawerItem(
+                        label = { Text("Logout") },
+                        selected = false,
+                        onClick = { 
+                            scope.launch { 
+                                drawerState.close()
+                                authViewModel.onLogout() 
+                                navController.navigate("login") {
+                                    popUpTo(0)
+                                }
+                            }
+                        },
+                        icon = { Icon(Icons.Default.Logout, contentDescription = null) }
+                    )
+                } else {
+                    NavigationDrawerItem(
+                        label = { Text("Login") },
+                        selected = false,
+                        onClick = { scope.launch { drawerState.close() }; navController.navigate("login") },
+                        icon = { Icon(Icons.Default.Login, contentDescription = null) }
+                    )
+                    NavigationDrawerItem(
+                        label = { Text("Register") },
+                        selected = false,
+                        onClick = { scope.launch { drawerState.close() }; navController.navigate("register") },
+                        icon = { Icon(Icons.Default.PersonAdd, contentDescription = null) }
                     )
                 }
-                Divider()
-                NavigationDrawerItem(
-                    label = { Text("Logout") },
-                    selected = false,
-                    onClick = { 
-                        scope.launch { 
-                            drawerState.close()
-                            authViewModel.onLogout() 
-                            navController.navigate("login") {
-                                popUpTo(0)
-                            }
-                        }
-                    },
-                    icon = { Icon(Icons.Default.Logout, contentDescription = null) }
-                )
             }
         },
-        gesturesEnabled = isLoggedIn
+        gesturesEnabled = true
     ) {
         Scaffold(
             topBar = {
@@ -219,6 +241,32 @@ fun MainApp(
                             actionIconContentColor = Color.White
                         )
                     )
+                } else {
+                    TopAppBar(
+                        title = {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.Filter1,
+                                    contentDescription = null,
+                                    tint = Color(0xFFFF4081),
+                                    modifier = Modifier.size(24.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text("GoodOne")
+                            }
+                        },
+                        navigationIcon = {
+                            IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                                Icon(Icons.Default.Menu, contentDescription = "Menu")
+                            }
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(
+                            containerColor = Color(0xFF1A237E),
+                            titleContentColor = Color.White,
+                            navigationIconContentColor = Color.White,
+                            actionIconContentColor = Color.White
+                        )
+                    )
                 }
             }
         ) { padding ->
@@ -267,6 +315,11 @@ fun MainApp(
                 }
                 composable("profile") {
                     ProfileScreen()
+                }
+                composable("logs") {
+                    if (isAdmin) {
+                        LogScreen()
+                    }
                 }
                 composable("admin") {
                     AdminUserListScreen(

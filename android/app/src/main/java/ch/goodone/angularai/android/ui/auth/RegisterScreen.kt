@@ -19,6 +19,9 @@ fun RegisterScreen(
     onNavigateToLogin: () -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var login by remember { mutableStateOf("") }
@@ -27,25 +30,34 @@ fun RegisterScreen(
     var birthDate by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
     
+    var localError by remember { mutableStateOf<String?>(null) }
+    
     val state = viewModel.loginState.value
 
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                is AuthViewModel.UiEvent.RegisterSuccess -> onRegisterSuccess()
+                is AuthViewModel.UiEvent.RegisterSuccess -> {
+                    snackbarHostState.showSnackbar("Registration successful! Please login.")
+                    onRegisterSuccess()
+                }
                 else -> Unit
             }
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
+    Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) }
+    ) { padding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(padding)
+                .padding(16.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
         Text(text = "Register", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
         
@@ -70,6 +82,15 @@ fun RegisterScreen(
         } else {
             Button(
                 onClick = { 
+                    if (firstName.isBlank() || lastName.isBlank() || login.isBlank() || email.isBlank() || password.isBlank() || birthDate.isBlank()) {
+                        localError = "Please fill in all required fields"
+                        return@Button
+                    }
+                    if (!email.matches(Regex("^[A-Za-z0-9+_.-]+@(.+)$"))) {
+                        localError = "Invalid email format"
+                        return@Button
+                    }
+                    localError = null
                     val user = User(firstName = firstName, lastName = lastName, login = login, email = email, birthDate = birthDate, address = address)
                     viewModel.onRegister(user, password) 
                 },
@@ -82,8 +103,12 @@ fun RegisterScreen(
             }
         }
         
+        localError?.let {
+            Text(text = it, color = MaterialTheme.colorScheme.error)
+        }
+        
         state.error?.let {
             Text(text = it, color = MaterialTheme.colorScheme.error)
         }
     }
-}
+}}

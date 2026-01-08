@@ -5,6 +5,7 @@ import ch.goodone.angularai.android.data.local.entity.TaskEntity
 import ch.goodone.angularai.android.data.remote.TaskApi
 import ch.goodone.angularai.android.data.remote.dto.TaskDTO
 import ch.goodone.angularai.android.domain.model.Task
+import ch.goodone.angularai.android.domain.model.TaskStatus
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 import javax.inject.Inject
@@ -46,7 +47,27 @@ class TaskRepository @Inject constructor(
         refreshTasks()
     }
 
-    private fun TaskEntity.toDomain() = Task(id, title, description, dueDate, priority)
-    private fun TaskDTO.toEntity() = TaskEntity(id!!, title, description, dueDate, priority)
-    private fun Task.toDto() = TaskDTO(id, title, description, dueDate, priority)
+    suspend fun reorderTasks(taskIds: List<Long>) {
+        try {
+            api.reorderTasks(taskIds)
+            refreshTasks()
+        } catch (e: Exception) {
+            // Handle error
+        }
+    }
+
+    private fun TaskEntity.toDomain() = Task(
+        id, title, description, dueDate, priority,
+        TaskStatus.valueOf(status), position
+    )
+
+    private fun TaskDTO.toEntity() = TaskEntity(
+        id!!, title, description, dueDate, priority,
+        status, position
+    )
+
+    private fun Task.toDto() = TaskDTO(
+        id, title, description, dueDate, priority,
+        status.name, position
+    )
 }

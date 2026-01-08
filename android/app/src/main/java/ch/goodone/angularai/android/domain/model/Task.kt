@@ -5,5 +5,7 @@ data class Task(
     val title: String,
     val description: String,
     val dueDate: String?,
-    val priority: String
+    val priority: String,
+    val status: TaskStatus = TaskStatus.OPEN,
+    val position: Int = 0
 )

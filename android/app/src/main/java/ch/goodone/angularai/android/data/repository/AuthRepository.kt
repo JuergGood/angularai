@@ -53,7 +53,8 @@ class AuthRepository @Inject constructor(
                 _currentUser.value = user
                 Result.success(user)
             } else {
-                Result.failure(Exception("Login failed: ${response.code()}"))
+                val errorBody = response.errorBody()?.string() ?: "Login failed: ${response.code()}"
+                Result.failure(Exception(errorBody))
             }
         } catch (e: Exception) {
             Result.failure(e)
@@ -75,7 +76,8 @@ class AuthRepository @Inject constructor(
             if (response.isSuccessful) {
                 Result.success(response.body()!!.toDomain())
             } else {
-                Result.failure(Exception("Registration failed: ${response.code()}"))
+                val errorBody = response.errorBody()?.string() ?: "Registration failed: ${response.code()}"
+                Result.failure(Exception(errorBody))
             }
         } catch (e: Exception) {
             Result.failure(e)

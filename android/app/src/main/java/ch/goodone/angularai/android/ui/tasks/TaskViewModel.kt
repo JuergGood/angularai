@@ -6,7 +6,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import ch.goodone.angularai.android.data.repository.TaskRepository
 import ch.goodone.angularai.android.domain.model.Task
+import ch.goodone.angularai.android.domain.model.TaskStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
@@ -17,14 +22,52 @@ class TaskViewModel @Inject constructor(
     private val repository: TaskRepository
 ) : ViewModel() {
 
+    private val _statusFilter = MutableStateFlow<TaskStatus?>(null)
+    val statusFilter: StateFlow<TaskStatus?> = _statusFilter.asStateFlow()
+
     private val _state = mutableStateOf(TaskUiState())
     val state: State<TaskUiState> = _state
 
     init {
-        repository.tasks.onEach { tasks ->
-            _state.value = _state.value.copy(tasks = tasks)
+        combine(repository.tasks, _statusFilter) { tasks, filter ->
+            val filteredTasks = if (filter == null) tasks else tasks.filter { it.status == filter }
+            _state.value = _state.value.copy(tasks = filteredTasks)
         }.launchIn(viewModelScope)
         refresh()
+    }
+
+    fun onStatusFilterChange(status: TaskStatus?) {
+        _statusFilter.value = status
+    }
+
+    fun onReorderTasks(fromIndex: Int, toIndex: Int) {
+        val currentTasks = _state.value.tasks.toMutableList()
+        if (fromIndex !in currentTasks.indices || toIndex !in currentTasks.indices) return
+        
+        val task = currentTasks.removeAt(fromIndex)
+        currentTasks.add(toIndex, task)
+        
+        // Update local state immediately for smooth UI
+        _state.value = _state.value.copy(tasks = currentTasks)
+        
+        viewModelScope.launch {
+            repository.reorderTasks(currentTasks.mapNotNull { it.id })
+        }
+    }
+
+    fun onResetSorting() {
+        viewModelScope.launch {
+            // Reordering by priority: HIGH, MEDIUM, LOW
+            val sortedTasks = _state.value.tasks.sortedWith(compareBy<Task> {
+                when (it.priority) {
+                    "HIGH" -> 0
+                    "MEDIUM" -> 1
+                    "LOW" -> 2
+                    else -> 3
+                }
+            })
+            repository.reorderTasks(sortedTasks.mapNotNull { it.id })
+        }
     }
 
     fun refresh() {

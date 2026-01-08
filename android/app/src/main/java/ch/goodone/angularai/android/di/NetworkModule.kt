@@ -8,6 +8,7 @@ import androidx.datastore.preferences.preferencesDataStoreFile
 import ch.goodone.angularai.android.data.local.AppDatabase
 import ch.goodone.angularai.android.data.local.TaskDao
 import ch.goodone.angularai.android.data.remote.AuthApi
+import ch.goodone.angularai.android.data.remote.LogApi
 import ch.goodone.angularai.android.data.remote.SystemApi
 import ch.goodone.angularai.android.data.remote.TaskApi
 import ch.goodone.angularai.android.data.remote.UserApi
@@ -101,12 +102,20 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideLogApi(retrofit: Retrofit): LogApi {
+        return retrofit.create(LogApi::class.java)
+    }
+
+    @Provides
+    @Singleton
     fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
         return androidx.room.Room.databaseBuilder(
             context,
             AppDatabase::class.java,
             "angularai_db"
-        ).build()
+        )
+        .addMigrations(AppDatabase.MIGRATION_1_2)
+        .build()
     }
 
     @Provides

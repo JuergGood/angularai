@@ -16,4 +16,7 @@ interface TaskApi {
 
     @DELETE("api/tasks/{id}")
     suspend fun deleteTask(@Path("id") id: Long): Response<Unit>
+
+    @PUT("api/tasks/reorder")
+    suspend fun reorderTasks(@Body taskIds: List<Long>): Response<Unit>
 }
