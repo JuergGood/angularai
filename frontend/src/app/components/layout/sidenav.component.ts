@@ -69,6 +69,20 @@ import { SystemService, SystemInfo } from '../../services/system.service';
       height: 32px;
       color: #ff4081; /* Accent Pink */
     }
+    .header-logo-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      margin-right: 8px;
+    }
+    .header-logo-text {
+      display: inline;
+    }
+    @media (max-width: 400px) {
+      .header-logo-text {
+        display: none;
+      }
+    }
     .logo-text {
       font-size: 24px;
       font-weight: 700;

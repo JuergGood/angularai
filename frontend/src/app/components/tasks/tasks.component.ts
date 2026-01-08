@@ -54,6 +54,10 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
       align-items: center;
       gap: 16px;
     }
+    .main-actions {
+      display: flex;
+      align-items: center;
+    }
     .page-title {
       margin-top: 0;
       margin-bottom: 20px;
@@ -63,7 +67,19 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
     }
     mat-form-field {
       width: 100%;
-      margin-bottom: 10px;
+    }
+    .filter-select {
+      width: 200px;
+      margin-bottom: 0;
+    }
+    .filter-select ::ng-deep .mat-mdc-form-field-subscript-wrapper {
+      display: none;
+    }
+    .filter-actions button {
+      height: 56px;
+    }
+    .main-actions button {
+      height: 56px;
     }
     .form-row {
       display: flex;
