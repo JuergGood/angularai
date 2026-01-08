@@ -40,7 +40,7 @@ public class TaskController {
     })
     public List<TaskDTO> getMyTasks(Authentication authentication) {
         User user = getCurrentUser(authentication);
-        return taskRepository.findByUser(user).stream()
+        return taskRepository.findByUserOrderByPositionAsc(user).stream()
                 .map(TaskDTO::fromEntity)
                 .collect(Collectors.toList());
     }
@@ -48,6 +48,14 @@ public class TaskController {
     @PostMapping
     public TaskDTO createTask(@RequestBody TaskDTO taskDTO, Authentication authentication) {
         User user = getCurrentUser(authentication);
+        
+        // Determine position for new task
+        List<Task> existingTasks = taskRepository.findByUserOrderByPositionAsc(user);
+        int maxPosition = existingTasks.stream()
+                .mapToInt(t -> t.getPosition() != null ? t.getPosition() : 0)
+                .max()
+                .orElse(-1);
+
         Task task = new Task(
                 taskDTO.getTitle(),
                 taskDTO.getDescription(),
@@ -55,6 +63,11 @@ public class TaskController {
                 taskDTO.getPriority(),
                 user
         );
+        task.setPosition(maxPosition + 1);
+        if (taskDTO.getStatus() != null) {
+            task.setStatus(ch.goodone.angularai.backend.model.TaskStatus.valueOf(taskDTO.getStatus()));
+        }
+
         Task savedTask = taskRepository.save(task);
         actionLogService.log(user.getLogin(), "TASK_ADDED", "Task created: " + savedTask.getTitle());
         return TaskDTO.fromEntity(savedTask);
@@ -70,11 +83,38 @@ public class TaskController {
                     task.setDescription(taskDTO.getDescription());
                     task.setDueDate(taskDTO.getDueDate());
                     task.setPriority(taskDTO.getPriority());
+                    if (taskDTO.getStatus() != null) {
+                        task.setStatus(ch.goodone.angularai.backend.model.TaskStatus.valueOf(taskDTO.getStatus()));
+                    }
+                    if (taskDTO.getPosition() != null) {
+                        task.setPosition(taskDTO.getPosition());
+                    }
                     Task updatedTask = taskRepository.save(task);
                     actionLogService.log(user.getLogin(), "TASK_UPDATED", "Task updated: " + updatedTask.getTitle());
                     return ResponseEntity.ok(TaskDTO.fromEntity(updatedTask));
                 })
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PutMapping("/reorder")
+    public ResponseEntity<Void> reorderTasks(@RequestBody List<Long> taskIds, Authentication authentication) {
+        User user = getCurrentUser(authentication);
+        List<Task> userTasks = taskRepository.findByUserOrderByPositionAsc(user);
+        
+        for (int i = 0; i < taskIds.size(); i++) {
+            Long id = taskIds.get(i);
+            int finalI = i;
+            userTasks.stream()
+                    .filter(t -> t.getId().equals(id))
+                    .findFirst()
+                    .ifPresent(t -> {
+                        t.setPosition(finalI);
+                        taskRepository.save(t);
+                    });
+        }
+        
+        actionLogService.log(user.getLogin(), "TASK_REORDERED", "Tasks reordered");
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{id}")

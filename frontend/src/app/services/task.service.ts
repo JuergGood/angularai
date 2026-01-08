@@ -35,4 +35,8 @@ export class TaskService {
   deleteTask(id: number): Observable<void> {
     return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.getHeaders() });
   }
+
+  reorderTasks(taskIds: number[]): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/reorder`, taskIds, { headers: this.getHeaders() });
+  }
 }

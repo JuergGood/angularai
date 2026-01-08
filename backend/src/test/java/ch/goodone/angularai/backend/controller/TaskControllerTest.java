@@ -80,7 +80,7 @@ public class TaskControllerTest {
     @Test
     @WithMockUser(username = "testuser")
     void shouldGetTasks() throws Exception {
-        when(taskRepository.findByUser(any())).thenReturn(Collections.singletonList(testTask));
+        when(taskRepository.findByUserOrderByPositionAsc(any())).thenReturn(Collections.singletonList(testTask));
 
         mockMvc.perform(get("/api/tasks"))
                 .andExpect(status().isOk())
@@ -90,7 +90,7 @@ public class TaskControllerTest {
     @Test
     @WithMockUser(username = "testuser")
     void shouldCreateTask() throws Exception {
-        TaskDTO taskDTO = new TaskDTO(null, "New Task", "Desc", LocalDate.now(), Priority.HIGH);
+        TaskDTO taskDTO = new TaskDTO(null, "New Task", "Desc", LocalDate.now(), Priority.HIGH, "OPEN", 0);
         when(taskRepository.save(any())).thenReturn(testTask);
 
         mockMvc.perform(post("/api/tasks")
@@ -103,7 +103,7 @@ public class TaskControllerTest {
     @Test
     @WithMockUser(username = "testuser")
     void shouldCreateTaskWithNullDueDate() throws Exception {
-        TaskDTO taskDTO = new TaskDTO(null, "No Date Task", "Desc", null, Priority.LOW);
+        TaskDTO taskDTO = new TaskDTO(null, "No Date Task", "Desc", null, Priority.LOW, "OPEN", 0);
         Task savedTask = new Task("No Date Task", "Desc", null, Priority.LOW, testUser);
         savedTask.setId(2L);
         when(taskRepository.save(any())).thenReturn(savedTask);
@@ -138,5 +138,17 @@ public class TaskControllerTest {
 
         mockMvc.perform(delete("/api/tasks/1"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
+    void shouldReorderTasks() throws Exception {
+        java.util.List<Long> taskIds = java.util.Arrays.asList(1L, 2L);
+        when(taskRepository.findByUserOrderByPositionAsc(any())).thenReturn(Collections.singletonList(testTask));
+
+        mockMvc.perform(put("/api/tasks/reorder")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(taskIds)))
+                .andExpect(status().isOk());
     }
 }

@@ -10,15 +10,19 @@ public class TaskDTO {
     private String description;
     private LocalDate dueDate;
     private Priority priority;
+    private String status;
+    private Integer position;
 
     public TaskDTO() {}
 
-    public TaskDTO(Long id, String title, String description, LocalDate dueDate, Priority priority) {
+    public TaskDTO(Long id, String title, String description, LocalDate dueDate, Priority priority, String status, Integer position) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.priority = priority;
+        this.status = status;
+        this.position = position;
     }
 
     public static TaskDTO fromEntity(Task task) {
@@ -27,7 +31,9 @@ public class TaskDTO {
                 task.getTitle(),
                 task.getDescription(),
                 task.getDueDate(),
-                task.getPriority()
+                task.getPriority(),
+                task.getStatus() != null ? task.getStatus().name() : null,
+                task.getPosition()
         );
     }
 
@@ -45,4 +51,10 @@ public class TaskDTO {
 
     public Priority getPriority() { return priority; }
     public void setPriority(Priority priority) { this.priority = priority; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public Integer getPosition() { return position; }
+    public void setPosition(Integer position) { this.position = position; }
 }

@@ -26,6 +26,13 @@ public class Task {
     @Column(name = "priority")
     private Priority priority;
 
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status")
+    private TaskStatus status = TaskStatus.OPEN;
+
+    @Column(name = "position")
+    private Integer position;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -38,6 +45,7 @@ public class Task {
         this.dueDate = dueDate;
         this.priority = priority;
         this.user = user;
+        this.status = TaskStatus.OPEN;
     }
 
     public Long getId() { return id; }
@@ -54,6 +62,12 @@ public class Task {
 
     public Priority getPriority() { return priority; }
     public void setPriority(Priority priority) { this.priority = priority; }
+
+    public TaskStatus getStatus() { return status; }
+    public void setStatus(TaskStatus status) { this.status = status; }
+
+    public Integer getPosition() { return position; }
+    public void setPosition(Integer position) { this.position = position; }
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }

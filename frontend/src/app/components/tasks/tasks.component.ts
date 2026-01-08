@@ -8,9 +8,11 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { provideNativeDateAdapter } from '@angular/material/core';
-import { Task, Priority } from '../../models/task.model';
+import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
+import { Task, Priority, TaskStatus } from '../../models/task.model';
 import { TaskService } from '../../services/task.service';
 import { ConfirmDialogComponent } from './confirm-dialog.component';
 
@@ -27,7 +29,9 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
     MatInputModule,
     MatSelectModule,
     MatDatepickerModule,
-    MatDialogModule
+    MatChipsModule,
+    MatDialogModule,
+    DragDropModule
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './tasks.component.html',
@@ -39,6 +43,16 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
     }
     .tasks-header {
       margin: 20px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .filter-actions {
+      display: flex;
+      align-items: center;
+      gap: 16px;
     }
     .page-title {
       margin-top: 0;
@@ -51,6 +65,10 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
       width: 100%;
       margin-bottom: 10px;
     }
+    .form-row {
+      display: flex;
+      gap: 16px;
+    }
     .form-actions {
       display: flex;
       gap: 10px;
@@ -58,10 +76,37 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
     .tasks-list {
       display: grid;
       grid-template-columns: 1fr;
-      gap: 20px;
+      gap: 16px;
     }
     .task-item {
       border-left: 5px solid #ccc;
+      cursor: move;
+    }
+    .cdk-drag-preview {
+      box-sizing: border-box;
+      border-radius: 4px;
+      box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+                  0 8px 10px 1px rgba(0, 0, 0, 0.14),
+                  0 3px 14px 2px rgba(0, 0, 0, 0.12);
+    }
+    .cdk-drag-placeholder {
+      opacity: 0;
+    }
+    .cdk-drag-animating {
+      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    }
+    .tasks-list.cdk-drop-list-dragging .task-item:not(.cdk-drag-placeholder) {
+      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    }
+    .drag-handle {
+      cursor: move;
+      color: #999;
+      margin-right: 8px;
+    }
+    .task-header-content {
+      display: flex;
+      align-items: center;
+      width: 100%;
     }
     mat-card-actions {
       padding: 8px 16px;
@@ -73,14 +118,22 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
     .priority-medium { color: orange; }
     .priority-high { color: red; }
     .priority-critical { color: purple; font-weight: bold; }
+
+    .status-open { background-color: #e0e0e0 !important; color: #333 !important; }
+    .status-in_progress { background-color: #2196f3 !important; color: white !important; }
+    .status-closed { background-color: #4caf50 !important; color: white !important; }
   `]
 })
 export class TasksComponent implements OnInit {
   tasks: Task[] = [];
+  filteredTasks: Task[] = [];
   priorities = Object.values(Priority);
+  statuses = Object.values(TaskStatus);
   currentTask: Task = this.initNewTask();
   editingTask = false;
   showForm = false;
+
+  filterStatus: string = 'ALL';
 
   constructor(
     private taskService: TaskService,
@@ -95,8 +148,22 @@ export class TasksComponent implements OnInit {
   loadTasks() {
     this.taskService.getTasks().subscribe(tasks => {
       this.tasks = tasks;
+      this.applyFilter();
       this.cdr.detectChanges();
     });
+  }
+
+  applyFilter() {
+    if (this.filterStatus === 'ALL') {
+      this.filteredTasks = [...this.tasks];
+    } else {
+      this.filteredTasks = this.tasks.filter(t => t.status === this.filterStatus);
+    }
+  }
+
+  clearFilter() {
+    this.filterStatus = 'ALL';
+    this.applyFilter();
   }
 
   initNewTask(): Task {
@@ -104,7 +171,8 @@ export class TasksComponent implements OnInit {
       title: '',
       description: '',
       dueDate: '',
-      priority: Priority.MEDIUM
+      priority: Priority.MEDIUM,
+      status: TaskStatus.OPEN
     };
   }
 
@@ -166,5 +234,41 @@ export class TasksComponent implements OnInit {
         });
       }
     });
+  }
+
+  drop(event: CdkDragDrop<Task[]>) {
+    if (this.filterStatus !== 'ALL') {
+      return; // Reordering only allowed when all tasks are shown
+    }
+    moveItemInArray(this.tasks, event.previousIndex, event.currentIndex);
+    this.applyFilter();
+
+    const taskIds = this.tasks.map(t => t.id).filter((id): id is number => id !== undefined);
+    this.taskService.reorderTasks(taskIds).subscribe();
+  }
+
+  resetSorting() {
+    const priorityMap: Record<Priority, number> = {
+      [Priority.HIGH]: 0,
+      [Priority.MEDIUM]: 1,
+      [Priority.LOW]: 2
+    };
+
+    this.tasks.sort((a, b) => {
+      const pA = priorityMap[a.priority];
+      const pB = priorityMap[b.priority];
+      if (pA !== pB) {
+        return pA - pB;
+      }
+      // Secondary sort by due date
+      if (a.dueDate && b.dueDate) {
+        return a.dueDate.localeCompare(b.dueDate);
+      }
+      return 0;
+    });
+
+    this.applyFilter();
+    const taskIds = this.tasks.map(t => t.id).filter((id): id is number => id !== undefined);
+    this.taskService.reorderTasks(taskIds).subscribe();
   }
 }
