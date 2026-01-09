@@ -1,0 +1,14 @@
+[
+  {
+    "title": "Custom Task 1",
+    "description": "Loaded from custom JSON file",
+    "priority": "HIGH",
+    "dueDate": "2026-12-31"
+  },
+  {
+    "title": "Custom Task 2",
+    "description": "Another custom task",
+    "priority": "MEDIUM",
+    "dueDate": "2026-06-15"
+  }
+]
