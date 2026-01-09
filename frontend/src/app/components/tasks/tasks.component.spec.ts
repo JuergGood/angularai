@@ -4,7 +4,7 @@ import { TaskService } from '../../services/task.service';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { Priority, Task } from '../../models/task.model';
+import { Priority, Task, TaskStatus } from '../../models/task.model';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 
 import { provideNativeDateAdapter } from '@angular/material/core';
@@ -16,7 +16,7 @@ describe('TasksComponent', () => {
   let dialogSpy: any;
 
   const mockTasks: Task[] = [
-    { id: 1, title: 'Task 1', description: 'Desc 1', dueDate: '2026-01-01', priority: Priority.MEDIUM }
+    { id: 1, title: 'Task 1', description: 'Desc 1', dueDate: '2026-01-01', priority: Priority.MEDIUM, status: TaskStatus.OPEN }
   ];
 
   beforeEach(async () => {
@@ -62,14 +62,14 @@ describe('TasksComponent', () => {
   });
 
   it('should create a new task', () => {
-    component.currentTask = { title: 'New', description: 'New Desc', dueDate: '2026-01-01', priority: Priority.HIGH };
+    component.currentTask = { title: 'New', description: 'New Desc', dueDate: '2026-01-01', priority: Priority.HIGH, status: TaskStatus.OPEN };
     component.onSubmit();
     expect(taskServiceSpy.createTask).toHaveBeenCalled();
     expect(taskServiceSpy.getTasks).toHaveBeenCalledTimes(2);
   });
 
   it('should create a new task without dueDate', () => {
-    component.currentTask = { title: 'No Date', description: 'No Date Desc', dueDate: '', priority: Priority.LOW };
+    component.currentTask = { title: 'No Date', description: 'No Date Desc', dueDate: '', priority: Priority.LOW, status: TaskStatus.OPEN };
     component.onSubmit();
     expect(taskServiceSpy.createTask).toHaveBeenCalledWith(expect.objectContaining({
       title: 'No Date',

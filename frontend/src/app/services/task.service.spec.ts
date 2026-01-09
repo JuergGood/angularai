@@ -3,7 +3,7 @@ import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { TaskService } from './task.service';
 import { AuthService } from './auth.service';
-import { Task, Priority } from '../models/task.model';
+import { Task, Priority, TaskStatus } from '../models/task.model';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
 describe('TaskService', () => {
@@ -37,7 +37,7 @@ describe('TaskService', () => {
   });
 
   it('should get tasks', () => {
-    const mockTasks: Task[] = [{ id: 1, title: 'Test Task', description: 'Desc', dueDate: '2026-01-01', priority: Priority.MEDIUM }];
+    const mockTasks: Task[] = [{ id: 1, title: 'Test Task', description: 'Desc', dueDate: '2026-01-01', priority: Priority.MEDIUM, status: TaskStatus.OPEN }];
     service.getTasks().subscribe(tasks => {
       expect(tasks).toEqual(mockTasks);
     });
@@ -48,7 +48,7 @@ describe('TaskService', () => {
   });
 
   it('should create task', () => {
-    const newTask: Task = { title: 'New', description: 'Desc', dueDate: '2026-01-01', priority: Priority.HIGH };
+    const newTask: Task = { title: 'New', description: 'Desc', dueDate: '2026-01-01', priority: Priority.HIGH, status: TaskStatus.OPEN };
     service.createTask(newTask).subscribe(task => {
       expect(task).toEqual({ ...newTask, id: 1 });
     });
@@ -59,7 +59,7 @@ describe('TaskService', () => {
   });
 
   it('should update task', () => {
-    const updatedTask: Task = { id: 1, title: 'Updated', description: 'Desc', dueDate: '2026-01-01', priority: Priority.HIGH };
+    const updatedTask: Task = { id: 1, title: 'Updated', description: 'Desc', dueDate: '2026-01-01', priority: Priority.HIGH, status: TaskStatus.OPEN };
     service.updateTask(1, updatedTask).subscribe(task => {
       expect(task).toEqual(updatedTask);
     });

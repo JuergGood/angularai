@@ -10,6 +10,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatDividerModule } from '@angular/material/divider';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AuthService } from '../../services/auth.service';
 import { SystemService, SystemInfo } from '../../services/system.service';
@@ -29,7 +30,8 @@ import { SystemService, SystemInfo } from '../../services/system.service';
     MatMenuModule,
     MatTooltipModule,
     MatSnackBarModule,
-    MatDialogModule
+    MatDialogModule,
+    MatDividerModule
   ],
   templateUrl: './sidenav.component.html',
   styles: [`
@@ -37,110 +39,179 @@ import { SystemService, SystemInfo } from '../../services/system.service';
       height: 100vh;
     }
     .sidenav {
-      width: 250px;
-      border-right: 1px solid rgba(255, 255, 255, 0.12);
-      background-color: #1a237e; /* Darker Indigo for better contrast */
-      color: white;
-      transition: width 0.3s ease;
+      width: 260px;
+      border-right: 1px solid rgba(0, 0, 0, 0.08);
+      background-color: #f5f5f7; /* Very light gray, professional */
+      color: #333;
+      transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .sidenav-collapsed {
-      width: 70px;
-    }
-    .sidenav .mat-toolbar {
-      background: inherit;
-      color: white;
-      font-size: 18px;
-      font-weight: 500;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 80px;
-      border: none;
+      width: 76px;
     }
     .logo-container {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 16px 0;
+      padding: 16px 20px;
+      height: 64px;
+      box-sizing: border-box;
     }
-    .brand-icon {
-      font-size: 32px;
-      width: 32px;
-      height: 32px;
-      color: #ff4081; /* Accent Pink */
+    .sidenav-logo {
+      margin-bottom: 8px;
     }
-    .header-logo-icon {
-      font-size: 24px;
-      width: 24px;
-      height: 24px;
-      margin-right: 8px;
+    .header-logo {
+      padding: 0;
+      margin-right: 24px;
+    }
+    .brand-box {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 800;
+      font-size: 20px;
+      box-shadow: 0 4px 8px rgba(102, 126, 234, 0.25);
+      flex-shrink: 0;
+      letter-spacing: -1px;
+      transition: transform 0.2s ease;
+    }
+    .brand-box:hover {
+      transform: scale(1.05);
+    }
+    .brand-g {
+      margin-right: -1px;
+    }
+    .brand-1 {
+      font-size: 16px;
+      margin-top: 4px;
+      opacity: 0.9;
+    }
+    .logo-text {
+      font-size: 22px;
+      font-weight: 600;
+      letter-spacing: -0.5px;
+      font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      color: #2c3e50;
     }
     .header-logo-text {
-      display: inline;
+      color: white;
     }
-    @media (max-width: 400px) {
+    @media (max-width: 480px) {
       .header-logo-text {
         display: none;
       }
     }
-    .logo-text {
-      font-size: 24px;
-      font-weight: 700;
-      letter-spacing: -1px;
-      font-family: 'Inter Tight', sans-serif;
+    .header-toolbar {
+      background: linear-gradient(90deg, #4b6cb7 0%, #182848 100%) !important;
       color: white;
-    }
-    .mat-toolbar.mat-primary {
-      position: sticky;
-      top: 0;
-      z-index: 2;
-      box-shadow: 0 2px 4px rgba(0,0,0,.1);
+      height: 64px;
+      padding: 0 24px;
       display: flex;
-      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
     .header-spacer {
       flex: 1 1 auto;
     }
-    .user-info {
+    .user-info-group {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-left: 16px;
+      gap: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 4px 4px 4px 12px;
+      border-radius: 32px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
     }
-    .user-name {
+    .user-profile-button {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 24px;
+      transition: background 0.2s;
+    }
+    .user-profile-button:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      background: #764ba2;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid rgba(255,255,255,0.8);
+    }
+    .user-avatar mat-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+    .dropdown-icon {
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+      opacity: 0.7;
+    }
+    .user-menu-header {
+      padding: 12px 16px;
+      display: flex;
+      flex-direction: column;
+      pointer-events: none;
+    }
+    .user-menu-name {
+      font-weight: 600;
       font-size: 14px;
-      font-weight: 500;
+      color: #2c3e50;
+    }
+    .user-menu-label {
+      font-size: 11px;
+      color: #7f8c8d;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .settings-button {
+      background: rgba(255, 255, 255, 0.15) !important;
+      color: white !important;
     }
     .mat-sidenav-content {
-      background-color: #fafafa;
+      background-color: #f8f9fa;
     }
     main {
-      padding: 24px;
+      padding: 32px;
       min-height: calc(100vh - 64px);
     }
     .active-link {
-      background: rgba(255, 255, 255, 0.2) !important;
-      color: white !important;
-      border-left: 4px solid #ff4081;
+      background-color: white !important;
+      color: #1a237e !important;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
     }
     .active-link mat-icon {
-      color: white !important;
-    }
-    mat-nav-list a,
-    mat-nav-list a mat-icon,
-    mat-nav-list a span,
-    mat-nav-list a [matListItemTitle],
-    mat-nav-list a .mdc-list-item__primary-text,
-    mat-nav-list a .mdc-list-item__secondary-text {
-      color: white !important;
+      color: #1a237e !important;
     }
     mat-nav-list a {
-      margin: 4px 8px;
-      border-radius: 4px;
-      width: auto !important;
+      margin: 4px 12px;
+      border-radius: 8px;
+      height: 48px !important;
+      color: #5f6368 !important;
+      transition: all 0.2s;
     }
     mat-nav-list a:hover {
-      background: rgba(255, 255, 255, 0.1);
+      background-color: rgba(0, 0, 0, 0.04) !important;
+    }
+    mat-nav-list a mat-icon {
+      color: #5f6368 !important;
+      margin-right: 16px;
+    }
+    mat-nav-list a [matListItemTitle] {
+      font-weight: 500;
+      font-size: 14px;
     }
   `]
 })

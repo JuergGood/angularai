@@ -1,19 +1,50 @@
 .log-container {
-  padding: 20px;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0;
 }
 
-.filter-actions {
+.page-toolbar {
   display: flex;
-  gap: 16px;
   align-items: center;
-  margin-bottom: 20px;
+  justify-content: space-between;
+  margin-bottom: 32px;
+  gap: 16px;
   flex-wrap: wrap;
 }
 
-.header-spacer {
-  flex: 1 1 auto;
+.page-toolbar .left,
+.page-toolbar .right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.page-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.main-card {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  border: none;
+  overflow: hidden;
+}
+
+.filter-select {
+  width: 180px;
+}
+
+.date-range-field {
+  width: 280px;
+}
+
+/* Hide form field subscripts to save vertical space in toolbar */
+::ng-deep .page-toolbar .mat-mdc-form-field-subscript-wrapper {
+  display: none;
 }
 
 .table-container {
@@ -24,29 +55,53 @@ table {
   width: 100%;
 }
 
-.mat-column-timestamp {
-  width: 180px;
+.mat-mdc-table {
+  background: transparent;
 }
 
-.mat-column-login {
-  width: 120px;
+.mat-mdc-header-row {
+  background-color: #f9fafb;
 }
 
-.mat-column-action {
-  width: 150px;
+.mat-mdc-header-cell {
+  color: #374151;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 16px;
 }
 
-@media (max-width: 600px) {
-  .log-container {
-    padding: 10px;
-  }
+.mat-mdc-cell {
+  padding: 16px;
+  font-size: 14px;
+  color: #4b5563;
+}
 
-  .filter-actions {
+.log-timestamp {
+  color: #6b7280;
+  font-size: 13px;
+}
+
+.log-login {
+  font-weight: 600;
+  color: #111827;
+}
+
+.log-action {
+  font-weight: 500;
+}
+
+.clear-btn {
+  border-radius: 10px;
+  height: 44px !important;
+}
+
+@media (max-width: 768px) {
+  .page-toolbar {
     flex-direction: column;
     align-items: stretch;
   }
 
-  .header-spacer {
-    display: none;
+  .filter-select, .date-range-field {
+    width: 100%;
   }
 }

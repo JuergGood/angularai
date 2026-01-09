@@ -4,14 +4,14 @@
                [mode]="isMobile() ? 'over' : 'side'"
                [opened]="!isMobile()"
                [fixedInViewport]="isMobile()">
-    <mat-toolbar>
-      <div class="logo-container">
-        <mat-icon class="brand-icon">filter_1</mat-icon>
-        @if (!isCollapsed()) {
-          <span class="logo-text">GoodOne</span>
-        }
+    <div class="logo-container sidenav-logo">
+      <div class="brand-box">
+        <span class="brand-g">G</span><span class="brand-1">1</span>
       </div>
-    </mat-toolbar>
+      @if (!isCollapsed()) {
+        <span class="logo-text">GoodOne</span>
+      }
+    </div>
     <mat-nav-list>
       @if (authService.isLoggedIn()) {
         <a mat-list-item routerLink="/tasks" routerLinkActive="active-link" [title]="isCollapsed() ? 'Tasks' : ''">
@@ -38,26 +38,34 @@
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-    <mat-toolbar color="primary">
+    <mat-toolbar class="header-toolbar">
       @if (isMobile()) {
         <button mat-icon-button (click)="sidenav.toggle()">
           <mat-icon>menu</mat-icon>
         </button>
       }
-      <mat-icon class="brand-icon header-logo-icon">filter_1</mat-icon>
-      <span class="header-logo-text">GoodOne</span>
+      <div class="logo-container header-logo">
+        <div class="brand-box">
+          <span class="brand-g">G</span><span class="brand-1">1</span>
+        </div>
+        <span class="logo-text header-logo-text">GoodOne</span>
+      </div>
       <div class="header-spacer"></div>
 
-      <div class="user-info">
-        @if (authService.currentUser()) {
-          <span class="user-name">{{ authService.currentUser()?.login }}</span>
-        }
-
-        <button mat-icon-button [matMenuTriggerFor]="profileMenu" title="Profile">
-          <mat-icon>account_circle</mat-icon>
-        </button>
+      <div class="user-info-group">
+        <div class="user-profile-button" [matMenuTriggerFor]="profileMenu">
+          <div class="user-avatar">
+            <mat-icon>person</mat-icon>
+          </div>
+          <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+        </div>
         <mat-menu #profileMenu="matMenu">
           @if (authService.isLoggedIn()) {
+            <div class="user-menu-header">
+              <span class="user-menu-name">{{ authService.currentUser()?.login }}</span>
+              <span class="user-menu-label">Logged in</span>
+            </div>
+            <mat-divider></mat-divider>
             <button mat-menu-item routerLink="/profile">
               <mat-icon>person</mat-icon>
               <span>Profile</span>
@@ -74,7 +82,7 @@
           }
         </mat-menu>
 
-        <button mat-icon-button [matMenuTriggerFor]="settingsMenu" title="Settings">
+        <button mat-icon-button [matMenuTriggerFor]="settingsMenu" class="settings-button" title="Settings">
           <mat-icon>settings</mat-icon>
         </button>
         <mat-menu #settingsMenu="matMenu">

@@ -1,17 +1,16 @@
 <div class="tasks-container">
-  <h2 class="page-title">Task Management</h2>
-
-  <div class="tasks-header">
-    <div class="main-actions">
+  <div class="page-toolbar">
+    <div class="left">
+      <h2 class="page-title">Task Management</h2>
       @if (!showForm) {
-        <button mat-raised-button color="primary" (click)="showAddTaskForm()">
+        <button mat-flat-button color="primary" class="add-task-btn" (click)="showAddTaskForm()">
           <mat-icon>add</mat-icon>
           Add Task
         </button>
       }
     </div>
 
-    <div class="filter-actions">
+    <div class="right">
       <mat-form-field appearance="outline" class="filter-select">
         <mat-label>Filter by Status</mat-label>
         <mat-select [(ngModel)]="filterStatus" (selectionChange)="applyFilter()">
@@ -22,12 +21,7 @@
         </mat-select>
       </mat-form-field>
 
-<!--      <button mat-button color="primary" (click)="clearFilter()" [disabled]="filterStatus === 'ALL'">
-        <mat-icon>filter_list_off</mat-icon>
-        Clear Filter
-      </button>-->
-
-      <button mat-raised-button (click)="resetSorting()" title="Sort by Priority (High > Medium > Low)">
+      <button mat-stroked-button class="reset-sort-btn" (click)="resetSorting()" title="Sort by Priority (High > Medium > Low)">
         <mat-icon>sort</mat-icon>
         Reset Sorting
       </button>
@@ -91,38 +85,45 @@
 
   <div class="tasks-list" cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListDisabled]="filterStatus !== 'ALL'">
     @for (task of filteredTasks; track task.id) {
-      <mat-card class="task-item" cdkDrag>
-        <mat-card-header>
-          <div class="task-header-content">
+      <mat-card class="task-card" cdkDrag>
+        <div class="task-card-header">
+          <div class="task-main-info">
             <mat-icon class="drag-handle" cdkDragHandle>drag_indicator</mat-icon>
-            <mat-card-title>{{ task.title }}</mat-card-title>
+            <div class="title-meta">
+              <h3 class="task-title">{{ task.title }}</h3>
+              <div class="task-meta">
+                @if (task.dueDate) {
+                  <span class="meta-item">
+                    <mat-icon>calendar_today</mat-icon>
+                    Due: {{ task.dueDate }}
+                  </span>
+                }
+                <span class="priority-chip" [class]="'priority-' + task.priority.toLowerCase()">
+                  {{ task.priority }}
+                </span>
+              </div>
+            </div>
           </div>
-          <div class="task-header-chips">
-            <mat-chip [class]="'status-' + task.status.toLowerCase()">{{ task.status }}</mat-chip>
+          <div class="task-header-right">
+            <span class="status-chip" [class]="'status-' + task.status.toLowerCase()">{{ task.status }}</span>
           </div>
-          <mat-card-subtitle>
-            @if (task.dueDate) {
-              Due: {{ task.dueDate }} |
-            }
-            Priority: <span [class]="'priority-' + task.priority.toLowerCase()">{{ task.priority }}</span>
-          </mat-card-subtitle>
-        </mat-card-header>
+        </div>
+
         <mat-card-content>
-          <p>{{ task.description }}</p>
+          <p class="task-description">{{ task.description }}</p>
         </mat-card-content>
-        <mat-card-actions align="end">
-          <button mat-button color="primary" (click)="editTask(task)">
+
+        <div class="task-actions">
+          <button mat-icon-button (click)="editTask(task)" title="Edit">
             <mat-icon>edit</mat-icon>
-            <span>Edit</span>
           </button>
-          <button mat-button color="warn" (click)="deleteTask(task)">
+          <button mat-icon-button color="warn" (click)="deleteTask(task)" title="Delete">
             <mat-icon>delete</mat-icon>
-            <span>Delete</span>
           </button>
-        </mat-card-actions>
+        </div>
       </mat-card>
     } @empty {
-      <p>No tasks found.</p>
+      <p class="empty-message">No tasks found.</p>
     }
   </div>
 </div>

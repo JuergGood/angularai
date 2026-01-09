@@ -37,70 +37,213 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
   templateUrl: './tasks.component.html',
   styles: [`
     .tasks-container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
-      padding: 20px;
+      padding: 0;
     }
-    .tasks-header {
-      margin: 20px 0;
+    .page-toolbar {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      align-items: center;
+      margin-bottom: 32px;
+      gap: 16px;
       flex-wrap: wrap;
-      gap: 16px;
     }
-    .filter-actions {
+    .page-toolbar .left,
+    .page-toolbar .right {
       display: flex;
       align-items: center;
       gap: 16px;
-    }
-    .main-actions {
-      display: flex;
-      align-items: center;
     }
     .page-title {
-      margin-top: 0;
-      margin-bottom: 20px;
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: #1f2937;
     }
-    .add-task-card {
-      margin-bottom: 30px;
-    }
-    mat-form-field {
-      width: 100%;
+    .add-task-btn {
+      border-radius: 10px;
+      padding: 0 20px;
+      height: 44px !important;
+      box-shadow: 0 2px 6px rgba(0,0,0,.15);
+      font-weight: 500;
     }
     .filter-select {
-      width: 200px;
-      margin-bottom: 0;
+      width: 180px;
+    }
+    .reset-sort-btn {
+      height: 44px !important;
+      border-radius: 10px !important;
+      border-color: #e5e7eb !important;
+      color: #374151 !important;
+      font-weight: 500;
     }
     .filter-select ::ng-deep .mat-mdc-form-field-subscript-wrapper {
       display: none;
     }
-    .filter-actions button {
-      height: 56px;
-    }
-    .main-actions button {
-      height: 56px;
+    .add-task-card {
+      margin-bottom: 32px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
     }
     .form-row {
       display: flex;
       gap: 16px;
+      margin-top: 8px;
     }
     .form-actions {
       display: flex;
-      gap: 10px;
+      gap: 12px;
+      margin-top: 24px;
+      justify-content: flex-end;
     }
     .tasks-list {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
     }
-    .task-item {
-      border-left: 5px solid #ccc;
+    .task-card {
+      border-radius: 12px;
+      padding: 20px;
+      border: none;
+      box-shadow:
+        0 1px 2px rgba(0,0,0,.06),
+        0 4px 12px rgba(0,0,0,.06);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      cursor: pointer;
+      position: relative;
+      background: white;
+    }
+    .task-card:hover {
+      box-shadow:
+        0 4px 12px rgba(0,0,0,.08),
+        0 12px 28px rgba(0,0,0,.08);
+      transform: translateY(-2px);
+    }
+    .task-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 12px;
+    }
+    .task-main-info {
+      display: flex;
+      gap: 12px;
+      align-items: flex-start;
+    }
+    .drag-handle {
       cursor: move;
+      color: #9ca3af;
+      margin-top: 2px;
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
     }
+    .task-title {
+      margin: 0 0 4px 0;
+      font-size: 18px;
+      font-weight: 600;
+      color: #111827;
+      line-height: 1.4;
+    }
+    .task-meta {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+      color: #6b7280; /* gray-500 */
+    }
+    .meta-item {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .meta-item mat-icon {
+      font-size: 14px;
+      width: 14px;
+      height: 14px;
+    }
+    .task-description {
+      margin: 0;
+      font-size: 15px;
+      color: #4b5563;
+      line-height: 1.6;
+      max-width: 720px;
+      white-space: pre-wrap;
+    }
+    .task-actions {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      gap: 4px;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 8px;
+      padding: 2px;
+    }
+    .task-card:hover .task-actions {
+      opacity: 1;
+    }
+    .task-actions button {
+      width: 36px;
+      height: 36px;
+      line-height: 36px;
+    }
+    .task-actions mat-icon {
+      font-size: 18px;
+      width: 18px;
+      height: 18px;
+    }
+
+    /* Chips */
+    .priority-chip {
+      padding: 2px 10px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .priority-low { background: rgba(16, 185, 129, 0.1); color: #065f46; }
+    .priority-medium { background: rgba(245, 158, 11, 0.12); color: #b45309; }
+    .priority-high { background: rgba(239, 68, 68, 0.12); color: #b91c1c; }
+    .priority-critical { background: rgba(124, 58, 237, 0.15); color: #5b21b6; }
+
+    .status-chip {
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .status-open {
+      background: #f3f4f6;
+      color: #374151;
+      border: 1px solid #e5e7eb;
+    }
+    .status-in_progress {
+      background: rgba(59, 130, 246, 0.1);
+      color: #1d4ed8;
+      border: 1px solid rgba(59, 130, 246, 0.2);
+    }
+    .status-closed {
+      background: rgba(16, 185, 129, 0.1);
+      color: #047857;
+      border: 1px solid rgba(16, 185, 129, 0.2);
+    }
+
+    .empty-message {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+      font-style: italic;
+    }
+
+    /* Drag and Drop */
     .cdk-drag-preview {
       box-sizing: border-box;
-      border-radius: 4px;
+      border-radius: 12px;
       box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
                   0 8px 10px 1px rgba(0, 0, 0, 0.14),
                   0 3px 14px 2px rgba(0, 0, 0, 0.12);
@@ -111,33 +254,9 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
     .cdk-drag-animating {
       transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
     }
-    .tasks-list.cdk-drop-list-dragging .task-item:not(.cdk-drag-placeholder) {
+    .tasks-list.cdk-drop-list-dragging .task-card:not(.cdk-drag-placeholder) {
       transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
     }
-    .drag-handle {
-      cursor: move;
-      color: #999;
-      margin-right: 8px;
-    }
-    .task-header-content {
-      display: flex;
-      align-items: center;
-      width: 100%;
-    }
-    mat-card-actions {
-      padding: 8px 16px;
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-    }
-    .priority-low { color: green; }
-    .priority-medium { color: orange; }
-    .priority-high { color: red; }
-    .priority-critical { color: purple; font-weight: bold; }
-
-    .status-open { background-color: #e0e0e0 !important; color: #333 !important; }
-    .status-in_progress { background-color: #2196f3 !important; color: white !important; }
-    .status-closed { background-color: #4caf50 !important; color: white !important; }
   `]
 })
 export class TasksComponent implements OnInit {
