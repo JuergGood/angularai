@@ -3,3 +3,4 @@
 /android/.idea/
 /android/.gradle/
 /android/app/build/
+/test-client/target/

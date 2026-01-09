@@ -61,7 +61,7 @@ class LoadCommand : Command {
         println("Loading custom data from $filePath...")
         // Detect type from file content or filename? Let's try to parse as TaskDTO list first
         try {
-            val tasks = mapper.readValue(file, mapper.typeFactory.constructCollectionType(List::class.java, TaskDTO::class.java))
+            val tasks: List<TaskDTO> = mapper.readValue(file, mapper.typeFactory.constructCollectionType(List::class.java, TaskDTO::class.java))
             tasks.forEach { client.post("/api/tasks", it, TaskDTO::class.java) }
             println("Loaded ${tasks.size} tasks.")
         } catch (e: Exception) {

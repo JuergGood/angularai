@@ -6,7 +6,7 @@ This document outlines the design and implementation plan for the `test-client` 
 The `test-client` is a CLI tool designed to facilitate data seeding, cleanup, and database inspection across different environments (local development, local Docker, and AWS).
 
 ## 2. Technical Stack
-- **Language**: Kotlin 2.x
+- **Language**: Kotlin 2.1.x
 - **Build Tool**: Maven (as part of the multi-module project)
 - **HTTP Client**: `java.net.http.HttpClient` (Standard Java 11+, no extra dependencies required).
 - **CLI Framework**: Simple `main(args)` processing with a custom dispatcher for commands.
