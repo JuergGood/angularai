@@ -58,10 +58,14 @@ export class LoginComponent {
         this.router.navigate(['/tasks']);
       },
       error: (err) => {
+        console.error('Login error:', err);
         if (err.status === 401) {
           this.error = 'Invalid login or password';
         } else {
-          this.error = `An error occurred: ${err.statusText || 'Server unreachable'}`;
+          this.error = `An error occurred: ${err.status} ${err.statusText || 'Unknown Error'}`;
+          if (err.message) {
+            console.error('Error details:', err.message);
+          }
         }
         this.cdr.detectChanges();
       }

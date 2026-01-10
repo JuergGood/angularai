@@ -120,4 +120,58 @@
 		</plugins>
 	</build>
 
+	<profiles>
+		<profile>
+			<id>generate-erd</id>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>de.elnarion.maven</groupId>
+						<artifactId>plantuml-generator-maven-plugin</artifactId>
+						<version>3.0.1</version>
+						<executions>
+							<execution>
+								<id>generate-plantuml-diagram</id>
+								<goals>
+									<goal>generate</goal>
+								</goals>
+								<phase>process-classes</phase>
+								<configuration>
+									<scanPackages>
+										<scanPackage>ch.goodone.angularai.backend.model</scanPackage>
+									</scanPackages>
+									<outputDirectory>${project.basedir}/../doc/ai/db</outputDirectory>
+									<outputFilename>erd.puml</outputFilename>
+									<hideFields>false</hideFields>
+									<hideMethods>true</hideMethods>
+									<!--<enableJpaAnnotations>true</enableJpaAnnotations>-->
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<version>3.1.0</version>
+						<executions>
+							<execution>
+								<id>remove-package-names</id>
+								<phase>process-classes</phase>
+								<goals>
+									<goal>run</goal>
+								</goals>
+								<configuration>
+									<target>
+										<replace file="${project.basedir}/../doc/ai/db/erd.puml" token="ch.goodone.angularai.backend.model." value=""/>
+										<replace file="${project.basedir}/../doc/ai/db/erd.puml" token="java.time." value=""/>
+									</target>
+								</configuration>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+
 </project>

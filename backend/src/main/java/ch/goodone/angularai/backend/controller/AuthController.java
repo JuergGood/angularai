@@ -32,10 +32,17 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<UserDTO> login(Authentication authentication) {
         if (authentication == null) {
+            System.err.println("[DEBUG_LOG] Login attempt failed: Authentication object is null");
             return ResponseEntity.status(401).build();
         }
         User user = userRepository.findByLogin(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseGet(() -> {
+                    System.err.println("[DEBUG_LOG] Login attempt failed: User not found for login: " + authentication.getName());
+                    return null;
+                });
+        if (user == null) {
+            return ResponseEntity.status(401).build();
+        }
         actionLogService.log(user.getLogin(), "USER_LOGIN", "User logged in successfully");
         return ResponseEntity.ok(UserDTO.fromEntity(user));
     }

@@ -53,7 +53,7 @@ Detailed instructions for AWS deployment are located in the `doc/ai/` and `deplo
 **Important**: Before registering task definitions, ensure you replace all placeholders (e.g., `<AWS_ACCOUNT_ID>`, `<REGION>`, `<RDS_ENDPOINT>`) with your actual AWS resource values.
 
 - [AWS Setup and Infrastructure](doc/ai/aws/aws_setup.md)
-- [PostgreSQL Setup](doc/ai/postgres_setup.md)
+- [PostgreSQL Setup](doc/ai/backend/postgres_setup.md)
 - [ECS Fargate Configuration](doc/ai/aws/aws_fargate_config.md)
 - [Creating a Backend Target Group](doc/ai/aws/aws_create_target_group.md)
 - [ALB and Connectivity Troubleshooting](doc/ai/aws/aws_alb_troubleshooting.md)

@@ -32,13 +32,17 @@ export class AuthService {
   }
 
   login(login: string, password: string): Observable<User> {
+    const authString = `${login}:${password}`;
+    // Use a robust way to encode to Base64 that handles non-ASCII characters
+    const encodedAuth = btoa(unescape(encodeURIComponent(authString)));
+
     const headers = new HttpHeaders({
-      'Authorization': 'Basic ' + btoa(login + ':' + password)
+      'Authorization': 'Basic ' + encodedAuth
     });
     return this.http.post<User>(`${this.apiUrl}/login`, {}, { headers }).pipe(
       tap(user => {
         this.currentUser.set(user);
-        localStorage.setItem('auth', btoa(login + ':' + password));
+        localStorage.setItem('auth', encodedAuth);
       })
     );
   }

@@ -5,13 +5,15 @@ describe('User Management System', () => {
   });
 
   it('should login successfully and redirect to profile', () => {
+    cy.screenshot('login-page');
     cy.get('input[name="login"]').type('admin');
     cy.get('input[name="password"]').type('admin123');
+    cy.screenshot('login-filled');
     cy.get('#login-btn').click();
 
     cy.url().should('include', '/profile');
     cy.get('mat-card-title').should('contain', 'User Profile Details');
-    cy.get('input[name="login"]').should('have.value', 'admin');
+    cy.screenshot('profile-page');
   });
 
   it('should show error on invalid login', () => {

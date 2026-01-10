@@ -1,0 +1,29 @@
+erDiagram
+    ActionLog {
+        string id
+        string timestamp
+        string login
+        string action
+        string details
+    }
+    Task {
+        string id
+        string title
+        string description
+        string dueDate
+        string priority
+        string position
+        string user
+    }
+    User {
+        string id
+        string firstName
+        string lastName
+        string login
+        string password
+        string email
+        string birthDate
+        string address
+        string role
+    }
+    Task }|--|| User : references
