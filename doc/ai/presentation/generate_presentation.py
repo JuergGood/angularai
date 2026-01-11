@@ -249,11 +249,51 @@ class PresentationGenerator:
         self.prs = Presentation(template_path)
         print(f"Using template: {template_path}")
 
+        # Remove template slides marked with [layout: ...] in notes
+        self._remove_layout_slides()
+
         # Resolve layout indices once, strictly
         self.layout_title = self._require_layout("title")
         self.layout_agenda = self._require_layout("agenda")
         self.layout_title_and_content = self._require_layout("title_and_content")
         self.layout_two_content = self._require_layout("two_content")
+
+    def _remove_layout_slides(self) -> None:
+        """
+        Removes slides from the presentation that are tagged as 'layout' templates
+        in their slide notes (e.g., [layout: title]).
+        """
+        slides_to_remove = []
+        for slide in self.prs.slides:
+            try:
+                notes = slide.notes_slide.notes_text_frame.text
+                if "[layout:" in notes.lower():
+                    slides_to_remove.append(slide)
+            except Exception:
+                continue
+
+        for slide in slides_to_remove:
+            slide_id = slide.slide_id
+            
+            # 1. Remove from slides collection (XML)
+            xml_slides = self.prs.slides._sldIdLst
+            for sld_id in xml_slides.sldId_lst:
+                if sld_id.id == slide_id:
+                    xml_slides.remove(sld_id)
+                    break
+            
+            # 2. Remove the slide part from the package to avoid "Duplicate name" warnings on save
+            slide_part = slide.part
+            rel_id = None
+            for rId, rel in self.prs.part.rels.items():
+                if rel.target_part == slide_part:
+                    rel_id = rId
+                    break
+            if rel_id:
+                self.prs.part.drop_rel(rel_id)
+
+        if slides_to_remove:
+            print(f"Removed {len(slides_to_remove)} layout template slides from presentation.")
 
     def _require_layout(self, logical_layout: str) -> int:
         names = self.LAYOUT_NAME_ALIASES.get(logical_layout, [])
