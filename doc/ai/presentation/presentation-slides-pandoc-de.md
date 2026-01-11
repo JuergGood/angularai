@@ -1,112 +1,103 @@
-% Full-Stack-Entwicklung mit AI
-% Jürg Good
-% 11. Januar 2026
+% Software Development mit AI
+%
+%
 
 # Agenda
-
-- Applikations-Demo (Angular, Android)
-- AI-Werkzeuge (Junie AI, ChatGPT)
-- Vorgehensweise & Praxisbeispiele
-- Fazit & Ausblick
+- **Demo & Kontext**
+  - Angular Web & Android App
+- **AI-Werkzeuge**
+  - Junie AI, ChatGPT
+- **Praxis**
+  - Vorgehensweise & Beispiele
+- **Einordnung**
+  - Fazit & Ausblick
 
 # Anwendungsübersicht
 
-::::::::::::::: {.columns}
-:::: {.column width="50%"}
+::: columns
+::: column
+![](files/images/angular_task_menu.png)
 - **Angular Web-UI**
-  - [www.goodone.ch](https://www.goodone.ch)
-  ![](files/images/angular_task_menu.png)
-::::
-:::: {.column width="50%"}
+  - https://www.goodone.ch
+:::
+
+::: column
+![](files/images/android_task_menu.png)
 - **Android App**
-  ![](files/images/android_task_menu.png)
-  - Direkte Installation via APK: [goodone.ch/android](https://www.goodone.ch/android)
-::::
-:::::::::::::::
+  - APK Download: https://www.goodone.ch/android
+:::
+:::
 
-# Architekturübersicht
+# Architekturübersicht – Logisch
+- **Clients**
+  - Angular Web-UI
+  - Android App (Jetpack Compose)
+  - Test-Daten-Generator
+- **Backend**
+  - Java, Spring Boot REST-API
+- **Persistenz**
+  - PostgreSQL (AWS RDS)
+  - Lokal: H2
 
-- **Client 1**: Angular Web-UI
-- **Client 2**: Android App (Jetpack Compose)
-- **Client 3**: Test-Daten-Generator (Kotlin Console App)
-- **API-Ebene**: Java, Spring Boot REST-API
-- **Persistenz**: PostgreSQL (AWS RDS), Lokal: H2
-- **Infrastruktur**: Docker Container auf AWS ECS Fargate
-
+# Architekturübersicht – Infrastruktur
 ![](files/generated/architecture_overview.png)
 
+- Docker Container
+- AWS ECS Fargate
+
 ::: notes
-Gefolgt von Online Demo
+Gefolgt von Online-Demo
 :::
 
 # AI Toolset
-
-::::::::::::::: {.columns}
-:::: {.column width="50%"}
-- **IntelliJ IDEA + Junie AI**: Backend & Frontend Kern.
-- **Android Studio + Junie & Gemini AI**: Native mobile Entwicklung.
-- **ChatGPT 5.x**: UX Design & Review (extern).
-::::
-:::: {.column width="50%"}
-![](files/images/IdeIntegration.png)
-
-*Integrierte Entwicklungsumgebung*
-::::
-:::::::::::::::
+- **Junie AI (JetBrains)**
+  - Code-Generierung, Refactoring, Tests
+- **ChatGPT (OpenAI)**
+  - UX-Design, Architektur-Reviews, Konzeptarbeit
+- **IDE-Integration**
+  - IntelliJ IDEA, Android Studio
 
 # Vorgehen bei Design durch AI
+1. **Prompting**
+   - Ziel und Kontext definieren
+2. **Struktur**
+   - Entitäten, Attribute, Menüs
+3. **Planung**
+   - Detaillierter Markdown-Plan
+4. **Review**
+   - Entwickler prüft & ergänzt
+5. **Implementierung**
+   - Code + Tests durch AI
+6. **Qualität**
+   - Entwickler bleibt verantwortlich
 
-- **Fast Prototyping**: Auftrag im AI-Fenster eingeben.
-- **Beispiel**: "Entwickle eine Applikation mit Angular Frontend und Spring Boot Backend".
-  - Definition von Entitäten, Attributen und Menüs.
-- **AI-Planung**: Generierung eines detaillierten Vorgehens-Plans (Markdown).
-- **Kontrolle**: Entwickler prüft und ergänzt den Plan.
-- **Implementierung**: AI generiert Code und führt Tests aus.
-- **Rolle des Entwicklers**: Fokus auf Planung, Kontrolle und Qualitätssicherung.
-- **Ergebnis**: Minimaler manueller Code-Schreibaufwand.
+# KI-gestützte Entwicklung mit Junie (IDE-zentriert)
+- Direkte IDE-Integration
+- Kontext aus Projekt & Code
+- Schnelle Iterationen
+- Fokus auf Implementierung
 
-# KI-gesteuerte Entwicklung mit Junie
+# ChatGPT (extern & beratend)
+- Architektur- & UX-Feedback
+- Alternative Lösungsansätze
+- Formulierung & Dokumentation
+- Kein direkter Code-Zugriff
 
-- **Full-Stack Awareness**: Junie findet und modifiziert alle Projekt-Dateien.
-- **Qualitätssicherung**: Automatisierte Unit-Test-Generierung (JUnit, Vitest).
-- **Workflow**: Direkte Befehlsausführung (Build, Test) aus der IDE.
-- **Effizienz**: Enorme Produktivitätssteigerung durch Kontext-Verständnis.
-
-# ChatGPT
-
-- **UX Design**: Unschlagbar bei Design-Vorschlägen und Layouts.
-- **Review**: Kontinuierliche Verbesserungsvorschläge (Inhalt & Form).
-- **Beispiel**: Inhaltlicher Review dieser Präsentation.
-- **Einschränkung**: Fehlende IDE-Integration erschwert manuellen Datentransfer.
-
-# Datenbankschema (ER-Diagramm)
-
-- **Automatisierung**: Schema-Generierung und Design durch Junie.
-- **Entitäten**: User, Task, Priority, TaskStatus.
-- **Beziehungen**: Klare Definition der Datenstrukturen.
-- **Migration**: Konsistente Verwaltung über Flyway.
-
-![](files/generated/erd.png)
-
-# DB-Entwicklung für Android
-
-- **Herausforderung**: Synchronisierung des Schemas (Backend vs. Mobile).
-- **Prozess**: Entität ändern -> Junie generiert Flyway-SQL.
-- **Automatisierung**: Junie aktualisiert Android Room-Skripte synchron.
-- **Ergebnis**: Reibungslose Schema-Updates ohne manuelle Fehlerquellen.
-
-# Einschränkungen im Firmenumfeld (Beispiel ZKB)
-
-- **Sicherheit**: AI-Tools oft stark eingeschränkt oder blockiert.
-- **Einschränkung**: Junie AI (direkter Code-Zugriff) oft nicht verfügbar.
-- **Produktivitätsverlust**: Manueller Code-Transfer kostet viel Zeit.
-- **Technologie-Gap**: Verwendung veralteter Modelle (z.B. GPT 4.x statt 5.x).
+# Einschränkungen im Firmenumfeld
+- **Security & Compliance**
+  - Keine Kundendaten extern
+- **Tool-Vorgaben**
+  - Zentrale AI-Freigaben
+- **Technologie-Gap**
+  - Verzögerter Zugang zu aktuellen Modellen
+- **Know-how**
+  - Prompting-Kompetenz nötig
 
 # Fazit
+- **Demo bestätigt**: AI ist produktionsreif
+- **Werkzeuge**: Junie & ChatGPT ergänzen sich ideal
+- **Praxis**: Weniger Code, mehr Qualität
+- **Ausblick**: AI-gestützte Entwicklung wird Standard
 
-- **Qualität**: Robuste Applikationen durch vollständige Testabdeckung.
-- **Effizienz**: Schnelle, inkrementelle Änderungen durch Junie.
-- **Präzision**: Pläne werden treffergenau in Code umgesetzt.
-- **Zukunft**: KI-gestützte Entwicklung ist ein absoluter Game-Changer.
-
-## Schneller bauen mit Junie AI & ChatGPT.
+## Schneller bauen. Besser verstehen. Qualität sichern.
+### Mit Junie AI & ChatGPT
