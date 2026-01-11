@@ -1,0 +1,83 @@
+<mxfile host="app.diagrams.net" modified="2026-01-09T16:55:00.000Z" agent="Junie" version="21.0.0" type="device">
+  <diagram id="AngularAI-Architecture" name="Architecture Overview">
+    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        
+        <!-- AWS Cloud Boundary -->
+        <mxCell id="2" value="AWS Cloud" style="swimlane;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#FF9900;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="160" y="40" width="560" height="480" as="geometry" />
+        </mxCell>
+
+        <!-- VPC Boundary -->
+        <mxCell id="3" value="VPC" style="swimlane;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#232F3E;strokeWidth=1;" vertex="1" parent="2">
+          <mxGeometry x="20" y="40" width="520" height="420" as="geometry" />
+        </mxCell>
+
+        <!-- Client Layer -->
+        <mxCell id="4" value="Browser (Angular)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DD0031;fontColor=#ffffff;strokeColor=#c4002c;" vertex="1" parent="1">
+          <mxGeometry x="10" y="140" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5" value="Mobile (Android)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3DDC84;fontColor=#000000;strokeColor=#2cb96e;" vertex="1" parent="1">
+          <mxGeometry x="10" y="260" width="120" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- Public Subnet (ALB) -->
+        <mxCell id="6" value="Public Subnet" style="swimlane;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#3F51B5;" vertex="1" parent="3">
+          <mxGeometry x="20" y="40" width="160" height="360" as="geometry" />
+        </mxCell>
+        <mxCell id="7" value="Application Load Balancer (ALB)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="6">
+          <mxGeometry x="20" y="140" width="120" height="80" as="geometry" />
+        </mxCell>
+
+        <!-- Private Subnet (Services) -->
+        <mxCell id="8" value="Private Subnet" style="swimlane;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#4CAF50;" vertex="1" parent="3">
+          <mxGeometry x="200" y="40" width="300" height="360" as="geometry" />
+        </mxCell>
+
+        <!-- Docker Containers -->
+        <mxCell id="18" value="Docker Container (Frontend)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#0db7ed;strokeColor=#0056b3;fontColor=#ffffff;fontSize=10;" vertex="1" parent="8">
+          <mxGeometry x="20" y="40" width="140" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="9" value="&lt;b&gt;Nginx / Angular&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2196f3;fontColor=#333333;" vertex="1" parent="18">
+          <mxGeometry x="10" y="40" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="19" value="Docker Container (Backend)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#0db7ed;strokeColor=#0056b3;fontColor=#ffffff;fontSize=10;" vertex="1" parent="8">
+          <mxGeometry x="20" y="220" width="140" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="10" value="&lt;b&gt;Spring Boot&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4caf50;fontColor=#333333;" vertex="1" parent="19">
+          <mxGeometry x="10" y="40" width="120" height="50" as="geometry" />
+        </mxCell>
+
+        <mxCell id="11" value="&lt;b&gt;RDS&lt;/b&gt;&lt;br&gt;(PostgreSQL)" style="shape=datastore;whiteSpace=wrap;html=1;fillColor=#9575cd;strokeColor=#673ab7;fontColor=#ffffff;" vertex="1" parent="8">
+          <mxGeometry x="200" y="150" width="80" height="100" as="geometry" />
+        </mxCell>
+
+        <!-- Connections -->
+        <mxCell id="12" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="4" target="7">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="13" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="5" target="7">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="14" value="Port 80 (/)" style="endArrow=classic;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="7" target="18">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="15" value="Port 8080 (/api)" style="endArrow=classic;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="7" target="19">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="16" value="JDBC" style="endArrow=classic;startArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="10" target="11">
+          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        </mxCell>
+        
+        <!-- Junie Label -->
+        <mxCell id="17" value="&lt;b&gt;Powered by Junie AI&lt;/b&gt;&lt;br&gt;(Code Generation &amp; DevOps)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#FF9900;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="320" y="530" width="200" height="40" as="geometry" />
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
