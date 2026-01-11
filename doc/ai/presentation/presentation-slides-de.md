@@ -12,7 +12,7 @@ content: |
   - Punkt 3
 
 ---
-# Folie 2: Anwendungsübersicht
+# Anwendungsübersicht
 layout: image_right
 left: |
   - Einheitliches Erlebnis: Nahtloses Aufgabenmanagement.
