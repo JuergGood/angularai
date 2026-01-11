@@ -1,17 +1,21 @@
 import os
 import re
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import yaml
 from PIL import Image
 
 from pptx import Presentation
-from pptx.enum.shapes import PP_PLACEHOLDER
+from pptx.enum.shapes import PP_PLACEHOLDER, PP_PLACEHOLDER_TYPE
 from pptx.util import Inches, Pt
 
 
 SlideData = Dict[str, Any]
 
+
+# ----------------------------
+# Path + media helpers
+# ----------------------------
 
 def _abs_from_plan(plan_path: str, maybe_rel: str) -> str:
     """Resolve path relative to the markdown plan file."""
@@ -22,7 +26,7 @@ def _abs_from_plan(plan_path: str, maybe_rel: str) -> str:
     return os.path.normpath(os.path.join(os.path.dirname(plan_path), maybe_rel))
 
 
-def _fit_image_into_box(img_path: str, box_w_emu: int, box_h_emu: int) -> (int, int):
+def _fit_image_into_box(img_path: str, box_w_emu: int, box_h_emu: int) -> Tuple[int, int]:
     """Return (w_emu, h_emu) preserving aspect ratio to fit within the box (contain)."""
     with Image.open(img_path) as im:
         w_px, h_px = im.size
@@ -39,6 +43,146 @@ def _fit_image_into_box(img_path: str, box_w_emu: int, box_h_emu: int) -> (int, 
         h = box_h_emu
         w = int(box_h_emu * img_ar)
     return w, h
+
+
+# ----------------------------
+# YAML robustness helpers
+# ----------------------------
+
+_TOP_LEVEL_KEY_RE = re.compile(r"^[A-Za-z_]\w*:\s*(.*)$")
+_BLOCK_SCALAR_START_RE = re.compile(r"^[A-Za-z_]\w*:\s*\|\s*$")
+
+
+def _auto_indent_block_scalars(yaml_body: str) -> str:
+    """
+    Makes YAML more forgiving for 'key: |' blocks by ensuring subsequent lines
+    are indented at least 2 spaces until the next top-level key.
+
+    Fixes common mistakes like:
+      content: |
+      - item
+    to:
+      content: |
+        - item
+
+    Note: This does not fix structurally incorrect indentation where a new key
+    (e.g. 'right:') was accidentally written inside a block scalar. For that,
+    see _dedent_accidental_keys_in_block_scalars().
+    """
+    lines = yaml_body.splitlines()
+    out: List[str] = []
+    in_block = False
+
+    for line in lines:
+        if _BLOCK_SCALAR_START_RE.match(line):
+            in_block = True
+            out.append(line)
+            continue
+
+        # end block when we see a new top-level key (no leading spaces)
+        if in_block and line and not line.startswith((" ", "\t")) and _TOP_LEVEL_KEY_RE.match(line):
+            in_block = False
+
+        if in_block:
+            if line.strip() and not line.startswith((" ", "\t")):
+                out.append("  " + line)
+            else:
+                out.append(line)
+        else:
+            out.append(line)
+
+    return "\n".join(out)
+
+
+def _dedent_accidental_keys_in_block_scalars(yaml_body: str, keys: List[str] = ["right:", "left:", "image:", "caption:", "text:", "mode:", "layout:"]) -> str:
+    """
+    Best-effort fix for mistakes like:
+
+      left: |
+        - bullet
+        right:
+          image: x.png
+
+    where 'right:' was intended as a top-level key but is indented within the left block scalar.
+
+    Strategy:
+      - Track when we're inside a block scalar.
+      - If we encounter a line with two+ leading spaces that (after strip) begins with one of the known keys,
+        we dedent it to column 0 and also dedent subsequent more-indented lines (the nested mapping) by 2 spaces
+        until we hit a non-indented top-level key.
+
+    This is conservative and only targets known keys.
+    """
+    key_prefixes = tuple(keys)
+    lines = yaml_body.splitlines()
+    out: List[str] = []
+    in_block = False
+    pending_dedent = False
+
+    for i, line in enumerate(lines):
+        if _BLOCK_SCALAR_START_RE.match(line):
+            in_block = True
+            pending_dedent = False
+            out.append(line)
+            continue
+
+        # If we hit a new top-level key, we are no longer in the block scalar
+        if in_block and line and not line.startswith((" ", "\t")) and _TOP_LEVEL_KEY_RE.match(line):
+            in_block = False
+            pending_dedent = False
+            out.append(line)
+            continue
+
+        if in_block:
+            stripped = line.lstrip()
+            indent = len(line) - len(stripped)
+
+            if indent >= 2 and stripped.startswith(key_prefixes):
+                # Dedent this line to become a top-level key
+                out.append(stripped)
+                pending_dedent = True
+                continue
+
+            if pending_dedent:
+                # Dedent nested lines by 2 spaces if possible
+                if line.startswith("  "):
+                    out.append(line[2:])
+                    continue
+                else:
+                    # If we hit a non-indented line inside pending_dedent, stop dedenting
+                    pending_dedent = False
+                    out.append(line)
+                    continue
+
+            out.append(line)
+        else:
+            out.append(line)
+
+    return "\n".join(out)
+
+
+# ----------------------------
+# PPTX layout + placeholder helpers
+# ----------------------------
+
+def _norm_layout_name(name: str) -> str:
+    return re.sub(r"\s+", " ", (name or "").strip().lower())
+
+
+def _get_layout_index_by_name(prs: Presentation, wanted: str) -> Optional[int]:
+    wn = _norm_layout_name(wanted)
+    for i, layout in enumerate(prs.slide_layouts):
+        if _norm_layout_name(layout.name) == wn:
+            return i
+    return None
+
+
+def _get_layout_index_by_any_name(prs: Presentation, wanted_names: List[str]) -> Optional[int]:
+    for n in wanted_names:
+        idx = _get_layout_index_by_name(prs, n)
+        if idx is not None:
+            return idx
+    return None
 
 
 def _find_placeholder(slide, idx: Optional[int] = None, placeholder_type: Optional[int] = None):
@@ -58,44 +202,85 @@ def _find_placeholder(slide, idx: Optional[int] = None, placeholder_type: Option
     return None
 
 
+def _remove_shape(shape) -> None:
+    try:
+        el = shape.element
+        el.getparent().remove(el)
+    except Exception:
+        pass
+
+
+# ----------------------------
+# Generator
+# ----------------------------
+
 class PresentationGenerator:
     """
-    Proposal A: Parse each slide block as YAML (robust; supports nested right:{image,caption})
-    Proposal B: Place images using placeholder bounding box, keep aspect ratio, center
-    Proposal C: Auto-layout upgrade: if title_and_content has both content+image -> render as Two Content
+    Key properties:
+      - Uses layouts ONLY from template.pptx by layout name (no index fallbacks).
+      - Parses each slide block as YAML.
+      - Adds layout: agenda.
+      - Unifies all two-content variants into:
+            layout: two_content
+            mode: image_left | image_right | text_both
+        Additionally supports legacy aliases:
+            layout: image_left / image_right / text_both
+      - Renders bullet lists up to 3 levels.
+      - Replaces placeholder with a fitted image in the placeholder box.
     """
 
-    def __init__(self, plan_path: str, output_path: str, files_dir: str, template_path: Optional[str] = None):
+    # Adjust aliases if your template uses different localized names
+    LAYOUT_NAME_ALIASES = {
+        "title": ["Titelfolie", "Title Slide", "Titel", "Title"],
+        "agenda": ["Agenda", "Inhaltsverzeichnis", "Table of Contents"],
+        "title_and_content": ["Title and Content", "Titel und Inhalt", "Title & Content", "Titel und Inhalt (1)"],
+        "two_content": ["2 Spalten", "Two Content", "Zwei Inhalte", "Zwei Spalten"],
+    }
+
+    def __init__(self, plan_path: str, output_path: str, files_dir: str, template_path: str):
         self.plan_path = plan_path
         self.output_path = output_path
         self.files_dir = files_dir
+        self.template_path = template_path
 
-        if template_path and os.path.exists(template_path):
-            self.prs = Presentation(template_path)
-            print(f"Using template: {template_path}")
-        else:
-            self.prs = Presentation()
-            self.prs.slide_width = Inches(13.33)
-            self.prs.slide_height = Inches(7.5)
-            if template_path:
-                print(f"Warning: Template not found at {template_path}. Using default.")
+        if not template_path or not os.path.exists(template_path):
+            raise FileNotFoundError(f"template.pptx not found at: {template_path}")
+
+        self.prs = Presentation(template_path)
+        print(f"Using template: {template_path}")
+
+        # Resolve layout indices once, strictly
+        self.layout_title = self._require_layout("title")
+        self.layout_agenda = self._require_layout("agenda")
+        self.layout_title_and_content = self._require_layout("title_and_content")
+        self.layout_two_content = self._require_layout("two_content")
+
+    def _require_layout(self, logical_layout: str) -> int:
+        names = self.LAYOUT_NAME_ALIASES.get(logical_layout, [])
+        idx = _get_layout_index_by_any_name(self.prs, names)
+        if idx is None:
+            available = [layout.name for layout in self.prs.slide_layouts]
+            raise RuntimeError(
+                f"Required layout '{logical_layout}' not found in template.\n"
+                f"Tried names: {names}\n"
+                f"Available layouts: {available}"
+            )
+        return idx
 
     # ----------------------------
-    # Proposal A: YAML parsing
+    # Parsing: YAML per slide
     # ----------------------------
 
     def parse_plan(self) -> List[SlideData]:
         """
-        Your plan format is: blocks separated by '---'
-          # Title
-          layout: two_content
-          left: |
-            - Bullet
-              - Sub bullet
-          right:
-            image: files/generated/foo.png
-            caption: Optional
-            text: Optional bullets
+        Slides are separated by '---'. Each block may begin with '# <title>'.
+        Body is YAML.
+
+        Supports:
+          - content: |  <multi-line bullets>
+          - left: | / right: | (multi-line)
+          - left/right as mapping: {image:, caption:, text: }
+          - layout aliases: image_left/image_right/text_both
         """
         with open(self.plan_path, "r", encoding="utf-8") as f:
             content = f.read()
@@ -114,69 +299,41 @@ class PresentationGenerator:
                 title = lines[0][2:].strip()
                 yaml_body = "\n".join(lines[1:]).strip()
 
-            data: SlideData = {}
-            if yaml_body:
-                try:
-                    data = yaml.safe_load(yaml_body) or {}
-                except Exception as e:
-                    # Keep your legacy parsing as a fallback so generation never breaks
-                    print(f"Warning: YAML parse failed for slide '{title}': {e}. Falling back to legacy parsing.")
-                    data = self._legacy_parse_block(yaml_body)
+            # Best-effort cleanup to avoid common YAML mistakes
+            yaml_body = _dedent_accidental_keys_in_block_scalars(yaml_body)
+            yaml_body = _auto_indent_block_scalars(yaml_body)
+
+            try:
+                data: SlideData = yaml.safe_load(yaml_body) or {}
+            except Exception as e:
+                raise RuntimeError(f"YAML parse failed for slide '{title}': {e}") from e
 
             if title and "title" not in data:
                 data["title"] = title
 
+            # Normalize legacy layout aliases (layout: image_right => layout: two_content + mode)
+            layout_raw = str(data.get("layout", "title_and_content") or "title_and_content").strip().lower()
+            if layout_raw in ("image_right", "image_left", "text_both"):
+                data["layout"] = "two_content"
+                data["mode"] = layout_raw
+
             data.setdefault("layout", "title_and_content")
-            data.setdefault("subtitle", "")
-            data.setdefault("content", "")
-            data.setdefault("left", "")
-            data.setdefault("right", "")
-            data.setdefault("image", "")
+            data.setdefault("mode", None)
+
+            for k in ("subtitle", "content", "left", "right", "image", "caption"):
+                if k in data and data[k] is None:
+                    data[k] = ""
 
             slides.append(data)
 
         return slides
 
-    def _legacy_parse_block(self, yaml_body: str) -> SlideData:
-        """Your original regex parser, preserved as fallback."""
-        slide: SlideData = {"layout": "title_and_content", "subtitle": "", "content": "", "left": "", "right": "", "image": ""}
-        current_key: Optional[str] = None
-
-        for line in yaml_body.splitlines():
-            if not line.strip():
-                if current_key and isinstance(slide.get(current_key), str):
-                    slide[current_key] += "\n"
-                continue
-
-            is_indented = line.startswith("  ") or line.startswith("\t")
-            match = re.match(r"^(\w+):\s*(.*)", line.strip())
-            if match and not line.strip().startswith("-") and not is_indented:
-                current_key = match.group(1).lower()
-                value = match.group(2).strip()
-                slide[current_key] = "" if value == "|" else value
-            elif current_key:
-                clean_line = line.rstrip()
-                match_bullet = re.match(r"^(\s*)-\s*(.*)", clean_line)
-                if match_bullet:
-                    indent = match_bullet.group(1)
-                    content = match_bullet.group(2)
-                    clean_line = indent + content
-                slide[current_key] = (slide[current_key] + "\n" + clean_line).strip() if slide[current_key] else clean_line
-
-        for k, v in list(slide.items()):
-            if isinstance(v, str):
-                slide[k] = v.strip()
-        return slide
-
     # ----------------------------
-    # Text rendering (3 bullet levels)
+    # Text (3 levels bullets)
     # ----------------------------
 
     def add_text_to_frame(self, text_frame, text: Union[str, List[str]]) -> None:
-        """
-        - Strips leading '-' bullet markers if present
-        - Supports up to 3 levels (PowerPoint 0..2)
-        """
+        """Render bullet list text with up to 3 levels; strips leading '-' markers."""
         text_frame.clear()
 
         lines = text if isinstance(text, list) else str(text or "").splitlines()
@@ -184,7 +341,6 @@ class PresentationGenerator:
         if not non_empty:
             return
 
-        # base indentation (avoid weird shifts)
         base_indent = min(len(l) - len(l.lstrip()) for l in non_empty)
 
         first = True
@@ -196,10 +352,8 @@ class PresentationGenerator:
             stripped = raw.lstrip()
             indent = len(raw) - len(stripped)
 
-            # strip markdown dash bullets
             stripped = re.sub(r"^-\s+", "", stripped)
 
-            # 2 spaces => 1 level. cap to 3 levels total.
             level = max(0, min(((indent - base_indent) // 2), 2))
 
             p = text_frame.paragraphs[0] if first else text_frame.add_paragraph()
@@ -216,23 +370,17 @@ class PresentationGenerator:
                 p.font.size = Pt(16)
 
     # ----------------------------
-    # Proposal B: placeholder-based image placement
+    # Images in placeholder box
     # ----------------------------
 
     def add_picture_in_placeholder_box(self, slide, placeholder, img_path: str) -> None:
         img_full = _abs_from_plan(self.plan_path, img_path)
         if not os.path.exists(img_full):
-            print(f"Warning: Image not found at {img_full}")
-            return
+            raise FileNotFoundError(f"Image not found: {img_full}")
 
         left, top, box_w, box_h = placeholder.left, placeholder.top, placeholder.width, placeholder.height
 
-        # remove placeholder so it doesn't show "Click to add text"
-        try:
-            sp = placeholder.element
-            sp.getparent().remove(sp)
-        except Exception:
-            pass
+        _remove_shape(placeholder)
 
         w, h = _fit_image_into_box(img_full, box_w, box_h)
         pic_left = left + int((box_w - w) / 2)
@@ -241,92 +389,149 @@ class PresentationGenerator:
         slide.shapes.add_picture(img_full, pic_left, pic_top, width=w, height=h)
 
     # ----------------------------
-    # Slide types
+    # Slide builders (template layouts only)
     # ----------------------------
 
     def add_title_slide(self, slide_data: SlideData) -> None:
-        layout = self.prs.slide_layouts[0]
+        layout = self.prs.slide_layouts[self.layout_title]
         slide = self.prs.slides.add_slide(layout)
-        slide.shapes.title.text = slide_data.get("title", "")
 
-        subtitle = slide_data.get("subtitle", "")
-        if subtitle and len(slide.placeholders) > 1:
-            slide.placeholders[1].text = subtitle
+        if slide.shapes.title:
+            slide.shapes.title.text = slide_data.get("title", "")
+        else:
+            for ph in slide.placeholders:
+                if ph.has_text_frame:
+                    ph.text = slide_data.get("title", "")
+                    break
 
-    def add_content_slide(self, slide_data: SlideData) -> None:
-        # Title and Content
-        layout = self.prs.slide_layouts[1]
+        subtitle = str(slide_data.get("subtitle", "") or "").strip()
+        if subtitle:
+            ph = _find_placeholder(slide, idx=1)
+            if ph and ph.has_text_frame:
+                ph.text = subtitle
+
+    def add_agenda_slide(self, slide_data: SlideData) -> None:
+        layout = self.prs.slide_layouts[self.layout_agenda]
         slide = self.prs.slides.add_slide(layout)
-        slide.shapes.title.text = slide_data.get("title", "")
 
-        body = _find_placeholder(slide, idx=1)
-        if body is not None:
+        if slide.shapes.title:
+            slide.shapes.title.text = slide_data.get("title", "Agenda")
+
+        body = None
+        for ph in slide.placeholders:
+            if slide.shapes.title and ph == slide.shapes.title:
+                continue
+            if ph.has_text_frame:
+                body = ph
+                break
+        if body:
             self.add_text_to_frame(body.text_frame, slide_data.get("content", ""))
 
-        # image on the right half (template-independent fallback)
-        img_path = str(slide_data.get("image", "") or "").strip()
-        if img_path:
-            img_full = _abs_from_plan(self.plan_path, img_path)
-            if os.path.exists(img_full):
-                slide_w = self.prs.slide_width
-                slide_h = self.prs.slide_height
+    def add_title_and_content_slide(self, slide_data: SlideData) -> None:
+        layout = self.prs.slide_layouts[self.layout_title_and_content]
+        slide = self.prs.slides.add_slide(layout)
 
-                # right column-ish box
-                left = int(slide_w * 0.56)
-                top = Inches(1.5)
-                box_w = int(slide_w * 0.40)
-                box_h = int(slide_h * 0.70)
+        if slide.shapes.title:
+            slide.shapes.title.text = slide_data.get("title", "")
 
-                w, h = _fit_image_into_box(img_full, box_w, box_h)
-                slide.shapes.add_picture(
-                    img_full,
-                    left + int((box_w - w) / 2),
-                    top + int((box_h - h) / 2),
-                    width=w,
-                    height=h,
-                )
-            else:
-                print(f"Warning: Image not found at {img_full}")
+        body = None
+        for ph in slide.placeholders:
+            if slide.shapes.title and ph == slide.shapes.title:
+                continue
+            if ph.has_text_frame:
+                body = ph
+                break
+        if body:
+            self.add_text_to_frame(body.text_frame, slide_data.get("content", ""))
+
+    def _parse_side(self, side: Any) -> Dict[str, Any]:
+        """Normalize a 'left'/'right' side into either {'text':...} or {'image':..., 'caption':...}."""
+        if isinstance(side, dict):
+            out = dict(side)
+            if "img" in out and "image" not in out:
+                out["image"] = out.pop("img")
+            # If mapping has no explicit text key but does have 'text' absent, keep as-is
+            return out
+        if isinstance(side, str):
+            s = side.strip()
+            if not s:
+                return {"text": ""}
+            return {"text": side}
+        return {"text": str(side)}
 
     def add_two_content_slide(self, slide_data: SlideData) -> None:
-        # Two Content
-        layout = self.prs.slide_layouts[3]
+        layout = self.prs.slide_layouts[self.layout_two_content]
         slide = self.prs.slides.add_slide(layout)
-        slide.shapes.title.text = slide_data.get("title", "")
 
-        left_placeholder = _find_placeholder(slide, idx=1)
-        right_placeholder = _find_placeholder(slide, idx=2)
+        if slide.shapes.title:
+            slide.shapes.title.text = slide_data.get("title", "")
 
-        if left_placeholder is not None:
-            self.add_text_to_frame(left_placeholder.text_frame, slide_data.get("left", ""))
+        # Robustly find the two content placeholders in the layout.
+        # Some templates don't use placeholder idx 1 and 2, so we select the first two
+        # OBJECT/BODY placeholders (excluding title/date/footer/slide number) and order them by x-position.
+        candidates = []
+        for ph in slide.placeholders:
+            try:
+                pht = ph.placeholder_format.type
+            except Exception:
+                continue
 
-        right = slide_data.get("right", "")
-        caption = ""
+            if pht in (PP_PLACEHOLDER_TYPE.OBJECT, PP_PLACEHOLDER_TYPE.BODY):
+                # Exclude title placeholder if it is also of a compatible type (rare)
+                if slide.shapes.title is not None and ph == slide.shapes.title:
+                    continue
+                candidates.append(ph)
 
-        # New: support YAML dict for right side
-        if isinstance(right, dict):
-            img = str(right.get("image") or right.get("img") or "").strip()
-            caption = str(right.get("caption") or "").strip()
-            right_text = right.get("text", "")
-            if img and right_placeholder is not None:
-                self.add_picture_in_placeholder_box(slide, right_placeholder, img)
-            elif right_text and right_placeholder is not None:
-                self.add_text_to_frame(right_placeholder.text_frame, right_text)
+        if len(candidates) < 2:
+            # Fall back to any non-title text placeholders
+            for ph in slide.placeholders:
+                if slide.shapes.title is not None and ph == slide.shapes.title:
+                    continue
+                if getattr(ph, "has_text_frame", False):
+                    candidates.append(ph)
+                if len(candidates) >= 2:
+                    break
+
+        if len(candidates) < 2:
+            raise RuntimeError("Two-content layout must provide two content placeholders (OBJECT/BODY).")
+
+        candidates.sort(key=lambda p: p.left)
+        left_ph, right_ph = candidates[0], candidates[1]
+
+        mode = (slide_data.get("mode") or "").strip().lower() or "text_both"
+
+        left_side = self._parse_side(slide_data.get("left", ""))
+        right_side = self._parse_side(slide_data.get("right", ""))
+
+        def coerce_image(side: Dict[str, Any]) -> Dict[str, Any]:
+            if "image" in side:
+                return side
+            txt = str(side.get("text", "") or "").strip()
+            if txt.lower().endswith((".png", ".jpg", ".jpeg", ".webp")):
+                return {"image": txt}
+            return side
+
+        if mode == "image_left":
+            left_side = coerce_image(left_side)
+        elif mode == "image_right":
+            right_side = coerce_image(right_side)
+
+        # Render left
+        if "image" in left_side and str(left_side["image"]).strip():
+            self.add_picture_in_placeholder_box(slide, left_ph, str(left_side["image"]).strip())
         else:
-            right_text = str(right or "")
-            if "image:" in right_text and right_placeholder is not None:
-                img_match = re.search(r"image:\s*([^\n\r\s]+)", right_text)
-                if img_match:
-                    self.add_picture_in_placeholder_box(slide, right_placeholder, img_match.group(1).strip())
-                cap_match = re.search(r"caption:\s*([^\n\r]+)", right_text)
-                if cap_match:
-                    caption = cap_match.group(1).strip()
-            elif right_placeholder is not None:
-                self.add_text_to_frame(right_placeholder.text_frame, right_text)
+            self.add_text_to_frame(left_ph.text_frame, left_side.get("text", ""))
 
+        # Render right
+        if "image" in right_side and str(right_side["image"]).strip():
+            self.add_picture_in_placeholder_box(slide, right_ph, str(right_side["image"]).strip())
+        else:
+            self.add_text_to_frame(right_ph.text_frame, right_side.get("text", ""))
+
+        caption = str(right_side.get("caption", "") or left_side.get("caption", "") or "").strip()
         if caption:
             footer = _find_placeholder(slide, placeholder_type=PP_PLACEHOLDER.FOOTER)
-            if footer is not None:
+            if footer and footer.has_text_frame:
                 footer.text = caption
             else:
                 box = slide.shapes.add_textbox(Inches(7.0), Inches(6.9), Inches(6.0), Inches(0.4))
@@ -335,7 +540,7 @@ class PresentationGenerator:
                 tf.paragraphs[0].font.size = Pt(12)
 
     # ----------------------------
-    # Proposal C: smart layout upgrade
+    # Generation: enforce template-only layouts + upgrade rules
     # ----------------------------
 
     def generate(self) -> None:
@@ -344,26 +549,37 @@ class PresentationGenerator:
         for data in slides_data:
             layout_type = str(data.get("layout", "title_and_content") or "title_and_content").strip().lower()
 
-            # Proposal C:
-            # If the slide is title_and_content but has BOTH content and image,
-            # render as Two Content (text left, image right) for better visual balance.
+            # accept legacy aliases at generation time too
+            if layout_type in ("image_right", "image_left", "text_both"):
+                data = dict(data)
+                data["layout"] = "two_content"
+                data["mode"] = layout_type
+                layout_type = "two_content"
+
+            # Upgrade: title_and_content with both content+image => two_content (image_right by default)
             if layout_type == "title_and_content":
                 has_text = bool(str(data.get("content", "") or "").strip())
                 has_img = bool(str(data.get("image", "") or "").strip())
                 if has_text and has_img:
                     layout_type = "two_content"
-                    data = dict(data)  # shallow copy
-                    data["left"] = data.get("content", "")
-                    cap = data.get("caption", "")
-                    data["right"] = {"image": data.get("image", ""), "caption": cap}
+                    data = dict(data)
+                    data["mode"] = data.get("mode") or "image_right"
+                    data["left"] = {"text": data.get("content", "")}
+                    data["right"] = {"image": data.get("image", ""), "caption": data.get("caption", "")}
 
             if layout_type == "title":
                 self.add_title_slide(data)
+            elif layout_type == "agenda":
+                self.add_agenda_slide(data)
             elif layout_type == "two_content":
                 self.add_two_content_slide(data)
+            elif layout_type == "title_and_content":
+                self.add_title_and_content_slide(data)
             else:
-                # default to title_and_content
-                self.add_content_slide(data)
+                raise RuntimeError(
+                    f"Unknown layout '{layout_type}'. Allowed: title, agenda, title_and_content, two_content "
+                    f"(or legacy: image_left/image_right/text_both)."
+                )
 
         os.makedirs(os.path.dirname(self.output_path), exist_ok=True)
         try:
@@ -377,12 +593,11 @@ class PresentationGenerator:
 
 if __name__ == "__main__":
     base_dir = os.path.dirname(os.path.abspath(__file__))
+
     plan = os.path.join(base_dir, "presentation-slides-de.md")
-    output = os.path.join(base_dir, "generated/SoftwareDevelopmentWithAI.pptx")
+    output = os.path.join(base_dir, "generated", "SoftwareDevelopmentWithAI.pptx")
     files = os.path.join(base_dir, "files")
     template = os.path.join(base_dir, "template.pptx")
-
-    os.makedirs(os.path.dirname(output), exist_ok=True)
 
     gen = PresentationGenerator(plan, output, files, template)
     gen.generate()
