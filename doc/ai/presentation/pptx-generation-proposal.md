@@ -24,4 +24,19 @@ generated/SoftwareDevelopmentWithAI.pptx
 
 Modify current generation script generate_presentation.py
 
+Modified 
 
+
+Updated template.pptx
+Inserted template slides. The name of the template is in the notes section of each slide
+
+[layout:title]  
+[layout:agenda] for # Folie 1b: new. to be inserted into presentation-slides-de.md
+[layout: title_and_content] This layout is a template my by company. Please improve as it has almost no page border
+
+Maybe all 3 two_content can be combined into one 
+[layout: two_content, image left]
+[layout: two_content, right left]
+[layout: two_content, text both] 
+
+Only use the layout from template.pptx. The content itself should be fully generated from presentation-slides-de.md
