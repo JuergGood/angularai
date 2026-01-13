@@ -1,82 +1,69 @@
-<mxfile host="app.diagrams.net" modified="2026-01-09T16:55:00.000Z" agent="Junie" version="21.0.0" type="device">
-  <diagram id="AngularAI-Architecture" name="Architecture Overview">
-    <mxGraphModel dx="1422" dy="762" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/29.3.0 Chrome/140.0.7339.249 Electron/38.7.2 Safari/537.36" version="29.3.0">
+  <diagram id="d1" name="Architecture Overview Clean">
+    <mxGraphModel dx="1976" dy="960" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1920" pageHeight="1080" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        
-        <!-- AWS Cloud Boundary -->
-        <mxCell id="2" value="AWS Cloud" style="swimlane;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#FF9900;strokeWidth=2;" vertex="1" parent="1">
-          <mxGeometry x="160" y="40" width="560" height="480" as="geometry" />
+        <mxCell id="lane1" parent="1" style="rounded=0;fillColor=#FAFAFA;strokeColor=#D1D5DB;strokeWidth=1;fontSize=16;fontStyle=1;align=left;verticalAlign=top;spacingLeft=14;spacingTop=10;" value="AI-Assisted Development" vertex="1">
+          <mxGeometry height="200" width="750" x="259" y="60" as="geometry" />
         </mxCell>
-
-        <!-- VPC Boundary -->
-        <mxCell id="3" value="VPC" style="swimlane;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#232F3E;strokeWidth=1;" vertex="1" parent="2">
-          <mxGeometry x="20" y="40" width="520" height="420" as="geometry" />
+        <mxCell id="lane2" parent="1" style="rounded=0;fillColor=#FAFAFA;strokeColor=#D1D5DB;strokeWidth=1;fontSize=16;fontStyle=1;align=left;verticalAlign=top;spacingLeft=14;spacingTop=10;" value="Application Layer" vertex="1">
+          <mxGeometry height="250" width="752" x="260" y="270" as="geometry" />
         </mxCell>
-
-        <!-- Client Layer -->
-        <mxCell id="4" value="Browser (Angular)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#DD0031;fontColor=#ffffff;strokeColor=#c4002c;" vertex="1" parent="1">
-          <mxGeometry x="10" y="140" width="120" height="60" as="geometry" />
+        <mxCell id="lane3" parent="1" style="rounded=0;fillColor=#FAFAFA;strokeColor=#D1D5DB;strokeWidth=1;fontSize=16;fontStyle=1;align=left;verticalAlign=top;spacingLeft=14;spacingTop=10;" value="Runtime &amp; Infrastructure" vertex="1">
+          <mxGeometry height="137" width="750" x="263" y="540" as="geometry" />
         </mxCell>
-        <mxCell id="5" value="Mobile (Android)" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#3DDC84;fontColor=#000000;strokeColor=#2cb96e;" vertex="1" parent="1">
-          <mxGeometry x="10" y="260" width="120" height="60" as="geometry" />
+        <mxCell id="dev" parent="1" style="rounded=1;arcSize=12;fillColor=#EEF0FF;strokeColor=#5B5FD6;strokeWidth=1.5;fontSize=22;" value="Developer" vertex="1">
+          <mxGeometry height="80" width="140" x="280" y="120" as="geometry" />
         </mxCell>
-
-        <!-- Public Subnet (ALB) -->
-        <mxCell id="6" value="Public Subnet" style="swimlane;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#3F51B5;" vertex="1" parent="3">
-          <mxGeometry x="20" y="40" width="160" height="360" as="geometry" />
+        <mxCell id="ide" parent="1" style="rounded=1;arcSize=12;fillColor=#EEF0FF;strokeColor=#5B5FD6;strokeWidth=1.5;fontSize=22;" value="IDE&#xa;IntelliJ / Android Studio" vertex="1">
+          <mxGeometry height="100" width="250" x="470" y="110" as="geometry" />
         </mxCell>
-        <mxCell id="7" value="Application Load Balancer (ALB)" style="ellipse;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#666666;fontColor=#333333;" vertex="1" parent="6">
-          <mxGeometry x="20" y="140" width="120" height="80" as="geometry" />
+        <mxCell id="junie" parent="1" style="rounded=1;arcSize=12;fillColor=#EEF0FF;strokeColor=#5B5FD6;strokeWidth=1.5;fontSize=22;" value="Junie AI" vertex="1">
+          <mxGeometry height="55" width="120" x="797" y="92" as="geometry" />
         </mxCell>
-
-        <!-- Private Subnet (Services) -->
-        <mxCell id="8" value="Private Subnet" style="swimlane;whiteSpace=wrap;html=1;dashed=1;fillColor=none;strokeColor=#4CAF50;" vertex="1" parent="3">
-          <mxGeometry x="200" y="40" width="300" height="360" as="geometry" />
+        <mxCell id="chatgpt" parent="1" style="rounded=1;arcSize=12;fillColor=#EEF0FF;strokeColor=#5B5FD6;strokeWidth=1.5;dashed=1;fontSize=22;" value="ChatGPT" vertex="1">
+          <mxGeometry height="51" width="128" x="800" y="170" as="geometry" />
         </mxCell>
-
-        <!-- Docker Containers -->
-        <mxCell id="18" value="Docker Container (Frontend)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#0db7ed;strokeColor=#0056b3;fontColor=#ffffff;fontSize=10;" vertex="1" parent="8">
-          <mxGeometry x="20" y="40" width="140" height="110" as="geometry" />
+        <mxCell id="angular" parent="1" style="rounded=1;arcSize=12;fillColor=#EEF5FF;strokeColor=#1F6AE1;strokeWidth=1.5;fontSize=22;" value="Angular Web App" vertex="1">
+          <mxGeometry height="72" width="201" x="457.5" y="411" as="geometry" />
         </mxCell>
-        <mxCell id="9" value="&lt;b&gt;Nginx / Angular&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#2196f3;fontColor=#333333;" vertex="1" parent="18">
-          <mxGeometry x="10" y="40" width="120" height="50" as="geometry" />
+        <mxCell id="android" parent="1" style="rounded=1;arcSize=12;fillColor=#EEF5FF;strokeColor=#1F6AE1;strokeWidth=1.5;fontSize=22;" value="Android App" vertex="1">
+          <mxGeometry height="86" width="204" x="456" y="304" as="geometry" />
         </mxCell>
-
-        <mxCell id="19" value="Docker Container (Backend)" style="swimlane;whiteSpace=wrap;html=1;fillColor=#0db7ed;strokeColor=#0056b3;fontColor=#ffffff;fontSize=10;" vertex="1" parent="8">
-          <mxGeometry x="20" y="220" width="140" height="110" as="geometry" />
+        <mxCell id="backend" parent="1" style="rounded=1;arcSize=12;fillColor=#EEF5FF;strokeColor=#1F6AE1;strokeWidth=1.5;fontSize=22;" value="Spring Boot Backend" vertex="1">
+          <mxGeometry height="62" width="220" x="765" y="369" as="geometry" />
         </mxCell>
-        <mxCell id="10" value="&lt;b&gt;Spring Boot&lt;/b&gt;" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#4caf50;fontColor=#333333;" vertex="1" parent="19">
-          <mxGeometry x="10" y="40" width="120" height="50" as="geometry" />
+        <mxCell id="docker" parent="1" style="rounded=1;arcSize=12;fillColor=#E9FBF5;strokeColor=#1FA187;strokeWidth=1.5;fontSize=22;" value="Docker" vertex="1">
+          <mxGeometry height="59" width="91" x="413" y="577" as="geometry" />
         </mxCell>
-
-        <mxCell id="11" value="&lt;b&gt;RDS&lt;/b&gt;&lt;br&gt;(PostgreSQL)" style="shape=datastore;whiteSpace=wrap;html=1;fillColor=#9575cd;strokeColor=#673ab7;fontColor=#ffffff;" vertex="1" parent="8">
-          <mxGeometry x="200" y="150" width="80" height="100" as="geometry" />
+        <mxCell id="fargate" parent="1" style="rounded=1;arcSize=12;fillColor=#E9FBF5;strokeColor=#1FA187;strokeWidth=1.5;fontSize=22;" value="AWS ECS Fargate" vertex="1">
+          <mxGeometry height="100" width="340" x="524" y="557" as="geometry" />
         </mxCell>
-
-        <!-- Connections -->
-        <mxCell id="12" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="4" target="7">
-          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        <mxCell id="postgres" parent="1" style="rounded=1;arcSize=12;fillColor=#F5F6F7;strokeColor=#9CA3AF;strokeWidth=1.5;fontSize=22;" value="DB" vertex="1">
+          <mxGeometry height="58" width="47" x="895" y="578" as="geometry" />
         </mxCell>
-        <mxCell id="13" value="" style="endArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="5" target="7">
-          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        <mxCell id="e1" edge="1" parent="1" source="dev" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeWidth=1.5;strokeColor=#5B5FD6;endArrow=open;fontSize=22;" target="ide">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="14" value="Port 80 (/)" style="endArrow=classic;html=1;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="7" target="18">
-          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        <mxCell id="e2" edge="1" parent="1" source="junie" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeWidth=1.5;strokeColor=#5B5FD6;endArrow=open;fontSize=22;" target="ide">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="15" value="Port 8080 (/api)" style="endArrow=classic;html=1;exitX=1;exitY=0.75;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="7" target="19">
-          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        <mxCell id="e3" edge="1" parent="1" source="chatgpt" style="edgeStyle=orthogonalEdgeStyle;dashed=1;strokeWidth=1.5;strokeColor=#5B5FD6;endArrow=open;fontSize=22;" target="ide">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="16" value="JDBC" style="endArrow=classic;startArrow=classic;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="10" target="11">
-          <mxGeometry width="50" height="50" relative="1" as="geometry" />
+        <mxCell id="e4" edge="1" parent="1" source="angular" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#374151;endArrow=block;fontSize=22;" target="backend">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        
-        <!-- Junie Label -->
-        <mxCell id="17" value="&lt;b&gt;Powered by Junie AI&lt;/b&gt;&lt;br&gt;(Code Generation &amp; DevOps)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontColor=#FF9900;fontSize=14;" vertex="1" parent="1">
-          <mxGeometry x="320" y="530" width="200" height="40" as="geometry" />
+        <mxCell id="e5" edge="1" parent="1" source="android" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#374151;endArrow=block;fontSize=22;" target="backend">
+          <mxGeometry relative="1" as="geometry" />
         </mxCell>
-
+        <mxCell id="e6" edge="1" parent="1" source="backend" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#374151;endArrow=block;fontSize=22;" target="fargate">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="fargate" style="edgeStyle=orthogonalEdgeStyle;strokeWidth=2;strokeColor=#374151;endArrow=block;fontSize=22;" target="postgres">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>
