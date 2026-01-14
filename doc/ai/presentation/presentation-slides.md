@@ -1,6 +1,6 @@
 % Software-Entwicklung mit AI
 % AI-gestützte Softwareentwicklung: von Idee zu Code, Tests und Doku
-%
+% Jürg Good 13.1.2026
 
 # Agenda
 - **Demo & Kontext**
@@ -9,11 +9,12 @@
   - Junie AI, ChatGPT
 - **Praxis**
   - Vorgehensweise & Beispiele
+  - AI implementiert Feature
 - **Einordnung**
   - Fazit & Ausblick
 
 ::: notes
-Kurze Übersicht über den Ablauf der Präsentation.
+Übersicht über den Ablauf der Präsentation.
 Ziel ist es, erst Kontext und Demo zu zeigen,
 dann die eingesetzten AI-Werkzeuge zu erklären
 und zum Schluss Erfahrungen und eine Einordnung zu geben.
@@ -23,15 +24,13 @@ und zum Schluss Erfahrungen und eine Einordnung zu geben.
 
 ::: columns
 ::: column
-![](files/images/angular_task_menu.png)
-- **Angular Web-UI**
-  - https://www.goodone.ch
-:::
+![**Web-UI** www.goodone.ch](files/images/angular_task_menu.png)
 
+
+:::
 ::: column
-![](files/images/android_task_menu.png)
-- **Android App**
-  - APK Download: https://www.goodone.ch/android
+![**Android App**](files/images/android_task_menu.png)
+
 :::
 :::
 
@@ -110,6 +109,17 @@ sondern folgt klaren Vorgaben.
 Der Entwickler bleibt jederzeit verantwortlich
 und prüft die Ergebnisse kritisch.
 :::
+
+# Prompting-Beispiele
+- Implementiere ... 
+- Android App mit identischen Features wie Web
+- Read-only Admin Access
+- Behebe Defekt XYZ
+- AWS Cloud Deployment
+- UI-Integrationstests mit Cypress
+- Architektur-Diagramm
+- Confluence-Dokumentation
+- Powerpoint-Päsentation 
 
 # KI-gestützt mit Junie (IDE-zentriert)
 - Direkte IDE-Integration
