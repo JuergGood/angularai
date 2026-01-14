@@ -45,13 +45,13 @@ Navigate to `backend/` and run `./mvnw spring-boot:run`.
 Navigate to `frontend/` and run `npm install` and then `npm start`.
 The Angular development server is configured to proxy `/api` requests to `http://localhost:8080`. Ensure the backend is running.
 
-### Frontend (Android)
-See the [Android Build Instructions](doc/ai/android/android-build-instructions.md) for details on how to build and run the mobile application.
+## Documentation
 
-### AWS Deployment
-Detailed instructions for AWS deployment are located in the `doc/ai/` and `deploy/` directories.
-**Important**: Before registering task definitions, ensure you replace all placeholders (e.g., `<AWS_ACCOUNT_ID>`, `<REGION>`, `<RDS_ENDPOINT>`) with your actual AWS resource values.
-
+- [User Guide](doc/userguide/user-guide.md)
+- [Admin Guide](doc/userguide/admin-guide.md)
+- [FAQ](doc/userguide/faq.md)
+- [Confluence Export Script](scripts/md_to_confluence.py)
+- [Android Build Instructions](doc/ai/android/android-build-instructions.md)
 - [AWS Setup and Infrastructure](doc/ai/aws/aws_setup.md)
 - [PostgreSQL Setup](doc/ai/backend/postgres_setup.md)
 - [ECS Fargate Configuration](doc/ai/aws/aws_fargate_config.md)

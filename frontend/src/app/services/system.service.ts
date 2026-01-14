@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface SystemInfo {
-  version: String;
-  mode: String;
+  version: string;
+  mode: string;
 }
 
 @Injectable({

@@ -15,6 +15,7 @@ import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-
 import { Task, Priority, TaskStatus } from '../../models/task.model';
 import { TaskService } from '../../services/task.service';
 import { ConfirmDialogComponent } from './confirm-dialog.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-tasks',
@@ -31,7 +32,8 @@ import { ConfirmDialogComponent } from './confirm-dialog.component';
     MatDatepickerModule,
     MatChipsModule,
     MatDialogModule,
-    DragDropModule
+    DragDropModule,
+    TranslateModule
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './tasks.component.html',

@@ -1,0 +1,11 @@
+<div class="help-container">
+  <mat-card class="help-card">
+    <mat-card-content>
+      @if (loading()) {
+        <p>{{ 'COMMON.LOADING' | translate }}</p>
+      } @else {
+        <div class="help-content" [innerHTML]="htmlContent()"></div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

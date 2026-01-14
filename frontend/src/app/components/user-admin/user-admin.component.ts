@@ -13,6 +13,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { User } from '../../models/user.model';
 import { AdminService } from '../../services/admin.service';
 import { AuthService } from '../../services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 import { ConfirmDialogComponent } from '../tasks/confirm-dialog.component';
 
 @Component({
@@ -28,7 +29,8 @@ import { ConfirmDialogComponent } from '../tasks/confirm-dialog.component';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
-    MatDialogModule
+    MatDialogModule,
+    TranslateModule
   ],
   templateUrl: './user-admin.component.html',
   styles: [`

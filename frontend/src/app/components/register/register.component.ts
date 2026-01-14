@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -22,7 +23,8 @@ import { User } from '../../models/user.model';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    TranslateModule
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './register.component.html',
@@ -57,7 +59,7 @@ export class RegisterComponent {
     login: '',
     password: '',
     email: '',
-    birthDate: '',
+    birthDate: null,
     address: ''
   };
   confirmPassword = '';
@@ -72,7 +74,7 @@ export class RegisterComponent {
 
   onSubmit() {
     if (this.user.password !== this.confirmPassword) {
-      this.error = 'Passwords do not match';
+      this.error = 'ADMIN.ERROR_PASSWORD_MATCH';
       return;
     }
 
@@ -80,13 +82,25 @@ export class RegisterComponent {
 
     this.authService.register(userToRegister).subscribe({
       next: () => {
-        this.message = 'Registration successful! Redirecting to login...';
+        this.message = 'COMMON.SUCCESS';
         this.error = '';
         this.cdr.detectChanges();
         setTimeout(() => this.router.navigate(['/login']), 2000);
       },
       error: (err) => {
-        this.error = err.error || 'Registration failed. User might already exist.';
+        if (err.status === 400 && typeof err.error === 'string') {
+          // Backend returns specific error messages as strings
+          this.error = err.error;
+          // If the backend error message matches a known key or is specific,
+          // we might need to handle it. For now, we display what backend says if it's not a translation key.
+          // But to be safe with i18n, we should probably map common ones.
+          if (this.error === 'User already exists') {
+            // We could add a translation key for this too
+            this.error = 'ADMIN.ERROR_USER_EXISTS';
+          }
+        } else {
+          this.error = 'COMMON.ERROR';
+        }
         this.message = '';
         this.cdr.detectChanges();
       }

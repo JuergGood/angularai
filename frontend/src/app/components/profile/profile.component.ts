@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { User } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -22,7 +23,8 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
-    MatDatepickerModule
+    MatDatepickerModule,
+    TranslateModule
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './profile.component.html',
@@ -89,11 +91,11 @@ export class ProfileComponent implements OnInit {
 
       this.userService.updateCurrentUser(userToSave).subscribe({
         next: () => {
-          this.message = 'Profile updated successfully!';
+          this.message = 'COMMON.SUCCESS';
           this.cdr.detectChanges();
         },
         error: () => {
-          this.message = 'Error updating profile.';
+          this.message = 'COMMON.ERROR';
           this.cdr.detectChanges();
         }
       });

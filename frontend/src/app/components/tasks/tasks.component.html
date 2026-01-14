@@ -1,29 +1,29 @@
 <div class="tasks-container">
   <div class="page-toolbar">
     <div class="left">
-      <h2 class="page-title">Task Management</h2>
+      <h2 class="page-title">{{ 'TASKS.TITLE' | translate }}</h2>
       @if (!showForm) {
         <button mat-flat-button color="primary" class="add-task-btn" (click)="showAddTaskForm()">
           <mat-icon>add</mat-icon>
-          Add Task
+          {{ 'TASKS.ADD_TASK' | translate }}
         </button>
       }
     </div>
 
     <div class="right">
       <mat-form-field appearance="outline" class="filter-select">
-        <mat-label>Filter by Status</mat-label>
+        <mat-label>{{ 'TASKS.FILTER_STATUS' | translate }}</mat-label>
         <mat-select [(ngModel)]="filterStatus" (selectionChange)="applyFilter()">
-          <mat-option value="ALL">All</mat-option>
+          <mat-option value="ALL">{{ 'TASKS.ALL' | translate }}</mat-option>
           @for (s of statuses; track s) {
-            <mat-option [value]="s">{{ s }}</mat-option>
+            <mat-option [value]="s">{{ 'TASKS.STATUS.' + s | translate }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
 
-      <button mat-stroked-button class="reset-sort-btn" (click)="resetSorting()" title="Sort by Priority (High > Medium > Low)">
+      <button mat-stroked-button class="reset-sort-btn" (click)="resetSorting()" [title]="'TASKS.SORT_DESC' | translate">
         <mat-icon>sort</mat-icon>
-        Reset Sorting
+        {{ 'TASKS.RESET_SORT' | translate }}
       </button>
     </div>
   </div>
@@ -31,42 +31,42 @@
   @if (showForm) {
     <mat-card class="add-task-card">
       <mat-card-header>
-        <mat-card-title>{{ editingTask ? 'Edit Task' : 'Add New Task' }}</mat-card-title>
+        <mat-card-title>{{ (editingTask ? 'TASKS.EDIT_TASK' : 'TASKS.ADD_TASK') | translate }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <form (ngSubmit)="onSubmit()" #taskForm="ngForm">
           <mat-form-field appearance="fill">
-            <mat-label>Title</mat-label>
+            <mat-label>{{ 'TASKS.FORM.TITLE' | translate }}</mat-label>
             <input matInput name="title" [(ngModel)]="currentTask.title" required>
           </mat-form-field>
 
           <mat-form-field appearance="fill">
-            <mat-label>Description</mat-label>
+            <mat-label>{{ 'TASKS.FORM.DESCRIPTION' | translate }}</mat-label>
             <textarea matInput name="description" [(ngModel)]="currentTask.description" required></textarea>
           </mat-form-field>
 
           <div class="form-row">
             <mat-form-field appearance="fill">
-              <mat-label>Due Date</mat-label>
+              <mat-label>{{ 'TASKS.FORM.DUE_DATE' | translate }}</mat-label>
               <input matInput [matDatepicker]="picker" name="dueDate" [(ngModel)]="currentTask.dueDate">
               <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
               <mat-datepicker #picker></mat-datepicker>
             </mat-form-field>
 
             <mat-form-field appearance="fill">
-              <mat-label>Priority</mat-label>
+              <mat-label>{{ 'TASKS.FORM.PRIORITY' | translate }}</mat-label>
               <mat-select name="priority" [(ngModel)]="currentTask.priority" required>
                 @for (p of priorities; track p) {
-                  <mat-option [value]="p">{{ p }}</mat-option>
+                  <mat-option [value]="p">{{ 'TASKS.PRIORITY.' + p | translate }}</mat-option>
                 }
               </mat-select>
             </mat-form-field>
 
             <mat-form-field appearance="fill">
-              <mat-label>Status</mat-label>
+              <mat-label>{{ 'TASKS.FORM.STATUS' | translate }}</mat-label>
               <mat-select name="status" [(ngModel)]="currentTask.status" required>
                 @for (s of statuses; track s) {
-                  <mat-option [value]="s">{{ s }}</mat-option>
+                  <mat-option [value]="s">{{ 'TASKS.STATUS.' + s | translate }}</mat-option>
                 }
               </mat-select>
             </mat-form-field>
@@ -74,9 +74,9 @@
 
           <div class="form-actions">
             <button mat-raised-button color="primary" type="submit" [disabled]="!taskForm.form.valid">
-              {{ editingTask ? 'Update Task' : 'Add Task' }}
+              {{ (editingTask ? 'TASKS.UPDATE_TASK' : 'TASKS.ADD_TASK') | translate }}
             </button>
-            <button mat-button type="button" (click)="cancelEdit()">Cancel</button>
+            <button mat-button type="button" (click)="cancelEdit()">{{ 'TASKS.CANCEL' | translate }}</button>
           </div>
         </form>
       </mat-card-content>
@@ -95,17 +95,17 @@
                 @if (task.dueDate) {
                   <span class="meta-item">
                     <mat-icon>calendar_today</mat-icon>
-                    Due: {{ task.dueDate }}
+                    {{ 'DASHBOARD.DUE' | translate }}: {{ task.dueDate }}
                   </span>
                 }
                 <span class="priority-chip" [class]="'priority-' + task.priority.toLowerCase()">
-                  {{ task.priority }}
+                  {{ 'TASKS.PRIORITY.' + task.priority | translate }}
                 </span>
               </div>
             </div>
           </div>
           <div class="task-header-right">
-            <span class="status-chip" [class]="'status-' + task.status.toLowerCase()">{{ task.status }}</span>
+            <span class="status-chip" [class]="'status-' + task.status.toLowerCase()">{{ 'TASKS.STATUS.' + task.status | translate }}</span>
           </div>
         </div>
 
@@ -114,16 +114,16 @@
         </mat-card-content>
 
         <div class="task-actions">
-          <button mat-icon-button (click)="editTask(task)" title="Edit">
+          <button mat-icon-button (click)="editTask(task)" [title]="'TASKS.EDIT_TASK' | translate">
             <mat-icon>edit</mat-icon>
           </button>
-          <button mat-icon-button color="warn" (click)="deleteTask(task)" title="Delete">
+          <button mat-icon-button color="warn" (click)="deleteTask(task)" [title]="'ADMIN.DELETE' | translate">
             <mat-icon>delete</mat-icon>
           </button>
         </div>
       </mat-card>
     } @empty {
-      <p class="empty-message">No tasks found.</p>
+      <p class="empty-message">{{ 'TASKS.EMPTY' | translate }}</p>
     }
   </div>
 </div>

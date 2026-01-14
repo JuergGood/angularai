@@ -52,7 +52,10 @@ export class AuthService {
   }
 
   logout() {
-    this.http.post(`${this.apiUrl}/logout`, {}).subscribe();
+    const auth = localStorage.getItem('auth');
+    const headers = auth ? new HttpHeaders({ 'Authorization': 'Basic ' + auth }) : new HttpHeaders();
+
+    this.http.post(`${this.apiUrl}/logout`, {}, { headers }).subscribe();
     this.currentUser.set(null);
     localStorage.removeItem('auth');
   }

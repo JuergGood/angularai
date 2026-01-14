@@ -14,6 +14,8 @@ import { MatDividerModule } from '@angular/material/divider';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AuthService } from '../../services/auth.service';
 import { SystemService, SystemInfo } from '../../services/system.service';
+import { I18nService, Language } from '../../services/i18n.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-sidenav',
@@ -31,7 +33,8 @@ import { SystemService, SystemInfo } from '../../services/system.service';
     MatTooltipModule,
     MatSnackBarModule,
     MatDialogModule,
-    MatDividerModule
+    MatDividerModule,
+    TranslateModule
   ],
   templateUrl: './sidenav.component.html',
   styles: [`
@@ -224,6 +227,7 @@ export class SidenavComponent {
 
   constructor(
     public authService: AuthService,
+    public i18nService: I18nService,
     private systemService: SystemService,
     private router: Router,
     private snackBar: MatSnackBar,
@@ -244,6 +248,10 @@ export class SidenavComponent {
     this.authService.logout();
     this.snackBar.open('Logout successful', 'Close', { duration: 3000 });
     this.router.navigate(['/login']);
+  }
+
+  setLanguage(lang: string) {
+    this.i18nService.setLanguage(lang as Language);
   }
 
   showHelp() {

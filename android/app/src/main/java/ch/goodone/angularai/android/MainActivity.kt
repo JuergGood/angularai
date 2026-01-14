@@ -29,6 +29,7 @@ import ch.goodone.angularai.android.ui.admin.AdminUserListScreen
 import ch.goodone.angularai.android.ui.auth.AuthViewModel
 import ch.goodone.angularai.android.ui.auth.LoginScreen
 import ch.goodone.angularai.android.ui.auth.RegisterScreen
+import ch.goodone.angularai.android.ui.dashboard.DashboardScreen
 import ch.goodone.angularai.android.ui.log.LogScreen
 import ch.goodone.angularai.android.ui.profile.ProfileScreen
 import ch.goodone.angularai.android.ui.tasks.TaskEditScreen
@@ -123,6 +124,12 @@ fun MainApp(
                 }
                 Divider()
                 if (isLoggedIn) {
+                    NavigationDrawerItem(
+                        label = { Text("Dashboard") },
+                        selected = false,
+                        onClick = { scope.launch { drawerState.close() }; navController.navigate("dashboard") },
+                        icon = { Icon(Icons.Default.Dashboard, contentDescription = null) }
+                    )
                     NavigationDrawerItem(
                         label = { Text("Tasks") },
                         selected = false,

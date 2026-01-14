@@ -16,6 +16,7 @@ import { LogService } from '../../services/log.service';
 import { ActionLog } from '../../models/action-log.model';
 import { ConfirmDialogComponent } from '../tasks/confirm-dialog.component';
 import { AuthService } from '../../services/auth.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-log',
@@ -33,7 +34,8 @@ import { AuthService } from '../../services/auth.service';
     MatNativeDateModule,
     MatButtonModule,
     MatIconModule,
-    MatDialogModule
+    MatDialogModule,
+    TranslateModule
   ],
   templateUrl: './log.component.html',
   styleUrls: ['./log.component.css']

@@ -1,56 +1,71 @@
 <div class="register-page">
   <mat-card class="register-card">
     <mat-card-header>
-      <mat-card-title>Register New User</mat-card-title>
+      <mat-card-title>{{ 'ADMIN.CREATE_USER' | translate }}</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
         <mat-form-field appearance="fill">
-          <mat-label>First Name</mat-label>
-          <input matInput name="firstName" [(ngModel)]="user.firstName" required>
+          <mat-label>{{ 'ADMIN.FIRST_NAME' | translate }}</mat-label>
+          <input matInput name="firstName" [(ngModel)]="user.firstName" required #firstName="ngModel">
+          @if (firstName.invalid && (firstName.dirty || firstName.touched)) {
+            <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="fill">
-          <mat-label>Last Name</mat-label>
-          <input matInput name="lastName" [(ngModel)]="user.lastName" required>
+          <mat-label>{{ 'ADMIN.LAST_NAME' | translate }}</mat-label>
+          <input matInput name="lastName" [(ngModel)]="user.lastName" required #lastName="ngModel">
+          @if (lastName.invalid && (lastName.dirty || lastName.touched)) {
+            <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="fill">
-          <mat-label>Login</mat-label>
-          <input matInput name="login" [(ngModel)]="user.login" required>
+          <mat-label>{{ 'ADMIN.LOGIN' | translate }}</mat-label>
+          <input matInput name="login" [(ngModel)]="user.login" required #login="ngModel">
+          @if (login.invalid && (login.dirty || login.touched)) {
+            <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="fill">
-          <mat-label>Password</mat-label>
-          <input matInput type="password" name="password" [(ngModel)]="user.password" required id="password">
+          <mat-label>{{ 'ADMIN.PASSWORD' | translate }}</mat-label>
+          <input matInput type="password" name="password" [(ngModel)]="user.password" required id="password" #password="ngModel">
+          @if (password.invalid && (password.dirty || password.touched)) {
+            <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="fill">
-          <mat-label>Confirm Password</mat-label>
-          <input matInput type="password" name="confirmPassword" [(ngModel)]="confirmPassword" required id="confirm-password">
+          <mat-label>{{ 'ADMIN.CONFIRM_PASSWORD' | translate }}</mat-label>
+          <input matInput type="password" name="confirmPassword" [(ngModel)]="confirmPassword" required id="confirm-password" #confirmPwd="ngModel">
+          @if (confirmPwd.invalid && (confirmPwd.dirty || confirmPwd.touched)) {
+            <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+          }
+          @if (user.password !== confirmPassword && confirmPassword && !confirmPwd.invalid) {
+            <mat-error>{{ 'ADMIN.ERROR_PASSWORD_MATCH' | translate }}</mat-error>
+          }
         </mat-form-field>
 
         <mat-form-field appearance="fill">
-          <mat-label>Email</mat-label>
+          <mat-label>{{ 'ADMIN.EMAIL' | translate }}</mat-label>
           <input matInput type="email" name="email" [(ngModel)]="user.email" required email #email="ngModel">
           @if (email.invalid && (email.dirty || email.touched)) {
-            <mat-error>Please enter a valid email address</mat-error>
+            <mat-error>{{ 'ADMIN.ERROR_EMAIL' | translate }}</mat-error>
           }
         </mat-form-field>
 
         <div class="actions">
-          <button mat-raised-button color="primary" type="submit" [disabled]="!registerForm.form.valid || user.password !== confirmPassword" id="register-btn">Register</button>
-          <a mat-button routerLink="/login">Back to Login</a>
+          <button mat-raised-button color="primary" type="submit" [disabled]="!registerForm.form.valid || user.password !== confirmPassword" id="register-btn">{{ 'ADMIN.ADD_USER' | translate }}</button>
+          <a mat-button routerLink="/login">{{ 'NAV.LOGIN' | translate }}</a>
         </div>
 
-        @if (user.password !== confirmPassword && confirmPassword) {
-          <p class="error">Passwords do not match</p>
-        }
         @if (error) {
-          <p class="error">{{ error }}</p>
+          <p class="error">{{ error | translate }}</p>
         }
         @if (message) {
-          <p class="success">{{ message }}</p>
+          <p class="success">{{ message | translate }}</p>
         }
       </form>
     </mat-card-content>

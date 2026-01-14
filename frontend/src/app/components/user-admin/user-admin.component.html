@@ -2,11 +2,11 @@
   @if (authService.isAdmin()) {
     <div class="page-toolbar">
       <div class="left">
-        <h2 class="page-title">User Administration</h2>
+        <h2 class="page-title">{{ 'ADMIN.TITLE' | translate }}</h2>
         @if (!editingUser && authService.hasAdminWriteAccess()) {
           <button mat-flat-button color="primary" class="add-user-btn" (click)="createNewUser()">
             <mat-icon>person_add</mat-icon>
-            Add User
+            {{ 'ADMIN.ADD_USER' | translate }}
           </button>
         }
       </div>
@@ -18,40 +18,40 @@
           @if (!isMobile) {
             <table mat-table [dataSource]="users">
               <ng-container matColumnDef="login">
-                <th mat-header-cell *matHeaderCellDef> Login </th>
+                <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN.LOGIN' | translate }} </th>
                 <td mat-cell *matCellDef="let user">
                   <span class="user-login">{{user.login}}</span>
                 </td>
               </ng-container>
 
               <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef> Name </th>
+                <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN.NAME' | translate }} </th>
                 <td mat-cell *matCellDef="let user"> {{user.firstName}} {{user.lastName}} </td>
               </ng-container>
 
               <ng-container matColumnDef="email">
-                <th mat-header-cell *matHeaderCellDef> Email </th>
+                <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN.EMAIL' | translate }} </th>
                 <td mat-cell *matCellDef="let user"> {{user.email}} </td>
               </ng-container>
 
               <ng-container matColumnDef="role">
-                <th mat-header-cell *matHeaderCellDef> Role </th>
+                <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN.ROLE' | translate }} </th>
                 <td mat-cell *matCellDef="let user">
                   <span class="role-chip" [class.role-admin]="user.role === 'ROLE_ADMIN' || user.role === 'ROLE_ADMIN_READ'" [class.role-user]="user.role === 'ROLE_USER'">
-                    {{user.role}}
+                    {{ 'ADMIN.ROLES.' + (user.role?.replace('ROLE_', '') || 'USER') | translate }}
                   </span>
                 </td>
               </ng-container>
 
               <ng-container matColumnDef="actions">
-                <th mat-header-cell *matHeaderCellDef> Actions </th>
+                <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN.ACTIONS' | translate }} </th>
                 <td mat-cell *matCellDef="let user">
                   <div class="action-buttons">
-                    <button mat-icon-button color="primary" (click)="editUser(user)" [title]="authService.hasAdminWriteAccess() ? 'Edit' : 'View'">
+                    <button mat-icon-button color="primary" (click)="editUser(user)" [title]="authService.hasAdminWriteAccess() ? ('ADMIN.EDIT_USER' | translate) : ('ADMIN.VIEW_USER' | translate)">
                       <mat-icon>{{ authService.hasAdminWriteAccess() ? 'edit' : 'visibility' }}</mat-icon>
                     </button>
                     @if (authService.hasAdminWriteAccess()) {
-                      <button mat-icon-button color="warn" (click)="deleteUser(user)" [disabled]="user.login === authService.currentUser()?.login" title="Delete">
+                      <button mat-icon-button color="warn" (click)="deleteUser(user)" [disabled]="user.login === authService.currentUser()?.login" [title]="'ADMIN.DELETE' | translate">
                         <mat-icon>delete</mat-icon>
                       </button>
                     }
@@ -70,23 +70,23 @@
                     <mat-card-title>{{ user.login }}</mat-card-title>
                     <mat-card-subtitle>
                       <span class="role-chip" [class.role-admin]="user.role === 'ROLE_ADMIN' || user.role === 'ROLE_ADMIN_READ'" [class.role-user]="user.role === 'ROLE_USER'">
-                        {{ user.role }}
+                        {{ 'ADMIN.ROLES.' + (user.role?.replace('ROLE_', '') || 'USER') | translate }}
                       </span>
                     </mat-card-subtitle>
                   </mat-card-header>
                   <mat-card-content>
-                    <p><strong>Name:</strong> {{ user.firstName }} {{ user.lastName }}</p>
-                    <p><strong>Email:</strong> {{ user.email }}</p>
+                    <p><strong>{{ 'ADMIN.NAME' | translate }}:</strong> {{ user.firstName }} {{ user.lastName }}</p>
+                    <p><strong>{{ 'ADMIN.EMAIL' | translate }}:</strong> {{ user.email }}</p>
                   </mat-card-content>
                   <mat-card-actions align="end">
-                    <button mat-button color="primary" (click)="editUser(user)">{{ authService.hasAdminWriteAccess() ? 'Edit' : 'View' }}</button>
+                    <button mat-button color="primary" (click)="editUser(user)">{{ (authService.hasAdminWriteAccess() ? 'ADMIN.EDIT_USER' : 'ADMIN.VIEW_USER') | translate }}</button>
                     @if (authService.hasAdminWriteAccess()) {
-                      <button mat-button color="warn" (click)="deleteUser(user)" [disabled]="user.login === authService.currentUser()?.login">Delete</button>
+                      <button mat-button color="warn" (click)="deleteUser(user)" [disabled]="user.login === authService.currentUser()?.login">{{ 'ADMIN.DELETE' | translate }}</button>
                     }
                   </mat-card-actions>
                 </mat-card>
               } @empty {
-                <p>No users found.</p>
+                <p>{{ 'ADMIN.NO_USERS' | translate }}</p>
               }
             </div>
           }
@@ -97,50 +97,50 @@
     @if (editingUser) {
       <mat-card class="edit-card">
         <mat-card-header>
-          <mat-card-title>{{ isCreating ? 'Create New User' : (authService.hasAdminWriteAccess() ? 'Edit User: ' : 'View User: ') + editingUser.login }}</mat-card-title>
+          <mat-card-title>{{ (isCreating ? 'ADMIN.CREATE_USER' : (authService.hasAdminWriteAccess() ? 'ADMIN.EDIT_USER' : 'ADMIN.VIEW_USER')) | translate }}{{ isCreating ? '' : ': ' + editingUser.login }}</mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <form (ngSubmit)="saveUser()" #adminUserForm="ngForm">
             <div class="form-grid">
               <mat-form-field appearance="outline">
-                <mat-label>First Name</mat-label>
+                <mat-label>{{ 'ADMIN.FIRST_NAME' | translate }}</mat-label>
                 <input matInput name="firstName" [(ngModel)]="editingUser.firstName" required [disabled]="!authService.hasAdminWriteAccess()">
               </mat-form-field>
               <mat-form-field appearance="outline">
-                <mat-label>Last Name</mat-label>
+                <mat-label>{{ 'ADMIN.LAST_NAME' | translate }}</mat-label>
                 <input matInput name="lastName" [(ngModel)]="editingUser.lastName" required [disabled]="!authService.hasAdminWriteAccess()">
               </mat-form-field>
               <mat-form-field appearance="outline">
-                <mat-label>Login</mat-label>
+                <mat-label>{{ 'ADMIN.LOGIN' | translate }}</mat-label>
                 <input matInput name="login" [(ngModel)]="editingUser.login" required [disabled]="!isCreating || !authService.hasAdminWriteAccess()">
               </mat-form-field>
               @if (isCreating) {
                 <mat-form-field appearance="outline">
-                  <mat-label>Password</mat-label>
+                  <mat-label>{{ 'ADMIN.PASSWORD' | translate }}</mat-label>
                   <input matInput type="password" name="password" [(ngModel)]="editingUser.password" required>
                 </mat-form-field>
               }
               <mat-form-field appearance="outline">
-                <mat-label>Email</mat-label>
+                <mat-label>{{ 'ADMIN.EMAIL' | translate }}</mat-label>
                 <input matInput type="email" name="email" [(ngModel)]="editingUser.email" required email #email="ngModel" [disabled]="!authService.hasAdminWriteAccess()">
                 @if (email.invalid && (email.dirty || email.touched)) {
-                  <mat-error>Please enter a valid email address</mat-error>
+                  <mat-error>{{ 'ADMIN.ERROR_EMAIL' | translate }}</mat-error>
                 }
               </mat-form-field>
               <mat-form-field appearance="outline">
-                <mat-label>Role</mat-label>
+                <mat-label>{{ 'ADMIN.ROLE' | translate }}</mat-label>
                 <mat-select name="role" [(ngModel)]="editingUser.role" required [disabled]="!authService.hasAdminWriteAccess() || (!isCreating && editingUser.login === authService.currentUser()?.login)">
-                  <mat-option value="ROLE_USER">User</mat-option>
-                  <mat-option value="ROLE_ADMIN">Admin</mat-option>
-                  <mat-option value="ROLE_ADMIN_READ">Admin (Read-only)</mat-option>
+                  <mat-option value="ROLE_USER">{{ 'ADMIN.ROLES.USER' | translate }}</mat-option>
+                  <mat-option value="ROLE_ADMIN">{{ 'ADMIN.ROLES.ADMIN' | translate }}</mat-option>
+                  <mat-option value="ROLE_ADMIN_READ">{{ 'ADMIN.ROLES.ADMIN_READ' | translate }}</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
             <div class="form-actions">
               @if (authService.hasAdminWriteAccess()) {
-                <button mat-flat-button color="primary" type="submit" [disabled]="!adminUserForm.form.valid">{{ isCreating ? 'Create User' : 'Save Changes' }}</button>
+                <button mat-flat-button color="primary" type="submit" [disabled]="!adminUserForm.form.valid">{{ (isCreating ? 'ADMIN.ADD_USER' : 'ADMIN.SAVE') | translate }}</button>
               }
-              <button mat-button type="button" (click)="cancelEdit()">{{ authService.hasAdminWriteAccess() ? 'Cancel' : 'Close' }}</button>
+              <button mat-button type="button" (click)="cancelEdit()">{{ (authService.hasAdminWriteAccess() ? 'ADMIN.CANCEL' : 'ADMIN.CLOSE') | translate }}</button>
             </div>
             @if (error) {
               <p class="error">{{error}}</p>
@@ -152,7 +152,7 @@
   } @else {
     <mat-card class="main-card">
       <mat-card-content style="padding: 24px;">
-        <p>Access Denied. Admin privileges required.</p>
+        <p>{{ 'ADMIN.ACCESS_DENIED' | translate }}</p>
       </mat-card-content>
     </mat-card>
   }

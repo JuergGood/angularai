@@ -1,10 +1,15 @@
 package ch.goodone.angularai.backend.repository;
 
+import ch.goodone.angularai.backend.model.Priority;
 import ch.goodone.angularai.backend.model.Task;
 import ch.goodone.angularai.backend.model.User;
+import ch.goodone.angularai.backend.model.TaskStatus;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByUserOrderByPositionAsc(User user);
+    long countByStatus(TaskStatus status);
+    List<Task> findByPriorityOrderByIdDesc(Priority priority, Pageable pageable);
 }

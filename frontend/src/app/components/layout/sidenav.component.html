@@ -14,23 +14,29 @@
     </div>
     <mat-nav-list>
       @if (authService.isLoggedIn()) {
-        <a mat-list-item routerLink="/tasks" routerLinkActive="active-link" [title]="isCollapsed() ? 'Tasks' : ''">
+        <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link" [title]="isCollapsed() ? ('NAV.DASHBOARD_SHORT' | translate) : ''">
+          <mat-icon matListItemIcon>dashboard</mat-icon>
+          @if (!isCollapsed()) {
+            <span matListItemTitle>{{ 'NAV.DASHBOARD' | translate }}</span>
+          }
+        </a>
+        <a mat-list-item routerLink="/tasks" routerLinkActive="active-link" [title]="isCollapsed() ? ('NAV.TASKS' | translate) : ''">
           <mat-icon matListItemIcon>list_alt</mat-icon>
           @if (!isCollapsed()) {
-            <span matListItemTitle>Tasks</span>
+            <span matListItemTitle>{{ 'NAV.TASKS' | translate }}</span>
           }
         </a>
         @if (authService.isAdmin()) {
-          <a mat-list-item routerLink="/user-admin" routerLinkActive="active-link" [title]="isCollapsed() ? 'User Admin' : ''">
+          <a mat-list-item routerLink="/user-admin" routerLinkActive="active-link" [title]="isCollapsed() ? ('NAV.USER_ADMIN' | translate) : ''">
             <mat-icon matListItemIcon>supervisor_account</mat-icon>
             @if (!isCollapsed()) {
-              <span matListItemTitle>User Admin</span>
+              <span matListItemTitle>{{ 'NAV.USER_ADMIN' | translate }}</span>
             }
           </a>
-          <a mat-list-item routerLink="/logs" routerLinkActive="active-link" [title]="isCollapsed() ? 'Logs' : ''">
+          <a mat-list-item routerLink="/logs" routerLinkActive="active-link" [title]="isCollapsed() ? ('NAV.LOGS' | translate) : ''">
             <mat-icon matListItemIcon>history</mat-icon>
             @if (!isCollapsed()) {
-              <span matListItemTitle>Logs</span>
+              <span matListItemTitle>{{ 'NAV.LOGS' | translate }}</span>
             }
           </a>
         }
@@ -52,54 +58,123 @@
       </div>
       <div class="header-spacer"></div>
 
-      <div class="user-info-group">
-        <div class="user-profile-button" [matMenuTriggerFor]="profileMenu">
-          <div class="user-avatar">
-            <mat-icon>person</mat-icon>
+      @if (authService.isLoggedIn()) {
+        <div class="user-info-group">
+          <div class="user-profile-button" [matMenuTriggerFor]="profileMenu">
+            <div class="user-avatar">
+              <mat-icon>person</mat-icon>
+            </div>
+            <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
           </div>
-          <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
-        </div>
-        <mat-menu #profileMenu="matMenu">
-          @if (authService.isLoggedIn()) {
+          <mat-menu #profileMenu="matMenu">
             <div class="user-menu-header">
               <span class="user-menu-name">{{ authService.currentUser()?.login }}</span>
-              <span class="user-menu-label">Logged in</span>
+              <span class="user-menu-label">{{ 'ADMIN.LOGIN' | translate }}</span>
             </div>
             <mat-divider></mat-divider>
             <button mat-menu-item routerLink="/profile">
               <mat-icon>person</mat-icon>
-              <span>Profile</span>
+              <span>{{ 'NAV.PROFILE' | translate }}</span>
             </button>
             <button mat-menu-item (click)="onLogout()">
               <mat-icon>logout</mat-icon>
-              <span>Logout</span>
+              <span>{{ 'NAV.LOGOUT' | translate }}</span>
             </button>
-          } @else {
-            <button mat-menu-item routerLink="/login">
-              <mat-icon>login</mat-icon>
-              <span>Login</span>
-            </button>
-          }
-        </mat-menu>
+          </mat-menu>
 
-        <button mat-icon-button [matMenuTriggerFor]="settingsMenu" class="settings-button" title="Settings">
-          <mat-icon>settings</mat-icon>
-        </button>
-        <mat-menu #settingsMenu="matMenu">
-          <button mat-menu-item disabled>
-            <mat-icon>info</mat-icon>
-            <span>Version: {{ systemInfo()?.version || 'Loading...' }}</span>
+          <button mat-icon-button [matMenuTriggerFor]="settingsMenu" class="settings-button" [title]="'NAV.SETTINGS' | translate">
+            <mat-icon>settings</mat-icon>
           </button>
-          <button mat-menu-item disabled>
-            <mat-icon>layers</mat-icon>
-            <span>Mode: {{ systemInfo()?.mode || 'Loading...' }}</span>
+          <mat-menu #settingsMenu="matMenu">
+            <!-- Language Submenu -->
+            <button mat-menu-item [matMenuTriggerFor]="languageMenu">
+              <mat-icon>language</mat-icon>
+              <span>{{ 'NAV.LANGUAGE' | translate }}</span>
+            </button>
+
+            <!-- Help Submenu -->
+            <button mat-menu-item [matMenuTriggerFor]="helpMenu">
+              <mat-icon>help</mat-icon>
+              <span>{{ 'NAV.HELP' | translate }}</span>
+            </button>
+
+            <!-- About Submenu -->
+            <button mat-menu-item [matMenuTriggerFor]="aboutMenu">
+              <mat-icon>info</mat-icon>
+              <span>{{ 'NAV.ABOUT' | translate }}</span>
+            </button>
+          </mat-menu>
+
+          <!-- Submenus -->
+          <mat-menu #languageMenu="matMenu">
+            <button mat-menu-item (click)="setLanguage('en')">
+              <mat-icon>{{ i18nService.currentLang() === 'en' ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
+              <span>{{ 'NAV.ENGLISH' | translate }}</span>
+            </button>
+            <button mat-menu-item (click)="setLanguage('de-ch')">
+              <mat-icon>{{ i18nService.currentLang() === 'de-ch' ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
+              <span>{{ 'NAV.GERMAN' | translate }}</span>
+            </button>
+          </mat-menu>
+
+          <mat-menu #helpMenu="matMenu">
+            <button mat-menu-item routerLink="/help/readme">
+              <mat-icon>description</mat-icon>
+              <span>{{ 'NAV.README' | translate }}</span>
+            </button>
+            <button mat-menu-item routerLink="/help/user-guide">
+              <mat-icon>book</mat-icon>
+              <span>{{ 'NAV.USER_GUIDE' | translate }}</span>
+            </button>
+            @if (authService.isAdmin()) {
+              <button mat-menu-item routerLink="/help/admin-guide">
+                <mat-icon>admin_panel_settings</mat-icon>
+                <span>{{ 'NAV.ADMIN_GUIDE' | translate }}</span>
+              </button>
+            }
+            <button mat-menu-item routerLink="/help/faq">
+              <mat-icon>quiz</mat-icon>
+              <span>{{ 'NAV.FAQ' | translate }}</span>
+            </button>
+          </mat-menu>
+
+          <mat-menu #aboutMenu="matMenu">
+            <button mat-menu-item disabled>
+              <mat-icon>info</mat-icon>
+              <span>{{ 'NAV.VERSION' | translate }}: {{ systemInfo()?.version || ('COMMON.LOADING' | translate) }}</span>
+            </button>
+            <button mat-menu-item disabled>
+              <mat-icon>layers</mat-icon>
+              <span>{{ 'NAV.MODE' | translate }}: {{ systemInfo()?.mode || ('COMMON.LOADING' | translate) }}</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button mat-menu-item (click)="showHelp()">
+              <mat-icon>help_outline</mat-icon>
+              <span>Legacy Help</span>
+            </button>
+          </mat-menu>
+        </div>
+      } @else {
+        <div class="user-info-group">
+          <button mat-button routerLink="/login" class="settings-button">
+            <mat-icon>login</mat-icon>
+            <span>{{ 'ADMIN.LOGIN' | translate }}</span>
           </button>
-          <button mat-menu-item (click)="showHelp()">
-            <mat-icon>help</mat-icon>
-            <span>Help</span>
+          <button mat-icon-button [matMenuTriggerFor]="guestLanguageMenu" class="settings-button" [title]="'NAV.LANGUAGE' | translate">
+            <mat-icon>language</mat-icon>
           </button>
-        </mat-menu>
-      </div>
+          <mat-menu #guestLanguageMenu="matMenu">
+            <button mat-menu-item (click)="setLanguage('en')">
+              <mat-icon>{{ i18nService.currentLang() === 'en' ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
+              <span>{{ 'NAV.ENGLISH' | translate }}</span>
+            </button>
+            <button mat-menu-item (click)="setLanguage('de-ch')">
+              <mat-icon>{{ i18nService.currentLang() === 'de-ch' ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
+              <span>{{ 'NAV.GERMAN' | translate }}</span>
+            </button>
+          </mat-menu>
+        </div>
+      }
     </mat-toolbar>
     <main>
       <ng-content></ng-content>
