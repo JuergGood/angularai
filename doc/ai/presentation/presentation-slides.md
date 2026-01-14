@@ -112,13 +112,14 @@ und prüft die Ergebnisse kritisch.
 
 # Prompting-Beispiele
 - Implementiere ... 
-- Android App mit identischen Features wie Web
+- Android App mit identischen Features wie Web App
+- Applikation zu diesem Screenshot
 - Read-only Admin Access
 - Behebe Defekt XYZ
 - AWS Cloud Deployment
 - UI-Integrationstests mit Cypress
 - Architektur-Diagramm
-- Confluence-Dokumentation
+- Confluence-Dokumentation und User Guide
 - Powerpoint-Päsentation 
 
 # KI-gestützt mit Junie (IDE-zentriert)

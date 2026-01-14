@@ -75,11 +75,9 @@ public class AuthController {
         if (userDTO.getEmail() == null || userDTO.getEmail().isBlank()) {
             return ResponseEntity.badRequest().body("Email is required");
         }
-        /*
         if (userDTO.getBirthDate() == null) {
             return ResponseEntity.badRequest().body("Birth date is required or invalid format. Please use yyyy-MM-dd");
         }
-        */
         if (!userDTO.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             return ResponseEntity.badRequest().body("Invalid email format");
         }

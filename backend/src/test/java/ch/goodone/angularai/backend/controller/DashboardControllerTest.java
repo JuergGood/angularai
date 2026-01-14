@@ -67,4 +67,11 @@ public class DashboardControllerTest {
                 .andExpect(jsonPath("$.summary.openTasks").value(10))
                 .andExpect(jsonPath("$.taskDistribution.total").value(30));
     }
+
+    @Test
+    public void getDashboardData_ShouldReturnUnauthorized_WhenNoUser() throws Exception {
+        mockMvc.perform(get("/api/dashboard")
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized());
+    }
 }

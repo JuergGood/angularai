@@ -174,6 +174,21 @@ class AuthControllerTest {
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Birth date is required or invalid format. Please use yyyy-MM-dd"));
+    }
+
+    @Test
+    void logout_shouldReturnOk() throws Exception {
+        mockMvc.perform(post("/api/auth/logout"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void register_shouldReturnBadRequest_whenUserDTOIsNull() throws Exception {
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(""))
                 .andExpect(status().isBadRequest());
     }
 

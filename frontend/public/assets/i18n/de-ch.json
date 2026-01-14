@@ -3,7 +3,7 @@
     "DASHBOARD": "Dashboard",
     "TASKS": "Aufgaben",
     "USER_ADMIN": "Benutzerverwaltung",
-    "LOGS": "Protokolle",
+    "LOGS": "Logs",
     "PROFILE": "Profil",
     "LOGOUT": "Abmelden",
     "LOGIN": "Anmelden",
@@ -26,7 +26,7 @@
     "OPEN_TASKS": "Offene Aufgaben",
     "ACTIVE_USERS": "Aktive Benutzer",
     "COMPLETED_TASKS": "Erledigte Aufgaben",
-    "TODAY_LOGS": "Heutige Protokolle",
+    "TODAY_LOGS": "Heutige Logs",
     "TODAY": "heute",
     "SINCE_1H": "seit 1 Std.",
     "TASK_OVERVIEW": "Aufgabenübersicht",
@@ -106,8 +106,8 @@
     "ERROR_USER_EXISTS": "Benutzer existiert bereits"
   },
   "LOGS": {
-    "TITLE": "Systemprotokolle",
-    "CLEAR_LOGS": "Alle Protokolle löschen",
+    "TITLE": "Logs",
+    "CLEAR_LOGS": "Alle Logs löschen",
     "ACTION_TYPE": "Aktionstyp",
     "ALL_ACTIONS": "Alle Aktionen",
     "TASKS": "Aufgaben",
@@ -120,7 +120,7 @@
     "LOGIN": "Login",
     "ACTION": "Aktion",
     "DETAILS": "Details",
-    "PAGE_LABEL": "Seite der Protokolle auswählen"
+    "PAGE_LABEL": "Seite der Logs auswählen"
   },
   "COMMON": {
     "LOADING": "Wird geladen...",
