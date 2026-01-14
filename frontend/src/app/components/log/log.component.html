@@ -2,10 +2,12 @@
   <div class="page-toolbar">
     <div class="left">
       <h2 class="page-title">System Logs</h2>
-      <button mat-stroked-button color="warn" class="clear-btn" (click)="clearLog()">
-        <mat-icon>delete_sweep</mat-icon>
-        Clear All Logs
-      </button>
+      @if (authService.hasAdminWriteAccess()) {
+        <button mat-stroked-button color="warn" class="clear-btn" (click)="clearLog()">
+          <mat-icon>delete_sweep</mat-icon>
+          Clear All Logs
+        </button>
+      }
     </div>
 
     <div class="right">

@@ -94,4 +94,22 @@ public class ActionLogControllerTest {
 
         verify(actionLogService).clearLogs();
     }
+
+    @Test
+    @WithMockUser(username = "adminread", roles = {"ADMIN_READ"})
+    void adminReadShouldSeeLogs() throws Exception {
+        ActionLogDTO logDTO = new ActionLogDTO(1L, LocalDateTime.now(), "admin", "LOGIN", "Admin logged in");
+        when(actionLogService.getLogs(any(), any(), any(), any()))
+                .thenReturn(new PageImpl<>(Collections.singletonList(logDTO), PageRequest.of(0, 10), 1));
+
+        mockMvc.perform(get("/api/admin/logs"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "adminread", roles = {"ADMIN_READ"})
+    void adminReadShouldNotClearLogs() throws Exception {
+        mockMvc.perform(delete("/api/admin/logs"))
+                .andExpect(status().isForbidden());
+    }
 }

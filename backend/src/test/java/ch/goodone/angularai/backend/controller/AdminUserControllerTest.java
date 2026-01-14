@@ -125,4 +125,32 @@ public class AdminUserControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Cannot delete your own account"));
     }
+
+    @Test
+    @WithMockUser(username = "adminread", authorities = {"ROLE_ADMIN_READ"})
+    void adminReadShouldSeeUsers() throws Exception {
+        when(userRepository.findAll()).thenReturn(Collections.singletonList(normalUser));
+
+        mockMvc.perform(get("/api/admin/users"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].login").value("user"));
+    }
+
+    @Test
+    @WithMockUser(username = "adminread", authorities = {"ROLE_ADMIN_READ"})
+    void adminReadShouldNotUpdateUser() throws Exception {
+        UserDTO updateDTO = new UserDTO(2L, "Normal", "User", "user", "user@example.com", LocalDate.now(), "User Address", "ROLE_ADMIN");
+
+        mockMvc.perform(put("/api/admin/users/2")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDTO)))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "adminread", authorities = {"ROLE_ADMIN_READ"})
+    void adminReadShouldNotDeleteUser() throws Exception {
+        mockMvc.perform(delete("/api/admin/users/2"))
+                .andExpect(status().isForbidden());
+    }
 }

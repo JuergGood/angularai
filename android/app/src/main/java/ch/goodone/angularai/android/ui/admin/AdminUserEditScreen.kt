@@ -5,6 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import ch.goodone.angularai.android.ui.auth.AuthViewModel
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -16,9 +17,12 @@ fun AdminUserEditScreen(
     userId: Long?,
     onSave: () -> Unit,
     onBack: () -> Unit,
-    viewModel: AdminViewModel = hiltViewModel()
+    viewModel: AdminViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
+    val currentUser by authViewModel.currentUser.collectAsState()
+    val canEdit = currentUser?.role == "ROLE_ADMIN"
     val user = remember(userId, state.users) { userId?.let { id -> state.users.find { it.id == id } } }
     
     var firstName by remember { mutableStateOf("") }
@@ -48,31 +52,35 @@ fun AdminUserEditScreen(
             .padding(16.dp)
             .verticalScroll(rememberScrollState())
     ) {
-        Text(text = if (user == null) "Add User" else "Edit User", style = MaterialTheme.typography.headlineMedium)
+        Text(text = if (user == null) "Add User" else (if (canEdit) "Edit User" else "View User"), style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
         
-        TextField(value = firstName, onValueChange = { firstName = it }, label = { Text("First Name") }, modifier = Modifier.fillMaxWidth())
+        TextField(value = firstName, onValueChange = { firstName = it }, label = { Text("First Name") }, modifier = Modifier.fillMaxWidth(), enabled = canEdit)
         Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = lastName, onValueChange = { lastName = it }, label = { Text("Last Name") }, modifier = Modifier.fillMaxWidth())
+        TextField(value = lastName, onValueChange = { lastName = it }, label = { Text("Last Name") }, modifier = Modifier.fillMaxWidth(), enabled = canEdit)
         Spacer(modifier = Modifier.height(8.dp))
         if (user == null) {
-            TextField(value = login, onValueChange = { login = it }, label = { Text("Login") }, modifier = Modifier.fillMaxWidth())
+            TextField(value = login, onValueChange = { login = it }, label = { Text("Login") }, modifier = Modifier.fillMaxWidth(), enabled = canEdit)
             Spacer(modifier = Modifier.height(8.dp))
-            TextField(value = password, onValueChange = { password = it }, label = { Text("Password") }, modifier = Modifier.fillMaxWidth())
+            TextField(value = password, onValueChange = { password = it }, label = { Text("Password") }, modifier = Modifier.fillMaxWidth(), enabled = canEdit)
             Spacer(modifier = Modifier.height(8.dp))
         }
-        TextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
+        TextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth(), enabled = canEdit)
         Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = birthDate, onValueChange = { birthDate = it }, label = { Text("Birth Date (yyyy-MM-dd)") }, modifier = Modifier.fillMaxWidth())
+        TextField(value = birthDate, onValueChange = { birthDate = it }, label = { Text("Birth Date (yyyy-MM-dd)") }, modifier = Modifier.fillMaxWidth(), enabled = canEdit)
         Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = address, onValueChange = { address = it }, label = { Text("Address") }, modifier = Modifier.fillMaxWidth())
+        TextField(value = address, onValueChange = { address = it }, label = { Text("Address") }, modifier = Modifier.fillMaxWidth(), enabled = canEdit)
         Spacer(modifier = Modifier.height(8.dp))
         
         Text("Role")
-        Row {
-            listOf("ROLE_USER", "ROLE_ADMIN").forEach { r ->
+        FlowRow {
+            listOf("ROLE_USER", "ROLE_ADMIN", "ROLE_ADMIN_READ").forEach { r ->
                 Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
-                    RadioButton(selected = role == r, onClick = { role = r })
+                    RadioButton(
+                        selected = role == r,
+                        onClick = { role = r },
+                        enabled = canEdit && (user == null || user.login != currentUser?.login)
+                    )
                     Text(text = r)
                 }
             }
@@ -80,26 +88,28 @@ fun AdminUserEditScreen(
         
         Spacer(modifier = Modifier.height(16.dp))
         
-        Button(
-            onClick = {
-                val newUser = (user ?: User()).copy(
-                    firstName = firstName,
-                    lastName = lastName,
-                    login = if (user == null) login else user.login,
-                    email = email,
-                    birthDate = birthDate,
-                    address = address,
-                    role = role
-                )
-                viewModel.onSaveUser(newUser, password.takeIf { it.isNotBlank() })
-                onSave()
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Save")
+        if (canEdit) {
+            Button(
+                onClick = {
+                    val newUser = (user ?: User()).copy(
+                        firstName = firstName,
+                        lastName = lastName,
+                        login = if (user == null) login else user.login,
+                        email = email,
+                        birthDate = birthDate,
+                        address = address,
+                        role = role
+                    )
+                    viewModel.onSaveUser(newUser, password.takeIf { it.isNotBlank() })
+                    onSave()
+                },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("Save")
+            }
         }
         TextButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
-            Text("Cancel")
+            Text(if (canEdit) "Cancel" else "Close")
         }
     }
 }

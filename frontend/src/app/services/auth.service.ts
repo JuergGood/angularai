@@ -66,6 +66,11 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
+    const role = this.currentUser()?.role;
+    return role === 'ROLE_ADMIN' || role === 'ROLE_ADMIN_READ';
+  }
+
+  hasAdminWriteAccess(): boolean {
     return this.currentUser()?.role === 'ROLE_ADMIN';
   }
 }

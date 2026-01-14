@@ -3,7 +3,7 @@
     <div class="page-toolbar">
       <div class="left">
         <h2 class="page-title">User Administration</h2>
-        @if (!editingUser) {
+        @if (!editingUser && authService.hasAdminWriteAccess()) {
           <button mat-flat-button color="primary" class="add-user-btn" (click)="createNewUser()">
             <mat-icon>person_add</mat-icon>
             Add User
@@ -37,7 +37,7 @@
               <ng-container matColumnDef="role">
                 <th mat-header-cell *matHeaderCellDef> Role </th>
                 <td mat-cell *matCellDef="let user">
-                  <span class="role-chip" [class.role-admin]="user.role === 'ROLE_ADMIN'" [class.role-user]="user.role !== 'ROLE_ADMIN'">
+                  <span class="role-chip" [class.role-admin]="user.role === 'ROLE_ADMIN' || user.role === 'ROLE_ADMIN_READ'" [class.role-user]="user.role === 'ROLE_USER'">
                     {{user.role}}
                   </span>
                 </td>
@@ -47,12 +47,14 @@
                 <th mat-header-cell *matHeaderCellDef> Actions </th>
                 <td mat-cell *matCellDef="let user">
                   <div class="action-buttons">
-                    <button mat-icon-button color="primary" (click)="editUser(user)" title="Edit">
-                      <mat-icon>edit</mat-icon>
+                    <button mat-icon-button color="primary" (click)="editUser(user)" [title]="authService.hasAdminWriteAccess() ? 'Edit' : 'View'">
+                      <mat-icon>{{ authService.hasAdminWriteAccess() ? 'edit' : 'visibility' }}</mat-icon>
                     </button>
-                    <button mat-icon-button color="warn" (click)="deleteUser(user)" [disabled]="user.login === authService.currentUser()?.login" title="Delete">
-                      <mat-icon>delete</mat-icon>
-                    </button>
+                    @if (authService.hasAdminWriteAccess()) {
+                      <button mat-icon-button color="warn" (click)="deleteUser(user)" [disabled]="user.login === authService.currentUser()?.login" title="Delete">
+                        <mat-icon>delete</mat-icon>
+                      </button>
+                    }
                   </div>
                 </td>
               </ng-container>
@@ -67,7 +69,7 @@
                   <mat-card-header>
                     <mat-card-title>{{ user.login }}</mat-card-title>
                     <mat-card-subtitle>
-                      <span class="role-chip" [class.role-admin]="user.role === 'ROLE_ADMIN'" [class.role-user]="user.role !== 'ROLE_ADMIN'">
+                      <span class="role-chip" [class.role-admin]="user.role === 'ROLE_ADMIN' || user.role === 'ROLE_ADMIN_READ'" [class.role-user]="user.role === 'ROLE_USER'">
                         {{ user.role }}
                       </span>
                     </mat-card-subtitle>
@@ -77,8 +79,10 @@
                     <p><strong>Email:</strong> {{ user.email }}</p>
                   </mat-card-content>
                   <mat-card-actions align="end">
-                    <button mat-button color="primary" (click)="editUser(user)">Edit</button>
-                    <button mat-button color="warn" (click)="deleteUser(user)" [disabled]="user.login === authService.currentUser()?.login">Delete</button>
+                    <button mat-button color="primary" (click)="editUser(user)">{{ authService.hasAdminWriteAccess() ? 'Edit' : 'View' }}</button>
+                    @if (authService.hasAdminWriteAccess()) {
+                      <button mat-button color="warn" (click)="deleteUser(user)" [disabled]="user.login === authService.currentUser()?.login">Delete</button>
+                    }
                   </mat-card-actions>
                 </mat-card>
               } @empty {
@@ -93,22 +97,22 @@
     @if (editingUser) {
       <mat-card class="edit-card">
         <mat-card-header>
-          <mat-card-title>{{ isCreating ? 'Create New User' : 'Edit User: ' + editingUser.login }}</mat-card-title>
+          <mat-card-title>{{ isCreating ? 'Create New User' : (authService.hasAdminWriteAccess() ? 'Edit User: ' : 'View User: ') + editingUser.login }}</mat-card-title>
         </mat-card-header>
         <mat-card-content>
           <form (ngSubmit)="saveUser()" #adminUserForm="ngForm">
             <div class="form-grid">
               <mat-form-field appearance="outline">
                 <mat-label>First Name</mat-label>
-                <input matInput name="firstName" [(ngModel)]="editingUser.firstName" required>
+                <input matInput name="firstName" [(ngModel)]="editingUser.firstName" required [disabled]="!authService.hasAdminWriteAccess()">
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>Last Name</mat-label>
-                <input matInput name="lastName" [(ngModel)]="editingUser.lastName" required>
+                <input matInput name="lastName" [(ngModel)]="editingUser.lastName" required [disabled]="!authService.hasAdminWriteAccess()">
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>Login</mat-label>
-                <input matInput name="login" [(ngModel)]="editingUser.login" required [disabled]="!isCreating">
+                <input matInput name="login" [(ngModel)]="editingUser.login" required [disabled]="!isCreating || !authService.hasAdminWriteAccess()">
               </mat-form-field>
               @if (isCreating) {
                 <mat-form-field appearance="outline">
@@ -118,22 +122,25 @@
               }
               <mat-form-field appearance="outline">
                 <mat-label>Email</mat-label>
-                <input matInput type="email" name="email" [(ngModel)]="editingUser.email" required email #email="ngModel">
+                <input matInput type="email" name="email" [(ngModel)]="editingUser.email" required email #email="ngModel" [disabled]="!authService.hasAdminWriteAccess()">
                 @if (email.invalid && (email.dirty || email.touched)) {
                   <mat-error>Please enter a valid email address</mat-error>
                 }
               </mat-form-field>
               <mat-form-field appearance="outline">
                 <mat-label>Role</mat-label>
-                <mat-select name="role" [(ngModel)]="editingUser.role" required [disabled]="!isCreating && editingUser.login === authService.currentUser()?.login">
+                <mat-select name="role" [(ngModel)]="editingUser.role" required [disabled]="!authService.hasAdminWriteAccess() || (!isCreating && editingUser.login === authService.currentUser()?.login)">
                   <mat-option value="ROLE_USER">User</mat-option>
                   <mat-option value="ROLE_ADMIN">Admin</mat-option>
+                  <mat-option value="ROLE_ADMIN_READ">Admin (Read-only)</mat-option>
                 </mat-select>
               </mat-form-field>
             </div>
             <div class="form-actions">
-              <button mat-flat-button color="primary" type="submit" [disabled]="!adminUserForm.form.valid">{{ isCreating ? 'Create User' : 'Save Changes' }}</button>
-              <button mat-button type="button" (click)="cancelEdit()">Cancel</button>
+              @if (authService.hasAdminWriteAccess()) {
+                <button mat-flat-button color="primary" type="submit" [disabled]="!adminUserForm.form.valid">{{ isCreating ? 'Create User' : 'Save Changes' }}</button>
+              }
+              <button mat-button type="button" (click)="cancelEdit()">{{ authService.hasAdminWriteAccess() ? 'Cancel' : 'Close' }}</button>
             </div>
             @if (error) {
               <p class="error">{{error}}</p>

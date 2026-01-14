@@ -14,19 +14,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.goodone.angularai.android.domain.model.User
+import ch.goodone.angularai.android.ui.auth.AuthViewModel
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 
 @Composable
 fun AdminUserListScreen(
     onUserClick: (User) -> Unit,
     onAddUser: () -> Unit,
-    viewModel: AdminViewModel = hiltViewModel()
+    viewModel: AdminViewModel = hiltViewModel(),
+    authViewModel: AuthViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
+    val currentUser by authViewModel.currentUser.collectAsState()
+    val canEdit = currentUser?.role == "ROLE_ADMIN"
 
     Scaffold(
         floatingActionButton = {
-            FloatingActionButton(onClick = onAddUser) {
-                Icon(Icons.Default.Add, contentDescription = "Add User")
+            if (canEdit) {
+                FloatingActionButton(onClick = onAddUser) {
+                    Icon(Icons.Default.Add, contentDescription = "Add User")
+                }
             }
         }
     ) { padding ->
@@ -41,7 +49,8 @@ fun AdminUserListScreen(
                         UserItem(
                             user = user,
                             onClick = { onUserClick(user) },
-                            onDelete = { viewModel.onDeleteUser(user.id!!) }
+                            onDelete = { viewModel.onDeleteUser(user.id!!) },
+                            canDelete = canEdit && user.login != currentUser?.login
                         )
                     }
                 }
@@ -54,7 +63,8 @@ fun AdminUserListScreen(
 fun UserItem(
     user: User,
     onClick: () -> Unit,
-    onDelete: () -> Unit
+    onDelete: () -> Unit,
+    canDelete: Boolean
 ) {
     Card(
         modifier = Modifier
@@ -71,8 +81,10 @@ fun UserItem(
                 Text(text = "Login: ${user.login}", style = MaterialTheme.typography.bodySmall)
                 Text(text = "Role: ${user.role}", style = MaterialTheme.typography.bodySmall)
             }
-            IconButton(onClick = onDelete) {
-                Icon(Icons.Default.Delete, contentDescription = "Delete User")
+            if (canDelete) {
+                IconButton(onClick = onDelete) {
+                    Icon(Icons.Default.Delete, contentDescription = "Delete User")
+                }
             }
         }
     }

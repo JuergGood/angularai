@@ -15,6 +15,7 @@ import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { LogService } from '../../services/log.service';
 import { ActionLog } from '../../models/action-log.model';
 import { ConfirmDialogComponent } from '../tasks/confirm-dialog.component';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-log',
@@ -51,7 +52,11 @@ export class LogComponent implements OnInit {
 
   displayedColumns: string[] = ['timestamp', 'login', 'action', 'details'];
 
-  constructor(private logService: LogService, private dialog: MatDialog) {}
+  constructor(
+    private logService: LogService,
+    private dialog: MatDialog,
+    public authService: AuthService
+  ) {}
 
   ngOnInit() {
     this.loadLogs();

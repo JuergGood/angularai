@@ -61,7 +61,8 @@ fun MainApp(
     
     val currentUser by authViewModel.currentUser.collectAsState()
     val isLoggedIn = currentUser != null
-    val isAdmin = currentUser?.role == "ROLE_ADMIN"
+    val isAdmin = currentUser?.role == "ROLE_ADMIN" || currentUser?.role == "ROLE_ADMIN_READ"
+    val canEditAdmin = currentUser?.role == "ROLE_ADMIN"
 
     var showSettingsMenu by remember { mutableStateOf(false) }
     var showHelpDialog by remember { mutableStateOf(false) }

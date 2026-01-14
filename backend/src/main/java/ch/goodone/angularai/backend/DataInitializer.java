@@ -47,12 +47,24 @@ public class DataInitializer {
                         ch.goodone.angularai.backend.model.Role.ROLE_USER
                 );
                 userRepository.save(user);
+                
+                User adminRead = new User(
+                        "Read-Only",
+                        "Admin",
+                        "admin-read",
+                        passwordEncoder.encode("admin123"),
+                        "admin-read@example.com",
+                        LocalDate.of(1992, 2, 2),
+                        "789 Read St",
+                        ch.goodone.angularai.backend.model.Role.ROLE_ADMIN_READ
+                );
+                userRepository.save(adminRead);
 
                 Task task1 = new Task("Setup Project", "Initial project setup with Spring Boot", LocalDate.now().plusDays(1), Priority.HIGH, admin);
                 Task task2 = new Task("Implement Login", "Create login page and auth service", LocalDate.now().plusDays(2), Priority.MEDIUM, admin);
                 taskRepository.save(task1);
                 taskRepository.save(task2);
-                logger.info("Sample data initialized: admin/admin123 and user/user123");
+                logger.info("Sample data initialized: admin/admin123, admin-read/admin123 and user/user123");
             } else {
                 logger.info("Database already contains data, skipping initialization");
             }
