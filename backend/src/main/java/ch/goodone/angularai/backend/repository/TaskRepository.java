@@ -12,4 +12,6 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     List<Task> findByUserOrderByPositionAsc(User user);
     long countByStatus(TaskStatus status);
     List<Task> findByPriorityOrderByIdDesc(Priority priority, Pageable pageable);
+    long countByCreatedAtAfter(java.time.LocalDateTime timestamp);
+    long countByStatusAndCreatedAtAfter(TaskStatus status, java.time.LocalDateTime timestamp);
 }

@@ -40,7 +40,10 @@
     "ACTION": "Aktion",
     "PRIORITY_TASKS": "Wichtige Aufgaben",
     "NO_PRIORITY_TASKS": "Keine Aufgaben mit hoher Priorität.",
-    "DUE": "Fällig"
+    "DUE": "Fällig",
+    "SHOW_ALL_LOGS": "Alle Logs anzeigen",
+    "SHOW_ALL_TASKS": "Alle Aufgaben anzeigen",
+    "SHOW_ALL_USERS": "Alle Benutzer anzeigen"
   },
   "TASKS": {
     "TITLE": "Aufgabenverwaltung",

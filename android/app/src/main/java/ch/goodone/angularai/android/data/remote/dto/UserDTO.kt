@@ -9,5 +9,6 @@ data class UserDTO(
     val birthDate: String? = null, // yyyy-MM-dd
     val address: String? = null,
     val role: String? = null,
-    val password: String? = null
+    val password: String? = null,
+    val createdAt: String? = null
 )

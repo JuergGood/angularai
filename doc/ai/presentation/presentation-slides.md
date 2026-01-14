@@ -167,7 +167,7 @@ AI ersetzt kein Know-how – sie verstärkt es.
 :::
 
 # Fazit
-- **Demo bestätigt**: AI ist produktionsreif
+- **Demo bestätigt**: AI ist ideal für schnelle Prototypen
 - **Werkzeuge**: Junie & ChatGPT ergänzen sich ideal
 - **Praxis**: Weniger Code, mehr Qualität
 - **Ausblick**: AI-gestützte Entwicklung wird Standard
@@ -176,6 +176,7 @@ AI ersetzt kein Know-how – sie verstärkt es.
 Die Demo zeigt, dass AI heute produktiv eingesetzt werden kann.
 Entscheidend ist die richtige Kombination von Werkzeugen
 und die Einbettung in bestehende Entwicklungsprozesse.
+Schneller Feedback Loop
 :::
 
 ## Schneller bauen. Besser verstehen. Qualität sichern.

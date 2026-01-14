@@ -24,6 +24,9 @@ import ch.goodone.angularai.android.data.remote.dto.SummaryStatsDTO
 
 @Composable
 fun DashboardScreen(
+    onNavigateToTasks: () -> Unit,
+    onNavigateToLogs: () -> Unit,
+    onNavigateToUsers: () -> Unit,
     viewModel: DashboardViewModel = hiltViewModel()
 ) {
     val state = viewModel.state.value
@@ -35,14 +38,19 @@ fun DashboardScreen(
             Text(text = state.error, color = MaterialTheme.colorScheme.error, modifier = Modifier.align(Alignment.Center))
         } else {
             state.dashboard?.let { dashboard ->
-                DashboardContent(dashboard)
+                DashboardContent(dashboard, onNavigateToTasks, onNavigateToLogs, onNavigateToUsers)
             }
         }
     }
 }
 
 @Composable
-fun DashboardContent(dashboard: DashboardDTO) {
+fun DashboardContent(
+    dashboard: DashboardDTO,
+    onNavigateToTasks: () -> Unit,
+    onNavigateToLogs: () -> Unit,
+    onNavigateToUsers: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -53,11 +61,14 @@ fun DashboardContent(dashboard: DashboardDTO) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Summary Stats (Horizontal scroll)
-        SummaryStatsRow(dashboard.summary)
+        SummaryStatsRow(dashboard.summary, onNavigateToTasks, onNavigateToUsers, onNavigateToLogs)
         Spacer(modifier = Modifier.height(24.dp))
 
         // Task Overview
-        Card(modifier = Modifier.fillMaxWidth()) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = onNavigateToTasks
+        ) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text("Task Overview", style = MaterialTheme.typography.titleMedium)
                 Spacer(modifier = Modifier.height(16.dp))
@@ -67,9 +78,21 @@ fun DashboardContent(dashboard: DashboardDTO) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Recent Activity
-        Card(modifier = Modifier.fillMaxWidth()) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = onNavigateToLogs
+        ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text("Recent Activity", style = MaterialTheme.typography.titleMedium)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Recent Activity", style = MaterialTheme.typography.titleMedium)
+                    TextButton(onClick = onNavigateToLogs) {
+                        Text("Show All")
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 dashboard.recentActivity.forEach { log ->
                     Column(modifier = Modifier.padding(vertical = 4.dp)) {
@@ -83,9 +106,21 @@ fun DashboardContent(dashboard: DashboardDTO) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // Priority Tasks
-        Card(modifier = Modifier.fillMaxWidth()) {
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            onClick = onNavigateToTasks
+        ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                Text("Priority Tasks", style = MaterialTheme.typography.titleMedium)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text("Priority Tasks", style = MaterialTheme.typography.titleMedium)
+                    TextButton(onClick = onNavigateToTasks) {
+                        Text("Show All")
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
                 dashboard.priorityTasks.forEach { task ->
                     Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(vertical = 4.dp)) {
@@ -104,18 +139,26 @@ fun DashboardContent(dashboard: DashboardDTO) {
 }
 
 @Composable
-fun SummaryStatsRow(summary: SummaryStatsDTO) {
+fun SummaryStatsRow(
+    summary: SummaryStatsDTO,
+    onNavigateToTasks: () -> Unit,
+    onNavigateToUsers: () -> Unit,
+    onNavigateToLogs: () -> Unit
+) {
     LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-        item { StatCard("Open Tasks", summary.openTasks.toString(), "+${summary.openTasksDelta}") }
-        item { StatCard("Active Users", summary.activeUsers.toString(), "+${summary.activeUsersDelta}") }
-        item { StatCard("Completed", summary.completedTasks.toString(), "+${summary.completedTasksDelta}") }
-        item { StatCard("Today Logs", summary.todayLogs.toString(), "+${summary.todayLogsDelta}") }
+        item { StatCard("Open Tasks", summary.openTasks.toString(), "+${summary.openTasksDelta}", onNavigateToTasks) }
+        item { StatCard("Active Users", summary.activeUsers.toString(), "+${summary.activeUsersDelta}", onNavigateToUsers) }
+        item { StatCard("Completed", summary.completedTasks.toString(), "+${summary.completedTasksDelta}", onNavigateToTasks) }
+        item { StatCard("Today Logs", summary.todayLogs.toString(), "+${summary.todayLogsDelta}", onNavigateToLogs) }
     }
 }
 
 @Composable
-fun StatCard(label: String, value: String, delta: String) {
-    Card(modifier = Modifier.width(140.dp)) {
+fun StatCard(label: String, value: String, delta: String, onClick: () -> Unit) {
+    Card(
+        modifier = Modifier.width(140.dp),
+        onClick = onClick
+    ) {
         Column(modifier = Modifier.padding(16.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Text(label, fontSize = 12.sp)
             Text(value, style = MaterialTheme.typography.headlineMedium)
@@ -130,7 +173,7 @@ fun TaskOverviewChart(distribution: ch.goodone.angularai.android.data.remote.dto
         // Simple circle to represent donut
         Box(contentAlignment = Alignment.Center, modifier = Modifier
             .size(100.dp)
-            .background(MaterialTheme.colorScheme.primary, CircleShape)) {
+            .background(Color(0xFF3F51B5), CircleShape)) {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(distribution.total.toString(), color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 Text("Total", color = Color.White, fontSize = 10.sp)
@@ -138,9 +181,9 @@ fun TaskOverviewChart(distribution: ch.goodone.angularai.android.data.remote.dto
         }
         
         Column {
-            LegendItem(Color.Red, "Open: ${distribution.open}")
-            LegendItem(Color.Yellow, "In Progress: ${distribution.inProgress}")
-            LegendItem(Color.Green, "Completed: ${distribution.completed}")
+            LegendItem(Color(0xFF3F51B5), "Open: ${distribution.open}")
+            LegendItem(Color(0xFF2196F3), "In Progress: ${distribution.inProgress}")
+            LegendItem(Color(0xFF4CAF50), "Completed: ${distribution.completed}")
         }
     }
 }

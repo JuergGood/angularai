@@ -56,7 +56,11 @@ export class LoginComponent {
   onSubmit() {
     this.authService.login(this.login, this.password).subscribe({
       next: (user) => {
-        this.router.navigate(['/tasks']);
+        if (user.role === 'ROLE_ADMIN' || user.role === 'ROLE_ADMIN_READ') {
+          this.router.navigate(['/dashboard']);
+        } else {
+          this.router.navigate(['/tasks']);
+        }
       },
       error: (err) => {
         console.error('Login error:', err);

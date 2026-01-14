@@ -83,13 +83,16 @@ fun printUsage() {
           --pass <password>       Password (default: admin123 or TC_PASSWORD env)
           
         Commands:
+          load all                Load sample tasks, users, and logs
           load tasks              Load sample tasks
           load users              Load sample users
-          load paging-data        Load extensive dataset for paging
-            --count <number>      Number of tasks to load (default: 50)
+          load logs               Load sample logs
+          load paging [tasks|logs|all] Load dataset for paging
+            --count <number>      Number of items to load (default: 50)
           load custom             Load custom data from JSON
             --file <path>         Path to JSON file
             
+          clear all               Delete all tasks, logs, and users (keeps defaults)
           clear tasks             Delete all tasks
           clear logs              Delete all logs
           clear users             Delete all users

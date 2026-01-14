@@ -36,4 +36,9 @@ public class ActionLogController {
         actionLogService.clearLogs();
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping
+    public ActionLogDTO createLog(@RequestBody ActionLogDTO logDTO) {
+        return actionLogService.createLog(logDTO);
+    }
 }

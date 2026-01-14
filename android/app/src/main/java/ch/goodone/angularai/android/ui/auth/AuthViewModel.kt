@@ -36,7 +36,7 @@ class AuthViewModel @Inject constructor(
             _loginState.value = _loginState.value.copy(isLoading = true)
             val result = repository.login(login, pass)
             if (result.isSuccess) {
-                _eventFlow.emit(UiEvent.LoginSuccess)
+                _eventFlow.emit(UiEvent.LoginSuccess(result.getOrThrow()))
             } else {
                 _loginState.value = _loginState.value.copy(
                     isLoading = false,
@@ -73,7 +73,7 @@ class AuthViewModel @Inject constructor(
     )
 
     sealed class UiEvent {
-        object LoginSuccess : UiEvent()
+        data class LoginSuccess(val user: User) : UiEvent()
         object RegisterSuccess : UiEvent()
     }
 }

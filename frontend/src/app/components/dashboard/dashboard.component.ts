@@ -4,10 +4,13 @@ import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { TranslateModule } from '@ngx-translate/core';
+import { RouterLink } from '@angular/router';
 import { DashboardService } from '../../services/dashboard.service';
 import { DashboardData } from '../../models/dashboard.model';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,8 +21,10 @@ import { DashboardData } from '../../models/dashboard.model';
     MatTableModule,
     MatListModule,
     MatIconModule,
+    MatButtonModule,
     MatProgressBarModule,
-    TranslateModule
+    TranslateModule,
+    RouterLink
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css']
@@ -32,6 +37,7 @@ export class DashboardComponent implements OnInit {
 
   constructor(
     private dashboardService: DashboardService,
+    public authService: AuthService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -49,5 +55,19 @@ export class DashboardComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  getPieChartData(data: { open: number, inProgress: number, completed: number, total: number }) {
+    if (data.total === 0) return [];
+
+    const openP = (data.open / data.total) * 100;
+    const inProgressP = (data.inProgress / data.total) * 100;
+    const completedP = (data.completed / data.total) * 100;
+
+    return [
+      { color: '#3f51b5', value: openP, offset: 0 },
+      { color: '#2196f3', value: inProgressP, offset: openP },
+      { color: '#4caf50', value: completedP, offset: openP + inProgressP }
+    ];
   }
 }

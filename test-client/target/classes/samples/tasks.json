@@ -1,14 +1,37 @@
 [
   {
-    "title": "Custom Task 1",
-    "description": "Loaded from custom JSON file",
+    "title": "Setup Project",
+    "description": "Initial project setup with Spring Boot",
     "priority": "HIGH",
-    "dueDate": "2026-12-31"
+    "dueDate": "2026-01-01",
+    "status": "COMPLETED"
   },
   {
-    "title": "Custom Task 2",
-    "description": "Another custom task",
+    "title": "Implement Login",
+    "description": "Create login page and auth service",
     "priority": "MEDIUM",
-    "dueDate": "2026-06-15"
+    "dueDate": "2026-01-05",
+    "status": "COMPLETED"
+  },
+  {
+    "title": "Implement Dashboard",
+    "description": "Add a new dashboard menu to frontends",
+    "priority": "HIGH",
+    "dueDate": "2026-01-15",
+    "status": "IN_PROGRESS"
+  },
+  {
+    "title": "Fix CSS Issues",
+    "description": "Minor styling fixes for mobile",
+    "priority": "LOW",
+    "dueDate": "2026-01-20",
+    "status": "OPEN"
+  },
+  {
+    "title": "Write Documentation",
+    "description": "Create user manual and API docs",
+    "priority": "MEDIUM",
+    "dueDate": "2026-02-01",
+    "status": "OPEN"
   }
 ]

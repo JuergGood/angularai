@@ -12,10 +12,16 @@ public class TaskDTO {
     private Priority priority;
     private String status;
     private Integer position;
+    @com.fasterxml.jackson.annotation.JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private java.time.LocalDateTime createdAt;
 
     public TaskDTO() {}
 
     public TaskDTO(Long id, String title, String description, LocalDate dueDate, Priority priority, String status, Integer position) {
+        this(id, title, description, dueDate, priority, status, position, null);
+    }
+
+    public TaskDTO(Long id, String title, String description, LocalDate dueDate, Priority priority, String status, Integer position, java.time.LocalDateTime createdAt) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -23,6 +29,7 @@ public class TaskDTO {
         this.priority = priority;
         this.status = status;
         this.position = position;
+        this.createdAt = createdAt;
     }
 
     public static TaskDTO fromEntity(Task task) {
@@ -33,7 +40,8 @@ public class TaskDTO {
                 task.getDueDate(),
                 task.getPriority(),
                 task.getStatus() != null ? task.getStatus().name() : null,
-                task.getPosition()
+                task.getPosition(),
+                task.getCreatedAt()
         );
     }
 
@@ -57,4 +65,7 @@ public class TaskDTO {
 
     public Integer getPosition() { return position; }
     public void setPosition(Integer position) { this.position = position; }
+
+    public java.time.LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(java.time.LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

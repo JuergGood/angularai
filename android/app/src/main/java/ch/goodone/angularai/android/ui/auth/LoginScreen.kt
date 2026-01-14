@@ -12,7 +12,7 @@ import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun LoginScreen(
-    onLoginSuccess: () -> Unit,
+    onLoginSuccess: (ch.goodone.angularai.android.domain.model.User) -> Unit,
     onNavigateToRegister: () -> Unit,
     viewModel: AuthViewModel = hiltViewModel()
 ) {
@@ -23,7 +23,7 @@ fun LoginScreen(
     LaunchedEffect(key1 = true) {
         viewModel.eventFlow.collectLatest { event ->
             when (event) {
-                is AuthViewModel.UiEvent.LoginSuccess -> onLoginSuccess()
+                is AuthViewModel.UiEvent.LoginSuccess -> onLoginSuccess(event.user)
                 else -> Unit
             }
         }

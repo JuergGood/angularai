@@ -15,7 +15,9 @@ data class TaskDTO(
     val dueDate: LocalDate? = null,
     val priority: Priority? = Priority.MEDIUM,
     val status: TaskStatus? = TaskStatus.OPEN,
-    val position: Int? = null
+    val position: Int? = null,
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    val createdAt: java.time.LocalDateTime? = null
 )
 
 data class UserDTO(
@@ -28,11 +30,14 @@ data class UserDTO(
     @JsonFormat(pattern = "yyyy-MM-dd")
     val birthDate: LocalDate? = null,
     val address: String? = null,
-    val role: String? = "ROLE_USER"
+    val role: String? = "ROLE_USER",
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    val createdAt: java.time.LocalDateTime? = null
 )
 
 data class ActionLogDTO(
     val id: Long? = null,
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     val timestamp: LocalDateTime? = null,
     val login: String,
     val action: String,

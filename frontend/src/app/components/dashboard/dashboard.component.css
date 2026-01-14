@@ -45,32 +45,71 @@
   width: 100%;
 }
 
-.chart-placeholder {
+.chart-container {
   display: flex;
   align-items: center;
   justify-content: space-around;
-  height: 200px;
+  height: 220px;
 }
 
-.donut-sim {
-  width: 120px;
-  height: 120px;
-  border-radius: 50%;
-  border: 15px solid #3f51b5;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
+.circular-chart {
+  display: block;
+  margin: 10px auto;
+  max-width: 150px;
+  max-height: 150px;
 }
 
-.donut-sim span {
-  font-size: 1.5rem;
+.circle-bg {
+  fill: none;
+  stroke: #eee;
+  stroke-width: 3.8;
+}
+
+.circle {
+  fill: none;
+  stroke-width: 2.8;
+  stroke-linecap: butt;
+  transition: stroke-dashoffset 0.3s ease;
+}
+
+.percentage {
+  fill: #333;
+  font-family: sans-serif;
+  font-size: 0.5rem;
+  text-anchor: middle;
   font-weight: bold;
 }
 
-.donut-sim small {
-  font-size: 0.7rem;
+.label {
+  fill: #666;
+  font-family: sans-serif;
+  font-size: 0.2rem;
+  text-anchor: middle;
+}
+
+.interactive-card {
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.interactive-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.card-header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.interactive-item {
+  cursor: pointer;
+}
+
+.interactive-item:hover {
+  background-color: rgba(0,0,0,0.04);
 }
 
 .chart-legend {
@@ -87,8 +126,8 @@
   margin-right: 5px;
 }
 
-.dot.open { background-color: #f44336; }
-.dot.progress { background-color: #ff9800; }
+.dot.open { background-color: #3f51b5; }
+.dot.progress { background-color: #2196f3; }
 .dot.completed { background-color: #4caf50; }
 
 .empty-msg {

@@ -38,6 +38,9 @@ public class User {
     @Column(name = "role")
     private Role role;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private java.time.LocalDateTime createdAt;
+
     public User() {}
 
     public User(String firstName, String lastName, String login, String password, String email, LocalDate birthDate, String address, Role role) {
@@ -49,6 +52,14 @@ public class User {
         this.birthDate = birthDate;
         this.address = address;
         this.role = role;
+        this.createdAt = java.time.LocalDateTime.now();
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = java.time.LocalDateTime.now();
+        }
     }
 
     public Long getId() { return id; }
@@ -77,4 +88,7 @@ public class User {
 
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
+
+    public java.time.LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(java.time.LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

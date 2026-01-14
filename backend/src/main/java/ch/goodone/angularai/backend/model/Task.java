@@ -37,6 +37,9 @@ public class Task {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private java.time.LocalDateTime createdAt;
+
     public Task() {}
 
     public Task(String title, String description, LocalDate dueDate, Priority priority, User user) {
@@ -46,6 +49,14 @@ public class Task {
         this.priority = priority;
         this.user = user;
         this.status = TaskStatus.OPEN;
+        this.createdAt = java.time.LocalDateTime.now();
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = java.time.LocalDateTime.now();
+        }
     }
 
     public Long getId() { return id; }
@@ -71,4 +82,7 @@ public class Task {
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
+
+    public java.time.LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(java.time.LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

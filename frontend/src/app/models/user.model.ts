@@ -8,4 +8,5 @@ export interface User {
     birthDate: string | null;
     address: string;
     role?: string;
+    createdAt?: string;
 }

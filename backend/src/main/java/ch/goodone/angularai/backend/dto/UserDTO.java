@@ -18,10 +18,16 @@ public class UserDTO {
     private LocalDate birthDate;
     private String address;
     private String role;
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private java.time.LocalDateTime createdAt;
 
     public UserDTO() {}
 
     public UserDTO(Long id, String firstName, String lastName, String login, String email, LocalDate birthDate, String address, String role) {
+        this(id, firstName, lastName, login, email, birthDate, address, role, null);
+    }
+
+    public UserDTO(Long id, String firstName, String lastName, String login, String email, LocalDate birthDate, String address, String role, java.time.LocalDateTime createdAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -30,6 +36,7 @@ public class UserDTO {
         this.birthDate = birthDate;
         this.address = address;
         this.role = role;
+        this.createdAt = createdAt;
     }
 
     public static UserDTO fromEntity(User user) {
@@ -41,7 +48,8 @@ public class UserDTO {
                 user.getEmail(),
                 user.getBirthDate(),
                 user.getAddress(),
-                user.getRole() != null ? user.getRole().name() : null
+                user.getRole() != null ? user.getRole().name() : null,
+                user.getCreatedAt()
         );
     }
 
@@ -64,4 +72,7 @@ public class UserDTO {
     public void setAddress(String address) { this.address = address; }
     public String getRole() { return role; }
     public void setRole(String role) { this.role = role; }
+
+    public java.time.LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(java.time.LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

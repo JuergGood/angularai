@@ -18,4 +18,5 @@ export interface Task {
   priority: Priority;
   status: TaskStatus;
   position?: number;
+  createdAt?: string;
 }

@@ -40,7 +40,10 @@
     "ACTION": "Action",
     "PRIORITY_TASKS": "Priority Tasks",
     "NO_PRIORITY_TASKS": "No high priority tasks.",
-    "DUE": "Due"
+    "DUE": "Due",
+    "SHOW_ALL_LOGS": "Show all logs",
+    "SHOW_ALL_TASKS": "Show all tasks",
+    "SHOW_ALL_USERS": "Show all users"
   },
   "TASKS": {
     "TITLE": "Task Management",

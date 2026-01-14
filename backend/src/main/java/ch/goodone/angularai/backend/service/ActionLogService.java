@@ -69,4 +69,13 @@ public class ActionLogService {
     public void clearLogs() {
         actionLogRepository.deleteAll();
     }
+
+    @Transactional
+    public ActionLogDTO createLog(ActionLogDTO logDTO) {
+        ActionLog actionLog = new ActionLog(logDTO.getLogin(), logDTO.getAction(), logDTO.getDetails());
+        if (logDTO.getTimestamp() != null) {
+            actionLog.setTimestamp(logDTO.getTimestamp());
+        }
+        return ActionLogDTO.fromEntity(actionLogRepository.save(actionLog));
+    }
 }

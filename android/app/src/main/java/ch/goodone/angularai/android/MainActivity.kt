@@ -285,8 +285,12 @@ fun MainApp(
             ) {
                 composable("login") {
                     LoginScreen(
-                        onLoginSuccess = { 
-                            navController.navigate("tasks") { popUpTo("login") { inclusive = true } }
+                        onLoginSuccess = { user ->
+                            if (user.role == "ROLE_ADMIN" || user.role == "ROLE_ADMIN_READ") {
+                                navController.navigate("dashboard") { popUpTo("login") { inclusive = true } }
+                            } else {
+                                navController.navigate("tasks") { popUpTo("login") { inclusive = true } }
+                            }
                         },
                         onNavigateToRegister = { navController.navigate("register") }
                     )
@@ -295,6 +299,13 @@ fun MainApp(
                     RegisterScreen(
                         onRegisterSuccess = { navController.navigate("login") },
                         onNavigateToLogin = { navController.navigate("login") }
+                    )
+                }
+                composable("dashboard") {
+                    DashboardScreen(
+                        onNavigateToTasks = { navController.navigate("tasks") },
+                        onNavigateToLogs = { navController.navigate("logs") },
+                        onNavigateToUsers = { navController.navigate("admin") }
                     )
                 }
                 composable("tasks") {

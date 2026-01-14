@@ -14,5 +14,21 @@
     "email": "jane.smith@example.com",
     "password": "password123",
     "role": "ROLE_USER"
+  },
+  {
+    "firstName": "Admin",
+    "lastName": "User",
+    "login": "admin",
+    "email": "admin@example.com",
+    "password": "admin123",
+    "role": "ROLE_ADMIN"
+  },
+  {
+    "firstName": "Reader",
+    "lastName": "User",
+    "login": "admin-read",
+    "email": "read@example.com",
+    "password": "admin123",
+    "role": "ROLE_ADMIN_READ"
   }
 ]

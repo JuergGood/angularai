@@ -29,27 +29,33 @@ public class DashboardService {
     }
 
     public DashboardDTO getDashboardData() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startOfToday = now.withHour(0).withMinute(0).withSecond(0).withNano(0);
+
         // Summary Stats
         long openTasks = taskRepository.countByStatus(TaskStatus.OPEN) + taskRepository.countByStatus(TaskStatus.IN_PROGRESS);
-        long completedTasks = taskRepository.countByStatus(TaskStatus.CLOSED);
+        long completedTasks = taskRepository.countByStatus(TaskStatus.COMPLETED);
         long activeUsers = userRepository.count();
-        
-        LocalDateTime startOfToday = LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
         long todayLogs = actionLogRepository.countByTimestampAfter(startOfToday);
 
-        // For simplicity, deltas are just placeholder values or simplified logic
-        // In a real app, you'd compare with yesterday's totals
+        // Real deltas: Items created today
+        long openTasksDelta = taskRepository.countByStatusAndCreatedAtAfter(TaskStatus.OPEN, startOfToday) 
+                            + taskRepository.countByStatusAndCreatedAtAfter(TaskStatus.IN_PROGRESS, startOfToday);
+        long completedTasksDelta = taskRepository.countByStatusAndCreatedAtAfter(TaskStatus.COMPLETED, startOfToday);
+        long activeUsersDelta = userRepository.countByCreatedAtAfter(startOfToday);
+        long todayLogsDelta = actionLogRepository.countByTimestampAfter(now.minusHours(1));
+
         DashboardDTO.SummaryStats summary = new DashboardDTO.SummaryStats(
-                openTasks, 2, // delta placeholder
-                activeUsers, 1, // delta placeholder
-                completedTasks, 5, // delta placeholder
-                todayLogs, 10 // delta placeholder
+                openTasks, openTasksDelta,
+                activeUsers, activeUsersDelta,
+                completedTasks, completedTasksDelta,
+                todayLogs, todayLogsDelta
         );
 
         // Task Distribution
         long openCount = taskRepository.countByStatus(TaskStatus.OPEN);
         long inProgressCount = taskRepository.countByStatus(TaskStatus.IN_PROGRESS);
-        long completedCount = taskRepository.countByStatus(TaskStatus.CLOSED);
+        long completedCount = taskRepository.countByStatus(TaskStatus.COMPLETED);
         long totalCount = taskRepository.count();
         DashboardDTO.TaskStatusDistribution distribution = new DashboardDTO.TaskStatusDistribution(
                 openCount, inProgressCount, completedCount, totalCount
