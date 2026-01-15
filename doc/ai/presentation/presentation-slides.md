@@ -34,11 +34,47 @@ und zum Schluss Erfahrungen und eine Einordnung zu geben.
 :::
 :::
 
+# AI Uebertrifft Erwartungen
+
+::: columns
+::: column
+![**Geplant** www.goodone.ch](files/images/GoodOne2020_Users.png)
+
+Implementiert 2020 'von Hand'
+
+:::
+::: column
+![**Resultat**](files/images/dashboard.png)
+
+Implementiert 2026 durch AI
++ Android App 'gratis' dazu
+
+:::
+:::
+
 ::: notes
 Die gleiche Anwendung existiert als Web- und als Android-App.
 Beide greifen auf dasselbe Backend zu.
 Das ist wichtig, weil AI-Unterstützung über alle Ebenen hinweg genutzt wurde.
 :::
+
+# Initiale Aufgabe an AI
+- 1. Objectives
+  - Create a Spring Boot backend.
+  - Create an Angular frontend.
+  - Implement a User administration system with:
+      - Firstname, lastname, login, password, birthdate, address.
+      - Login and profile editing pages.
+
+- 2. Initial Plan
+1. Initialize Spring Boot project in `backend` folder.
+2. Initialize Angular project in `frontend` folder.
+3. Define User entity and repository in Backend.
+4. Implement Backend REST API for User administration (CRUD + Login).
+5. Implement Frontend services for API interaction.
+6. Create Login page in Frontend.
+7. Create User Profile Editing page in Frontend.
+8. Verify the application functionality.
 
 # Architekturübersicht – Infrastruktur
 ![](files/generated/architecture_overview.png)
@@ -188,3 +224,8 @@ AI beschleunigt Entwicklung,
 verbessert Qualität,
 ersetzt aber nicht die Verantwortung des Entwicklers.
 :::
+
+# Links
+
+GIT Repo ()
+https://github.com/JuergGood/angularai.git

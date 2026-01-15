@@ -4,10 +4,12 @@ To rerun a failing ECS Fargate task after you have created the required CloudWat
 This is the most reliable way to tell ECS to stop any failing tasks and start new ones immediately using the current task definition.
 
 **Via AWS CLI:**
-Run the following command in your terminal (ensure you replace `<CLUSTER_NAME>` with your actual ECS cluster name):
+Run the following command in your terminal (ensure you replace `YOUR_CLUSTER_NAME` with your actual ECS cluster name):
 ```bash
-aws ecs update-service --cluster <CLUSTER_NAME> --service angularai-backend-test-service --force-new-deployment
+aws ecs update-service --cluster YOUR_CLUSTER_NAME --service angularai-backend-test-service --force-new-deployment
 ```
+
+**Note for PowerShell users:** If you use angle brackets like `<CLUSTER_NAME>`, PowerShell might throw a `ParserError`. Use plain text placeholders instead.
 
 **Via AWS Management Console:**
 1.  Navigate to the **Amazon ECS Console**.

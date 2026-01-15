@@ -12,7 +12,9 @@ This guide provides step-by-step instructions on how to build your AngularAI Doc
 
 ## Step 1: Authenticate Docker to ECR
 
-Before pushing, you must authenticate your Docker client to your AWS registry. Replace `<REGION>` with your AWS region (e.g., `us-east-1`) and `<AWS_ACCOUNT_ID>` with your 12-digit account ID.
+Before pushing, you must authenticate your Docker client to your AWS registry. Replace `YOUR_REGION` with your AWS region (e.g., `us-east-1`) and `YOUR_AWS_ACCOUNT_ID` with your 12-digit account ID.
+
+**Note for PowerShell users:** Do not use angle brackets (e.g., `<REGION>`) as they are reserved for redirection. Use plain text instead.
 
 ```bash
 aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 426141506813.dkr.ecr.eu-central-1.amazonaws.com
@@ -34,7 +36,12 @@ aws ecr create-repository --repository-name angularai-frontend --region eu-centr
 
 ## Step 3: Build and Tag Docker Images
 
-Navigate to the project root directory.
+**CRITICAL**: You must run these commands from the **project root directory** (`angularai/`), not from the `doc/` directory.
+
+```bash
+# Verify you are in the root directory (should see backend/ and frontend/ folders)
+ls
+```
 
 ### 3.1 Backend Image
 ```bash

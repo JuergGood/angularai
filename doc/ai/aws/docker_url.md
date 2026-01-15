@@ -28,6 +28,11 @@ If you want to verify the backend is responding, try an existing API endpoint:
     You should see: `Sample data initialized: admin/admin123 and user/user123`.
 
 
+3.  ** Stop the containers**:
+    Run this command in the project root:
+    ```bash
+    docker compose down
+    ```
 
 ```powershell
 docker compose logs backend | Select-String "DataInitializer"
