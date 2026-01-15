@@ -14,7 +14,7 @@ Your Backend task is trying to connect to ECR over the public internet (port 443
 #### Solution A: Move to Public Subnet (Simplest for Testing)
 For a test environment, the easiest fix is to place the backend in a public subnet and ensure it gets a Public IP so it can reach ECR directly.
 
-1.  Go to the **ECS Console** -> **Clusters** -> **angularai-backend-test-service**.
+1.  Go to the **ECS Console** -> **Clusters** -> **angular-boot** -> **angularai-backend-test-service**.
 2.  Click **Update**.
 3.  In the **Networking** section:
     *   Change the **Subnets** to include your **Public Subnets**.

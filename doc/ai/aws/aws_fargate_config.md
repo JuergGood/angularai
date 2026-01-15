@@ -36,11 +36,11 @@ The files are located in the new `deploy/aws/` directory:
 4.  **RDS Database**: Your PostgreSQL database should be running and accessible (Only required for `backend-task-definition.json`).
 
 #### B. Registering Tasks via CLI
-**CRITICAL**: You must manually edit the `.json` files in `deploy/aws/` and replace all placeholders (e.g., `YOUR_AWS_ACCOUNT_ID`, `YOUR_REGION`, `YOUR_RDS_ENDPOINT`) with your actual AWS values.
+**CRITICAL**: You must manually edit the `.json` files in `deploy/aws/` and replace all placeholders (e.g., `426141506813`, `eu-central-1`, `YOUR_RDS_ENDPOINT`) with your actual AWS values. 
 
-Failure to replace `YOUR_AWS_ACCOUNT_ID` in the `executionRoleArn` and `taskRoleArn` fields will result in a `ClientException: Role is not valid` error.
+Failure to replace `426141506813` in the `executionRoleArn` and `taskRoleArn` fields will result in a `ClientException: Role is not valid` error.
 
-**Note for PowerShell users:** Placeholders are currently written in plain text (e.g., `YOUR_AWS_ACCOUNT_ID`). If you see documentation with angle brackets like `<PLACEHOLDER>`, avoid using them in PowerShell as they are reserved for redirection.
+**Note for PowerShell users:** Placeholders like `YOUR_RDS_ENDPOINT` are written in plain text. If you see documentation with angle brackets like `<PLACEHOLDER>`, avoid using them in PowerShell as they are reserved for redirection.
 
 Once edited, you can register these task definitions using the AWS CLI:
 

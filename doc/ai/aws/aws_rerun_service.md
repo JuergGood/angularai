@@ -1,20 +1,63 @@
-To rerun a failing ECS Fargate task after you have created the required CloudWatch log groups, you have several options depending on whether you are using the AWS CLI or the Management Console.
+To stop and restart your ECS Fargate services, you can use the following AWS CLI commands.
 
-### Option 1: Force a New Deployment (Recommended)
-This is the most reliable way to tell ECS to stop any failing tasks and start new ones immediately using the current task definition.
+### 1. Backend Service (`angularai-backend-test-service`)
+
+**Stop Service:**
+```bash
+aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --desired-count 0
+```
+
+**Start/Restart Service:**
+```bash
+# This sets the count to 1 and forces a fresh deployment
+aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --desired-count 1 --force-new-deployment
+```
+
+**Start/Restart (Short Output):**
+```bash
+aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --desired-count 1 --force-new-deployment --query "service.serviceName" --output text
+```
+
+### 2. Frontend Service (`angularai-frontend-service`)
+
+**Stop Service:**
+```bash
+aws ecs update-service --cluster angular-boot --service angularai-frontend-service --desired-count 0
+```
+
+**Start/Restart Service:**
+```bash
+# This sets the count to 1 and forces a fresh deployment
+aws ecs update-service --cluster angular-boot --service angularai-frontend-service --desired-count 1 --force-new-deployment
+```
+
+**Start/Restart (Short Output):**
+```bash
+aws ecs update-service --cluster angular-boot --service angularai-frontend-service --desired-count 1 --force-new-deployment --query "service.serviceName" --output text
+```
+
+---
+
+### Option 1: Force a New Deployment Only (If already running)
+If your service is already running but you want to restart the tasks (e.g., to pick up a new image tag or clear a stuck state):
 
 **Via AWS CLI:**
-Run the following command in your terminal (ensure you replace `YOUR_CLUSTER_NAME` with your actual ECS cluster name):
 ```bash
-aws ecs update-service --cluster YOUR_CLUSTER_NAME --service angularai-backend-test-service --force-new-deployment
+aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --force-new-deployment
 ```
+
+**Via AWS CLI (Short Output):**
+```bash
+aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --force-new-deployment --query "service.serviceName" --output text
+```
+*(Repeat for `angularai-frontend-service` if needed)*
 
 **Note for PowerShell users:** If you use angle brackets like `<CLUSTER_NAME>`, PowerShell might throw a `ParserError`. Use plain text placeholders instead.
 
 **Via AWS Management Console:**
 1.  Navigate to the **Amazon ECS Console**.
 2.  Select your **Cluster**.
-3.  In the **Services** tab, select the checkbox for `angularai-backend-test-service`.
+3.  In the **Services** tab, select the checkbox for `angularai-backend-test-service` or `angularai-frontend-service`.
 4.  Click **Update**.
 5.  Check the box **Force new deployment**.
 6.  Click **Next step** through the wizard and finally **Update service**.
@@ -37,6 +80,6 @@ ECS Services have a built-in scheduler that automatically retries launching task
 
 ### Verification
 Once you have triggered the rerun:
-1.  Go to the **Tasks** tab of the `angularai-backend-test-service`.
+1.  Go to the **Tasks** tab of the `angularai-backend-test-service` or `angularai-frontend-service`.
 2.  Wait for the **Last status** to change to `RUNNING`.
 3.  Click on the Task ID and go to the **Logs** tab to see the Spring Boot startup logs, confirming that the H2 database and application are initializing correctly.
