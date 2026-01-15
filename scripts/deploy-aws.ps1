@@ -44,11 +44,11 @@ if ($LASTEXITCODE -ne 0) { Write-Error "Frontend push failed"; exit }
 Write-Host "Restarting ECS services to pick up latest images..." -ForegroundColor Yellow
 
 Write-Host "Updating Backend service..."
-aws ecs update-service --cluster $CLUSTER_NAME --service $BACKEND_SERVICE --force-new-deployment --region $REGION
+aws ecs update-service --cluster $CLUSTER_NAME --service $BACKEND_SERVICE --desired-count 1 --force-new-deployment --region $REGION
 if ($LASTEXITCODE -ne 0) { Write-Warning "Backend service update failed. Check if service name/cluster is correct." }
 
 Write-Host "Updating Frontend service..."
-aws ecs update-service --cluster $CLUSTER_NAME --service $FRONTEND_SERVICE --force-new-deployment --region $REGION
+aws ecs update-service --cluster $CLUSTER_NAME --service $FRONTEND_SERVICE --desired-count 1 --force-new-deployment --region $REGION
 if ($LASTEXITCODE -ne 0) { Write-Warning "Frontend service update failed. Check if service name/cluster is correct." }
 
 Write-Host "AWS Deployment complete!" -ForegroundColor Green

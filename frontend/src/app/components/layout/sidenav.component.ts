@@ -44,7 +44,7 @@ import { TranslateModule } from '@ngx-translate/core';
     .sidenav {
       width: 260px;
       border-right: 1px solid rgba(0, 0, 0, 0.08);
-      background-color: #f5f5f7; /* Very light gray, professional */
+      background-color: #ffffff; /* Cleaner white background for better contrast */
       color: #333;
       transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
@@ -191,26 +191,30 @@ import { TranslateModule } from '@ngx-translate/core';
       min-height: calc(100vh - 64px);
     }
     .active-link {
-      background-color: white !important;
-      color: #1a237e !important;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      background: linear-gradient(90deg, rgba(102, 126, 234, 0.1) 0%, rgba(255, 255, 255, 0) 100%) !important;
+      color: #3f51b5 !important;
+      border-left: 4px solid #3f51b5;
+      font-weight: 600;
     }
     .active-link mat-icon {
-      color: #1a237e !important;
+      color: #3f51b5 !important;
     }
     mat-nav-list a {
       margin: 4px 12px;
-      border-radius: 8px;
+      border-radius: 0 8px 8px 0;
       height: 48px !important;
-      color: #5f6368 !important;
-      transition: all 0.2s;
+      color: #546e7a !important;
+      transition: all 0.3s ease;
+      position: relative;
     }
     mat-nav-list a:hover {
-      background-color: rgba(0, 0, 0, 0.04) !important;
+      background-color: rgba(63, 81, 181, 0.04) !important;
+      color: #3f51b5 !important;
     }
     mat-nav-list a mat-icon {
-      color: #5f6368 !important;
+      color: #607d8b !important;
       margin-right: 16px;
+      transition: color 0.3s ease;
     }
     mat-nav-list a [matListItemTitle] {
       font-weight: 500;

@@ -36,19 +36,27 @@ aws ecs update-service --cluster angular-boot --service angularai-frontend-servi
 aws ecs update-service --cluster angular-boot --service angularai-frontend-service --desired-count 1 --force-new-deployment --query "service.serviceName" --output text
 ```
 
+### 3. Fallback Page (When Stopped)
+When you stop your services for cost reasons, it is recommended to configure a **Fallback Page** on the Load Balancer to avoid showing users a generic `503 Service Unavailable` error.
+
+See [AWS ALB Fallback Configuration](aws_alb_fallback.md) for instructions on how to set this up.
+
 ---
 
 ### Option 1: Force a New Deployment Only (If already running)
 If your service is already running but you want to restart the tasks (e.g., to pick up a new image tag or clear a stuck state):
 
 **Via AWS CLI:**
-```bash
-aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --force-new-deployment
+
+> **Tip:** If the "Run" icon is missing for `powershell` blocks, check **Settings > Languages & Frameworks > Markdown > Language Mappings** to ensure `powershell` is mapped to the PowerShell language. You can also try using the `pwsh` tag.
+
+```powershell
+aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --desired-count 1 --force-new-deployment
 ```
 
 **Via AWS CLI (Short Output):**
-```bash
-aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --force-new-deployment --query "service.serviceName" --output text
+```powershell
+aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --desired-count 1 --force-new-deployment --query "service.serviceName" --output text
 ```
 *(Repeat for `angularai-frontend-service` if needed)*
 
