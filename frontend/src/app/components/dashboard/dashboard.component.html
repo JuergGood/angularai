@@ -3,7 +3,7 @@
   <p>{{ 'COMMON.LOADING' | translate }}</p>
 </div>
 
-<div class="dashboard-container" *ngIf="dashboardData() as data">
+<div class="dashboard-container" *ngIf="vm() as data">
   <!-- Summary Cards -->
   <div class="summary-grid">
     <mat-card class="summary-card interactive-card tasks" routerLink="/tasks">
@@ -12,7 +12,9 @@
       </mat-card-header>
       <mat-card-content>
         <div class="stat-value">{{ data.summary.openTasks }}</div>
-        <div class="stat-delta positive">+{{ data.summary.openTasksDelta }} {{ 'DASHBOARD.TODAY' | translate }}</div>
+        <mat-chip-set class="stat-chip-set">
+          <mat-chip class="delta-chip" color="primary" selected>+{{ data.summary.openTasksDelta }} {{ 'DASHBOARD.TODAY' | translate }}</mat-chip>
+        </mat-chip-set>
       </mat-card-content>
     </mat-card>
 
@@ -22,7 +24,9 @@
       </mat-card-header>
       <mat-card-content>
         <div class="stat-value">{{ data.summary.activeUsers }}</div>
-        <div class="stat-delta positive">+{{ data.summary.activeUsersDelta }} {{ 'DASHBOARD.TODAY' | translate }}</div>
+        <mat-chip-set class="stat-chip-set">
+          <mat-chip class="delta-chip" color="primary" selected>+{{ data.summary.activeUsersDelta }} {{ 'DASHBOARD.TODAY' | translate }}</mat-chip>
+        </mat-chip-set>
       </mat-card-content>
     </mat-card>
 
@@ -32,84 +36,124 @@
       </mat-card-header>
       <mat-card-content>
         <div class="stat-value">{{ data.summary.completedTasks }}</div>
-        <div class="stat-delta positive">+{{ data.summary.completedTasksDelta }} {{ 'DASHBOARD.TODAY' | translate }}</div>
+        <mat-chip-set class="stat-chip-set">
+          <mat-chip class="delta-chip" color="primary" selected>+{{ data.summary.completedTasksDelta }} {{ 'DASHBOARD.TODAY' | translate }}</mat-chip>
+        </mat-chip-set>
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="summary-card interactive-card logs" [routerLink]="authService.isAdmin() ? '/logs' : null">
+    <mat-card
+      class="summary-card interactive-card logs"
+      [class.disabled-card]="!authService.isAdmin()"
+      [routerLink]="authService.isAdmin() ? '/logs' : undefined"
+      [attr.aria-disabled]="!authService.isAdmin()"
+    >
       <mat-card-header>
         <mat-card-title>{{ 'DASHBOARD.TODAY_LOGS' | translate }}</mat-card-title>
       </mat-card-header>
       <mat-card-content>
         <div class="stat-value">{{ data.summary.todayLogs }}</div>
-        <div class="stat-delta positive">+{{ data.summary.todayLogsDelta }} {{ 'DASHBOARD.SINCE_1H' | translate }}</div>
+        <mat-chip-set class="stat-chip-set">
+          <mat-chip class="delta-chip" color="primary" selected>+{{ data.summary.todayLogsDelta }} {{ 'DASHBOARD.SINCE_1H' | translate }}</mat-chip>
+        </mat-chip-set>
       </mat-card-content>
     </mat-card>
   </div>
 
   <div class="main-grid">
-    <!-- Task Overview -->
-    <mat-card class="grid-item">
-      <mat-card-header>
-        <mat-card-title>{{ 'DASHBOARD.TASK_OVERVIEW' | translate }}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="chart-container">
-          <svg viewBox="0 0 36 36" class="circular-chart">
-            <path class="circle-bg"
-              d="M18 2.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-            <path *ngFor="let segment of getPieChartData(data.taskDistribution)"
-              class="circle"
-              [attr.stroke]="segment.color"
-              [attr.stroke-dasharray]="segment.value + ', 100'"
-              [attr.stroke-dashoffset]="-segment.offset"
-              d="M18 2.0845
-                a 15.9155 15.9155 0 0 1 0 31.831
-                a 15.9155 15.9155 0 0 1 0 -31.831"
-            />
-            <text x="18" y="18.5" class="percentage">{{ data.taskDistribution.total }}</text>
-            <text x="18" y="24" class="label">{{ 'DASHBOARD.TOTAL_TASKS' | translate }}</text>
-          </svg>
-          <div class="chart-legend">
-            <div><span class="dot open"></span> {{ 'DASHBOARD.OPEN' | translate }}: {{ data.taskDistribution.open }}</div>
-            <div><span class="dot progress"></span> {{ 'DASHBOARD.IN_PROGRESS' | translate }}: {{ data.taskDistribution.inProgress }}</div>
-            <div><span class="dot completed"></span> {{ 'DASHBOARD.COMPLETED' | translate }}: {{ data.taskDistribution.completed }}</div>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
-
-    <!-- Recent Activity -->
-    <mat-card class="grid-item">
+    <!-- Task Overview (primary) + Recent Activity (right panel on wide screens) -->
+    <mat-card class="grid-item full-row task-overview-card">
       <mat-card-header>
         <div class="card-header-container">
-          <mat-card-title>{{ 'DASHBOARD.RECENT_ACTIVITY' | translate }}</mat-card-title>
-          <button mat-stroked-button color="primary" routerLink="/logs" *ngIf="authService.isAdmin()">
-            {{ 'DASHBOARD.SHOW_ALL_LOGS' | translate }}
-          </button>
+          <mat-card-title>{{ 'DASHBOARD.TASK_OVERVIEW' | translate }}</mat-card-title>
+          <div class="card-header-actions">
+            <button mat-stroked-button color="primary" routerLink="/tasks">
+              {{ 'DASHBOARD.SHOW_ALL_TASKS' | translate }}
+            </button>
+          </div>
         </div>
       </mat-card-header>
       <mat-card-content>
-        <table mat-table [dataSource]="data.recentActivity" class="full-width-table">
-          <ng-container matColumnDef="timestamp">
-            <th mat-header-cell *matHeaderCellDef> {{ 'DASHBOARD.TIME' | translate }} </th>
-            <td mat-cell *matCellDef="let log"> {{ log.timestamp }} </td>
-          </ng-container>
-          <ng-container matColumnDef="login">
-            <th mat-header-cell *matHeaderCellDef> {{ 'DASHBOARD.USER' | translate }} </th>
-            <td mat-cell *matCellDef="let log" style="font-weight: 500;"> {{ log.login }} </td>
-          </ng-container>
-          <ng-container matColumnDef="action">
-            <th mat-header-cell *matHeaderCellDef> {{ 'DASHBOARD.ACTION' | translate }} </th>
-            <td mat-cell *matCellDef="let log"> {{ log.action }} </td>
-          </ng-container>
+        <div class="task-overview-layout">
+          <div class="task-overview-chart">
+            <div class="chart-container">
+              <svg viewBox="0 0 36 36" class="circular-chart">
+                <path class="circle-bg"
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <path *ngFor="let segment of getPieChartData(data.taskDistribution)"
+                  class="circle"
+                  [attr.stroke]="segment.color"
+                  [attr.stroke-dasharray]="segment.value + ', 100'"
+                  [attr.stroke-dashoffset]="-segment.offset"
+                  d="M18 2.0845
+                    a 15.9155 15.9155 0 0 1 0 31.831
+                    a 15.9155 15.9155 0 0 1 0 -31.831"
+                />
+                <text x="18" y="18.5" class="percentage">{{ data.taskDistribution.total }}</text>
+                <text x="18" y="24" class="label">{{ 'DASHBOARD.TOTAL_TASKS' | translate }}</text>
+              </svg>
+              <div class="chart-legend">
+                <div><span class="dot open"></span> {{ 'DASHBOARD.OPEN' | translate }}: {{ data.taskDistribution.open }}</div>
+                <div><span class="dot progress"></span> {{ 'DASHBOARD.IN_PROGRESS' | translate }}: {{ data.taskDistribution.inProgress }}</div>
+                <div><span class="dot completed"></span> {{ 'DASHBOARD.COMPLETED' | translate }}: {{ data.taskDistribution.completed }}</div>
+              </div>
+            </div>
+          </div>
 
-          <tr mat-header-row *matHeaderRowDef="recentActivityColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: recentActivityColumns;"></tr>
-        </table>
+          <div class="task-overview-activity">
+            <div class="subpanel-header">
+              <div class="subpanel-title">{{ 'DASHBOARD.RECENT_ACTIVITY' | translate }}</div>
+              <button mat-stroked-button color="primary" routerLink="/logs" *ngIf="authService.isAdmin()">
+                {{ 'DASHBOARD.SHOW_ALL_LOGS' | translate }}
+              </button>
+            </div>
+
+            <div class="subpanel-actions">
+              <mat-form-field appearance="outline" class="activity-filter">
+                <mat-icon matPrefix>search</mat-icon>
+                <input
+                  matInput
+                  placeholder="Filter"
+                  [value]="activityFilter()"
+                  (input)="activityFilter.set(($any($event.target).value || '').toString())"
+                />
+                <button
+                  mat-icon-button
+                  matSuffix
+                  type="button"
+                  aria-label="Clear filter"
+                  *ngIf="(activityFilter() ?? '').length > 0"
+                  (click)="clearActivityFilter()"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </mat-form-field>
+            </div>
+
+            <table mat-table [dataSource]="data.recentActivityFiltered" class="full-width-table compact-table">
+              <ng-container matColumnDef="timestamp">
+                <th mat-header-cell *matHeaderCellDef> {{ 'DASHBOARD.TIME' | translate }} </th>
+                <td mat-cell *matCellDef="let log">
+                  <span class="muted">{{ log.timestampLabel }}</span>
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="login">
+                <th mat-header-cell *matHeaderCellDef> {{ 'DASHBOARD.USER' | translate }} </th>
+                <td mat-cell *matCellDef="let log" style="font-weight: 500;"> {{ log.login }} </td>
+              </ng-container>
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef> {{ 'DASHBOARD.ACTION' | translate }} </th>
+                <td mat-cell *matCellDef="let log"> {{ log.actionLabel }} </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="recentActivityColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: recentActivityColumns; trackBy: trackById"></tr>
+            </table>
+          </div>
+        </div>
       </mat-card-content>
     </mat-card>
 
@@ -118,20 +162,28 @@
       <mat-card-header>
         <div class="card-header-container">
           <mat-card-title>{{ 'DASHBOARD.PRIORITY_TASKS' | translate }}</mat-card-title>
-          <button mat-stroked-button color="primary" routerLink="/tasks">
-            {{ 'DASHBOARD.SHOW_ALL_TASKS' | translate }}
-          </button>
+          <button mat-stroked-button color="primary" routerLink="/tasks">{{ 'DASHBOARD.SHOW_ALL_TASKS' | translate }}</button>
         </div>
       </mat-card-header>
       <mat-card-content>
-        <mat-list>
-          <mat-list-item *ngFor="let task of data.priorityTasks" class="interactive-item" routerLink="/tasks">
-            <mat-icon matListItemIcon color="warn">priority_high</mat-icon>
-            <div matListItemTitle style="font-weight: 500;">{{ task.title }}</div>
-            <div matListItemLine>{{ 'DASHBOARD.DUE' | translate }}: {{ task.dueDate }}</div>
-          </mat-list-item>
-          <div *ngIf="data.priorityTasks.length === 0" class="empty-msg">{{ 'DASHBOARD.NO_PRIORITY_TASKS' | translate }}</div>
-        </mat-list>
+        <div class="priority-list" *ngIf="data.priorityTasks.length > 0; else noPriorityTasks">
+          <div class="priority-row" *ngFor="let task of data.priorityTasks; trackBy: trackById" routerLink="/tasks">
+            <div class="priority-left">
+              <mat-icon class="priority-icon" color="warn">priority_high</mat-icon>
+              <div>
+                <div class="priority-title">{{ task.title }}</div>
+                <div class="priority-sub muted">{{ 'DASHBOARD.DUE' | translate }}: {{ task.dueDate }}</div>
+              </div>
+            </div>
+            <mat-chip class="due-chip" [ngClass]="task.dueChip.tone">
+              {{ task.dueChip.label }}
+            </mat-chip>
+          </div>
+        </div>
+
+        <ng-template #noPriorityTasks>
+          <div class="empty-msg">{{ 'DASHBOARD.NO_PRIORITY_TASKS' | translate }}</div>
+        </ng-template>
       </mat-card-content>
     </mat-card>
 
@@ -157,11 +209,11 @@
           </ng-container>
           <ng-container matColumnDef="role">
             <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN.ROLE' | translate }} </th>
-            <td mat-cell *matCellDef="let user"> {{ user.role }} </td>
+            <td mat-cell *matCellDef="let user"><mat-chip [color]="user.roleColor" selected>{{ user.roleLabel }}</mat-chip></td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="recentUsersColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: recentUsersColumns;"></tr>
+          <tr mat-row *matRowDef="let row; columns: recentUsersColumns; trackBy: trackById"></tr>
         </table>
       </mat-card-content>
     </mat-card>

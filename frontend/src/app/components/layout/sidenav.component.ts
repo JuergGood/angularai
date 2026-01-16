@@ -15,6 +15,7 @@ import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { AuthService } from '../../services/auth.service';
 import { SystemService, SystemInfo } from '../../services/system.service';
 import { I18nService, Language } from '../../services/i18n.service';
+import { ThemeService } from '../../services/theme.service';
 import { TranslateModule } from '@ngx-translate/core';
 
 @Component({
@@ -43,9 +44,9 @@ import { TranslateModule } from '@ngx-translate/core';
     }
     .sidenav {
       width: 260px;
-      border-right: 1px solid rgba(0, 0, 0, 0.08);
-      background-color: #ffffff; /* Cleaner white background for better contrast */
-      color: #333;
+      border-right: 1px solid var(--border);
+      background-color: var(--surface);
+      color: var(--text);
       transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .sidenav-collapsed {
@@ -98,7 +99,7 @@ import { TranslateModule } from '@ngx-translate/core';
       font-weight: 600;
       letter-spacing: -0.5px;
       font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-      color: #2c3e50;
+      color: var(--text);
     }
     .header-logo-text {
       color: white;
@@ -171,11 +172,11 @@ import { TranslateModule } from '@ngx-translate/core';
     .user-menu-name {
       font-weight: 600;
       font-size: 14px;
-      color: #2c3e50;
+      color: var(--text);
     }
     .user-menu-label {
       font-size: 11px;
-      color: #7f8c8d;
+      color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -183,36 +184,43 @@ import { TranslateModule } from '@ngx-translate/core';
       background: rgba(255, 255, 255, 0.15) !important;
       color: white !important;
     }
+    .theme-toggle-button {
+      background: rgba(255, 255, 255, 0.15) !important;
+      color: white !important;
+    }
+    .theme-toggle-button:hover {
+      background: rgba(255, 255, 255, 0.22) !important;
+    }
     .mat-sidenav-content {
-      background-color: #f8f9fa;
+      background-color: var(--bg);
     }
     main {
       padding: 32px;
       min-height: calc(100vh - 64px);
     }
     .active-link {
-      background: linear-gradient(90deg, rgba(102, 126, 234, 0.1) 0%, rgba(255, 255, 255, 0) 100%) !important;
-      color: #3f51b5 !important;
-      border-left: 4px solid #3f51b5;
+      background: linear-gradient(90deg, var(--brand-weak) 0%, rgba(255, 255, 255, 0) 100%) !important;
+      color: var(--brand) !important;
+      border-left: 4px solid var(--brand);
       font-weight: 600;
     }
     .active-link mat-icon {
-      color: #3f51b5 !important;
+      color: var(--brand) !important;
     }
     mat-nav-list a {
       margin: 4px 12px;
       border-radius: 0 8px 8px 0;
       height: 48px !important;
-      color: #546e7a !important;
+      color: var(--text-muted) !important;
       transition: all 0.3s ease;
       position: relative;
     }
     mat-nav-list a:hover {
-      background-color: rgba(63, 81, 181, 0.04) !important;
-      color: #3f51b5 !important;
+      background-color: rgba(63, 81, 181, 0.06) !important;
+      color: var(--brand) !important;
     }
     mat-nav-list a mat-icon {
-      color: #607d8b !important;
+      color: var(--text-muted) !important;
       margin-right: 16px;
       transition: color 0.3s ease;
     }
@@ -232,6 +240,7 @@ export class SidenavComponent {
   constructor(
     public authService: AuthService,
     public i18nService: I18nService,
+    public theme: ThemeService,
     private systemService: SystemService,
     private router: Router,
     private snackBar: MatSnackBar,

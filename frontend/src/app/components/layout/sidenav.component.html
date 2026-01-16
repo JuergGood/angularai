@@ -14,7 +14,11 @@
     </div>
     <mat-nav-list>
       @if (authService.isLoggedIn()) {
-        <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link" [title]="isCollapsed() ? ('NAV.DASHBOARD_SHORT' | translate) : ''">
+        <a mat-list-item
+           routerLink="/dashboard"
+           routerLinkActive="active-link"
+           [routerLinkActiveOptions]="{ exact: true }"
+           [title]="isCollapsed() ? ('NAV.DASHBOARD_SHORT' | translate) : ''">
           <mat-icon matListItemIcon>dashboard</mat-icon>
           @if (!isCollapsed()) {
             <span matListItemTitle>{{ 'NAV.DASHBOARD' | translate }}</span>
@@ -60,6 +64,14 @@
 
       @if (authService.isLoggedIn()) {
         <div class="user-info-group">
+          <button mat-icon-button
+                  class="theme-toggle-button"
+                  (click)="theme.toggle()"
+                  [title]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+                  [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
+            <mat-icon>{{ theme.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+          </button>
+
           <div class="user-profile-button" [matMenuTriggerFor]="profileMenu">
             <div class="user-avatar">
               <mat-icon>person</mat-icon>
@@ -86,6 +98,12 @@
             <mat-icon>settings</mat-icon>
           </button>
           <mat-menu #settingsMenu="matMenu">
+            <button mat-menu-item (click)="theme.toggle()">
+              <mat-icon>{{ theme.isDark() ? 'dark_mode' : 'light_mode' }}</mat-icon>
+              <span>{{ theme.isDark() ? 'Dark mode' : 'Light mode' }}</span>
+            </button>
+            <mat-divider></mat-divider>
+
             <!-- Language Submenu -->
             <button mat-menu-item [matMenuTriggerFor]="languageMenu">
               <mat-icon>language</mat-icon>
@@ -156,6 +174,14 @@
         </div>
       } @else {
         <div class="user-info-group">
+          <button mat-icon-button
+                  class="theme-toggle-button"
+                  (click)="theme.toggle()"
+                  [title]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'"
+                  [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
+            <mat-icon>{{ theme.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+          </button>
+
           <button mat-button routerLink="/login" class="settings-button">
             <mat-icon>login</mat-icon>
             <span>{{ 'ADMIN.LOGIN' | translate }}</span>
