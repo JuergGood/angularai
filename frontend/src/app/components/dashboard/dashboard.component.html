@@ -62,7 +62,7 @@
 
   <div class="main-grid">
     <!-- Task Overview (primary) + Recent Activity (right panel on wide screens) -->
-    <mat-card class="grid-item full-row task-overview-card">
+    <mat-card class="grid-item task-overview-card">
       <mat-card-header>
         <div class="card-header-container">
           <mat-card-title>{{ 'DASHBOARD.TASK_OVERVIEW' | translate }}</mat-card-title>
@@ -159,69 +159,71 @@
       </mat-card-content>
     </mat-card>
 
-    <!-- Priority Tasks -->
-    <mat-card class="grid-item">
-      <mat-card-header>
-        <div class="card-header-container">
-          <mat-card-title>{{ 'DASHBOARD.PRIORITY_TASKS' | translate }}</mat-card-title>
-          <button mat-stroked-button color="primary" routerLink="/tasks">{{ 'DASHBOARD.SHOW_ALL_TASKS' | translate }}</button>
-        </div>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="priority-list" *ngIf="data.priorityTasks.length > 0; else noPriorityTasks">
-          @for (task of data.priorityTasks; track task.id) {
-            <div class="priority-row" routerLink="/tasks">
-              <div class="priority-left">
-                <mat-icon class="priority-icon" color="warn">priority_high</mat-icon>
-                <div>
-                  <div class="priority-title">{{ task.title }}</div>
-                  <div class="priority-sub muted">{{ 'DASHBOARD.DUE' | translate }}: {{ task.dueDate }}</div>
+    <div class="secondary-grid">
+      <!-- Priority Tasks -->
+      <mat-card class="grid-item">
+        <mat-card-header>
+          <div class="card-header-container">
+            <mat-card-title>{{ 'DASHBOARD.PRIORITY_TASKS' | translate }}</mat-card-title>
+            <button mat-stroked-button color="primary" routerLink="/tasks">{{ 'DASHBOARD.SHOW_ALL_TASKS' | translate }}</button>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="priority-list" *ngIf="data.priorityTasks.length > 0; else noPriorityTasks">
+            @for (task of data.priorityTasks; track task.id) {
+              <div class="priority-row" routerLink="/tasks">
+                <div class="priority-left">
+                  <mat-icon class="priority-icon" color="warn">priority_high</mat-icon>
+                  <div>
+                    <div class="priority-title">{{ task.title }}</div>
+                    <div class="priority-sub muted">{{ 'DASHBOARD.DUE' | translate }}: {{ task.dueDate }}</div>
+                  </div>
                 </div>
+                <mat-chip class="due-chip" [ngClass]="task.dueChip.tone">
+                  {{ task.dueChip.label }}
+                </mat-chip>
               </div>
-              <mat-chip class="due-chip" [ngClass]="task.dueChip.tone">
-                {{ task.dueChip.label }}
-              </mat-chip>
-            </div>
-          }
-        </div>
+            }
+          </div>
 
-        <ng-template #noPriorityTasks>
-          <div class="empty-msg">{{ 'DASHBOARD.NO_PRIORITY_TASKS' | translate }}</div>
-        </ng-template>
-      </mat-card-content>
-    </mat-card>
+          <ng-template #noPriorityTasks>
+            <div class="empty-msg">{{ 'DASHBOARD.NO_PRIORITY_TASKS' | translate }}</div>
+          </ng-template>
+        </mat-card-content>
+      </mat-card>
 
-    <!-- User Admin Preview -->
-    <mat-card class="grid-item full-row">
-      <mat-card-header>
-        <div class="card-header-container">
-          <mat-card-title>{{ 'ADMIN.TITLE' | translate }}</mat-card-title>
-          <button mat-stroked-button color="primary" routerLink="/user-admin" *ngIf="authService.isAdmin()">
-            {{ 'DASHBOARD.SHOW_ALL_USERS' | translate }}
-          </button>
-        </div>
-      </mat-card-header>
-      <mat-card-content>
-          <table mat-table [dataSource]="data.recentUsers" class="full-width-table" [trackBy]="trackById">
-          <ng-container matColumnDef="login">
-            <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN.LOGIN' | translate }} </th>
-            <td mat-cell *matCellDef="let user" style="font-weight: 500;"> {{ user.login }} </td>
-          </ng-container>
-          <ng-container matColumnDef="email">
-            <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN.EMAIL' | translate }} </th>
-            <td mat-cell *matCellDef="let user"> {{ user.email }} </td>
-          </ng-container>
-          <ng-container matColumnDef="role">
-            <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN.ROLE' | translate }} </th>
-            <td mat-cell *matCellDef="let user">
-              <mat-chip class="role-chip" [ngClass]="user.roleClass">{{ user.roleLabel }}</mat-chip>
-            </td>
-          </ng-container>
+      <!-- User Admin Preview -->
+      <mat-card class="grid-item">
+        <mat-card-header>
+          <div class="card-header-container">
+            <mat-card-title>{{ 'ADMIN.TITLE' | translate }}</mat-card-title>
+            <button mat-stroked-button color="primary" routerLink="/user-admin" *ngIf="authService.isAdmin()">
+              {{ 'DASHBOARD.SHOW_ALL_USERS' | translate }}
+            </button>
+          </div>
+        </mat-card-header>
+        <mat-card-content>
+            <table mat-table [dataSource]="data.recentUsers" class="full-width-table" [trackBy]="trackById">
+            <ng-container matColumnDef="login">
+              <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN.LOGIN' | translate }} </th>
+              <td mat-cell *matCellDef="let user" style="font-weight: 500;"> {{ user.login }} </td>
+            </ng-container>
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN.EMAIL' | translate }} </th>
+              <td mat-cell *matCellDef="let user"> {{ user.email }} </td>
+            </ng-container>
+            <ng-container matColumnDef="role">
+              <th mat-header-cell *matHeaderCellDef> {{ 'ADMIN.ROLE' | translate }} </th>
+              <td mat-cell *matCellDef="let user">
+                <mat-chip class="role-chip" [ngClass]="user.roleClass">{{ user.roleLabel }}</mat-chip>
+              </td>
+            </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="recentUsersColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: recentUsersColumns;"></tr>
-        </table>
-      </mat-card-content>
-    </mat-card>
+            <tr mat-header-row *matHeaderRowDef="recentUsersColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: recentUsersColumns;"></tr>
+          </table>
+        </mat-card-content>
+      </mat-card>
+    </div>
   </div>
 </div>
