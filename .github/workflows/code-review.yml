@@ -54,7 +54,6 @@ jobs:
         with:
           languages: java-kotlin
           queries: security-extended,security-and-quality
-          build-mode: manual
 
       - name: Build Java
         run: mvn clean compile -DskipTests
@@ -80,7 +79,6 @@ jobs:
         with:
           languages: javascript-typescript
           queries: security-extended,security-and-quality
-          build-mode: none
 
       - name: Perform CodeQL Analysis (JS/TS)
         uses: github/codeql-action/analyze@v3
