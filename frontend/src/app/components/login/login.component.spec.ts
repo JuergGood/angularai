@@ -4,35 +4,54 @@ import { AuthService } from '../../services/auth.service';
 import { Router, provideRouter } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { User } from '../../models/user.model';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { TranslateModule } from '@ngx-translate/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
 
 describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let authServiceSpy: any;
-  let routerSpy: any;
+  let router: Router;
 
   beforeEach(async () => {
+    try {
+      TestBed.initTestEnvironment(
+        BrowserDynamicTestingModule,
+        platformBrowserDynamicTesting()
+      );
+    } catch (e) {
+      // already initialized
+    }
+
     authServiceSpy = {
-      login: vi.fn()
-    };
-    routerSpy = {
-      navigate: vi.fn()
+      login: vi.fn(),
+      isLoggedIn: vi.fn().mockReturnValue(false),
+      currentUser: vi.fn().mockReturnValue(null)
     };
 
     await TestBed.configureTestingModule({
-      imports: [LoginComponent, FormsModule],
+      imports: [LoginComponent, FormsModule, TranslateModule.forRoot()],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
-        provideRouter([])
+        provideRouter([]),
+        provideNoopAnimations(),
+        provideHttpClient(),
+        provideHttpClientTesting()
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(LoginComponent);
     component = fixture.componentInstance;
-    routerSpy = TestBed.inject(Router);
-    vi.spyOn(routerSpy, 'navigate');
+    router = TestBed.inject(Router);
+    vi.spyOn(router, 'navigate');
     fixture.detectChanges();
   });
 
@@ -48,7 +67,7 @@ describe('LoginComponent', () => {
     component.onSubmit();
 
     expect(authServiceSpy.login).toHaveBeenCalledWith('test', 'pass');
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/profile']);
+    expect(router.navigate).toHaveBeenCalledWith(['/profile']);
   });
 
   it('should set error on failed login (401)', () => {
@@ -56,7 +75,7 @@ describe('LoginComponent', () => {
 
     component.onSubmit();
 
-    expect(component.error).toBe('Invalid login or password');
+    expect(component.error).toBe('COMMON.ERROR');
   });
 
   it('should set generic error on server failure', () => {
@@ -64,7 +83,7 @@ describe('LoginComponent', () => {
 
     component.onSubmit();
 
-    expect(component.error).toBe('An error occurred: Internal Server Error');
+    expect(component.error).toBe('COMMON.ERROR');
   });
 
   it('should toggle password visibility', () => {

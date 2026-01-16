@@ -4,10 +4,15 @@ import { AdminService } from '../../services/admin.service';
 import { AuthService } from '../../services/auth.service';
 import { MatDialog } from '@angular/material/dialog';
 import { of } from 'rxjs';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { User } from '../../models/user.model';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
 
 describe('UserAdminComponent', () => {
   let component: UserAdminComponent;
@@ -15,6 +20,7 @@ describe('UserAdminComponent', () => {
   let adminServiceSpy: any;
   let authServiceSpy: any;
   let dialogSpy: any;
+  let translateServiceSpy: any;
 
   const mockUsers: User[] = [
     { id: 1, login: 'admin', firstName: 'Admin', lastName: 'User', email: 'admin@example.com', role: 'ROLE_ADMIN', birthDate: '', address: '' },
@@ -22,6 +28,15 @@ describe('UserAdminComponent', () => {
   ];
 
   beforeEach(async () => {
+    try {
+      TestBed.initTestEnvironment(
+        BrowserDynamicTestingModule,
+        platformBrowserDynamicTesting()
+      );
+    } catch (e) {
+      // already initialized
+    }
+
     adminServiceSpy = {
       getUsers: vi.fn().mockReturnValue(of(mockUsers)),
       updateUser: vi.fn().mockReturnValue(of(mockUsers[1])),
@@ -30,7 +45,8 @@ describe('UserAdminComponent', () => {
 
     authServiceSpy = {
       isAdmin: vi.fn().mockReturnValue(true),
-      currentUser: vi.fn().mockReturnValue(mockUsers[0])
+      currentUser: vi.fn().mockReturnValue(mockUsers[0]),
+      hasAdminWriteAccess: vi.fn().mockReturnValue(true)
     };
 
     dialogSpy = {
@@ -39,17 +55,22 @@ describe('UserAdminComponent', () => {
       })
     };
 
+    translateServiceSpy = {
+      get: vi.fn().mockReturnValue(of('translated')),
+      onTranslationChange: of({}),
+      onLangChange: of({}),
+      onDefaultLangChange: of({})
+    };
+
     await TestBed.configureTestingModule({
-      imports: [UserAdminComponent, FormsModule],
-      providers: [provideNoopAnimations()]
-    }).overrideComponent(UserAdminComponent, {
-      set: {
-        providers: [
-          { provide: AdminService, useValue: adminServiceSpy },
-          { provide: AuthService, useValue: authServiceSpy },
-          { provide: MatDialog, useValue: dialogSpy }
-        ]
-      }
+      imports: [UserAdminComponent, FormsModule, TranslateModule.forRoot()],
+      providers: [
+        provideNoopAnimations(),
+        { provide: AdminService, useValue: adminServiceSpy },
+        { provide: AuthService, useValue: authServiceSpy },
+        { provide: MatDialog, useValue: dialogSpy },
+        { provide: TranslateService, useValue: translateServiceSpy }
+      ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(UserAdminComponent);
@@ -68,8 +89,7 @@ describe('UserAdminComponent', () => {
 
   it('should not load users if not admin', () => {
     authServiceSpy.isAdmin.mockReturnValue(false);
-    component.ngOnInit();
-    // It was already loaded in beforeEach, so we reset and test
+    // Re-run init to test logic
     adminServiceSpy.getUsers.mockClear();
     component.ngOnInit();
     expect(adminServiceSpy.getUsers).not.toHaveBeenCalled();
@@ -84,7 +104,7 @@ describe('UserAdminComponent', () => {
     component.editUser(mockUsers[1]);
     component.editingUser!.firstName = 'Updated';
     component.saveUser();
-    expect(adminServiceSpy.updateUser).toHaveBeenCalled();
+    expect(adminServiceSpy.updateUser).toHaveBeenCalledWith(2, vi.any(Object));
     expect(component.editingUser).toBeNull();
   });
 

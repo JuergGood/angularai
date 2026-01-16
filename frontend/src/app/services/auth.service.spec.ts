@@ -1,17 +1,31 @@
 import { TestBed } from '@angular/core/testing';
-import { provideHttpClient } from '@angular/common/http';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { AuthService } from './auth.service';
 import { User } from '../models/user.model';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
 
 describe('AuthService', () => {
   let service: AuthService;
   let httpMock: HttpTestingController;
 
   beforeEach(() => {
-    // Mock localStorage on window object
+    try {
+      TestBed.initTestEnvironment(
+        BrowserDynamicTestingModule,
+        platformBrowserDynamicTesting()
+      );
+    } catch (e) {
+      // already initialized
+    }
+
+    // Mock localStorage
     const store: Record<string, string> = {};
+
     const mockStorage = {
       getItem: vi.fn((key) => store[key] || null),
       setItem: vi.fn((key, value) => store[key] = value),
@@ -60,6 +74,10 @@ describe('AuthService', () => {
     localStorage.setItem('auth', 'some-token');
 
     service.logout();
+
+    const req = httpMock.expectOne('/api/auth/logout');
+    expect(req.request.method).toBe('POST');
+    req.flush({});
 
     expect(service.currentUser()).toBeNull();
     expect(localStorage.getItem('auth')).toBeNull();

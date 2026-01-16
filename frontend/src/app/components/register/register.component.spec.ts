@@ -1,26 +1,40 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { RegisterComponent } from './register.component';
 import { AuthService } from '../../services/auth.service';
 import { Router, provideRouter } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { User } from '../../models/user.model';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { TranslateModule } from '@ngx-translate/core';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
 
 describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
   let authServiceSpy: any;
-  let routerSpy: any;
+  let router: Router;
 
   beforeEach(async () => {
+    try {
+      TestBed.initTestEnvironment(
+        BrowserDynamicTestingModule,
+        platformBrowserDynamicTesting()
+      );
+    } catch (e) {
+      // already initialized
+    }
+
     authServiceSpy = {
       register: vi.fn()
     };
 
     await TestBed.configureTestingModule({
-      imports: [RegisterComponent, FormsModule],
+      imports: [RegisterComponent, FormsModule, TranslateModule.forRoot()],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
         provideRouter([]),
@@ -30,8 +44,8 @@ describe('RegisterComponent', () => {
 
     fixture = TestBed.createComponent(RegisterComponent);
     component = fixture.componentInstance;
-    routerSpy = TestBed.inject(Router);
-    vi.spyOn(routerSpy, 'navigate');
+    router = TestBed.inject(Router);
+    vi.spyOn(router, 'navigate');
     fixture.detectChanges();
   });
 
@@ -57,10 +71,10 @@ describe('RegisterComponent', () => {
     component.onSubmit();
 
     expect(authServiceSpy.register).toHaveBeenCalled();
-    expect(component.message).toContain('Registration successful');
+    expect(component.message).toContain('COMMON.SUCCESS');
 
     vi.advanceTimersByTime(2000);
-    expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
+    expect(router.navigate).toHaveBeenCalledWith(['/login']);
     vi.useRealTimers();
   });
 
@@ -71,7 +85,7 @@ describe('RegisterComponent', () => {
     component.onSubmit();
 
     expect(authServiceSpy.register).not.toHaveBeenCalled();
-    expect(component.error).toBe('Passwords do not match');
+    expect(component.error).toBe('ADMIN.ERROR_PASSWORD_MATCH');
   });
 
   it('should show error on registration failure', () => {
@@ -81,6 +95,6 @@ describe('RegisterComponent', () => {
 
     component.onSubmit();
 
-    expect(component.error).toBe('User already exists');
+    expect(component.error).toBe('COMMON.ERROR');
   });
 });

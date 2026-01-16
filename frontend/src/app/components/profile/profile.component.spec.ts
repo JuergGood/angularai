@@ -5,8 +5,14 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
-import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { User } from '../../models/user.model';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { TranslateModule } from '@ngx-translate/core';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
 
 describe('ProfileComponent', () => {
   let component: ProfileComponent;
@@ -25,6 +31,15 @@ describe('ProfileComponent', () => {
   } as User;
 
   beforeEach(async () => {
+    try {
+      TestBed.initTestEnvironment(
+        BrowserDynamicTestingModule,
+        platformBrowserDynamicTesting()
+      );
+    } catch (e) {
+      // already initialized
+    }
+
     userServiceSpy = {
       getCurrentUser: vi.fn().mockReturnValue(of(mockUser)),
       updateCurrentUser: vi.fn().mockReturnValue(of(mockUser))
@@ -37,11 +52,12 @@ describe('ProfileComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [ProfileComponent, FormsModule],
+      imports: [ProfileComponent, FormsModule, TranslateModule.forRoot()],
       providers: [
         { provide: UserService, useValue: userServiceSpy },
         { provide: AuthService, useValue: authServiceSpy },
-        { provide: Router, useValue: routerSpy }
+        { provide: Router, useValue: routerSpy },
+        provideNoopAnimations()
       ]
     }).compileComponents();
 
@@ -60,7 +76,7 @@ describe('ProfileComponent', () => {
     component.onSubmit();
 
     expect(userServiceSpy.updateCurrentUser).toHaveBeenCalledWith(component.user);
-    expect(component.message).toBe('Profile updated successfully!');
+    expect(component.message).toBe('COMMON.SUCCESS');
   });
 
   it('should logout and navigate to login', () => {

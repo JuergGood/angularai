@@ -11,7 +11,9 @@ export class AuthService {
   currentUser = signal<User | null>(null);
   isInitializing = signal<boolean>(false);
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient) {}
+
+  init() {
     const auth = localStorage.getItem('auth');
     if (auth) {
       this.isInitializing.set(true);

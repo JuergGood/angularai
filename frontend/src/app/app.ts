@@ -1,6 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { SidenavComponent } from './components/layout/sidenav.component';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -12,6 +13,12 @@ import { SidenavComponent } from './components/layout/sidenav.component';
   templateUrl: './app.component.html',
   styles: []
 })
-export class App {
+export class App implements OnInit {
+  constructor(private authService: AuthService) {}
+
+  ngOnInit() {
+    this.authService.init();
+  }
+
   protected readonly title = signal('frontend');
 }

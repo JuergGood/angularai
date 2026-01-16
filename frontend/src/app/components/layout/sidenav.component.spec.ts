@@ -5,17 +5,32 @@ import { Router, provideRouter } from '@angular/router';
 import { routes } from '../../app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
+import { TranslateModule } from '@ngx-translate/core';
 
 describe('SidenavComponent', () => {
   let authServiceSpy: any;
   let snackBarSpy: any;
 
   beforeEach(async () => {
+    try {
+      TestBed.initTestEnvironment(
+        BrowserDynamicTestingModule,
+        platformBrowserDynamicTesting()
+      );
+    } catch (e) {
+      // already initialized
+    }
+
     authServiceSpy = {
       isLoggedIn: vi.fn().mockReturnValue(true),
       isAdmin: vi.fn().mockReturnValue(true),
-      logout: vi.fn()
+      logout: vi.fn(),
+      init: vi.fn()
     };
 
     snackBarSpy = {
@@ -23,7 +38,7 @@ describe('SidenavComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [SidenavComponent],
+      imports: [SidenavComponent, TranslateModule.forRoot()],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
         { provide: MatSnackBar, useValue: snackBarSpy },
@@ -43,16 +58,12 @@ describe('SidenavComponent', () => {
     const fixture = TestBed.createComponent(SidenavComponent);
     const component = fixture.componentInstance;
     const router = TestBed.inject(Router);
-    const navigateSpy = vi.spyOn(router, 'navigate');
-
-    // Manually inject mocks if needed, but they should be there from TestBed
-    (component as any).authService = authServiceSpy;
-    (component as any).snackBar = snackBarSpy;
+    vi.spyOn(router, 'navigate');
 
     component.onLogout();
 
     expect(authServiceSpy.logout).toHaveBeenCalled();
     expect(snackBarSpy.open).toHaveBeenCalledWith('Logout successful', 'Close', { duration: 3000 });
-    expect(navigateSpy).toHaveBeenCalledWith(['/login']);
+    expect(router.navigate).toHaveBeenCalledWith(['/login']);
   });
 });

@@ -4,24 +4,44 @@ import { AuthService } from './services/auth.service';
 import { provideRouter } from '@angular/router';
 import { routes } from './app.routes';
 import { provideAnimations } from '@angular/platform-browser/animations';
-import { vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import {
+  BrowserDynamicTestingModule,
+  platformBrowserDynamicTesting,
+} from '@angular/platform-browser-dynamic/testing';
+import { TranslateModule } from '@ngx-translate/core';
+import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClientTesting } from '@angular/common/http/testing';
 
 describe('App', () => {
   let authServiceSpy: any;
 
   beforeEach(async () => {
+    try {
+      TestBed.initTestEnvironment(
+        BrowserDynamicTestingModule,
+        platformBrowserDynamicTesting()
+      );
+    } catch (e) {
+      // already initialized
+    }
+
     authServiceSpy = {
       isLoggedIn: vi.fn().mockReturnValue(true),
       isAdmin: vi.fn().mockReturnValue(true),
-      logout: vi.fn()
+      logout: vi.fn(),
+      init: vi.fn(),
+      currentUser: vi.fn().mockReturnValue({ firstName: 'Test', lastName: 'User' })
     };
 
     await TestBed.configureTestingModule({
-      imports: [App],
+      imports: [App, TranslateModule.forRoot()],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
         provideRouter(routes),
-        provideAnimations()
+        provideAnimations(),
+        provideHttpClient(),
+        provideHttpClientTesting()
       ]
     }).compileComponents();
   });
