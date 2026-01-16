@@ -145,15 +145,14 @@ if [ "$cygwin" = "true" -o "$msys" = "true" ] ; then
     fi
     # Now use the pattern with cygpath to convert any paths to Win32 format
     # in the argument list.
-    newargs=()
     for arg in "$@" ; do
         CHECK=`echo "$arg" | egrep "$OURCYGPATTERN"`
         if [ "$CHECK" != "" ] ; then
             arg=`cygpath --mixed "$arg"`
         fi
-        newargs[${#newargs[@]}]="$arg"
+        set -- "$@" "$arg"
+        shift
     done
-    set -- "${newargs[@]}"
 fi
 
 # Escape application args
