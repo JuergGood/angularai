@@ -168,26 +168,15 @@ import { TranslateModule } from '@ngx-translate/core';
       display: flex;
       flex-direction: column;
       pointer-events: none;
-      min-width: 180px;
     }
     .user-menu-name {
       font-weight: 600;
-      font-size: 16px;
-      color: var(--brand);
-      display: flex;
-      align-items: center;
-      gap: 8px;
+      font-size: 14px;
+      color: var(--text);
     }
-    .user-menu-name::before {
-      content: 'person';
-      font-family: 'Material Icons';
-      font-size: 18px;
-      opacity: 0.7;
-    }
-    .user-menu-role {
+    .user-menu-label {
       font-size: 11px;
       color: var(--text-muted);
-      margin-left: 26px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }

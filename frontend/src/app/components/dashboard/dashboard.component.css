@@ -418,3 +418,33 @@ mat-card-title {
   height: 22px;
   font-size: 0.75rem;
 }
+
+/* --- Dark-mode fine tuning (token mode) --- */
+body.theme-dark .summary-card {
+  /* slightly stronger separation on dark background */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35) !important;
+}
+
+body.theme-dark .grid-item {
+  box-shadow: 0 10px 24px rgba(0,0,0,0.45) !important;
+}
+
+body.theme-dark .full-width-table tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+body.theme-dark .full-width-table tr:hover {
+  background-color: rgba(138, 162, 255, 0.08);
+}
+
+body.theme-dark mat-card-header {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+body.theme-dark .task-overview-activity {
+  border-left-color: rgba(255, 255, 255, 0.12);
+}
+
+body.theme-dark .interactive-card:hover {
+  box-shadow: 0 16px 30px rgba(0,0,0,0.55) !important;
+}
