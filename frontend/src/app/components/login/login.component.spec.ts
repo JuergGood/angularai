@@ -6,7 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { User } from '../../models/user.model';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting } from '@angular/common/http/testing';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -19,6 +19,7 @@ describe('LoginComponent', () => {
   let component: LoginComponent;
   let fixture: ComponentFixture<LoginComponent>;
   let authServiceSpy: any;
+  let translateServiceSpy: any;
   let router: Router;
 
   beforeEach(async () => {
@@ -37,10 +38,21 @@ describe('LoginComponent', () => {
       currentUser: vi.fn().mockReturnValue(null)
     };
 
+    translateServiceSpy = {
+      get: vi.fn().mockReturnValue(of('translated')),
+      onTranslationChange: of({}),
+      onLangChange: of({}),
+      onDefaultLangChange: of({}),
+      instant: vi.fn().mockReturnValue('translated'),
+      stream: vi.fn().mockReturnValue(of('translated')),
+      get currentLang() { return 'en'; }
+    };
+
     await TestBed.configureTestingModule({
       imports: [LoginComponent, FormsModule, TranslateModule.forRoot()],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
+        { provide: TranslateService, useValue: translateServiceSpy },
         provideRouter([]),
         provideNoopAnimations(),
         provideHttpClient(),

@@ -17,6 +17,7 @@ describe('RegisterComponent', () => {
   let component: RegisterComponent;
   let fixture: ComponentFixture<RegisterComponent>;
   let authServiceSpy: any;
+  let translateServiceSpy: any;
   let router: Router;
 
   beforeEach(async () => {
@@ -33,10 +34,21 @@ describe('RegisterComponent', () => {
       register: vi.fn()
     };
 
+    translateServiceSpy = {
+      get: vi.fn().mockReturnValue(of('translated')),
+      onTranslationChange: of({}),
+      onLangChange: of({}),
+      onDefaultLangChange: of({}),
+      instant: vi.fn().mockReturnValue('translated'),
+      stream: vi.fn().mockReturnValue(of('translated')),
+      get currentLang() { return 'en'; }
+    };
+
     await TestBed.configureTestingModule({
       imports: [RegisterComponent, FormsModule, TranslateModule.forRoot()],
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
+        { provide: TranslateService, useValue: translateServiceSpy },
         provideRouter([]),
         provideNoopAnimations()
       ]

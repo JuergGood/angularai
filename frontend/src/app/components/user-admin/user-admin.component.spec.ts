@@ -59,7 +59,10 @@ describe('UserAdminComponent', () => {
       get: vi.fn().mockReturnValue(of('translated')),
       onTranslationChange: of({}),
       onLangChange: of({}),
-      onDefaultLangChange: of({})
+      onDefaultLangChange: of({}),
+      instant: vi.fn().mockReturnValue('translated'),
+      stream: vi.fn().mockReturnValue(of('translated')),
+      get currentLang() { return 'en'; }
     };
 
     await TestBed.configureTestingModule({
@@ -104,7 +107,7 @@ describe('UserAdminComponent', () => {
     component.editUser(mockUsers[1]);
     component.editingUser!.firstName = 'Updated';
     component.saveUser();
-    expect(adminServiceSpy.updateUser).toHaveBeenCalledWith(2, vi.any(Object));
+    expect(adminServiceSpy.updateUser).toHaveBeenCalledWith(2, expect.any(Object));
     expect(component.editingUser).toBeNull();
   });
 

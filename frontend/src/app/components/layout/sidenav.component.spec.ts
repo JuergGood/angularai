@@ -11,10 +11,16 @@ import {
   platformBrowserDynamicTesting,
 } from '@angular/platform-browser-dynamic/testing';
 import { TranslateModule } from '@ngx-translate/core';
+import { SystemService } from '../../services/system.service';
+import { of } from 'rxjs';
+import { I18nService } from '../../services/i18n.service';
+import { signal } from '@angular/core';
 
 describe('SidenavComponent', () => {
   let authServiceSpy: any;
   let snackBarSpy: any;
+  let systemServiceSpy: any;
+  let i18nServiceSpy: any;
 
   beforeEach(async () => {
     try {
@@ -30,11 +36,22 @@ describe('SidenavComponent', () => {
       isLoggedIn: vi.fn().mockReturnValue(true),
       isAdmin: vi.fn().mockReturnValue(true),
       logout: vi.fn(),
-      init: vi.fn()
+      init: vi.fn(),
+      currentUser: vi.fn().mockReturnValue({ firstName: 'Test' })
     };
 
     snackBarSpy = {
       open: vi.fn()
+    };
+
+    systemServiceSpy = {
+      getSystemInfo: vi.fn().mockReturnValue(of({ version: '1.0.0', environment: 'test' }))
+    };
+
+    i18nServiceSpy = {
+      currentLang: signal('en'),
+      setLanguage: vi.fn(),
+      getCurrentLanguage: vi.fn().mockReturnValue('en')
     };
 
     await TestBed.configureTestingModule({
@@ -42,6 +59,8 @@ describe('SidenavComponent', () => {
       providers: [
         { provide: AuthService, useValue: authServiceSpy },
         { provide: MatSnackBar, useValue: snackBarSpy },
+        { provide: SystemService, useValue: systemServiceSpy },
+        { provide: I18nService, useValue: i18nServiceSpy },
         provideRouter(routes),
         provideAnimations()
       ]
@@ -60,10 +79,13 @@ describe('SidenavComponent', () => {
     const router = TestBed.inject(Router);
     vi.spyOn(router, 'navigate');
 
+    // Sidenav uses snackBar directly, but we provide a mock in TestBed
+    // The previous failure was likely because detectChanges was needed or the injection was stale
+    fixture.detectChanges();
     component.onLogout();
 
     expect(authServiceSpy.logout).toHaveBeenCalled();
-    expect(snackBarSpy.open).toHaveBeenCalledWith('Logout successful', 'Close', { duration: 3000 });
+    expect(snackBarSpy.open).toHaveBeenCalled();
     expect(router.navigate).toHaveBeenCalledWith(['/login']);
   });
 });

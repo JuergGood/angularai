@@ -51,12 +51,23 @@ describe('ProfileComponent', () => {
       navigate: vi.fn()
     };
 
+    translateServiceSpy = {
+      get: vi.fn().mockReturnValue(of('translated')),
+      onTranslationChange: of({}),
+      onLangChange: of({}),
+      onDefaultLangChange: of({}),
+      instant: vi.fn().mockReturnValue('translated'),
+      stream: vi.fn().mockReturnValue(of('translated')),
+      get currentLang() { return 'en'; }
+    };
+
     await TestBed.configureTestingModule({
       imports: [ProfileComponent, FormsModule, TranslateModule.forRoot()],
       providers: [
         { provide: UserService, useValue: userServiceSpy },
         { provide: AuthService, useValue: authServiceSpy },
         { provide: Router, useValue: routerSpy },
+        { provide: TranslateService, useValue: translateServiceSpy },
         provideNoopAnimations()
       ]
     }).compileComponents();

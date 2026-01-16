@@ -54,11 +54,14 @@ describe('TasksComponent', () => {
       onTranslationChange: of({}),
       onLangChange: of({}),
       onDefaultLangChange: of({}),
-      instant: vi.fn().mockReturnValue('translated')
+      instant: vi.fn().mockReturnValue('translated'),
+      stream: vi.fn().mockReturnValue(of('translated')),
+      get currentLang() { return 'en'; }
     };
 
     authServiceSpy = {
-      hasAdminWriteAccess: vi.fn().mockReturnValue(true)
+      hasAdminWriteAccess: vi.fn().mockReturnValue(true),
+      currentUser: vi.fn().mockReturnValue({ login: 'admin' })
     };
 
     await TestBed.configureTestingModule({
@@ -98,7 +101,7 @@ describe('TasksComponent', () => {
   it('should create a new task without dueDate', () => {
     component.currentTask = { title: 'No Date', description: 'No Date Desc', dueDate: '', priority: Priority.LOW, status: TaskStatus.OPEN };
     component.onSubmit();
-    expect(taskServiceSpy.createTask).toHaveBeenCalledWith(vi.any(Object));
+    expect(taskServiceSpy.createTask).toHaveBeenCalledWith(expect.any(Object));
     expect(taskServiceSpy.getTasks).toHaveBeenCalledTimes(2);
   });
 
