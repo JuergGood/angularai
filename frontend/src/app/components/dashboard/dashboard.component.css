@@ -253,6 +253,12 @@ mat-card-title {
   min-width: 0;
 }
 
+.priority-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+}
+
 .priority-title {
   font-weight: 600;
   color: var(--text);
@@ -321,6 +327,75 @@ mat-card-title {
 .delta-chip {
   font-size: 0.78rem;
   font-weight: 600;
+  border: 1px solid var(--border);
+}
+
+/* KPI delta chips: semantic look (do not rely on Material theme colors) */
+.summary-card.tasks .delta-chip {
+  background: rgba(76, 175, 80, 0.16) !important;
+  color: #2e7d32 !important;
+}
+
+.summary-card.users .delta-chip,
+.summary-card.completed .delta-chip {
+  background: rgba(63, 81, 181, 0.14) !important;
+  color: var(--brand) !important;
+}
+
+.summary-card.logs .delta-chip {
+  background: rgba(33, 150, 243, 0.14) !important;
+  color: #1565c0 !important;
+}
+
+/* Recent Activity action chips */
+.action-chip {
+  height: 22px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+}
+
+.action-chip.action-login {
+  background: rgba(63, 81, 181, 0.14) !important;
+  color: var(--brand) !important;
+}
+
+.action-chip.action-logout {
+  background: rgba(211, 47, 47, 0.12) !important;
+  color: #c62828 !important;
+}
+
+.action-chip.action-neutral {
+  background: color-mix(in srgb, var(--surface-2) 70%, transparent) !important;
+  color: var(--text-muted) !important;
+}
+
+/* User role chips */
+.role-chip {
+  height: 22px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid var(--border);
+}
+
+.role-chip.role-admin {
+  background: rgba(255, 152, 0, 0.16) !important;
+  color: #e65100 !important;
+}
+
+.role-chip.role-admin-read {
+  background: rgba(63, 81, 181, 0.14) !important;
+  color: var(--brand) !important;
+}
+
+.role-chip.role-user {
+  background: rgba(76, 175, 80, 0.16) !important;
+  color: #2e7d32 !important;
+}
+
+.role-chip.role-neutral {
+  background: color-mix(in srgb, var(--surface-2) 70%, transparent) !important;
+  color: var(--text-muted) !important;
 }
 
 /* Recent Activity filter */

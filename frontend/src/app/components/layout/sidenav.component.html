@@ -81,7 +81,7 @@
           <mat-menu #profileMenu="matMenu">
             <div class="user-menu-header">
               <span class="user-menu-name">{{ authService.currentUser()?.login }}</span>
-              <span class="user-menu-label">{{ 'ADMIN.LOGIN' | translate }}</span>
+              <span class="user-menu-role" *ngIf="authService.isAdmin()">{{ 'ADMIN.ROLES.ADMIN' | translate }}</span>
             </div>
             <mat-divider></mat-divider>
             <button mat-menu-item routerLink="/profile">

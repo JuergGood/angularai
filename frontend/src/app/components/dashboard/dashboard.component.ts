@@ -69,11 +69,19 @@ export class DashboardComponent implements OnInit {
     return this.roleLabelMap[role] ?? role.replace(/^ROLE_/, '').replaceAll('_', ' ').toLowerCase();
   }
 
-  private roleChipColor(role: string | undefined | null): 'primary' | 'accent' | 'warn' | undefined {
-    if (!role) return undefined;
-    if (role === 'ROLE_ADMIN') return 'primary';
-    if (role === 'ROLE_ADMIN_READ') return 'accent';
-    return undefined;
+  private roleClass(role: string | undefined | null): 'role-admin' | 'role-admin-read' | 'role-user' | 'role-neutral' {
+    if (!role) return 'role-neutral';
+    if (role === 'ROLE_ADMIN') return 'role-admin';
+    if (role === 'ROLE_ADMIN_READ') return 'role-admin-read';
+    if (role === 'ROLE_USER') return 'role-user';
+    return 'role-neutral';
+  }
+
+  private actionClass(action: string | undefined | null): 'action-login' | 'action-logout' | 'action-neutral' {
+    if (!action) return 'action-neutral';
+    if (action === 'USER_LOGIN') return 'action-login';
+    if (action === 'USER_LOGOUT') return 'action-logout';
+    return 'action-neutral';
   }
 
 
@@ -89,6 +97,7 @@ export class DashboardComponent implements OnInit {
       ...l,
       timestampLabel: this.toRelativeTime(l.timestamp),
       actionLabel: this.humanizeAction(l.action),
+      actionClass: this.actionClass(l.action),
       timestampMs: this.parseTimestampMs(l.timestamp)
     }));
 
@@ -111,7 +120,7 @@ export class DashboardComponent implements OnInit {
       recentUsers: (data.recentUsers ?? []).map(u => ({
         ...u,
         roleLabel: this.humanizeRole((u as any).role),
-        roleColor: this.roleChipColor((u as any).role)
+        roleClass: this.roleClass((u as any).role)
       })),
       priorityTasks: (data.priorityTasks ?? []).map(t => ({
         ...t,
