@@ -99,6 +99,16 @@ jobs:
         with:
           java-version: '25'
           distribution: 'temurin'
+          java-package: jdk
+          id: setup-java-25
+
+      - name: Set up JDK 17 for Android
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          java-package: jdk
+          id: setup-java-17
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -138,4 +148,20 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=JuergGood_angularai -Dsonar.organization=juerggood -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info -DskipTests
+        run: |
+          # Build and test Android to generate coverage using JDK 17
+          export JAVA_HOME=$JAVA_HOME_17_X64
+          export PATH=$JAVA_HOME/bin:$PATH
+          cd android
+          chmod +x gradlew
+          ./gradlew testDebugUnitTest
+          cd ..
+          
+          # Run Sonar scan with all coverage reports using JDK 25
+          export JAVA_HOME=$JAVA_HOME_25_X64
+          export PATH=$JAVA_HOME/bin:$PATH
+          mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+            -Dsonar.projectKey=JuergGood_angularai \
+            -Dsonar.organization=juerggood \
+            -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info \
+            -Dsonar.coverage.jacoco.xmlReportPaths=backend/target/site/jacoco/jacoco.xml,test-client/target/site/jacoco/jacoco.xml,android/app/build/reports/jacoco/testDebugUnitTest/testDebugUnitTest.xml
