@@ -43,37 +43,15 @@
 }
 
 .main-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
-}
-
-.secondary-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(420px, 1fr));
-  gap: 32px;
+  gap: 24px;
 }
 
 .grid-item {
-  display: flex;
-  flex-direction: column;
+  min-height: 350px;
   border-radius: 12px !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
-  overflow: hidden !important;
-  position: relative;
-  isolation: isolate;
-  background: var(--surface);
-}
-
-.task-overview-card {
-  min-height: 400px;
-}
-
-.task-overview-card mat-card-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 16px 24px !important;
 }
 
 .full-row {
@@ -108,8 +86,8 @@
 /* Primary card layout: chart left, recent activity right (stacked on small screens) */
 .task-overview-layout {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 24px;
   align-items: start;
 }
 
@@ -126,21 +104,6 @@
 .task-overview-activity {
   border-left: 1px solid var(--border);
   padding-left: 16px;
-  max-height: 480px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  scrollbar-width: thin;
-  scrollbar-color: var(--brand-weak) transparent;
-}
-
-.task-overview-activity::-webkit-scrollbar {
-  width: 6px;
-}
-
-.task-overview-activity::-webkit-scrollbar-thumb {
-  background-color: var(--brand-weak);
-  border-radius: 10px;
 }
 
 @media (max-width: 980px) {
@@ -149,8 +112,6 @@
     padding-left: 0;
     border-top: 1px solid var(--border);
     padding-top: 16px;
-    max-height: none;
-    overflow-y: visible;
   }
 }
 
@@ -243,12 +204,8 @@
 
 mat-card-header {
   border-bottom: 1px solid var(--border);
-  margin-bottom: 0 !important;
-  padding: 16px 24px !important;
-  flex-shrink: 0;
-  background: var(--surface) !important;
-  z-index: 10;
-  position: relative;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
 }
 
 mat-card-title {
@@ -296,19 +253,19 @@ mat-card-title {
   min-width: 0;
 }
 
+.priority-icon {
+  font-size: 20px;
+  height: 20px;
+  width: 20px;
+}
+
 .priority-title {
   font-weight: 600;
   color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 280px;
-}
-
-@media (max-width: 600px) {
-  .priority-title {
-    max-width: 180px;
-  }
+  max-width: 420px;
 }
 
 .priority-sub {
@@ -370,6 +327,75 @@ mat-card-title {
 .delta-chip {
   font-size: 0.78rem;
   font-weight: 600;
+  border: 1px solid var(--border);
+}
+
+/* KPI delta chips: semantic look (do not rely on Material theme colors) */
+.summary-card.tasks .delta-chip {
+  background: rgba(76, 175, 80, 0.16) !important;
+  color: #2e7d32 !important;
+}
+
+.summary-card.users .delta-chip,
+.summary-card.completed .delta-chip {
+  background: rgba(63, 81, 181, 0.14) !important;
+  color: var(--brand) !important;
+}
+
+.summary-card.logs .delta-chip {
+  background: rgba(33, 150, 243, 0.14) !important;
+  color: #1565c0 !important;
+}
+
+/* Recent Activity action chips */
+.action-chip {
+  height: 22px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+}
+
+.action-chip.action-login {
+  background: rgba(63, 81, 181, 0.14) !important;
+  color: var(--brand) !important;
+}
+
+.action-chip.action-logout {
+  background: rgba(211, 47, 47, 0.12) !important;
+  color: #c62828 !important;
+}
+
+.action-chip.action-neutral {
+  background: color-mix(in srgb, var(--surface-2) 70%, transparent) !important;
+  color: var(--text-muted) !important;
+}
+
+/* User role chips */
+.role-chip {
+  height: 22px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  border: 1px solid var(--border);
+}
+
+.role-chip.role-admin {
+  background: rgba(255, 152, 0, 0.16) !important;
+  color: #e65100 !important;
+}
+
+.role-chip.role-admin-read {
+  background: rgba(63, 81, 181, 0.14) !important;
+  color: var(--brand) !important;
+}
+
+.role-chip.role-user {
+  background: rgba(76, 175, 80, 0.16) !important;
+  color: #2e7d32 !important;
+}
+
+.role-chip.role-neutral {
+  background: color-mix(in srgb, var(--surface-2) 70%, transparent) !important;
+  color: var(--text-muted) !important;
 }
 
 /* Recent Activity filter */
@@ -391,4 +417,34 @@ mat-card-title {
 .full-width-table mat-chip {
   height: 22px;
   font-size: 0.75rem;
+}
+
+/* --- Dark-mode fine tuning (token mode) --- */
+body.theme-dark .summary-card {
+  /* slightly stronger separation on dark background */
+  box-shadow: 0 6px 18px rgba(0,0,0,0.35) !important;
+}
+
+body.theme-dark .grid-item {
+  box-shadow: 0 10px 24px rgba(0,0,0,0.45) !important;
+}
+
+body.theme-dark .full-width-table tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.04);
+}
+
+body.theme-dark .full-width-table tr:hover {
+  background-color: rgba(138, 162, 255, 0.08);
+}
+
+body.theme-dark mat-card-header {
+  border-bottom-color: rgba(255, 255, 255, 0.12);
+}
+
+body.theme-dark .task-overview-activity {
+  border-left-color: rgba(255, 255, 255, 0.12);
+}
+
+body.theme-dark .interactive-card:hover {
+  box-shadow: 0 16px 30px rgba(0,0,0,0.55) !important;
 }
