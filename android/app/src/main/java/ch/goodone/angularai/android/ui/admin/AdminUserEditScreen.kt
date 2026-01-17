@@ -11,7 +11,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.goodone.angularai.android.domain.model.User
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AdminUserEditScreen(
     userId: Long?,

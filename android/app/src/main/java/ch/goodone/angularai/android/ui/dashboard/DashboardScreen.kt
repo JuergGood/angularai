@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.goodone.angularai.android.data.remote.dto.DashboardDTO
 import ch.goodone.angularai.android.data.remote.dto.SummaryStatsDTO
+import androidx.compose.material3.ExperimentalMaterial3Api
 
 @Composable
 fun DashboardScreen(
@@ -42,6 +43,7 @@ fun DashboardScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardContent(
     dashboard: DashboardDTO,
@@ -158,6 +160,7 @@ fun DashboardContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SummaryStatsRow(
     summary: SummaryStatsDTO,
