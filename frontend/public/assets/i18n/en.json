@@ -57,6 +57,7 @@
     "SORT_DESC": "Sort by Priority (High > Medium > Low)",
     "FORM": {
       "TITLE": "Title",
+      "TITLE_PH": "Enter a descriptive title for this task",
       "DESCRIPTION": "Description",
       "DUE_DATE": "Due Date",
       "PRIORITY": "Priority",

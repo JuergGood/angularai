@@ -8,7 +8,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   gap: 16px;
   flex-wrap: wrap;
 }
@@ -22,16 +22,47 @@
 
 .page-title {
   margin: 0;
-  font-size: 24px;
-  font-weight: 700;
-  color: #1f2937;
+  font-size: 26px;
+  font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.5px;
 }
 
 .main-card {
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  border: none;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+  border: 1px solid var(--border) !important;
   overflow: hidden;
+  background: var(--surface) !important;
+}
+
+.toolbar-filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--surface-2);
+  padding: 6px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+
+.clear-btn-alt {
+  border-radius: 10px;
+  height: 44px !important;
+  font-weight: 600;
+  color: var(--text-muted) !important;
+  border-color: var(--border) !important;
+  transition: all 0.2s ease;
+}
+
+.clear-btn-alt:hover {
+  background-color: rgba(244, 67, 54, 0.08) !important;
+  color: #d32f2f !important;
+  border-color: #d32f2f !important;
+}
+
+.clear-btn-alt mat-icon {
+  margin-right: 4px;
 }
 
 .filter-select {
@@ -39,66 +70,127 @@
 }
 
 .date-range-field {
-  width: 280px;
+  width: 260px;
 }
 
-/* Hide form field subscripts to save vertical space in toolbar */
-::ng-deep .page-toolbar .mat-mdc-form-field-subscript-wrapper {
+.compact-field ::ng-deep .mat-mdc-form-field-subscript-wrapper {
   display: none;
+}
+
+.reset-filter-btn {
+  color: var(--text-muted);
 }
 
 .table-container {
   overflow-x: auto;
 }
 
-table {
+.full-width-table {
   width: 100%;
 }
 
-.mat-mdc-table {
-  background: transparent;
-}
-
 .mat-mdc-header-row {
-  background-color: #f9fafb;
+  background-color: var(--surface-2) !important;
+  height: 56px;
 }
 
 .mat-mdc-header-cell {
-  color: #374151;
-  font-weight: 600;
-  font-size: 14px;
-  padding: 16px;
+  color: var(--text-muted) !important;
+  font-weight: 600 !important;
+  font-size: 11px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 0 16px !important;
+  font-family: inherit !important;
 }
 
 .mat-mdc-cell {
-  padding: 16px;
+  padding: 16px !important;
   font-size: 14px;
-  color: #4b5563;
+  color: var(--text);
+  font-family: inherit !important;
+}
+
+.interactive-row {
+  transition: background-color 0.2s ease;
+}
+
+.interactive-row:hover {
+  background-color: var(--brand-weak) !important;
+}
+
+/* Zebra striping */
+.full-width-table tr:nth-child(even) {
+  background-color: color-mix(in srgb, var(--surface-2) 70%, transparent);
 }
 
 .log-timestamp {
-  color: #6b7280;
+  color: var(--text-muted);
   font-size: 13px;
 }
 
 .log-login {
   font-weight: 600;
-  color: #111827;
+  color: var(--brand);
 }
 
-.log-action {
-  font-weight: 500;
+.details-cell {
+  max-width: 400px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--text-muted) !important;
+}
+
+.action-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: 1px solid var(--border);
+}
+
+.action-chip.action-login {
+  background: rgba(63, 81, 181, 0.14) !important;
+  color: var(--brand) !important;
+}
+
+.action-chip.action-logout {
+  background: rgba(211, 47, 47, 0.12) !important;
+  color: #c62828 !important;
+}
+
+.action-chip.action-neutral {
+  background: var(--surface-2) !important;
+  color: var(--text-muted) !important;
+}
+
+.paginator-container {
+  border-top: 1px solid var(--border);
+  background: var(--surface-2);
 }
 
 .clear-btn {
   border-radius: 10px;
   height: 44px !important;
+  font-weight: 600;
+  box-shadow: 0 4px 6px rgba(244, 67, 54, 0.2);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 960px) {
   .page-toolbar {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .toolbar-filters {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 12px;
   }
 
   .filter-select, .date-range-field {

@@ -57,6 +57,7 @@
     "SORT_DESC": "Nach Priorität sortieren (Hoch > Mittel > Niedrig)",
     "FORM": {
       "TITLE": "Titel",
+      "TITLE_PH": "Geben Sie einen aussagekräftigen Titel für diese Aufgabe ein",
       "DESCRIPTION": "Beschreibung",
       "DUE_DATE": "Fälligkeitsdatum",
       "PRIORITY": "Priorität",

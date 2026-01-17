@@ -63,14 +63,17 @@ import { ConfirmDialogComponent } from '../tasks/confirm-dialog.component';
       border-radius: 10px;
       padding: 0 20px;
       height: 44px !important;
-      box-shadow: 0 2px 6px rgba(0,0,0,.15);
-      font-weight: 500;
+      font-weight: 600;
+    }
+    .add-user-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
     }
     .main-card {
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-      border: none;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+      border: 1px solid var(--border) !important;
       overflow: hidden;
+      background: var(--surface) !important;
     }
     table {
       width: 100%;
@@ -79,49 +82,85 @@ import { ConfirmDialogComponent } from '../tasks/confirm-dialog.component';
       background: transparent;
     }
     .mat-mdc-header-row {
-      background-color: #f9fafb;
+      background-color: var(--surface-2) !important;
+      height: 56px;
     }
     .mat-mdc-header-cell {
-      color: #374151;
-      font-weight: 600;
-      font-size: 14px;
-      padding: 16px;
+      color: var(--text-muted) !important;
+      font-weight: 600 !important;
+      font-size: 11px !important;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 0 16px !important;
+      font-family: inherit !important;
     }
     .mat-mdc-cell {
-      padding: 16px;
+      padding: 16px !important;
       font-size: 14px;
-      color: #4b5563;
+      color: var(--text);
+    }
+    .action-buttons {
+      display: flex;
+      gap: 4px;
+    }
+    /* Zebra striping */
+    .mat-mdc-row:nth-child(even) {
+      background-color: color-mix(in srgb, var(--surface-2) 70%, transparent);
+    }
+    .mat-mdc-row:hover {
+      background-color: var(--brand-weak) !important;
     }
     .user-login {
       font-weight: 600;
-      color: #111827;
+      color: var(--brand);
     }
     .role-chip {
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 12px;
+      height: 22px;
+      padding: 0 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
       font-weight: 600;
-      display: inline-block;
+      display: inline-flex;
+      align-items: center;
+      border: 1px solid var(--border);
     }
     .role-admin {
-      background: rgba(124, 58, 237, 0.1);
-      color: #5b21b6;
-      border: 1px solid rgba(124, 58, 237, 0.2);
+      background: rgba(255, 152, 0, 0.16) !important;
+      color: #e65100 !important;
+    }
+    .role-admin-read {
+      background: rgba(63, 81, 181, 0.14) !important;
+      color: var(--brand) !important;
     }
     .role-user {
-      background: #f3f4f6;
-      color: #374151;
-      border: 1px solid #e5e7eb;
+      background: rgba(76, 175, 80, 0.16) !important;
+      color: #2e7d32 !important;
+    }
+    .role-neutral {
+      background: color-mix(in srgb, var(--surface-2) 70%, transparent) !important;
+      color: var(--text-muted) !important;
     }
     .edit-card {
       margin-top: 32px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+      border: 1px solid var(--border) !important;
+      overflow: hidden;
+      background: var(--surface) !important;
+    }
+    .edit-card mat-card-header {
+      background-color: var(--surface-2) !important;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .edit-card mat-card-content {
+      padding: 24px !important;
     }
     .form-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 16px;
+      margin-top: 8px;
     }
     @media (max-width: 600px) {
       .form-grid {
@@ -131,10 +170,21 @@ import { ConfirmDialogComponent } from '../tasks/confirm-dialog.component';
     mat-form-field {
       width: 100%;
     }
+    .submit-btn {
+      border-radius: 8px;
+      padding: 0 24px;
+      height: 44px !important;
+      font-weight: 600;
+    }
+    .submit-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
     .form-actions {
       display: flex;
       gap: 12px;
       margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
       justify-content: flex-end;
     }
     .error {

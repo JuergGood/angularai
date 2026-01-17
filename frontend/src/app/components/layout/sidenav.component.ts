@@ -164,21 +164,55 @@ import { TranslateModule } from '@ngx-translate/core';
       opacity: 0.7;
     }
     .user-menu-header {
-      padding: 12px 16px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
       pointer-events: none;
+      background: var(--brand-weak);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 8px;
     }
     .user-menu-name {
-      font-weight: 600;
-      font-size: 14px;
-      color: var(--text);
+      font-weight: 700;
+      font-size: 16px;
+      color: var(--brand);
+      margin-bottom: 2px;
     }
-    .user-menu-label {
+    .user-menu-role {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .info-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 16px;
+      opacity: 0.8;
+      cursor: default;
+    }
+    .info-item mat-icon {
+      color: var(--text-muted);
+      font-size: 20px;
+      width: 20px;
+      height: 20px;
+    }
+    .info-label {
       font-size: 11px;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      display: block;
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+    .info-value {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--text);
+      display: block;
     }
     .settings-button {
       background: rgba(255, 255, 255, 0.15) !important;

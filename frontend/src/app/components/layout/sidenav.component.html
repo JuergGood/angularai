@@ -64,6 +64,7 @@
 
       @if (authService.isLoggedIn()) {
         <div class="user-info-group">
+          <!-- Dark mode feature hidden per request
           <button mat-icon-button
                   class="theme-toggle-button"
                   (click)="theme.toggle()"
@@ -71,6 +72,7 @@
                   [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
             <mat-icon>{{ theme.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
           </button>
+          -->
 
           <div class="user-profile-button" [matMenuTriggerFor]="profileMenu">
             <div class="user-avatar">
@@ -98,11 +100,13 @@
             <mat-icon>settings</mat-icon>
           </button>
           <mat-menu #settingsMenu="matMenu">
+            <!-- Dark mode feature hidden per request
             <button mat-menu-item (click)="theme.toggle()">
               <mat-icon>{{ theme.isDark() ? 'dark_mode' : 'light_mode' }}</mat-icon>
               <span>{{ theme.isDark() ? 'Dark mode' : 'Light mode' }}</span>
             </button>
             <mat-divider></mat-divider>
+            -->
 
             <!-- Language Submenu -->
             <button mat-menu-item [matMenuTriggerFor]="languageMenu">
@@ -157,14 +161,20 @@
           </mat-menu>
 
           <mat-menu #aboutMenu="matMenu">
-            <button mat-menu-item disabled>
+            <div class="info-item">
               <mat-icon>info</mat-icon>
-              <span>{{ 'NAV.VERSION' | translate }}: {{ systemInfo()?.version || ('COMMON.LOADING' | translate) }}</span>
-            </button>
-            <button mat-menu-item disabled>
+              <div>
+                <span class="info-label">{{ 'NAV.VERSION' | translate }}</span>
+                <span class="info-value">{{ systemInfo()?.version || ('COMMON.LOADING' | translate) }}</span>
+              </div>
+            </div>
+            <div class="info-item">
               <mat-icon>layers</mat-icon>
-              <span>{{ 'NAV.MODE' | translate }}: {{ systemInfo()?.mode || ('COMMON.LOADING' | translate) }}</span>
-            </button>
+              <div>
+                <span class="info-label">{{ 'NAV.MODE' | translate }}</span>
+                <span class="info-value">{{ systemInfo()?.mode || ('COMMON.LOADING' | translate) }}</span>
+              </div>
+            </div>
             <mat-divider></mat-divider>
             <button mat-menu-item (click)="showHelp()">
               <mat-icon>help_outline</mat-icon>
@@ -174,6 +184,7 @@
         </div>
       } @else {
         <div class="user-info-group">
+          <!-- Dark mode feature hidden per request
           <button mat-icon-button
                   class="theme-toggle-button"
                   (click)="theme.toggle()"
@@ -181,6 +192,7 @@
                   [attr.aria-label]="theme.isDark() ? 'Switch to light mode' : 'Switch to dark mode'">
             <mat-icon>{{ theme.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
           </button>
+          -->
 
           <button mat-button routerLink="/login" class="settings-button">
             <mat-icon>login</mat-icon>

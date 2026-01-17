@@ -42,8 +42,7 @@ export class DashboardComponent implements OnInit {
   recentUsersColumns: string[] = ['login', 'email', 'role'];
 
   /**
-   * Lightweight mapping to present audit actions in a more human-friendly way.
-   * Extend as your backend grows.
+   * Action presentation: semantic chip colors.
    */
   private readonly actionLabelMap: Record<string, string> = {
     USER_LOGIN: 'Login',
@@ -53,6 +52,16 @@ export class DashboardComponent implements OnInit {
     TASK_COMPLETED: 'Task completed',
     USER_CREATED: 'User created',
     USER_UPDATED: 'User updated'
+  };
+
+  private readonly actionClassMap: Record<string, string> = {
+    USER_LOGIN: 'action-login',
+    USER_LOGOUT: 'action-logout',
+    TASK_CREATED: 'action-neutral',
+    TASK_UPDATED: 'action-neutral',
+    TASK_COMPLETED: 'action-neutral',
+    USER_CREATED: 'action-neutral',
+    USER_UPDATED: 'action-neutral'
   };
 
   /**
@@ -77,11 +86,16 @@ export class DashboardComponent implements OnInit {
     return 'role-neutral';
   }
 
+  humanizeAction(action: string): string {
+    if (!action) return '';
+    return this.actionLabelMap[action] ?? action.replaceAll('_', ' ').toLowerCase().replace(/^\w/, c => c.toUpperCase());
+  }
+
   private actionClass(action: string | undefined | null): 'action-login' | 'action-logout' | 'action-neutral' {
     if (!action) return 'action-neutral';
     if (action === 'USER_LOGIN') return 'action-login';
     if (action === 'USER_LOGOUT') return 'action-logout';
-    return 'action-neutral';
+    return this.actionClassMap[action] as any ?? 'action-neutral';
   }
 
 
@@ -195,11 +209,6 @@ export class DashboardComponent implements OnInit {
 
   private startOfDay(d: Date): Date {
     return new Date(d.getFullYear(), d.getMonth(), d.getDate());
-  }
-
-  humanizeAction(action: string): string {
-    if (!action) return '';
-    return this.actionLabelMap[action] ?? action.replaceAll('_', ' ').toLowerCase().replace(/^\w/, c => c.toUpperCase());
   }
 
   /**

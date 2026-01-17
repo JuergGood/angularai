@@ -86,17 +86,48 @@ import { TranslateModule } from '@ngx-translate/core';
     .add-task-card {
       margin-bottom: 32px;
       border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06) !important;
+      border: 1px solid var(--border) !important;
+      overflow: hidden;
+      background: var(--surface) !important;
     }
-    .form-row {
-      display: flex;
+    .add-task-card mat-card-header {
+      background-color: var(--surface-2) !important;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border);
+    }
+    .add-task-card mat-card-content {
+      padding: 24px !important;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
       gap: 16px;
       margin-top: 8px;
+    }
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+    .full-width {
+      width: 100%;
+    }
+    .submit-btn {
+      border-radius: 8px;
+      padding: 0 24px;
+      height: 44px !important;
+      font-weight: 600;
+    }
+    .submit-btn:hover:not(:disabled) {
+      transform: translateY(-1px);
     }
     .form-actions {
       display: flex;
       gap: 12px;
       margin-top: 24px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
       justify-content: flex-end;
     }
     .tasks-list {

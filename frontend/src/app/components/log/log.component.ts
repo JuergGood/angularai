@@ -54,6 +54,39 @@ export class LogComponent implements OnInit {
 
   displayedColumns: string[] = ['timestamp', 'login', 'action', 'details'];
 
+  /**
+   * Action presentation: semantic chip colors and labels.
+   */
+  private readonly actionLabelMap: Record<string, string> = {
+    USER_LOGIN: 'Login',
+    USER_LOGOUT: 'Logout',
+    TASK_CREATED: 'Task created',
+    TASK_UPDATED: 'Task updated',
+    TASK_COMPLETED: 'Task completed',
+    USER_CREATED: 'User created',
+    USER_UPDATED: 'User updated'
+  };
+
+  private readonly actionClassMap: Record<string, string> = {
+    USER_LOGIN: 'action-login',
+    USER_LOGOUT: 'action-logout',
+    TASK_CREATED: 'action-neutral',
+    TASK_UPDATED: 'action-neutral',
+    TASK_COMPLETED: 'action-neutral',
+    USER_CREATED: 'action-neutral',
+    USER_UPDATED: 'action-neutral'
+  };
+
+  getActionLabel(action: string | undefined | null): string {
+    if (!action) return '';
+    return this.actionLabelMap[action] ?? action.replaceAll('_', ' ').toLowerCase().replace(/^\w/, c => c.toUpperCase());
+  }
+
+  getActionClass(action: string | undefined | null): string {
+    if (!action) return 'action-neutral';
+    return this.actionClassMap[action] ?? 'action-neutral';
+  }
+
   constructor(
     private logService: LogService,
     private dialog: MatDialog,
