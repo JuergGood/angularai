@@ -74,7 +74,7 @@ public class AdminUserController {
             return ResponseEntity.badRequest().body("Invalid email format");
         }
         return userRepository.findById(id)
-                .map(user -> {
+                .<ResponseEntity<Object>>map(user -> {
                     // Unique email check
                     if (userDTO.getEmail() != null && !userDTO.getEmail().equals(user.getEmail()) &&
                             userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
@@ -98,23 +98,23 @@ public class AdminUserController {
 
                     userRepository.save(user);
                     actionLogService.log(authentication.getName(), "USER_MODIFIED", "Admin modified user: " + user.getLogin());
-                    return ResponseEntity.ok((Object)UserDTO.fromEntity(user));
+                    return ResponseEntity.ok(UserDTO.fromEntity(user));
                 })
-                .orElse(ResponseEntity.notFound().build());
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Object> deleteUser(@PathVariable Long id, Authentication authentication) {
         return userRepository.findById(id)
-                .map(user -> {
+                .<ResponseEntity<Object>>map(user -> {
                     // Self-protection: Prevent admin from deleting their own account
                     if (user.getLogin().equals(authentication.getName())) {
-                        return ResponseEntity.badRequest().body((Object)"Cannot delete your own account");
+                        return ResponseEntity.badRequest().body("Cannot delete your own account");
                     }
                     userRepository.delete(user);
                     actionLogService.log(authentication.getName(), "USER_DELETED", "Admin deleted user: " + user.getLogin());
                     return ResponseEntity.noContent().build();
                 })
-                .orElse(ResponseEntity.notFound().build());
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

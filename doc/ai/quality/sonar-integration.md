@@ -42,6 +42,13 @@ curl.exe -k -u "YOUR_TOKEN:" "https://sonarcloud.io/api/issues/search?componentK
 
 ## Step 3: Run Local Sonar Analysis
 
+> ⚠️ **Important**: To run a manual analysis (local or via CI), you must **disable "Automatic Analysis"** in SonarCloud.
+> 1. Go to your project in SonarCloud.
+> 2. Go to **Administration -> Analysis Method**.
+> 3. Turn **OFF** "SonarCloud Automatic Analysis".
+>
+> If this is ON, any manual scan attempt will fail with the error: *"You are running manual analysis while Automatic Analysis is enabled"*.
+
 To run a full SonarCloud analysis locally and see the results on the dashboard before pushing:
 
 ### Option A: Using the Helper Script (Recommended)
