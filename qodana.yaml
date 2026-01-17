@@ -26,7 +26,7 @@ profile:
 projectJDK: "25" #(Applied in CI/CD pipeline)
 
 #Execute shell command before Qodana execution (Applied in CI/CD pipeline)
-bootstrap: apt-get update && apt-get install -y python3-pip && pip3 install -r scripts/requirements.txt --break-system-packages
+bootstrap: mkdir -p /var/lib/apt/lists/partial && apt-get update && apt-get install -y python3-pip && pip3 install -r scripts/requirements.txt --break-system-packages
 
 #Install IDE plugins before Qodana execution (Applied in CI/CD pipeline)
 #plugins:
