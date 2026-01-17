@@ -32,12 +32,20 @@ projectJDK: "25" #(Applied in CI/CD pipeline)
 #plugins:
 #  - id: <plugin.id> #(plugin id can be found at https://plugins.jetbrains.com)
 
+# Specify coverage reports
+coverage:
+  reportProblems: true
+
 # Quality gate. Will fail the CI/CD pipeline if any condition is not met
 # severityThresholds - configures maximum thresholds for different problem severities
+# testCoverageThresholds - configures minimum code coverage on a whole project and newly added code
 failureConditions:
   severityThresholds:
     any: 15
     critical: 5
+  testCoverageThresholds:
+    total: 50
 
 # Specify Qodana linter for analysis (Applied in CI/CD pipeline)
-linter: jetbrains/qodana-jvm-community:2024.3
+linter: jetbrains/qodana-jvm:2024.3
+# Use Ultimate linter to support coverage reports. Requires QODANA_TOKEN.
