@@ -176,6 +176,7 @@ fun SummaryStatsRow(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatCard(label: String, value: String, delta: String, accentColor: Color, onClick: () -> Unit) {
     ElevatedCard(
