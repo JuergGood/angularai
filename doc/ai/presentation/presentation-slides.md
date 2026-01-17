@@ -148,14 +148,19 @@ und prüft die Ergebnisse kritisch.
 
 # Prompting-Beispiele
 - Implementiere ... 
+- Fontend und Backend mit diesen Anforderungen
 - Android App mit identischen Features wie Web App
-- Applikation zu diesem Screenshot
+- Dashboard UI zu diesem Screenshot von ChatGPT
 - Read-only Admin Access
-- Behebe Defekt XYZ
 - AWS Cloud Deployment
 - UI-Integrationstests mit Cypress
-- Architektur-Diagramm
+- Verbessere UX mit diesem Vorschlag von ChatGPT
+- Behebe alle Sonar-Fehler
+- Verbessere Code Coverage
+- Erstelle Architektur-Diagramm
 - Confluence-Dokumentation und User Guide
+- Testdaten-Generierung und -Import
+- Behebe Defekt XYZ
 - Powerpoint-Päsentation 
 
 # KI-gestützt mit Junie (IDE-zentriert)
