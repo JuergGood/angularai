@@ -153,15 +153,16 @@ und prüft die Ergebnisse kritisch.
 - Dashboard UI zu diesem Screenshot von ChatGPT
 - Read-only Admin Access
 - AWS Cloud Deployment
-- UI-Integrationstests mit Cypress
-- Verbessere UX mit diesem Vorschlag von ChatGPT
-- Behebe alle Sonar-Fehler
+- UI-E3E Integrationstests mit Cypress
+- Verbessere UX mit Design-Vorschlag von ChatGPT
+- Behebe alle QA Fehler (Sonar)
 - Verbessere UI E2E Test Coverage > 80%
 - Erstelle Architektur-Diagramm
 - Confluence-Dokumentation und User Guide
 - Testdaten-Generierung und Daten-Import
-- Behebe Defekt XYZ
+- Behebe Defekt XYZ (paste Exception Stacktrace)
 - Powerpoint-Präsentation 
+- Generiere Slide mit QA KPIs
 
 
 # Demo

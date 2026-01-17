@@ -25,22 +25,26 @@ import java.util.List;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-            .cors(Customizer.withDefaults())
-            .csrf(AbstractHttpConfigurer::disable)
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/logout", "/api/system/info", "/h2-console/**").permitAll()
-                .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/admin/**").hasAnyRole("ADMIN", "ADMIN_READ")
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-            )
-            .exceptionHandling(e -> e.authenticationEntryPoint(new org.springframework.security.web.authentication.HttpStatusEntryPoint(org.springframework.http.HttpStatus.UNAUTHORIZED)))
-            .headers(headers -> headers.frameOptions(org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig::sameOrigin))
-            .httpBasic(Customizer.withDefaults());
-        
-        return http.build();
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+        try {
+            http
+                .cors(Customizer.withDefaults())
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(auth -> auth
+                    .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/logout", "/api/system/info", "/h2-console/**").permitAll()
+                    .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                    .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/admin/**").hasAnyRole("ADMIN", "ADMIN_READ")
+                    .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                    .anyRequest().authenticated()
+                )
+                .exceptionHandling(e -> e.authenticationEntryPoint(new org.springframework.security.web.authentication.HttpStatusEntryPoint(org.springframework.http.HttpStatus.UNAUTHORIZED)))
+                .headers(headers -> headers.frameOptions(org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig::sameOrigin))
+                .httpBasic(Customizer.withDefaults());
+            
+            return http.build();
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to configure security filter chain", e);
+        }
     }
 
     @Bean

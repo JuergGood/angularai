@@ -77,4 +77,17 @@ class LoadCommandTest {
         loadCommand.execute(client, emptyList())
         verify(client, never()).post(any(), any(), eq(Any::class.java))
     }
+
+    @Test
+    fun `test load custom`() {
+        // Create a temp file
+        val file = java.io.File("temp_tasks.json")
+        file.writeText("[{\"title\":\"Custom Task\"}]")
+        
+        loadCommand.execute(client, listOf("custom", "--file", "temp_tasks.json"))
+        
+        verify(client).post(eq("/api/tasks"), any(), eq(TaskDTO::class.java))
+        
+        file.delete()
+    }
 }

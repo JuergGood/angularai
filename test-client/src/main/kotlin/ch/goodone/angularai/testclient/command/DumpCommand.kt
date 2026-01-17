@@ -1,7 +1,6 @@
 package ch.goodone.angularai.testclient.command
 
 import ch.goodone.angularai.testclient.client.ApiClient
-import ch.goodone.angularai.testclient.model.ActionLogDTO
 import ch.goodone.angularai.testclient.model.PageResponse
 import ch.goodone.angularai.testclient.model.TaskDTO
 import ch.goodone.angularai.testclient.model.UserDTO

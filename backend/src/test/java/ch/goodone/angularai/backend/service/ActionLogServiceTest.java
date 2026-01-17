@@ -8,6 +8,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -35,33 +37,14 @@ class ActionLogServiceTest {
         verify(actionLogRepository).save(any(ActionLog.class));
     }
 
-    @Test
-    void getLogs_shouldFilterByTypeLogin() {
+    @ParameterizedTest
+    @ValueSource(strings = {"login", "task", "user admin"})
+    void getLogs_shouldFilterByTypes(String type) {
         Pageable pageable = PageRequest.of(0, 10);
         when(actionLogRepository.findAll(any(Specification.class), eq(pageable)))
                 .thenReturn(new PageImpl<>(Collections.emptyList()));
 
-        actionLogService.getLogs(pageable, "login", null, null);
-        verify(actionLogRepository).findAll(any(Specification.class), eq(pageable));
-    }
-
-    @Test
-    void getLogs_shouldFilterByTypeTask() {
-        Pageable pageable = PageRequest.of(0, 10);
-        when(actionLogRepository.findAll(any(Specification.class), eq(pageable)))
-                .thenReturn(new PageImpl<>(Collections.emptyList()));
-
-        actionLogService.getLogs(pageable, "task", null, null);
-        verify(actionLogRepository).findAll(any(Specification.class), eq(pageable));
-    }
-
-    @Test
-    void getLogs_shouldFilterByTypeUserAdmin() {
-        Pageable pageable = PageRequest.of(0, 10);
-        when(actionLogRepository.findAll(any(Specification.class), eq(pageable)))
-                .thenReturn(new PageImpl<>(Collections.emptyList()));
-
-        actionLogService.getLogs(pageable, "user admin", null, null);
+        actionLogService.getLogs(pageable, type, null, null);
         verify(actionLogRepository).findAll(any(Specification.class), eq(pageable));
     }
 
