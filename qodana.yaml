@@ -34,21 +34,10 @@ projectJDK: "25" #(Applied in CI/CD pipeline)
 
 # Quality gate. Will fail the CI/CD pipeline if any condition is not met
 # severityThresholds - configures maximum thresholds for different problem severities
-# testCoverageThresholds - configures minimum code coverage on a whole project and newly added code
-# Code Coverage is available in Ultimate and Ultimate Plus plans
 failureConditions:
   severityThresholds:
     any: 15
     critical: 5
-  testCoverageThresholds:
-    total: 50
-
-# Specify coverage reports
-coverage:
-  reports:
-    - path: backend/target/site/jacoco/jacoco.xml
-    - path: test-client/target/site/jacoco/jacoco.xml
-    - path: frontend/coverage/lcov.info
 
 # Specify Qodana linter for analysis (Applied in CI/CD pipeline)
 linter: jetbrains/qodana-jvm-community:2024.3
