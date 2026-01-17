@@ -17,7 +17,7 @@
     <properties>
         <java.version>21</java.version>
         <maven.compiler.release>21</maven.compiler.release>
-        <jacoco.agent.arg></jacoco.agent.arg>
+        <argLine></argLine>
     </properties>
 
     <modules>
@@ -33,17 +33,13 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.12</version>
                 <configuration>
-                    <excludes>
-                        <exclude>com/sun/security/**/*</exclude>
-                        <exclude>sun/**/*</exclude>
-                        <exclude>jdk/**/*</exclude>
-                        <exclude>org/apache/catalina/**/*</exclude>
-                        <exclude>org/springframework/boot/tomcat/**/*</exclude>
-                    </excludes>
-                    <propertyName>jacoco.agent.arg</propertyName>
+                    <includes>
+                        <include>ch/goodone/angularai/**/*</include>
+                    </includes>
                 </configuration>
                 <executions>
                     <execution>
+                        <id>prepare-agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
