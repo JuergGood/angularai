@@ -50,9 +50,5 @@ coverage:
     - path: test-client/target/site/jacoco/jacoco.xml
     - path: frontend/coverage/lcov.info
 
-# Enable license auditing
-licenses:
-  enabled: true
-
 # Specify Qodana linter for analysis (Applied in CI/CD pipeline)
 linter: jetbrains/qodana-jvm-community:2024.3
