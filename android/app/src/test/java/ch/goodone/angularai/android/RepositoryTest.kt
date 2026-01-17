@@ -18,12 +18,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyList
-import org.mockito.ArgumentMatchers.any
-import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
-import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.*
 import retrofit2.Response
 
 class RepositoryTest {
@@ -58,42 +55,42 @@ class RepositoryTest {
     @Test
     fun refreshTasks_shouldFetchFromApiAndSaveToDao() = runBlocking {
         val remoteTasks = listOf(TaskDTO(1L, "Title", "Desc", "2024-01-01", "HIGH", "OPEN", 0))
-        `when`(taskApi.getTasks()).thenReturn(remoteTasks)
+        whenever(taskApi.getTasks()).thenReturn(remoteTasks)
 
         taskRepository.refreshTasks()
 
         verify(taskApi).getTasks()
         verify(taskDao).clearTasks()
-        verify(taskDao).insertTasks(anyList<ch.goodone.angularai.android.data.local.entity.TaskEntity>())
+        verify(taskDao).insertTasks(any())
     }
 
     @Test
     fun createTask_shouldCallApiAndSaveToDao() = runBlocking {
         val task = Task(null, "New Task", "Desc", "2024-01-01", "MEDIUM")
         val savedDto = TaskDTO(1L, "New Task", "Desc", "2024-01-01", "MEDIUM", "OPEN", 0)
-        `when`(taskApi.createTask(any<TaskDTO>())).thenReturn(savedDto)
+        whenever(taskApi.createTask(any())).thenReturn(savedDto)
 
         taskRepository.createTask(task)
 
-        verify(taskApi).createTask(any<TaskDTO>())
-        verify(taskDao).insertTasks(anyList<ch.goodone.angularai.android.data.local.entity.TaskEntity>())
+        verify(taskApi).createTask(any())
+        verify(taskDao).insertTasks(any())
     }
 
     @Test
     fun updateTask_shouldCallApiAndSaveToDao() = runBlocking {
         val task = Task(1L, "Updated Task", "Desc", "2024-01-01", "MEDIUM", TaskStatus.IN_PROGRESS, 1)
         val updatedDto = TaskDTO(1L, "Updated Task", "Desc", "2024-01-01", "MEDIUM", "IN_PROGRESS", 1)
-        `when`(taskApi.updateTask(eq(1L), any<TaskDTO>())).thenReturn(updatedDto)
+        whenever(taskApi.updateTask(eq(1L), any())).thenReturn(updatedDto)
 
         taskRepository.updateTask(task)
 
-        verify(taskApi).updateTask(eq(1L), any<TaskDTO>())
-        verify(taskDao).insertTasks(anyList<ch.goodone.angularai.android.data.local.entity.TaskEntity>())
+        verify(taskApi).updateTask(eq(1L), any())
+        verify(taskDao).insertTasks(any())
     }
 
     @Test
     fun deleteTask_shouldCallApiAndRefresh() = runBlocking {
-        `when`(taskApi.getTasks()).thenReturn(emptyList())
+        whenever(taskApi.getTasks()).thenReturn(emptyList())
 
         taskRepository.deleteTask(1L)
 
@@ -105,19 +102,19 @@ class RepositoryTest {
     fun register_shouldCallApiAndReturnResult() = runBlocking {
         val user = User(null, "New", "User", "newuser", "new@e.c")
         val responseDto = UserDTO(1L, "New", "User", "newuser", "new@e.c", null, null, "ROLE_USER")
-        `when`(authApi.register(any<UserDTO>())).thenReturn(Response.success(responseDto))
+        whenever(authApi.register(any())).thenReturn(Response.success(responseDto))
 
         val result = authRepository.register(user, "password")
 
         assertTrue(result.isSuccess)
         assertEquals(1L, result.getOrNull()?.id)
-        verify(authApi).register(any<UserDTO>())
+        verify(authApi).register(any())
     }
 
     @Test
     fun getCurrentUser_shouldCallApi() = runBlocking {
         val dto = UserDTO(1L, "First", "Last", "login", "email")
-        `when`(userApi.getCurrentUser()).thenReturn(dto)
+        whenever(userApi.getCurrentUser()).thenReturn(dto)
 
         val result = userRepository.getCurrentUser()
 
@@ -128,7 +125,7 @@ class RepositoryTest {
     @Test
     fun getAllUsers_shouldCallApi() = runBlocking {
         val dtos = listOf(UserDTO(1L, "First", "Last", "login", "email"))
-        `when`(userApi.getAllUsers()).thenReturn(dtos)
+        whenever(userApi.getAllUsers()).thenReturn(dtos)
 
         val result = userRepository.getAllUsers()
 

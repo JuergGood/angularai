@@ -35,6 +35,10 @@ projectJDK: "25" #(Applied in CI/CD pipeline)
 # Specify coverage reports
 coverage:
   reportProblems: true
+  reports:
+    - path: backend/target/site/jacoco/jacoco.xml
+    - path: test-client/target/site/jacoco/jacoco.xml
+    - path: frontend/coverage/lcov.info
 
 # Quality gate. Will fail the CI/CD pipeline if any condition is not met
 # severityThresholds - configures maximum thresholds for different problem severities
