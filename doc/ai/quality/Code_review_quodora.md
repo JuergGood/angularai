@@ -4,6 +4,8 @@ For a GitHub-based project with a Spring Boot backend and Angular frontend, I re
 Since I noticed a `qodana.yaml` file already exists in your project root, this is the most natural choice.
 - **Visual Output**: Provides a rich, interactive web UI (similar to IntelliJ's "Inspect Code" but for the whole project) with sunburst charts, trend graphs, and categorized issues.
 - **Why use it**: It uses the same engine as IntelliJ IDEA and WebStorm, ensuring high-quality analysis for both your Java and Angular code.
+- **Coverage**: **Now Enabled**. It tracks test coverage across Java (JaCoCo), Kotlin (JaCoCo), and Angular (LCOV) modules.
+- **License Audit**: **Now Enabled**. Automatically audits dependencies for license compliance.
 - **Cost**: Offers a **Community version** (free for open source) and a "Starter" tier. It can be easily integrated into GitHub Actions.
 - **How to view**: You can run it locally via Docker or view results in the Qodana Cloud dashboard after connecting your GitHub repo.
 

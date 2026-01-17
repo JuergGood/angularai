@@ -286,11 +286,11 @@ Frontend includes TS, HTML, and CSS.
 :::
 
 # Quality Assurance (QA) KPIs
-| Area | Tooling | Metric |
-| :--- | :--- | :--- |
-| **Backend** | JUnit 5, Mockito, JaCoCo | ~79% Line Coverage |
-| **Frontend** | Vitest, Cypress, NYC | ~78% Line Coverage |
-| **Analysis** | SonarCloud, Qodana | Clean Code / A-Rating |
+| Area | Tooling | Metric                 |
+| :--- | :--- |:-----------------------|
+| **Backend** | JUnit 5, Mockito, JaCoCo | ~82% Line Coverage     |
+| **Frontend** | Vitest, Cypress, NYC | ~81% Line Coverage     |
+| **Analysis** | SonarCloud, Qodana | Clean Code / A-Rating  |
 | **Automation** | GitHub Actions, Scripts | Automated Build & Test |
 
 ::: notes
