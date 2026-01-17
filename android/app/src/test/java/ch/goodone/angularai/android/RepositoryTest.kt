@@ -18,6 +18,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyList
+import org.mockito.ArgumentMatchers.any
+import org.mockito.ArgumentMatchers.eq
 import org.mockito.Mock
 import org.mockito.Mockito.*
 import org.mockito.MockitoAnnotations
@@ -61,31 +64,31 @@ class RepositoryTest {
 
         verify(taskApi).getTasks()
         verify(taskDao).clearTasks()
-        verify(taskDao).insertTasks(anyList())
+        verify(taskDao).insertTasks(anyList<ch.goodone.angularai.android.data.local.entity.TaskEntity>())
     }
 
     @Test
     fun createTask_shouldCallApiAndSaveToDao() = runBlocking {
         val task = Task(null, "New Task", "Desc", "2024-01-01", "MEDIUM")
         val savedDto = TaskDTO(1L, "New Task", "Desc", "2024-01-01", "MEDIUM", "OPEN", 0)
-        `when`(taskApi.createTask(any())).thenReturn(savedDto)
+        `when`(taskApi.createTask(any<TaskDTO>())).thenReturn(savedDto)
 
         taskRepository.createTask(task)
 
-        verify(taskApi).createTask(any())
-        verify(taskDao).insertTasks(anyList())
+        verify(taskApi).createTask(any<TaskDTO>())
+        verify(taskDao).insertTasks(anyList<ch.goodone.angularai.android.data.local.entity.TaskEntity>())
     }
 
     @Test
     fun updateTask_shouldCallApiAndSaveToDao() = runBlocking {
         val task = Task(1L, "Updated Task", "Desc", "2024-01-01", "MEDIUM", TaskStatus.IN_PROGRESS, 1)
         val updatedDto = TaskDTO(1L, "Updated Task", "Desc", "2024-01-01", "MEDIUM", "IN_PROGRESS", 1)
-        `when`(taskApi.updateTask(eq(1L), any())).thenReturn(updatedDto)
+        `when`(taskApi.updateTask(eq(1L), any<TaskDTO>())).thenReturn(updatedDto)
 
         taskRepository.updateTask(task)
 
-        verify(taskApi).updateTask(eq(1L), any())
-        verify(taskDao).insertTasks(anyList())
+        verify(taskApi).updateTask(eq(1L), any<TaskDTO>())
+        verify(taskDao).insertTasks(anyList<ch.goodone.angularai.android.data.local.entity.TaskEntity>())
     }
 
     @Test
@@ -102,13 +105,13 @@ class RepositoryTest {
     fun register_shouldCallApiAndReturnResult() = runBlocking {
         val user = User(null, "New", "User", "newuser", "new@e.c")
         val responseDto = UserDTO(1L, "New", "User", "newuser", "new@e.c", null, null, "ROLE_USER")
-        `when`(authApi.register(any())).thenReturn(Response.success(responseDto))
+        `when`(authApi.register(any<UserDTO>())).thenReturn(Response.success(responseDto))
 
         val result = authRepository.register(user, "password")
 
         assertTrue(result.isSuccess)
         assertEquals(1L, result.getOrNull()?.id)
-        verify(authApi).register(any())
+        verify(authApi).register(any<UserDTO>())
     }
 
     @Test
