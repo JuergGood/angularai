@@ -17,16 +17,16 @@ profile:
 #include:
 #  - name: <SomeEnabledInspectionId>
 
-#Disable inspections
-#exclude:
-#  - name: <SomeDisabledInspectionId>
-#    paths:
-#      - <path/where/not/run/inspection>
+#Exclude paths from analysis
+exclude:
+  - name: All
+    paths:
+      - scripts/
 
 projectJDK: "25" #(Applied in CI/CD pipeline)
 
 #Execute shell command before Qodana execution (Applied in CI/CD pipeline)
-bootstrap: (python3 -m pip install --user -r scripts/requirements.txt --break-system-packages || (python3 -m ensurepip --user && python3 -m pip install --user -r scripts/requirements.txt --break-system-packages))
+#bootstrap: (python3 -m pip install --user -r scripts/requirements.txt --break-system-packages || (python3 -m ensurepip --user && python3 -m pip install --user -r scripts/requirements.txt --break-system-packages))
 
 #Install IDE plugins before Qodana execution (Applied in CI/CD pipeline)
 #plugins:
