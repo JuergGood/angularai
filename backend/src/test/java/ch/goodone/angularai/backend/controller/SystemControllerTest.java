@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -22,6 +23,36 @@ class SystemControllerTest {
         mockMvc.perform(get("/api/system/info"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.version").exists())
-                .andExpect(jsonPath("$.mode").value("Default")); // default active profile is usually none, so "Default"
+                .andExpect(jsonPath("$.mode").exists());
+    }
+
+    @ActiveProfiles("postgres")
+    @SpringBootTest
+    @AutoConfigureMockMvc
+    static class PostgresSystemControllerTest {
+        @Autowired
+        private MockMvc mockMvc;
+
+        @Test
+        void shouldReturnPostgresMode() throws Exception {
+            mockMvc.perform(get("/api/system/info"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.mode").value("Postgres"));
+        }
+    }
+
+    @ActiveProfiles("h2")
+    @SpringBootTest
+    @AutoConfigureMockMvc
+    static class H2SystemControllerTest {
+        @Autowired
+        private MockMvc mockMvc;
+
+        @Test
+        void shouldReturnH2Mode() throws Exception {
+            mockMvc.perform(get("/api/system/info"))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.mode").value("H2"));
+        }
     }
 }

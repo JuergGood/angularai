@@ -58,4 +58,23 @@ class LoadCommandTest {
         loadCommand.execute(client, listOf("paging", "logs", "--count", "3"))
         verify(client, times(3)).post(eq("/api/admin/logs"), any(), eq(ActionLogDTO::class.java))
     }
+
+    @Test
+    fun `test load paging all`() {
+        loadCommand.execute(client, listOf("paging", "all", "--count", "2"))
+        verify(client, times(2)).post(eq("/api/tasks"), any(), eq(TaskDTO::class.java))
+        verify(client, times(2)).post(eq("/api/admin/logs"), any(), eq(ActionLogDTO::class.java))
+    }
+
+    @Test
+    fun `test unknown target`() {
+        loadCommand.execute(client, listOf("unknown"))
+        verify(client, never()).post(any(), any(), eq(Any::class.java))
+    }
+
+    @Test
+    fun `test empty args`() {
+        loadCommand.execute(client, emptyList())
+        verify(client, never()).post(any(), any(), eq(Any::class.java))
+    }
 }

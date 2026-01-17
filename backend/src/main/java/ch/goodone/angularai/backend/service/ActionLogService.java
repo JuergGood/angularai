@@ -74,10 +74,8 @@ public class ActionLogService {
 
     @Transactional
     public ActionLogDTO createLog(ActionLogDTO logDTO) {
-        ActionLog actionLog = new ActionLog(logDTO.getLogin(), logDTO.getAction(), logDTO.getDetails());
-        if (logDTO.getTimestamp() != null) {
-            actionLog.setTimestamp(logDTO.getTimestamp());
-        }
+        LocalDateTime timestamp = logDTO.getTimestamp() != null ? logDTO.getTimestamp() : LocalDateTime.now();
+        ActionLog actionLog = new ActionLog(logDTO.getLogin(), logDTO.getAction(), logDTO.getDetails(), timestamp);
         return ActionLogDTO.fromEntity(actionLogRepository.save(actionLog));
     }
 }

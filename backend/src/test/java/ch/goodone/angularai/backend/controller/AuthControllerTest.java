@@ -193,6 +193,35 @@ class AuthControllerTest {
     }
 
     @Test
+    void login_shouldReturnUnauthorized_whenUserNotFound() throws Exception {
+        String login = "nonexistent";
+        String password = "password";
+        when(userRepository.findByLogin(login)).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/api/auth/login")
+                        .with(httpBasic(login, password)))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void handleJsonError_shouldReturnBadRequest_whenDateInvalid() throws Exception {
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"password\":\"password123\",\"birthDate\":\"invalid-date\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Invalid date format. Please use yyyy-MM-dd"));
+    }
+
+    @Test
+    void handleJsonError_shouldReturnBadRequest_whenJsonMalformed() throws Exception {
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\":\"New\", malformed}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Invalid request data"));
+    }
+
+    @Test
     void login_shouldReturnUnauthorized_whenNotAuthenticated() throws Exception {
         mockMvc.perform(post("/api/auth/login"))
                 .andExpect(status().isUnauthorized());

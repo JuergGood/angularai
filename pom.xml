@@ -36,6 +36,10 @@
                     <includes>
                         <include>ch/goodone/angularai/**/*</include>
                     </includes>
+                    <excludes>
+                        <exclude>**/*MockitoMock*</exclude>
+                        <exclude>**/*$auxiliary$*</exclude>
+                    </excludes>
                 </configuration>
                 <executions>
                     <execution>

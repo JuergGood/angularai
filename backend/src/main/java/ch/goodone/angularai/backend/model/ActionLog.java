@@ -25,10 +25,14 @@ public class ActionLog {
     public ActionLog() {}
 
     public ActionLog(String login, String action, String details) {
-        this.timestamp = LocalDateTime.now();
+        this(login, action, details, LocalDateTime.now());
+    }
+
+    public ActionLog(String login, String action, String details, LocalDateTime timestamp) {
         this.login = login;
         this.action = action;
         this.details = details;
+        this.timestamp = timestamp;
     }
 
     public Long getId() { return id; }

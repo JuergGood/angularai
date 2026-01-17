@@ -171,6 +171,15 @@ und prüft die Ergebnisse kritisch.
 - Refactoring
 - Dokumentation
 
+# Resultat
+- modernes UI Design
+- aktuellste Technologien (Angular,SpringBoot,...)
+- hohe Code-Qualität
+- Automatisierte Tests (UI und Backend)
+- Automatisierte Entwicklungsprozesse
+- Zeitersparnis 400% im Vergleich zum Projekt 2020
+- durch AI aktuelle Technologien kennengelernt
+
 # KI-gestützt mit Junie (IDE-zentriert)
 - Direkte IDE-Integration
 - Kontext aus Projekt & Code
@@ -241,4 +250,52 @@ ersetzt aber nicht die Verantwortung des Entwicklers.
 # Links
 
 GIT Repo ()
-https://github.com/JuergGood/angularai.git
+- www.goodone.ch
+- https://github.com/JuergGood/angularai.git (öffentlich)
+- https://sonarcloud.io/summary/overall?id=JuergGood_angularai&branch=master
+- 
+
+
+# Cypress Report
+![](files/generated/cypress_report.png)
+
+# Sonar Report
+![](files/generated/sonar_report.png)
+
+
+# Tech Stack & Stats
+| Layer | Technologies |
+| :--- | :--- |
+| **Backend** | Java 21, Spring Boot 4, JPA, Security, Maven |
+| **Frontend** | Angular 21, TypeScript, Material, Signals |
+| **Mobile** | Android (Jetpack Compose, Kotlin) |
+| **DevOps** | Docker, AWS RDS/Fargate, SonarCloud |
+
+| Component | Files | Approx. LOC |
+| :--- | :--- | :--- |
+| **Backend** | 42 | ~2,400 |
+| **Frontend** | 43+ | ~5,300 |
+| **Android** | 147 | ~7,900 |
+| **Total** | **~240+** | **~16,500+** |
+
+::: notes
+Statistics as of Jan 2026.
+Backend includes Main and Test code (~1:1 ratio).
+Frontend includes TS, HTML, and CSS.
+:::
+
+# Quality Assurance (QA) KPIs
+| Area | Tooling | Metric |
+| :--- | :--- | :--- |
+| **Backend** | JUnit 5, Mockito, JaCoCo | ~79% Line Coverage |
+| **Frontend** | Vitest, Cypress, NYC | ~78% Line Coverage |
+| **Analysis** | SonarCloud, Qodana | Clean Code / A-Rating |
+| **Automation** | GitHub Actions, Scripts | Automated Build & Test |
+
+::: notes
+- **High Coverage**: Both frontend and backend maintain ~80% coverage.
+- **Deep Testing**: Backend uses Mockito for isolation; Frontend combines Unit (Vitest) and E2E (Cypress) tests.
+- **Continuous Quality**: SonarCloud and Qodana ensure long-term code health.
+- **Reproducibility**: Docker-based tests ensure "it works on my machine" translates to CI/CD.
+:::
+

@@ -82,4 +82,67 @@ describe('AuthService', () => {
     expect(service.currentUser()).toBeNull();
     expect(localStorage.getItem('auth')).toBeNull();
   });
+
+  it('should initialize and restore session from localStorage', () => {
+    localStorage.setItem('auth', 'encoded-auth');
+    const mockUser: User = { login: 'test', firstName: 'Test', role: 'ROLE_USER' } as User;
+
+    service.init();
+    expect(service.isInitializing()).toBe(true);
+
+    const req = httpMock.expectOne('/api/auth/login');
+    expect(req.request.headers.get('Authorization')).toBe('Basic encoded-auth');
+    req.flush(mockUser);
+
+    expect(service.currentUser()).toEqual(mockUser);
+    expect(service.isInitializing()).toBe(false);
+  });
+
+  it('should clear session on init error', () => {
+    localStorage.setItem('auth', 'invalid-auth');
+
+    service.init();
+
+    const req = httpMock.expectOne('/api/auth/login');
+    req.error(new ProgressEvent('error'));
+
+    // logout is called, which triggers another post to /logout
+    const logoutReq = httpMock.expectOne('/api/auth/logout');
+    logoutReq.flush({});
+
+    expect(service.currentUser()).toBeNull();
+    expect(localStorage.getItem('auth')).toBeNull();
+    expect(service.isInitializing()).toBe(false);
+  });
+
+  it('should register user', () => {
+    const mockUser: User = { login: 'new', firstName: 'New' } as User;
+    service.register(mockUser).subscribe(user => {
+      expect(user).toEqual(mockUser);
+    });
+
+    const req = httpMock.expectOne('/api/auth/register');
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual(mockUser);
+    req.flush(mockUser);
+  });
+
+  it('should check permissions', () => {
+    service.currentUser.set({ role: 'ROLE_ADMIN' } as User);
+    expect(service.isLoggedIn()).toBe(true);
+    expect(service.isAdmin()).toBe(true);
+    expect(service.hasAdminWriteAccess()).toBe(true);
+
+    service.currentUser.set({ role: 'ROLE_ADMIN_READ' } as User);
+    expect(service.isAdmin()).toBe(true);
+    expect(service.hasAdminWriteAccess()).toBe(false);
+
+    service.currentUser.set({ role: 'ROLE_USER' } as User);
+    expect(service.isAdmin()).toBe(false);
+    expect(service.hasAdminWriteAccess()).toBe(false);
+
+    service.currentUser.set(null);
+    expect(service.isLoggedIn()).toBe(false);
+    expect(service.isAdmin()).toBe(false);
+  });
 });

@@ -89,4 +89,14 @@ describe('TaskService', () => {
     expect(req.request.method).toBe('DELETE');
     req.flush(null);
   });
+
+  it('should reorder tasks', () => {
+    const taskIds = [1, 2, 3];
+    service.reorderTasks(taskIds).subscribe();
+
+    const req = httpMock.expectOne('/api/tasks/reorder');
+    expect(req.request.method).toBe('PUT');
+    expect(req.request.body).toEqual(taskIds);
+    req.flush(null);
+  });
 });

@@ -106,7 +106,8 @@ public class AuthController {
     @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleJsonError(org.springframework.http.converter.HttpMessageNotReadableException e) {
         String msg = "Invalid request data";
-        if (e.getCause() instanceof com.fasterxml.jackson.databind.exc.InvalidFormatException ife && ife.getTargetType().equals(LocalDate.class)) {
+        String exceptionMessage = e.getMessage();
+        if (exceptionMessage != null && exceptionMessage.contains("java.time.LocalDate")) {
             msg = "Invalid date format. Please use yyyy-MM-dd";
         }
         return ResponseEntity.badRequest().body(msg);
