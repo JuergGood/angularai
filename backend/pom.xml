@@ -158,7 +158,6 @@
 									<outputFilename>erd.puml</outputFilename>
 									<hideFields>false</hideFields>
 									<hideMethods>true</hideMethods>
-									<!--<enableJpaAnnotations>true</enableJpaAnnotations>-->
 								</configuration>
 							</execution>
 						</executions>

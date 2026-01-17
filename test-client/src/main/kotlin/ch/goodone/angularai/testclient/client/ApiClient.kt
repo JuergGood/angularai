@@ -8,9 +8,15 @@ import java.net.URI
 import java.net.http.HttpClient
 import java.net.http.HttpRequest
 import java.net.http.HttpResponse
-import java.util.Base64
 
 class ApiClient(private val baseUrl: String, private val auth: String) {
+
+    companion object {
+        private const val AUTH_HEADER = "Authorization"
+        private const val ACCEPT_HEADER = "Accept"
+        private const val CONTENT_TYPE_HEADER = "Content-Type"
+        private const val JSON_TYPE = "application/json"
+    }
 
     private val client: HttpClient = HttpClient.newBuilder().build()
     private val mapper: ObjectMapper = ObjectMapper()
@@ -21,8 +27,8 @@ class ApiClient(private val baseUrl: String, private val auth: String) {
     fun <T> get(path: String, responseType: Class<T>): T {
         val request = HttpRequest.newBuilder()
             .uri(URI.create("$baseUrl$path"))
-            .header("Authorization", "Basic $auth")
-            .header("Accept", "application/json")
+            .header(AUTH_HEADER, "Basic $auth")
+            .header(ACCEPT_HEADER, JSON_TYPE)
             .GET()
             .build()
 
@@ -40,9 +46,9 @@ class ApiClient(private val baseUrl: String, private val auth: String) {
 
         val request = HttpRequest.newBuilder()
             .uri(URI.create("$baseUrl$path"))
-            .header("Authorization", "Basic $auth")
-            .header("Content-Type", "application/json")
-            .header("Accept", "application/json")
+            .header(AUTH_HEADER, "Basic $auth")
+            .header(CONTENT_TYPE_HEADER, JSON_TYPE)
+            .header(ACCEPT_HEADER, JSON_TYPE)
             .POST(bodyPublisher)
             .build()
 
@@ -60,8 +66,8 @@ class ApiClient(private val baseUrl: String, private val auth: String) {
 
         val request = HttpRequest.newBuilder()
             .uri(URI.create("$baseUrl$path"))
-            .header("Authorization", "Basic $auth")
-            .header("Content-Type", "application/json")
+            .header(AUTH_HEADER, "Basic $auth")
+            .header(CONTENT_TYPE_HEADER, JSON_TYPE)
             .PUT(bodyPublisher)
             .build()
 
@@ -73,7 +79,7 @@ class ApiClient(private val baseUrl: String, private val auth: String) {
     fun delete(path: String): Boolean {
         val request = HttpRequest.newBuilder()
             .uri(URI.create("$baseUrl$path"))
-            .header("Authorization", "Basic $auth")
+            .header(AUTH_HEADER, "Basic $auth")
             .DELETE()
             .build()
 

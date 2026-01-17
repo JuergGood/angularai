@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Import(SecurityConfig.class)
 @org.springframework.test.context.ActiveProfiles("test")
-public class ActionLogControllerTest {
+class ActionLogControllerTest {
 
     @Autowired
     private MockMvc mockMvc;

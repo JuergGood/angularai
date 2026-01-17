@@ -13,6 +13,14 @@ import java.io.File
 class LoadCommand : Command {
     private val mapper = ObjectMapper().registerKotlinModule().registerModule(JavaTimeModule())
 
+    companion object {
+        private const val COUNT_PARAM = "--count"
+        private const val FILE_PARAM = "--file"
+        private const val TASKS_API = "/api/tasks"
+        private const val ADMIN_LOGS_API = "/api/admin/logs"
+        private const val ADMIN_USERS_API = "/api/admin/users"
+    }
+
     override fun execute(client: ApiClient, args: List<String>) {
         if (args.isEmpty()) {
             println("Usage: load [all|tasks|users|logs|paging-data|paging|custom]")
@@ -51,7 +59,7 @@ class LoadCommand : Command {
             // Currently backend might only create them via interceptors or services.
             // If there's no POST /api/admin/logs, this will fail.
             try {
-                client.post("/api/admin/logs", log, ActionLogDTO::class.java)
+                client.post(ADMIN_LOGS_API, log, ActionLogDTO::class.java)
                 println("Created log: ${log.action} at ${log.timestamp}")
             } catch (e: Exception) {
                 println("Failed to create log: ${e.message}")
@@ -62,7 +70,7 @@ class LoadCommand : Command {
     private fun loadTasks(client: ApiClient) {
         println("Loading sample tasks...")
         DataService.createSampleTasks().forEach { task ->
-            client.post("/api/tasks", task, TaskDTO::class.java)
+            client.post(TASKS_API, task, TaskDTO::class.java)
             println("Created task: ${task.title}")
         }
     }
@@ -70,27 +78,27 @@ class LoadCommand : Command {
     private fun loadUsers(client: ApiClient) {
         println("Loading sample users...")
         DataService.createSampleUsers().forEach { user ->
-            client.post("/api/admin/users", user, UserDTO::class.java)
+            client.post(ADMIN_USERS_API, user, UserDTO::class.java)
             println("Created user: ${user.login}")
         }
     }
 
     private fun loadPagingData(client: ApiClient, args: List<String>) {
-        val count = args.getOrNull(args.indexOf("--count") + 1)?.toIntOrNull() ?: 50
+        val count = args.getOrNull(args.indexOf(COUNT_PARAM) + 1)?.toIntOrNull() ?: 50
         val target = args.getOrNull(0) ?: "tasks"
 
         when (target) {
             "tasks" -> {
                 println("Loading $count paging tasks...")
                 DataService.createPagingTasks(count).forEach { task ->
-                    client.post("/api/tasks", task, TaskDTO::class.java)
+                    client.post(TASKS_API, task, TaskDTO::class.java)
                 }
                 println("Done loading paging tasks.")
             }
             "logs" -> {
                 println("Loading $count paging logs...")
                 DataService.createPagingLogs(count).forEach { log ->
-                    client.post("/api/admin/logs", log, ActionLogDTO::class.java)
+                    client.post(ADMIN_LOGS_API, log, ActionLogDTO::class.java)
                 }
                 println("Done loading paging logs.")
             }
@@ -99,15 +107,15 @@ class LoadCommand : Command {
     }
 
     private fun loadPagingAll(client: ApiClient, args: List<String>) {
-        val count = args.getOrNull(args.indexOf("--count") + 1)?.toIntOrNull() ?: 50
+        val count = args.getOrNull(args.indexOf(COUNT_PARAM) + 1)?.toIntOrNull() ?: 50
         println("Loading all paging data (count=$count)...")
-        loadPagingData(client, listOf("tasks", "--count", count.toString()))
-        loadPagingData(client, listOf("logs", "--count", count.toString()))
+        loadPagingData(client, listOf("tasks", COUNT_PARAM, count.toString()))
+        loadPagingData(client, listOf("logs", COUNT_PARAM, count.toString()))
         println("Done loading all paging data.")
     }
 
     private fun loadCustom(client: ApiClient, args: List<String>) {
-        val filePath = args.getOrNull(args.indexOf("--file") + 1) ?: return println("Usage: load custom --file <path>")
+        val filePath = args.getOrNull(args.indexOf(FILE_PARAM) + 1) ?: return println("Usage: load custom --file <path>")
         val file = File(filePath)
         if (!file.exists()) return println("File not found: $filePath")
 
@@ -115,7 +123,7 @@ class LoadCommand : Command {
         // Detect type from file content or filename? Let's try to parse as TaskDTO list first
         try {
             val tasks: List<TaskDTO> = mapper.readValue(file, mapper.typeFactory.constructCollectionType(List::class.java, TaskDTO::class.java))
-            tasks.forEach { client.post("/api/tasks", it, TaskDTO::class.java) }
+            tasks.forEach { client.post(TASKS_API, it, TaskDTO::class.java) }
             println("Loaded ${tasks.size} tasks.")
         } catch (e: Exception) {
             println("Failed to load custom data: ${e.message}")

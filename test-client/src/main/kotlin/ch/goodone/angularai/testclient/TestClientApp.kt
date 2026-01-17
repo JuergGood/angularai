@@ -8,45 +8,15 @@ import ch.goodone.angularai.testclient.command.LoadCommand
 import java.util.Base64
 
 fun main(args: Array<String>) {
-    if (args.isEmpty()) {
-        printUsage()
-        return
-    }
-
-    val options = mutableMapOf<String, String>()
-    val commands = mutableListOf<String>()
-    
-    var i = 0
-    while (i < args.size) {
-        if (args[i].startsWith("--")) {
-            if (i + 1 < args.size && !args[i+1].startsWith("--")) {
-                options[args[i]] = args[i+1]
-                i += 2
-            } else {
-                options[args[i]] = "true"
-                i++
-            }
-        } else {
-            commands.add(args[i])
-            i++
-        }
-    }
+    val (options, commands) = parseArgs(args)
 
     if (commands.isEmpty()) {
         printUsage()
         return
     }
 
-    val env = options["--env"] ?: "local"
-    val baseUrl = when (env) {
-        "local" -> "http://localhost:8080"
-        "aws" -> "https://www.goodone.ch/api"
-        else -> env // allow direct URL
-    }
-
-    val username = options["--user"] ?: System.getenv("TC_USERNAME") ?: "admin"
-    val password = options["--pass"] ?: System.getenv("TC_PASSWORD") ?: "admin123"
-    val auth = Base64.getEncoder().encodeToString("$username:$password".toByteArray())
+    val baseUrl = getBaseUrl(options["--env"] ?: "local")
+    val auth = getAuth(options)
 
     val client = ApiClient(baseUrl, auth)
     val commandDispatcher = mapOf<String, Command>(
@@ -59,15 +29,54 @@ fun main(args: Array<String>) {
     val command = commandDispatcher[commandName]
 
     if (command != null) {
-        try {
-            command.execute(client, commands.drop(1))
-        } catch (e: Exception) {
-            println("Error executing command '$commandName': ${e.message}")
-            // e.printStackTrace()
-        }
+        executeCommand(command, client, commands, commandName)
     } else {
         println("Unknown command: $commandName")
         printUsage()
+    }
+}
+
+private fun parseArgs(args: Array<String>): Pair<Map<String, String>, List<String>> {
+    val options = mutableMapOf<String, String>()
+    val commands = mutableListOf<String>()
+
+    var i = 0
+    while (i < args.size) {
+        if (args[i].startsWith("--")) {
+            if (i + 1 < args.size && !args[i + 1].startsWith("--")) {
+                options[args[i]] = args[i + 1]
+                i += 2
+            } else {
+                options[args[i]] = "true"
+                i++
+            }
+        } else {
+            commands.add(args[i])
+            i++
+        }
+    }
+    return options to commands
+}
+
+private fun getBaseUrl(env: String): String {
+    return when (env) {
+        "local" -> "http://localhost:8080"
+        "aws" -> "https://www.goodone.ch/api"
+        else -> env // allow direct URL
+    }
+}
+
+private fun getAuth(options: Map<String, String>): String {
+    val username = options["--user"] ?: System.getenv("TC_USERNAME") ?: "admin"
+    val password = options["--pass"] ?: System.getenv("TC_PASSWORD") ?: "admin123"
+    return Base64.getEncoder().encodeToString("$username:$password".toByteArray())
+}
+
+private fun executeCommand(command: Command, client: ApiClient, commands: List<String>, commandName: String) {
+    try {
+        command.execute(client, commands.drop(1))
+    } catch (e: Exception) {
+        println("Error executing command '$commandName': ${e.message}")
     }
 }
 

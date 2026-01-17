@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Import(SecurityConfig.class)
-public class DashboardControllerTest {
+class DashboardControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -50,7 +50,7 @@ public class DashboardControllerTest {
 
     @Test
     @WithMockUser(username = "user", roles = "USER")
-    public void getDashboardData_ShouldReturnData() throws Exception {
+    void getDashboardData_ShouldReturnData() throws Exception {
         DashboardDTO dto = new DashboardDTO(
                 new DashboardDTO.SummaryStats(10, 2, 5, 1, 20, 5, 100, 10),
                 Collections.emptyList(),
@@ -69,7 +69,7 @@ public class DashboardControllerTest {
     }
 
     @Test
-    public void getDashboardData_ShouldReturnUnauthorized_WhenNoUser() throws Exception {
+    void getDashboardData_ShouldReturnUnauthorized_WhenNoUser() throws Exception {
         mockMvc.perform(get("/api/dashboard")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isUnauthorized());

@@ -109,8 +109,8 @@ class DashboardServiceTest {
 
         // Assert
         assertThat(result).isNotNull();
-        assertThat(result.getSummary().getOpenTasks()).isEqualTo(0L);
-        assertThat(result.getTaskDistribution().getTotal()).isEqualTo(0L);
+        assertThat(result.getSummary().getOpenTasks()).isZero();
+        assertThat(result.getTaskDistribution().getTotal()).isZero();
         assertThat(result.getPriorityTasks()).isEmpty();
         assertThat(result.getRecentActivity()).isEmpty();
         assertThat(result.getRecentUsers()).isEmpty();

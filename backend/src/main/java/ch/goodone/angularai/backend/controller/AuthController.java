@@ -5,19 +5,21 @@ import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.UserRepository;
 import ch.goodone.angularai.backend.service.ActionLogService;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import org.springframework.http.HttpStatus;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
 
 @RestController
 @RequestMapping("/api/auth")
 @Tag(name = "Authentication", description = "Endpoints for user login, logout, and registration")
 public class AuthController {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -32,12 +34,12 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<UserDTO> login(Authentication authentication) {
         if (authentication == null) {
-            System.err.println("[DEBUG_LOG] Login attempt failed: Authentication object is null");
+            logger.error("Login attempt failed: Authentication object is null");
             return ResponseEntity.status(401).build();
         }
         User user = userRepository.findByLogin(authentication.getName())
                 .orElseGet(() -> {
-                    System.err.println("[DEBUG_LOG] Login attempt failed: User not found for login: " + authentication.getName());
+                    logger.error("Login attempt failed: User not found for login: {}", authentication.getName());
                     return null;
                 });
         if (user == null) {
@@ -104,10 +106,8 @@ public class AuthController {
     @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleJsonError(org.springframework.http.converter.HttpMessageNotReadableException e) {
         String msg = "Invalid request data";
-        if (e.getCause() instanceof com.fasterxml.jackson.databind.exc.InvalidFormatException ife) {
-            if (ife.getTargetType().equals(LocalDate.class)) {
-                msg = "Invalid date format. Please use yyyy-MM-dd";
-            }
+        if (e.getCause() instanceof com.fasterxml.jackson.databind.exc.InvalidFormatException ife && ife.getTargetType().equals(LocalDate.class)) {
+            msg = "Invalid date format. Please use yyyy-MM-dd";
         }
         return ResponseEntity.badRequest().body(msg);
     }

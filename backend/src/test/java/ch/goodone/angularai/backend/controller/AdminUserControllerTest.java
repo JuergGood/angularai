@@ -34,7 +34,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @Import(SecurityConfig.class)
 @org.springframework.test.context.ActiveProfiles("test")
-public class AdminUserControllerTest {
+class AdminUserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
