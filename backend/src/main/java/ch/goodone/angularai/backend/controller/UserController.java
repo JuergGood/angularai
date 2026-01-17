@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<?> updateCurrentUser(Authentication authentication, @RequestBody UserDTO userDTO) {
+    public ResponseEntity<Object> updateCurrentUser(Authentication authentication, @RequestBody UserDTO userDTO) {
         User user = userRepository.findByLogin(authentication.getName())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         

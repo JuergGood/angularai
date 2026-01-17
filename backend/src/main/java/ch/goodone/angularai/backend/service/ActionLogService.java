@@ -16,6 +16,8 @@ import java.util.List;
 
 @Service
 public class ActionLogService {
+    
+    private static final String ACTION_FIELD = "action";
 
     private final ActionLogRepository actionLogRepository;
 
@@ -36,17 +38,17 @@ public class ActionLogService {
             if (type != null && !type.equalsIgnoreCase("all")) {
                 if (type.equalsIgnoreCase("login")) {
                     predicates.add(cb.or(
-                            cb.equal(root.get("action"), "USER_LOGIN"),
-                            cb.equal(root.get("action"), "USER_LOGOUT"),
-                            cb.equal(root.get("action"), "USER_REGISTERED")
+                            cb.equal(root.get(ACTION_FIELD), "USER_LOGIN"),
+                            cb.equal(root.get(ACTION_FIELD), "USER_LOGOUT"),
+                            cb.equal(root.get(ACTION_FIELD), "USER_REGISTERED")
                     ));
                 } else if (type.equalsIgnoreCase("task")) {
-                    predicates.add(cb.like(root.get("action"), "TASK_%"));
+                    predicates.add(cb.like(root.get(ACTION_FIELD), "TASK_%"));
                 } else if (type.equalsIgnoreCase("user admin")) {
                     predicates.add(cb.or(
-                            cb.equal(root.get("action"), "USER_CREATED"),
-                            cb.equal(root.get("action"), "USER_MODIFIED"),
-                            cb.equal(root.get("action"), "USER_DELETED")
+                            cb.equal(root.get(ACTION_FIELD), "USER_CREATED"),
+                            cb.equal(root.get(ACTION_FIELD), "USER_MODIFIED"),
+                            cb.equal(root.get(ACTION_FIELD), "USER_DELETED")
                     ));
                 }
             }

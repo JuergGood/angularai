@@ -63,13 +63,13 @@ public class DashboardService {
 
         // Recent Data
         List<TaskDTO> priorityTasks = taskRepository.findByPriorityOrderByIdDesc(Priority.HIGH, PageRequest.of(0, 5))
-                .stream().map(TaskDTO::fromEntity).collect(Collectors.toList());
+                .stream().map(TaskDTO::fromEntity).toList();
 
         List<ActionLogDTO> recentActivity = actionLogRepository.findAllByOrderByTimestampDesc(PageRequest.of(0, 5))
-                .stream().map(ActionLogDTO::fromEntity).collect(Collectors.toList());
+                .stream().map(ActionLogDTO::fromEntity).toList();
 
         List<UserDTO> recentUsers = userRepository.findAllByOrderByIdDesc(PageRequest.of(0, 5))
-                .stream().map(UserDTO::fromEntity).collect(Collectors.toList());
+                .stream().map(UserDTO::fromEntity).toList();
 
         return new DashboardDTO(summary, priorityTasks, recentActivity, recentUsers, distribution);
     }

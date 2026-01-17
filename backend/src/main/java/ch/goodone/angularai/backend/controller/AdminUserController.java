@@ -33,19 +33,19 @@ public class AdminUserController {
     public List<UserDTO> getAllUsers() {
         return userRepository.findAll().stream()
                 .map(UserDTO::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @PostMapping
-    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO, Authentication authentication) {
+    public ResponseEntity<Object> createUser(@RequestBody UserDTO userDTO, Authentication authentication) {
         if (userDTO.getEmail() != null && !userDTO.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             return ResponseEntity.badRequest().body("Invalid email format");
         }
-        if (userRepository.findAll().stream().anyMatch(u -> userDTO.getLogin().equals(u.getLogin()))) {
+        if (userRepository.findByLogin(userDTO.getLogin()).isPresent()) {
             return ResponseEntity.badRequest().body("Login already exists");
         }
         // Responds if email already exists
-        if (userDTO.getEmail() != null && userRepository.findAll().stream().anyMatch(u -> userDTO.getEmail().equals(u.getEmail()))) {
+        if (userDTO.getEmail() != null && userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             return ResponseEntity.badRequest().body("Email already exists");
         }
 
@@ -69,25 +69,22 @@ public class AdminUserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO, Authentication authentication) {
+    public ResponseEntity<Object> updateUser(@PathVariable Long id, @RequestBody UserDTO userDTO, Authentication authentication) {
         if (userDTO.getEmail() != null && !userDTO.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             return ResponseEntity.badRequest().body("Invalid email format");
         }
         return userRepository.findById(id)
                 .map(user -> {
                     // Unique email check
-                    if (userDTO.getEmail() != null && !userDTO.getEmail().equals(user.getEmail())) {
-                        if (userRepository.findAll().stream().anyMatch(u -> userDTO.getEmail().equals(u.getEmail()))) {
-                            return ResponseEntity.badRequest().body("Email already exists");
-                        }
+                    if (userDTO.getEmail() != null && !userDTO.getEmail().equals(user.getEmail()) &&
+                            userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
+                        return ResponseEntity.badRequest().body("Email already exists");
                     }
 
                     // Self-protection: Prevent admin from removing their own admin privileges
-                    if (user.getLogin().equals(authentication.getName())) {
-                        // Prevents admin from removing own admin role
-                        if (userDTO.getRole() != null && !Role.ROLE_ADMIN.name().equals(userDTO.getRole())) {
-                            return ResponseEntity.badRequest().body("Cannot remove your own admin role");
-                        }
+                    if (user.getLogin().equals(authentication.getName()) &&
+                            userDTO.getRole() != null && !Role.ROLE_ADMIN.name().equals(userDTO.getRole())) {
+                        return ResponseEntity.badRequest().body("Cannot remove your own admin role");
                     }
 
                     user.setFirstName(userDTO.getFirstName());
@@ -101,18 +98,18 @@ public class AdminUserController {
 
                     userRepository.save(user);
                     actionLogService.log(authentication.getName(), "USER_MODIFIED", "Admin modified user: " + user.getLogin());
-                    return ResponseEntity.ok(UserDTO.fromEntity(user));
+                    return ResponseEntity.ok((Object)UserDTO.fromEntity(user));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable Long id, Authentication authentication) {
+    public ResponseEntity<Object> deleteUser(@PathVariable Long id, Authentication authentication) {
         return userRepository.findById(id)
                 .map(user -> {
                     // Self-protection: Prevent admin from deleting their own account
                     if (user.getLogin().equals(authentication.getName())) {
-                        return ResponseEntity.badRequest().body("Cannot delete your own account");
+                        return ResponseEntity.badRequest().body((Object)"Cannot delete your own account");
                     }
                     userRepository.delete(user);
                     actionLogService.log(authentication.getName(), "USER_DELETED", "Admin deleted user: " + user.getLogin());

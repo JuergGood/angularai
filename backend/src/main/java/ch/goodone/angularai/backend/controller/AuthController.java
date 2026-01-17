@@ -56,7 +56,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<Object> register(@RequestBody UserDTO userDTO) {
         if (userDTO == null) {
             return ResponseEntity.badRequest().body("Invalid request data");
         }
@@ -104,8 +104,7 @@ public class AuthController {
     @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
     public ResponseEntity<String> handleJsonError(org.springframework.http.converter.HttpMessageNotReadableException e) {
         String msg = "Invalid request data";
-        if (e.getCause() instanceof com.fasterxml.jackson.databind.exc.InvalidFormatException) {
-            com.fasterxml.jackson.databind.exc.InvalidFormatException ife = (com.fasterxml.jackson.databind.exc.InvalidFormatException) e.getCause();
+        if (e.getCause() instanceof com.fasterxml.jackson.databind.exc.InvalidFormatException ife) {
             if (ife.getTargetType().equals(LocalDate.class)) {
                 msg = "Invalid date format. Please use yyyy-MM-dd";
             }

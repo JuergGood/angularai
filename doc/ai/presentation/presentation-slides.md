@@ -148,7 +148,7 @@ und prüft die Ergebnisse kritisch.
 
 # Prompting-Beispiele
 - Implementiere ... 
-- Fontend und Backend mit diesen Anforderungen
+- Frontend und Backend mit diesen Anforderungen
 - Android App mit identischen Features wie Web App
 - Dashboard UI zu diesem Screenshot von ChatGPT
 - Read-only Admin Access
@@ -156,12 +156,20 @@ und prüft die Ergebnisse kritisch.
 - UI-Integrationstests mit Cypress
 - Verbessere UX mit diesem Vorschlag von ChatGPT
 - Behebe alle Sonar-Fehler
-- Verbessere Code Coverage
+- Verbessere UI E2E Test Coverage > 80%
 - Erstelle Architektur-Diagramm
 - Confluence-Dokumentation und User Guide
-- Testdaten-Generierung und -Import
+- Testdaten-Generierung und Daten-Import
 - Behebe Defekt XYZ
-- Powerpoint-Päsentation 
+- Powerpoint-Präsentation 
+
+
+# Demo
+- www.goodone.ch
+- Code-Generierung
+- UI E2E Tests
+- Refactoring
+- Dokumentation
 
 # KI-gestützt mit Junie (IDE-zentriert)
 - Direkte IDE-Integration

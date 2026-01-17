@@ -42,7 +42,7 @@ public class TaskController {
         User user = getCurrentUser(authentication);
         return taskRepository.findByUserOrderByPositionAsc(user).stream()
                 .map(TaskDTO::fromEntity)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @PostMapping
