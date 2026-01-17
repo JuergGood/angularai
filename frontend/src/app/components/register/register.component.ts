@@ -79,6 +79,14 @@ export class RegisterComponent {
     }
 
     const userToRegister = { ...this.user };
+    if (userToRegister.birthDate && (userToRegister.birthDate as any) instanceof Date) {
+      const date = userToRegister.birthDate as unknown as Date;
+      // Ensure local date is used to avoid timezone shift to previous day
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      (userToRegister as any).birthDate = `${year}-${month}-${day}`;
+    }
 
     this.authService.register(userToRegister).subscribe({
       next: () => {

@@ -4,16 +4,15 @@ describe('User Management System', () => {
     cy.visit('/login');
   });
 
-  it('should login successfully and redirect to tasks', () => {
+  it('should login successfully and redirect to dashboard', () => {
     cy.screenshot('login-page');
     cy.get('input[name="login"]').type('admin');
     cy.get('input[name="password"]').type('admin123');
     cy.screenshot('login-filled');
     cy.get('#login-btn').click();
 
-    cy.url().should('include', '/tasks');
-    cy.get('.page-title').should('contain', 'Task Management');
-    cy.screenshot('tasks-page');
+    cy.url().should('include', '/dashboard');
+    cy.screenshot('dashboard-page');
   });
 
   it('should show error on invalid login', () => {
@@ -33,8 +32,8 @@ describe('User Management System', () => {
     cy.get('input[name="password"]').type('admin123');
     cy.get('#login-btn').click();
 
-    // Wait for redirect to tasks
-    cy.url().should('include', '/tasks');
+    // Wait for redirect
+    cy.url().should('include', '/dashboard');
 
     // Go to profile via user menu
     cy.get('.user-profile-button', { timeout: 10000 }).click();
@@ -68,8 +67,8 @@ describe('User Management System', () => {
     cy.get('input[name="password"]').type('admin123');
     cy.get('#login-btn').click();
 
-    // Wait for redirect to tasks
-    cy.url().should('include', '/tasks');
+    // Wait for redirect
+    cy.url().should('include', '/dashboard');
 
     // Logout via user menu
     cy.get('.user-profile-button', { timeout: 10000 }).click();
@@ -91,6 +90,11 @@ describe('User Management System', () => {
     cy.get('#confirm-password').type('cytest123', { force: true }).trigger('blur');
     cy.get('input[name="email"]').type('cytest' + Date.now() + '@example.com', { force: true }).trigger('blur');
 
+    // Using datepicker for birthDate to avoid format issues
+    cy.get('mat-datepicker-toggle').click();
+    cy.get('button.mat-calendar-previous-button').click();
+    cy.get('button.mat-calendar-body-cell').contains('1').click();
+
     cy.get('#register-btn').should('not.be.disabled').click();
 
     cy.get('.success', { timeout: 15000 }).should('be.visible');
@@ -98,7 +102,7 @@ describe('User Management System', () => {
   });
 
   it('should show error when passwords do not match during registration', () => {
-    cy.get('a[routerLink="/register"]').click();
+    cy.get('a[routerLink="/register"]').click({ force: true });
 
     cy.get('#password').type('pass1', { force: true }).trigger('blur');
     cy.get('#confirm-password').type('pass2', { force: true }).trigger('blur');

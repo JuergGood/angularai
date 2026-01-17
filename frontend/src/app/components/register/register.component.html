@@ -56,6 +56,16 @@
           }
         </mat-form-field>
 
+        <mat-form-field appearance="fill">
+          <mat-label>{{ 'ADMIN.BIRTH_DATE' | translate }}</mat-label>
+          <input matInput [matDatepicker]="picker" name="birthDate" [(ngModel)]="user.birthDate" required #birthDate="ngModel">
+          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+          @if (birthDate.invalid && (birthDate.dirty || birthDate.touched)) {
+            <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+          }
+        </mat-form-field>
+
         <div class="actions">
           <button mat-raised-button color="primary" type="submit" [disabled]="!registerForm.form.valid || user.password !== confirmPassword" id="register-btn">{{ 'ADMIN.ADD_USER' | translate }}</button>
           <a mat-button routerLink="/login">{{ 'NAV.LOGIN' | translate }}</a>
