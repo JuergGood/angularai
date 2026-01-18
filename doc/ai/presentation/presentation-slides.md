@@ -30,10 +30,10 @@ Kurz die Erwartung setzen: nicht „AI ersetzt Entwickler“, sondern „AI vers
 
 ::: columns
 ::: column
-![**Web-UI** · www.goodone.ch](files/images/DashboardImplementation.png)
+![Web UI · www.goodone.ch](files/images/DashboardImplementation.png)
 :::
 ::: column
-![**Android App**](files/images/AndroidTaskMenu.png)
+![Android App](files/images/AndroidTaskMenu.png)
 :::
 :::
 
@@ -48,7 +48,7 @@ Wichtig: zwei Clients, ein Backend. Das zeigt AI-Einsatz über mehrere Ebenen.
 ![**Geplant:** Vorlage aus Projekt 2020](files/images/GoodOne2020_Users.png)
 :::
 ::: column
-![**Resultat:** Web + Android – AI-gestützt umgesetzt](files/images/DashboardImplementation.png)
+![**Resultat:** Web + Android mit AI](files/images/DashboardImplementation.png)
 :::
 :::
 
@@ -126,24 +126,29 @@ Botschaft: Kombination statt „one tool to rule them all“.
 Explizit sagen: AI ist Teil des Prozesses, aber Qualitätssicherung bleibt menschlich.
 :::
 
-# Prompting-Beispiele (aus der Praxis)
+# Prompting-Beispiele
 
 - **Implementierung**
-  - „Implementiere Feature X inkl. Frontend + Backend + Migration + Tests.“
-  - „Erstelle Android App mit identischen Features wie Web App.“
-- **Qualität**
-  - „Behebe Sonar Findings ohne Behavior Change, inkl. Tests.“
-  - „Refactor: entkopple Service, erhöhe Testbarkeit.“
+  - Feature X inkl. Frontend, Backend, Migration, Tests
+  - Android App mit identischen Features wie Web
+
+- **Qualität & Fixes**
+  - Behebe Sonar Findings ohne Behavior Change
+  - Refactor: bessere Testbarkeit, saubere Struktur
+
 - **Testing**
-  - „Cypress E2E: Coverage erhöhen, stabile Selectors, Flakiness reduzieren.“
-- **DevOps**
-  - „AWS Deployment: Fargate, RDS, Secrets, Healthchecks.“
-- **Doku**
-  - „Architekturdiagramm + User Guide + Release Notes.“
+  - Cypress E2E Tests, Coverage > 80%
+  - Stabile Selectors, weniger Flakiness
+
+- **DevOps & Doku**
+  - AWS Deployment (Fargate, RDS)
+  - Architekturdiagramm, User Guide
 
 ::: notes
-Good Practice: immer Constraints und Definition of Done mitgeben.
+Prompts funktionieren nur gut mit klarem Kontext,
+Constraints und Definition of Done.
 :::
+
 
 # Junie (IDE-zentriert)
 
@@ -182,7 +187,7 @@ Im Firmenumfeld oft ein Vorteil: weniger Risiko, klar getrennt.
 Zeigen: AI kann UX iterativ verbessern – aber Entscheidung bleibt bei uns.
 :::
 
-# Resultat (kompakt)
+# Resultat
 
 - **Modernes UI** und konsistente UX
 - **Aktueller Tech Stack** (Angular/Spring Boot/Compose)
@@ -230,7 +235,7 @@ Schlussbotschaft: schneller bauen, besser verstehen, Qualität sichern.
 Ein Satz, den man mitnimmt.
 :::
 
-# Impression zum Schluss
+# Impression
 
 ::: columns
 ::: column
@@ -277,7 +282,7 @@ Mehrere Clients greifen auf dieselbe REST API zu. Lokal bewusst leichtgewichtig.
 ![E2E Tests mit Cypress](files/images/CypressTests.png)
 
 ## Sonar Report
-![Clean Code, A-Rating](files/images/SonarSummary.png)
+![A Rating](files/images/SonarSummary.png)
 
 # Tech Stack & Umfang (Stand Jan 2026)
 
@@ -317,43 +322,6 @@ Wenn jemand fragt: LOC ist nur grober Indikator – wichtiger sind Tests/QA und 
 Hinweis: Abdeckung ist kein Selbstzweck – entscheidend sind kritische Pfade + stabile E2E Tests.
 :::
 
-# Initiale Aufgabe an die KI
-
-- Alles begann mit diesen Zielen
-  - Erstelle ein Spring Boot Backend.
-  - Erstelle ein Angular Frontend.
-  - Implementiere eine Benutzerverwaltung mit:
-    - Vorname, Nachname, Login, Passwort, Geburtsdatum, Adresse.
-    - Login- und Profil-Bearbeitungsseiten.
-
-- Initialer Plan, generiert von der KI
-  - Spring Boot Projekt im Ordner `backend` initialisieren.
-  - Angular Projekt im Ordner `frontend` initialisieren.
-  - User-Entität und Repository im Backend definieren.
-  - Backend REST-API für die Benutzerverwaltung implementieren (CRUD + Login).
-  - Frontend-Services für die API-Interaktion implementieren.
-  - Login-Seite im Frontend erstellen.
-  - Seite zur Profilbearbeitung im Frontend erstellen.
-
-# Prompting-Beispiele
-
-- Implementiere ...
-  - Frontend und Backend mit initialen Anforderungen
-  - Android App mit identischen Features wie Web App
-  - Dashboard UI gemäss Screenshot von ChatGPT
-  - Behebe alle QA-Beanstandungen (Sonar)
-  - AWS Cloud Deployment
-  - Behebe Defekt XYZ (inkl. Exception Stacktrace)
-- Testing
-  - E2E Integrationstests mit Cypress
-  - Verbessere UI E2E Test Coverage > 80%
-  - Testdaten-Generierung und Daten-Import
-- Dokumentation
-  - Erstelle Architektur-Diagramm
-  - Confluence-Dokumentation und User Guide
-  - Powerpoint-Präsentation
-  - QA KPIs
-
 # Demo
 
 - www.goodone.ch
@@ -361,4 +329,41 @@ Hinweis: Abdeckung ist kein Selbstzweck – entscheidend sind kritische Pfade + 
 - UI E2E Tests
 - Refactoring
 - Dokumentation
-- 
+
+# Management-Takeaway: AI in der Software-Entwicklung
+
+- **Schneller**: Features, Fixes und QA in kürzerer Zeit
+- **Besser**: Tests & Code-Qualität von Anfang an
+- **Skalierbar**: Gleiches Vorgehen für Web & Mobile
+- **Kontrolliert**: Entwickler entscheidet, AI unterstützt
+
+::: notes
+Kurzfassung für Management / Non-Dev (≈30–45s):
+
+– AI ersetzt keine Entwickler
+– AI reduziert Routinearbeit massiv
+– Qualität steigt, weil Tests & Reviews günstiger werden
+– Voraussetzung: klare Guidelines & Verantwortung im Team
+:::
+
+# Executive Summary – AI-gestützte Software-Entwicklung
+
+- **Produktivität**: Deutlich schnellere Umsetzung von Features & Fixes
+- **Qualität**: Tests und Code-Reviews von Beginn an integriert
+- **Skalierung**: Gleiches Vorgehen für Web, Mobile & Backend
+- **Risiko**: Entwickler behält Kontrolle, klare Leitplanken nötig
+- **Empfehlung**: AI gezielt im Entwicklungsprozess verankern
+
+::: notes
+Kurzfassung für Entscheider (≈30s):
+
+AI ist kein Selbstzweck.
+Der Mehrwert entsteht durch:
+– schnellere Iterationen
+– frühere Qualitätssicherung
+– bessere Nutzung von Entwicklerzeit
+
+Empfehlung:
+AI bewusst einführen, Guidelines definieren,
+Pilotprojekte fördern.
+:::
