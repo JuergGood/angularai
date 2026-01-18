@@ -45,7 +45,7 @@ fun TaskListScreen(
                     TextButton(onClick = { showFilterMenu = true }) {
                         Icon(Icons.Default.FilterList, contentDescription = null)
                         Spacer(Modifier.width(4.dp))
-                        Text(statusFilter?.name?.lowercase()?.replaceFirstChar { it.uppercase() } ?: "All Status")
+                        Text(statusFilter?.name?.lowercase()?.replace("_", " ")?.split(" ")?.joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } } ?: "All Status")
                     }
                     DropdownMenu(
                         expanded = showFilterMenu,
@@ -57,7 +57,7 @@ fun TaskListScreen(
                         )
                         TaskStatus.values().forEach { status ->
                             DropdownMenuItem(
-                                text = { Text(status.name.lowercase().replaceFirstChar { it.uppercase() }) },
+                                text = { Text(status.name.lowercase().replace("_", " ").split(" ").joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }) },
                                 onClick = { viewModel.onStatusFilterChange(status); showFilterMenu = false }
                             )
                         }
@@ -149,7 +149,7 @@ fun TaskItem(
                     text = "Priority: ${task.priority}",
                     style = MaterialTheme.typography.bodySmall,
                     color = when(task.priority) {
-                        "HIGH" -> Color.Red
+                        "HIGH", "CRITICAL" -> Color.Red
                         "MEDIUM" -> Color(0xFFFFA500)
                         else -> Color.Gray
                     }
@@ -185,7 +185,7 @@ fun StatusChip(status: TaskStatus) {
             .padding(horizontal = 8.dp, vertical = 2.dp)
     ) {
         Text(
-            text = status.name.lowercase().replaceFirstChar { it.uppercase() },
+            text = status.name.lowercase().replace("_", " ").split(" ").joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } },
             style = MaterialTheme.typography.labelSmall,
             color = textColor,
             fontWeight = FontWeight.Bold

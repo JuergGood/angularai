@@ -25,6 +25,10 @@ fun TaskEditScreen(
     var dueDate by remember { mutableStateOf("") }
     var priority by remember { mutableStateOf("MEDIUM") }
     var status by remember { mutableStateOf(TaskStatus.OPEN) }
+    
+    val isDueDateValid = remember(dueDate) {
+        dueDate.isBlank() || dueDate.matches(Regex("^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$"))
+    }
 
     LaunchedEffect(task) {
         task?.let {
@@ -44,16 +48,42 @@ fun TaskEditScreen(
         Text(text = if (task == null) "Add Task" else "Edit Task", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
         
-        TextField(value = title, onValueChange = { title = it }, label = { Text("Title") }, modifier = Modifier.fillMaxWidth())
+        TextField(
+            value = title,
+            onValueChange = { title = it },
+            label = { Text("Title") },
+            modifier = Modifier.fillMaxWidth(),
+            isError = title.isBlank()
+        )
         Spacer(modifier = Modifier.height(8.dp))
         TextField(value = description, onValueChange = { description = it }, label = { Text("Description") }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = dueDate, onValueChange = { dueDate = it }, label = { Text("Due Date (yyyy-MM-dd)") }, modifier = Modifier.fillMaxWidth())
+        TextField(
+            value = dueDate,
+            onValueChange = { dueDate = it },
+            label = { Text("Due Date (yyyy-MM-dd)") },
+            modifier = Modifier.fillMaxWidth(),
+            placeholder = { Text("e.g. 2026-01-18") },
+            isError = !isDueDateValid,
+            supportingText = {
+                if (!isDueDateValid) {
+                    Text("Invalid format. Use yyyy-MM-dd")
+                }
+            }
+        )
         Spacer(modifier = Modifier.height(8.dp))
+        
+        if (state.error != null) {
+            Text(
+                text = state.error,
+                color = MaterialTheme.colorScheme.error,
+                modifier = Modifier.padding(vertical = 8.dp)
+            )
+        }
         
         Text("Priority")
         Row {
-            listOf("LOW", "MEDIUM", "HIGH").forEach { p ->
+            listOf("LOW", "MEDIUM", "HIGH", "CRITICAL").forEach { p ->
                 Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                     RadioButton(selected = priority == p, onClick = { priority = p })
                     Text(text = p)
@@ -67,7 +97,7 @@ fun TaskEditScreen(
             TaskStatus.values().forEach { s ->
                 Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                     RadioButton(selected = status == s, onClick = { status = s })
-                    Text(text = s.name.lowercase().replaceFirstChar { it.uppercase() })
+                    Text(text = s.name.lowercase().replace("_", " ").split(" ").joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } })
                 }
             }
         }
@@ -76,21 +106,29 @@ fun TaskEditScreen(
         
         Button(
             onClick = {
+                if (title.isBlank()) return@Button
                 val newTask = Task(
                     id = task?.id,
                     title = title,
                     description = description,
-                    dueDate = dueDate.takeIf { it.isNotBlank() },
+                    dueDate = dueDate.trim().takeIf { it.isNotBlank() },
                     priority = priority,
                     status = status,
                     position = task?.position ?: 0
                 )
-                viewModel.onSaveTask(newTask)
-                onSave()
+                viewModel.onSaveTask(newTask, onSave)
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            enabled = !state.isLoading && title.isNotBlank() && isDueDateValid
         ) {
-            Text("Save")
+            if (state.isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            } else {
+                Text("Save")
+            }
         }
         TextButton(onClick = onBack, modifier = Modifier.fillMaxWidth()) {
             Text("Cancel")

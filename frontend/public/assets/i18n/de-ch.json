@@ -71,7 +71,8 @@
     "STATUS": {
       "OPEN": "Offen",
       "IN_PROGRESS": "In Bearbeitung",
-      "COMPLETED": "Erledigt"
+      "COMPLETED": "Erledigt",
+      "CLOSED": "Geschlossen"
     },
     "EMPTY": "Keine Aufgaben gefunden.",
     "DELETE_CONFIRM": "Sind Sie sicher, dass Sie diese Aufgabe löschen möchten?"

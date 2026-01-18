@@ -71,7 +71,8 @@
     "STATUS": {
       "OPEN": "Open",
       "IN_PROGRESS": "In Progress",
-      "COMPLETED": "Completed"
+      "COMPLETED": "Completed",
+      "CLOSED": "Closed"
     },
     "EMPTY": "No tasks found.",
     "DELETE_CONFIRM": "Are you sure you want to delete this task?"

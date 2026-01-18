@@ -33,5 +33,21 @@ class DomainModelTest {
     fun taskStatus_shouldHaveCorrectValues() {
         assertEquals(3, TaskStatus.values().size)
         assertTrue(TaskStatus.valueOf("OPEN") == TaskStatus.OPEN)
+        assertTrue(TaskStatus.valueOf("IN_PROGRESS") == TaskStatus.IN_PROGRESS)
+        assertTrue(TaskStatus.valueOf("CLOSED") == TaskStatus.CLOSED)
+    }
+
+    @Test
+    fun taskStatus_shouldFormatCorrectly() {
+        val testCases = mapOf(
+            TaskStatus.OPEN to "Open",
+            TaskStatus.IN_PROGRESS to "In Progress",
+            TaskStatus.CLOSED to "Closed"
+        )
+        
+        testCases.forEach { (status, expected) ->
+            val formatted = status.name.lowercase().replace("_", " ").split(" ").joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }
+            assertEquals(expected, formatted)
+        }
     }
 }

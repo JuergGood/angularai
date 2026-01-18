@@ -118,6 +118,22 @@ class TaskControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
+    void shouldCreateTaskWithClosedStatus() throws Exception {
+        TaskDTO taskDTO = new TaskDTO(null, "Closed Task", "Desc", null, Priority.LOW, "CLOSED", 0);
+        Task savedTask = new Task("Closed Task", "Desc", null, Priority.LOW, testUser);
+        savedTask.setStatus(ch.goodone.angularai.backend.model.TaskStatus.CLOSED);
+        savedTask.setId(3L);
+        when(taskRepository.save(any())).thenReturn(savedTask);
+        
+        mockMvc.perform(post("/api/tasks")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(taskDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("CLOSED"));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
     void shouldDeleteTask() throws Exception {
         when(taskRepository.findById(1L)).thenReturn(Optional.of(testTask));
 

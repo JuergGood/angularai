@@ -60,10 +60,11 @@ class TaskViewModel @Inject constructor(
             // Reordering by priority: HIGH, MEDIUM, LOW
             val sortedTasks = _state.value.tasks.sortedWith(compareBy<Task> {
                 when (it.priority) {
-                    "HIGH" -> 0
-                    "MEDIUM" -> 1
-                    "LOW" -> 2
-                    else -> 3
+                    "CRITICAL" -> 0
+                    "HIGH" -> 1
+                    "MEDIUM" -> 2
+                    "LOW" -> 3
+                    else -> 4
                 }
             })
             repository.reorderTasks(sortedTasks.mapNotNull { it.id })
@@ -84,12 +85,20 @@ class TaskViewModel @Inject constructor(
         }
     }
 
-    fun onSaveTask(task: Task) {
+    fun onSaveTask(task: Task, onSuccess: () -> Unit) {
         viewModelScope.launch {
-            if (task.id == null) {
-                repository.createTask(task)
-            } else {
-                repository.updateTask(task)
+            try {
+                _state.value = _state.value.copy(isLoading = true, error = null)
+                if (task.id == null) {
+                    repository.createTask(task)
+                } else {
+                    repository.updateTask(task)
+                }
+                onSuccess()
+            } catch (e: Exception) {
+                _state.value = _state.value.copy(error = e.message ?: "Unknown error occurred")
+            } finally {
+                _state.value = _state.value.copy(isLoading = false)
             }
         }
     }
