@@ -278,10 +278,10 @@ Mehrere Clients greifen auf dieselbe REST API zu. Lokal bewusst leichtgewichtig.
 
 # QA Artefakte (Beispiele)
 
-## Cypress Report
+# Cypress Report
 ![E2E Tests mit Cypress](files/images/CypressTests.png)
 
-## Sonar Report
+# Sonar Report
 ![A Rating](files/images/SonarSummary.png)
 
 # Tech Stack & Umfang (Stand Jan 2026)
