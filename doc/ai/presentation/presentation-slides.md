@@ -225,6 +225,7 @@ technisches Verständnis und klare Ziele.
 AI ersetzt kein Know-how – sie verstärkt es.
 :::
 
+
 # Fazit
 - **Demo bestätigt**: AI ist ideal für schnelle Prototypen
 - **Werkzeuge**: Junie & ChatGPT ergänzen sich ideal
@@ -247,6 +248,21 @@ AI beschleunigt Entwicklung,
 verbessert Qualität,
 ersetzt aber nicht die Verantwortung des Entwicklers.
 :::
+
+# Impression zum Schluss
+::: columns
+::: column
+![](files/images/AiRace.png)
+Start
+
+:::
+::: column
+![](files/images/AiRaceFinal.png)
+Etappenziel
+
+:::
+:::
+
 
 # Links
 
