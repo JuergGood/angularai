@@ -13,6 +13,7 @@ class TestClientAppTest {
             .getDeclaredMethod("parseArgs", Array<String>::class.java)
         method.isAccessible = true
         
+        @Suppress("UNCHECKED_CAST")
         val result = method.invoke(null, args) as Pair<Map<String, String>, List<String>>
         val options = result.first
         val commands = result.second

@@ -22,7 +22,8 @@ class SystemControllerTest {
     void shouldReturnSystemInfo() throws Exception {
         mockMvc.perform(get("/api/system/info"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.version").exists())
+                .andExpect(jsonPath("$.backendVersion").exists())
+                .andExpect(jsonPath("$.frontendVersion").exists())
                 .andExpect(jsonPath("$.mode").exists());
     }
 

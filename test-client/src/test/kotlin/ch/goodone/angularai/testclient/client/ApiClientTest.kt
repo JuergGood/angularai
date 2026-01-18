@@ -15,6 +15,7 @@ class ApiClientTest {
     @Test
     fun `test handleError should throw exception on non-2xx`() {
         val client = ApiClient("http://localhost:8080", "auth")
+        @Suppress("UNCHECKED_CAST")
         val response = mock(HttpResponse::class.java) as HttpResponse<String>
         
         `when`(response.statusCode()).thenReturn(404)
@@ -38,6 +39,7 @@ class ApiClientTest {
     @Test
     fun `test handleError should not throw exception on 2xx`() {
         val client = ApiClient("http://localhost:8080", "auth")
+        @Suppress("UNCHECKED_CAST")
         val response = mock(HttpResponse::class.java) as HttpResponse<String>
         
         `when`(response.statusCode()).thenReturn(200)

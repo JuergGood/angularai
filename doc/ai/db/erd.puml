@@ -19,21 +19,25 @@ enum Priority {
 
 enum Role {
 	{field} +ROLE_ADMIN
+	{field} +ROLE_ADMIN_READ
 	{field} +ROLE_USER
 }
 
 
 class Task {
+	{field} +createdAt : LocalDateTime
 	{field} +description : String
 	{field} +dueDate : LocalDate
 	{field} +id : Long
 	{field} +position : Integer
 	{field} +title : String
+	{method} #onCreate () : void
 }
 
 
 enum TaskStatus {
 	{field} +CLOSED
+	{field} +COMPLETED
 	{field} +IN_PROGRESS
 	{field} +OPEN
 }
@@ -42,12 +46,14 @@ enum TaskStatus {
 class User {
 	{field} +address : String
 	{field} +birthDate : LocalDate
+	{field} +createdAt : LocalDateTime
 	{field} +email : String
 	{field} +firstName : String
 	{field} +id : Long
 	{field} +lastName : String
 	{field} +login : String
 	{field} +password : String
+	{method} #onCreate () : void
 }
 
 

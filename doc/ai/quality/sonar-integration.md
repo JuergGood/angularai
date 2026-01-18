@@ -34,7 +34,7 @@ SonarCloud does not provide a UI download button, but all issues are accessible 
 
 ### API Endpoint
 
-```powershell
+```bash
 curl.exe -k -u "YOUR_TOKEN:" "https://sonarcloud.io/api/issues/search?componentKeys=JuergGood_angularai&statuses=OPEN,CONFIRMED&ps=500" -o sonar-issues.json
 ```
 
@@ -54,14 +54,14 @@ To run a full SonarCloud analysis locally and see the results on the dashboard b
 ### Option A: Using the Helper Script (Recommended)
 We have provided a PowerShell script that handles the build, tests, and analysis:
 
-```powershell
+```bash
 .\scripts\sonar-analysis.ps1 -Token "YOUR_SONAR_TOKEN"
 ```
 
 ### Option B: Manual Maven Command
 Run the following command from the project root:
 
-```powershell
+```bash
 mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar `
   -Dsonar.token="YOUR_SONAR_TOKEN" `
   -Dsonar.projectKey=JuergGood_angularai `

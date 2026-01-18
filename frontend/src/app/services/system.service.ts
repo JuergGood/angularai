@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 export interface SystemInfo {
-  version: string;
+  backendVersion: string;
+  frontendVersion: string;
   mode: string;
 }
 

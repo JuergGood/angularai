@@ -316,3 +316,7 @@ Frontend includes TS, HTML, and CSS.
 - **Reproducibility**: Docker-based tests ensure "it works on my machine" translates to CI/CD.
 :::
 
+# E2E Tests
+![](files/images/CypressTests.png)
+- Umfassende E2E UI Tests mit Cypress
+

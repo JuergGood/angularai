@@ -1,8 +1,12 @@
 package ch.goodone.angularai.android.ui.admin
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import ch.goodone.angularai.android.ui.auth.AuthViewModel
@@ -12,8 +16,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.goodone.angularai.android.domain.model.User
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
-@OptIn(ExperimentalLayoutApi::class)
+@OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AdminUserEditScreen(
     userId: Long?,
@@ -36,14 +44,42 @@ fun AdminUserEditScreen(
     var address by remember { mutableStateOf("") }
     var role by remember { mutableStateOf("ROLE_USER") }
 
+    var showDatePicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = remember(showDatePicker) {
+            if (showDatePicker) {
+                try {
+                    if (birthDate.isNotBlank()) {
+                        LocalDate.parse(birthDate, DateTimeFormatter.ISO_LOCAL_DATE)
+                            .atStartOfDay(ZoneId.systemDefault())
+                            .toInstant()
+                            .toEpochMilli()
+                    } else {
+                        LocalDate.now().minusYears(20)
+                            .atStartOfDay(ZoneId.systemDefault())
+                            .toInstant()
+                            .toEpochMilli()
+                    }
+                } catch (e: Exception) {
+                    LocalDate.now().minusYears(20)
+                        .atStartOfDay(ZoneId.systemDefault())
+                        .toInstant()
+                        .toEpochMilli()
+                }
+            } else {
+                null
+            }
+        }
+    )
+
     LaunchedEffect(user) {
         user?.let {
             firstName = it.firstName
             lastName = it.lastName
             login = it.login
             email = it.email
-            birthDate = it.birthDate ?: ""
-            address = it.address ?: ""
+            birthDate = it.birthDate
+            address = it.address
             role = it.role
         }
     }
@@ -69,7 +105,57 @@ fun AdminUserEditScreen(
         }
         TextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth(), enabled = canEdit)
         Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = birthDate, onValueChange = { birthDate = it }, label = { Text("Birth Date (yyyy-MM-dd)") }, modifier = Modifier.fillMaxWidth(), enabled = canEdit)
+        
+        if (showDatePicker && canEdit) {
+            DatePickerDialog(
+                onDismissRequest = { showDatePicker = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        datePickerState.selectedDateMillis?.let { millis ->
+                            val date = Instant.ofEpochMilli(millis)
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate()
+                            birthDate = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                        }
+                        showDatePicker = false
+                    }) {
+                        Text("OK")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDatePicker = false }) {
+                        Text("Cancel")
+                    }
+                }
+            ) {
+                DatePicker(state = datePickerState)
+            }
+        }
+
+        TextField(
+            value = birthDate,
+            onValueChange = { },
+            label = { Text("Birth Date (yyyy-MM-dd)") },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = canEdit,
+            readOnly = true,
+            interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
+                LaunchedEffect(interactionSource) {
+                    interactionSource.interactions.collect { interaction ->
+                        if (interaction is PressInteraction.Release) {
+                            showDatePicker = true
+                        }
+                    }
+                }
+            },
+            trailingIcon = {
+                if (canEdit) {
+                    IconButton(onClick = { showDatePicker = true }) {
+                        Icon(Icons.Default.DateRange, contentDescription = "Select Date")
+                    }
+                }
+            }
+        )
         Spacer(modifier = Modifier.height(8.dp))
         TextField(value = address, onValueChange = { address = it }, label = { Text("Address") }, modifier = Modifier.fillMaxWidth(), enabled = canEdit)
         Spacer(modifier = Modifier.height(8.dp))

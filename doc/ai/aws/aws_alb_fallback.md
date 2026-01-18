@@ -53,12 +53,8 @@ aws elbv2 modify-listener \
 #### For Windows (PowerShell)
 *Note: PowerShell requires triple quotes (`"""`) for internal JSON values to preserve them when calling the AWS CLI.*
 
-> **Tip:** If the "Run" icon is missing for `powershell` blocks:
-> 1. In **Settings > Languages & Frameworks > Markdown**, check **Language Mappings**. Ensure `powershell` or `pwsh` is mapped to **PowerShell**.
-> 2. Try using the `pwsh` tag instead of `powershell`.
-> 3. You can often run the block by placing your cursor inside it and pressing **Alt + Enter** > **Run Code Block**.
 
-```powershell
+```bash
 # Update HTTP (Port 80) Listener
 aws elbv2 modify-listener `
   --listener-arn arn:aws:elasticloadbalancing:eu-central-1:426141506813:listener/app/angular-boot-lb-frontend/935a795fe8bb72ca/46b92b1b6c16c338 `
@@ -105,7 +101,7 @@ aws elbv2 modify-rule \
 ```
 
 #### For Windows (PowerShell)
-```powershell
+```bash
 aws elbv2 modify-rule `
   --rule-arn arn:aws:elasticloadbalancing:eu-central-1:426141506813:listener-rule/app/angular-boot-lb-frontend/935a795fe8bb72ca/9521f3b60cb2ee69/6d5a138969cbadf5 `
   --actions 'Type=fixed-response,FixedResponseConfig={StatusCode=503,ContentType=text/html,MessageBody="""<html><body><h1>API Maintenance</h1></body></html>"""}'
@@ -122,7 +118,7 @@ aws elbv2 modify-rule \
 ```
 
 #### For Windows (PowerShell)
-```powershell
+```bash
 aws elbv2 modify-rule `
   --rule-arn arn:aws:elasticloadbalancing:eu-central-1:426141506813:listener-rule/app/angular-boot-lb-frontend/935a795fe8bb72ca/9521f3b60cb2ee69/6d5a138969cbadf5 `
   --actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:eu-central-1:426141506813:targetgroup/angular-boot-frontend2/5c1b885c9fdcac54
@@ -160,9 +156,8 @@ aws elbv2 modify-listener \
 ```
 
 #### For Windows (PowerShell)
-> **Tip:** If the run icon is missing, see the instructions in the "Option 1" section above for enabling PowerShell in your IDE.
 
-```powershell
+```bash
 # Restore HTTP (Port 80)
 aws elbv2 modify-listener `
   --listener-arn arn:aws:elasticloadbalancing:eu-central-1:426141506813:listener/app/angular-boot-lb-frontend/935a795fe8bb72ca/46b92b1b6c16c338 `

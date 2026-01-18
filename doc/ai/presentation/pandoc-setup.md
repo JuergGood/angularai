@@ -12,7 +12,7 @@ When you run the `pandoc` command with `--reference-doc doc/ai/presentation/temp
 ### Generation Command:
 I have successfully regenerated the presentation using this command:
 
-```powershell
+```bash
 pandoc doc\ai\presentation\presentation-slides-pandoc-de.md `
        -o doc\ai\presentation\generated\SoftwareDevelopmentWithAIPandoc.pptx `
        --reference-doc doc\ai\presentation\template.pptx `

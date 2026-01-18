@@ -1,6 +1,11 @@
 package ch.goodone.angularai.android.ui.tasks
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.collectAsState
@@ -9,7 +14,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import ch.goodone.angularai.android.domain.model.Task
 import ch.goodone.angularai.android.domain.model.TaskStatus
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskEditScreen(
     taskId: Long?,
@@ -25,6 +35,34 @@ fun TaskEditScreen(
     var dueDate by remember { mutableStateOf("") }
     var priority by remember { mutableStateOf("MEDIUM") }
     var status by remember { mutableStateOf(TaskStatus.OPEN) }
+    
+    var showDatePicker by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState(
+        initialSelectedDateMillis = remember(showDatePicker) {
+            if (showDatePicker) {
+                try {
+                    if (dueDate.isNotBlank()) {
+                        LocalDate.parse(dueDate, DateTimeFormatter.ISO_LOCAL_DATE)
+                            .atStartOfDay(ZoneId.systemDefault())
+                            .toInstant()
+                            .toEpochMilli()
+                    } else {
+                        LocalDate.now()
+                            .atStartOfDay(ZoneId.systemDefault())
+                            .toInstant()
+                            .toEpochMilli()
+                    }
+                } catch (e: Exception) {
+                    LocalDate.now()
+                        .atStartOfDay(ZoneId.systemDefault())
+                        .toInstant()
+                        .toEpochMilli()
+                }
+            } else {
+                null
+            }
+        }
+    )
     
     val isDueDateValid = remember(dueDate) {
         dueDate.isBlank() || dueDate.matches(Regex("^\\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\\d|3[01])$"))
@@ -58,12 +96,54 @@ fun TaskEditScreen(
         Spacer(modifier = Modifier.height(8.dp))
         TextField(value = description, onValueChange = { description = it }, label = { Text("Description") }, modifier = Modifier.fillMaxWidth())
         Spacer(modifier = Modifier.height(8.dp))
+        
+        if (showDatePicker) {
+            DatePickerDialog(
+                onDismissRequest = { showDatePicker = false },
+                confirmButton = {
+                    TextButton(onClick = {
+                        datePickerState.selectedDateMillis?.let { millis ->
+                            val date = Instant.ofEpochMilli(millis)
+                                .atZone(ZoneId.systemDefault())
+                                .toLocalDate()
+                            dueDate = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+                        }
+                        showDatePicker = false
+                    }) {
+                        Text("OK")
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = { showDatePicker = false }) {
+                        Text("Cancel")
+                    }
+                }
+            ) {
+                DatePicker(state = datePickerState)
+            }
+        }
+
         TextField(
             value = dueDate,
-            onValueChange = { dueDate = it },
+            onValueChange = { },
             label = { Text("Due Date (yyyy-MM-dd)") },
             modifier = Modifier.fillMaxWidth(),
             placeholder = { Text("e.g. 2026-01-18") },
+            readOnly = true,
+            interactionSource = remember { MutableInteractionSource() }.also { interactionSource ->
+                LaunchedEffect(interactionSource) {
+                    interactionSource.interactions.collect { interaction ->
+                        if (interaction is PressInteraction.Release) {
+                            showDatePicker = true
+                        }
+                    }
+                }
+            },
+            trailingIcon = {
+                IconButton(onClick = { showDatePicker = true }) {
+                    Icon(Icons.Default.DateRange, contentDescription = "Select Date")
+                }
+            },
             isError = !isDueDateValid,
             supportingText = {
                 if (!isDueDateValid) {

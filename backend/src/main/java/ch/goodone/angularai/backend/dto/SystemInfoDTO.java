@@ -1,22 +1,32 @@
 package ch.goodone.angularai.backend.dto;
 
 public class SystemInfoDTO {
-    private String version;
+    private String backendVersion;
+    private String frontendVersion;
     private String mode;
 
     public SystemInfoDTO() {}
 
-    public SystemInfoDTO(String version, String mode) {
-        this.version = version;
+    public SystemInfoDTO(String backendVersion, String frontendVersion, String mode) {
+        this.backendVersion = backendVersion;
+        this.frontendVersion = frontendVersion;
         this.mode = mode;
     }
 
-    public String getVersion() {
-        return version;
+    public String getBackendVersion() {
+        return backendVersion;
     }
 
-    public void setVersion(String version) {
-        this.version = version;
+    public void setBackendVersion(String backendVersion) {
+        this.backendVersion = backendVersion;
+    }
+
+    public String getFrontendVersion() {
+        return frontendVersion;
+    }
+
+    public void setFrontendVersion(String frontendVersion) {
+        this.frontendVersion = frontendVersion;
     }
 
     public String getMode() {

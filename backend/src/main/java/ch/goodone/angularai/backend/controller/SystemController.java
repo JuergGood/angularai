@@ -18,7 +18,10 @@ public class SystemController {
     private final Environment environment;
     
     @Value("${application.version:unknown}")
-    private String version;
+    private String backendVersion;
+
+    @Value("${frontend.version:unknown}")
+    private String frontendVersion;
 
     public SystemController(Environment environment) {
         this.environment = environment;
@@ -35,6 +38,6 @@ public class SystemController {
             mode = "H2";
         }
 
-        return ResponseEntity.ok(new SystemInfoDTO(version, mode));
+        return ResponseEntity.ok(new SystemInfoDTO(backendVersion, frontendVersion, mode));
     }
 }

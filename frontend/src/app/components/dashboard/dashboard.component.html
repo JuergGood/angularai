@@ -5,8 +5,8 @@
 
 <div class="dashboard-container" *ngIf="vm() as data">
   <!-- Summary Cards -->
-  <div class="summary-grid">
-    <mat-card class="summary-card interactive-card tasks" routerLink="/tasks">
+  <div class="summary-grid" *ngIf="data && data.summary">
+    <mat-card class="summary-card interactive-card tasks" routerLink="/tasks" data-cy="dashboard-open-tasks">
       <mat-card-header>
         <mat-card-title>{{ 'DASHBOARD.OPEN_TASKS' | translate }}</mat-card-title>
       </mat-card-header>
@@ -21,7 +21,8 @@
     </mat-card>
 
     <mat-card class="summary-card interactive-card users"
-              [routerLink]="authService.isAdmin() ? '/user-admin' : '/profile'">
+              [routerLink]="authService.isAdmin() ? '/user-admin' : '/profile'"
+              data-cy="dashboard-active-users">
       <mat-card-header>
         <mat-card-title>{{ 'DASHBOARD.ACTIVE_USERS' | translate }}</mat-card-title>
       </mat-card-header>
@@ -35,7 +36,7 @@
       </mat-card-content>
     </mat-card>
 
-    <mat-card class="summary-card interactive-card completed" routerLink="/tasks">
+    <mat-card class="summary-card interactive-card completed" routerLink="/tasks" data-cy="dashboard-completed-tasks">
       <mat-card-header>
         <mat-card-title>{{ 'DASHBOARD.COMPLETED_TASKS' | translate }}</mat-card-title>
       </mat-card-header>
@@ -54,6 +55,7 @@
       [class.disabled-card]="!authService.isAdmin()"
       [routerLink]="authService.isAdmin() ? '/logs' : undefined"
       [attr.aria-disabled]="!authService.isAdmin()"
+      data-cy="dashboard-today-logs"
     >
       <mat-card-header>
         <mat-card-title>{{ 'DASHBOARD.TODAY_LOGS' | translate }}</mat-card-title>
@@ -71,7 +73,7 @@
 
   <div class="main-grid">
     <!-- Task Overview (primary) + Recent Activity (right panel on wide screens) -->
-    <mat-card class="grid-item task-overview-card">
+    <mat-card class="grid-item task-overview-card" *ngIf="data.taskDistribution">
       <mat-card-header>
         <div class="card-header-container">
           <mat-card-title>{{ 'DASHBOARD.TASK_OVERVIEW' | translate }}</mat-card-title>

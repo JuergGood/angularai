@@ -132,7 +132,7 @@ mvn exec:java -pl test-client -Dexec.args="--env local load tasks"
 
 Or by running the JAR directly (after build):
 ```bash
-java -jar test-client/target/test-client-0.0.1-SNAPSHOT.jar --env aws load paging-data --count 100
+java -jar test-client/target/test-client-1.0.1.jar --env aws load paging-data --count 100
 ```
 
 ### 8.3. Examples

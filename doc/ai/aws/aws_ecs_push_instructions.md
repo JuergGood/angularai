@@ -52,30 +52,43 @@ aws ecr create-repository --repository-name angularai-frontend --region eu-centr
 
 **CRITICAL**: You must run these commands from the **project root directory** (`angularai/`), not from the `doc/` directory.
 
-```bash
-# Verify you are in the root directory (should see backend/ and frontend/ folders)
-ls
+### 3.1 Define Release Version
+It is highly recommended to use a specific version tag (e.g., `1.0.1`) instead of just `latest` to ensure predictable deployments.
+
+**IMPORTANT**: Ensure that the version defined here matches the version in your project files:
+- **Backend**: `pom.xml` (`<version>1.0.1</version>`)
+- **Frontend**: `package.json` (`"version": "1.0.1"`)
+
+**PowerShell:**
+```powershell
+$VERSION="1.0.1"
 ```
 
-### 3.1 Backend Image
+**Bash:**
 ```bash
-# Build the image
-docker build -t angularai-backend -f backend/Dockerfile .
-```
-```bash
-# Tag for ECR
-docker tag angularai-backend:latest 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:latest
+VERSION="1.0.1"
 ```
 
-### 3.2 Frontend Image
+### 3.2 Backend Image
 ```bash
-# Build the image
-docker build -t angularai-frontend -f frontend/Dockerfile .
+# Build the image with version tag
+docker build -t angularai-backend:$VERSION -f backend/Dockerfile .
+
+# Also tag as latest (optional)
+docker tag angularai-backend:$VERSION angularai-backend:latest
 ```
+
+### 3.3 Frontend Image
+**Note**: Due to peer dependency conflicts between Angular 21 and some plugins, the `frontend/Dockerfile` is configured to use `--legacy-peer-deps`.
+
 ```bash
-# Tag for ECR
-docker tag angularai-frontend:latest 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-frontend:latest
+# Build the image with version tag
+docker build -t angularai-frontend:$VERSION -f frontend/Dockerfile .
+
+# Also tag as latest (optional)
+docker tag angularai-frontend:$VERSION angularai-frontend:latest
 ```
+
 
 ---
 
@@ -106,12 +119,27 @@ aws ecr get-login-password --region eu-central-1 | docker login --username AWS -
 
 Now push the tagged images to your AWS registry.
 
+**IMPORTANT**: If you see an error like `tag does not exist`, it means the local image wasn't successfully tagged with the remote ECR URL. Ensure you have executed the `docker tag` commands in Step 4.1 for the exact `$VERSION` you are trying to push.
+
+### 4.1 Tag for ECR
+```bash
+# Tag Backend
+docker tag angularai-backend:$VERSION 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:$VERSION
+docker tag angularai-backend:latest 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:latest
+
+# Tag Frontend
+docker tag angularai-frontend:$VERSION 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-frontend:$VERSION
+docker tag angularai-frontend:latest 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-frontend:latest
+```
+
+### 4.2 Push to ECR
 ```bash
 # Push Backend
+docker push 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:$VERSION
 docker push 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:latest
-```
-```bash
+
 # Push Frontend
+docker push 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-frontend:$VERSION
 docker push 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-frontend:latest
 ```
 
@@ -120,7 +148,27 @@ docker push 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-frontend:l
 ## Summary of URLs
 
 After pushing, your image URLs will follow this pattern:
-- **Backend**: `426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:latest`
-- **Frontend**: `426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-frontend:latest`
+- **Backend**: `426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:1.0.1`
+- **Frontend**: `426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-frontend:1.0.1`
 
-Use these URLs in your **ECS Task Definitions** (e.g., in `deploy/aws/backend-task-definition.json` and `deploy/aws/frontend-task-definition.json`).
+### Updating ECS Task Definitions
+To deploy the new version:
+1.  Open your Task Definition JSON (e.g., `deploy/aws/backend-task-definition.json`).
+2.  Update the `image` field to use the new version tag (e.g., `1.0.1`) instead of `latest`. **This is highly recommended to avoid version confusion.**
+3.  Register the new task definition version:
+    ```bash
+    aws ecs register-task-definition --cli-input-json file://deploy/aws/backend-task-definition.json --query "taskDefinition.revision" --output text
+    ```
+4.  Update the service to use the new task definition:
+    ```bash
+    aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --task-definition angularai-backend:REVISION --query "service.taskDefinition" --output text
+    ```
+    *(Replace `REVISION` with the number returned by the register command)*
+
+---
+
+## Troubleshooting: Version Mismatch
+If you see an old version (e.g., `0.0.1-SNAPSHOT`) after deployment:
+1.  **Check Local Build**: Ensure you ran `mvn clean package` before building the Docker image if you are building outside of Docker, or ensure `backend/Dockerfile` is running `mvn clean package` (it should).
+2.  **Explicit Version**: Change `latest` to `$VERSION` in your `backend-task-definition.json` before registering. This guarantees ECS pulls that specific image.
+3.  **ECR Verification**: Check the AWS ECR console to ensure the image with tag `1.0.1` has a recent "Pushed at" timestamp.

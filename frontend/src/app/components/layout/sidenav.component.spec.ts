@@ -46,7 +46,7 @@ describe('SidenavComponent', () => {
     };
 
     systemServiceSpy = {
-      getSystemInfo: vi.fn().mockReturnValue(of({ version: '1.0.0', environment: 'test' }))
+      getSystemInfo: vi.fn().mockReturnValue(of({ backendVersion: '1.0.1', frontendVersion: '1.0.1', mode: 'test' }))
     };
 
     i18nServiceSpy = {

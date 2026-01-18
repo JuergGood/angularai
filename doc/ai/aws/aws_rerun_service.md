@@ -2,38 +2,66 @@ To stop and restart your ECS Fargate services, you can use the following AWS CLI
 
 ### 1. Backend Service (`angularai-backend-test-service`)
 
-**Stop Service:**
+**Deploy a Specific Version ($VERSION):**
+To deploy a new version (e.g., `1.0.1`), you must first update the Task Definition. See [Push Instructions](aws_ecs_push_instructions.md#updating-ecs-task-definitions) for details on pushing images and registering new task definitions.
+
+```bash
+# 1. Register new task definition (after updating the 'image' tag in your JSON)
+# This will return the new numeric REVISION
+aws ecs register-task-definition --cli-input-json file://deploy/aws/backend-task-definition.json --query "taskDefinition.revision" --output text
+```
+```bash
+# 2. Update service to use the new revision
+# Replace REVISION with the number returned by the command above
+aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --task-definition angularai-backend:4 --query "service.taskDefinition" --output text
+```
+
+**Stop and Restart Service (Full Reset):**
+To ensure all old instances are stopped before starting the new one, you can chain the commands (setting count to 0 first):
+```bash
+aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --desired-count 0 --query "service.serviceName" --output text; aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --desired-count 1 --force-new-deployment --query "service.serviceName" --output text
+```
+
+**Stop Service Only:**
 ```bash
 aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --desired-count 0
 ```
 
-**Start/Restart Service:**
+**Start/Restart Service (Incremental):**
 ```bash
-# This sets the count to 1 and forces a fresh deployment
+# This sets the count to 1 and forces a fresh deployment. 
+# Note: ECS might keep old instances running until new ones are healthy unless you use the reset command above.
 aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --desired-count 1 --force-new-deployment
-```
-
-**Start/Restart (Short Output):**
-```bash
-aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --desired-count 1 --force-new-deployment --query "service.serviceName" --output text
 ```
 
 ### 2. Frontend Service (`angularai-frontend-service`)
 
-**Stop Service:**
+**Deploy a Specific Version ($VERSION):**
+```bash
+# 1. Register new task definition (after updating the 'image' tag in your JSON)
+aws ecs register-task-definition --cli-input-json file://deploy/aws/frontend-task-definition.json --query "taskDefinition.revision" --output text
+```
+```bash
+# 2. Update service to use the new revision
+aws ecs update-service --cluster angular-boot --service angularai-frontend-service --task-definition angularai-frontend:2 --query "service.taskDefinition" --output text
+```
+
+**Stop and Restart Service (Full Reset):**
+To ensure all old instances are stopped before starting the new one, you can chain the commands (setting count to 0 first):
+```bash
+aws ecs update-service --cluster angular-boot --service angularai-frontend-service --desired-count 0 --query "service.serviceName" --output text; aws ecs update-service --cluster angular-boot --service angularai-frontend-service --desired-count 1 --force-new-deployment --query "service.serviceName" --output text
+```
+
+**Stop Service Only:**
 ```bash
 aws ecs update-service --cluster angular-boot --service angularai-frontend-service --desired-count 0
 ```
 
-**Start/Restart Service:**
+**Start/Restart Service (Incremental):**
 ```bash
-# This sets the count to 1 and forces a fresh deployment
+# This sets the count to 1 and forces a fresh deployment.
+# Note: ECS might keep old instances running until new ones are healthy unless you use the reset command above.
 aws ecs update-service --cluster angular-boot --service angularai-frontend-service --desired-count 1 --force-new-deployment
-```
-
-**Start/Restart (Short Output):**
-```bash
-aws ecs update-service --cluster angular-boot --service angularai-frontend-service --desired-count 1 --force-new-deployment --query "service.serviceName" --output text
 ```
 
 ### 3. Fallback Page (When Stopped)
@@ -43,19 +71,19 @@ See [AWS ALB Fallback Configuration](aws_alb_fallback.md) for instructions on ho
 
 ---
 
-### Option 1: Force a New Deployment Only (If already running)
-If your service is already running but you want to restart the tasks (e.g., to pick up a new image tag or clear a stuck state):
+### Option 1: Stop and Restart Service (Full Reset)
+If your service is already running but you want to ensure all old tasks are stopped **before** the new one starts (to avoid having multiple instances running simultaneously):
+
+```bash
+aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --desired-count 0 --query "service.serviceName" --output text; aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --desired-count 1 --force-new-deployment --query "service.serviceName" --output text
+```
+*(Repeat for `angularai-frontend-service` if needed)*
+
+### Option 2: Force a New Deployment Only (Rolling Update)
+If you want to restart the tasks but don't mind if the old task stays running until the new one is healthy (standard ECS rolling update):
 
 **Via AWS CLI:**
-
-> **Tip:** If the "Run" icon is missing for `powershell` blocks, check **Settings > Languages & Frameworks > Markdown > Language Mappings** to ensure `powershell` is mapped to the PowerShell language. You can also try using the `pwsh` tag.
-
-```powershell
-aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --desired-count 1 --force-new-deployment
-```
-
-**Via AWS CLI (Short Output):**
-```powershell
+```bash
 aws ecs update-service --cluster angular-boot --service angularai-backend-test-service --desired-count 1 --force-new-deployment --query "service.serviceName" --output text
 ```
 *(Repeat for `angularai-frontend-service` if needed)*
@@ -91,3 +119,7 @@ Once you have triggered the rerun:
 1.  Go to the **Tasks** tab of the `angularai-backend-test-service` or `angularai-frontend-service`.
 2.  Wait for the **Last status** to change to `RUNNING`.
 3.  Click on the Task ID and go to the **Logs** tab to see the Spring Boot startup logs, confirming that the H2 database and application are initializing correctly.
+4.  **Verify Version**: Access the system info endpoint to confirm the correct version is deployed:
+    - `https://<your-alb-dns>/api/system/info`
+    - Expected output: `{"version":"1.0.1","mode":"Postgres"}` (or "H2" depending on profile)
+    - **Note**: If you still see `0.0.1-SNAPSHOT`, ensure you have pushed the new image to ECR and updated the Task Definition to point to the new version tag. See the Troubleshooting section in [Full Deployment Guide](aws_full_deployment.md#62-troubleshooting-old-version-still-displayed).

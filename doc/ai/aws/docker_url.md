@@ -34,13 +34,14 @@ If you want to verify the backend is responding, try an existing API endpoint:
     docker compose down
     ```
 
-```powershell
+
+```bash
 docker compose logs backend | Select-String "DataInitializer"
 ```
 
 Alternatively, you can just view the last few lines of the logs to see the startup process:
 
-```powershell
+```bash
 docker compose logs backend --tail 50
 ```
 
@@ -55,7 +56,7 @@ docker compose logs backend --tail 50
 
 2.  **Test the Proxy via Nginx (Port 80)**:
     Run this on your host to verify that Nginx is correctly forwarding your credentials:
-    ```powershell
+    ```bash
     curl.exe -i -u admin:admin123 -X POST http://localhost/api/auth/login
     ```
     - If this returns **HTTP 200 OK**, then the main application (Frontend) will now work.
