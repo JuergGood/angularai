@@ -14,6 +14,31 @@ import ch.goodone.angularai.android.domain.model.User
 import kotlinx.coroutines.flow.collectLatest
 
 @Composable
+fun RegistrationForm(
+    firstName: String, onFirstNameChange: (String) -> Unit,
+    lastName: String, onLastNameChange: (String) -> Unit,
+    login: String, onLoginChange: (String) -> Unit,
+    email: String, onEmailChange: (String) -> Unit,
+    password: String, onPasswordChange: (String) -> Unit,
+    birthDate: String, onBirthDateChange: (String) -> Unit,
+    address: String, onAddressChange: (String) -> Unit
+) {
+    TextField(value = firstName, onValueChange = onFirstNameChange, label = { Text("First Name") }, modifier = Modifier.fillMaxWidth())
+    Spacer(modifier = Modifier.height(8.dp))
+    TextField(value = lastName, onValueChange = onLastNameChange, label = { Text("Last Name") }, modifier = Modifier.fillMaxWidth())
+    Spacer(modifier = Modifier.height(8.dp))
+    TextField(value = login, onValueChange = onLoginChange, label = { Text("Login") }, modifier = Modifier.fillMaxWidth())
+    Spacer(modifier = Modifier.height(8.dp))
+    TextField(value = email, onValueChange = onEmailChange, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
+    Spacer(modifier = Modifier.height(8.dp))
+    TextField(value = password, onValueChange = onPasswordChange, label = { Text("Password") }, visualTransformation = PasswordVisualTransformation(), modifier = Modifier.fillMaxWidth())
+    Spacer(modifier = Modifier.height(8.dp))
+    TextField(value = birthDate, onValueChange = onBirthDateChange, label = { Text("Birth Date (yyyy-MM-dd)") }, modifier = Modifier.fillMaxWidth())
+    Spacer(modifier = Modifier.height(8.dp))
+    TextField(value = address, onValueChange = onAddressChange, label = { Text("Address") }, modifier = Modifier.fillMaxWidth())
+}
+
+@Composable
 fun RegisterScreen(
     onRegisterSuccess: () -> Unit,
     onNavigateToLogin: () -> Unit,
@@ -61,19 +86,15 @@ fun RegisterScreen(
         Text(text = "Register", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(16.dp))
         
-        TextField(value = firstName, onValueChange = { firstName = it }, label = { Text("First Name") }, modifier = Modifier.fillMaxWidth())
-        Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = lastName, onValueChange = { lastName = it }, label = { Text("Last Name") }, modifier = Modifier.fillMaxWidth())
-        Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = login, onValueChange = { login = it }, label = { Text("Login") }, modifier = Modifier.fillMaxWidth())
-        Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = email, onValueChange = { email = it }, label = { Text("Email") }, modifier = Modifier.fillMaxWidth())
-        Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = password, onValueChange = { password = it }, label = { Text("Password") }, visualTransformation = PasswordVisualTransformation(), modifier = Modifier.fillMaxWidth())
-        Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = birthDate, onValueChange = { birthDate = it }, label = { Text("Birth Date (yyyy-MM-dd)") }, modifier = Modifier.fillMaxWidth())
-        Spacer(modifier = Modifier.height(8.dp))
-        TextField(value = address, onValueChange = { address = it }, label = { Text("Address") }, modifier = Modifier.fillMaxWidth())
+        RegistrationForm(
+            firstName = firstName, onFirstNameChange = { firstName = it },
+            lastName = lastName, onLastNameChange = { lastName = it },
+            login = login, onLoginChange = { login = it },
+            email = email, onEmailChange = { email = it },
+            password = password, onPasswordChange = { password = it },
+            birthDate = birthDate, onBirthDateChange = { birthDate = it },
+            address = address, onAddressChange = { address = it }
+        )
         
         Spacer(modifier = Modifier.height(16.dp))
         

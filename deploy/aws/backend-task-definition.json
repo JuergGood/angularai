@@ -4,7 +4,7 @@
   "containerDefinitions": [
     {
       "name": "backend",
-      "image": "426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:latest",
+      "image": "426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:1.0.2",
       "essential": true,
       "portMappings": [
         {
@@ -16,19 +16,7 @@
       "environment": [
         {
           "name": "SPRING_PROFILES_ACTIVE",
-          "value": "postgres"
-        },
-        {
-          "name": "SPRING_DATASOURCE_URL",
-          "value": "jdbc:postgresql://<RDS_ENDPOINT>:5432/<DB_NAME>"
-        },
-        {
-          "name": "SPRING_DATASOURCE_USERNAME",
-          "value": "<DB_USER>"
-        },
-        {
-          "name": "SPRING_DATASOURCE_PASSWORD",
-          "value": "<DB_PASSWORD>"
+          "value": "h2"
         }
       ],
       "logConfiguration": {

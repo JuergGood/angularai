@@ -24,12 +24,12 @@ und zum Schluss Erfahrungen und eine Einordnung zu geben.
 
 ::: columns
 ::: column
-![**Web-UI** www.goodone.ch](files/images/angular_task_menu.png)
+![**Web-UI** www.goodone.ch](files/images/dashboardV2.png)
 
 
 :::
 ::: column
-![**Android App**](files/images/android_task_menu.png)
+![**Android App**](files/images/AndroidTaskMenu.png)
 
 :::
 :::
@@ -44,7 +44,7 @@ Implementiert 2020 'von Hand'
 
 :::
 ::: column
-![**Resultat**](files/images/dashboard.png)
+![**Resultat**](files/images/dashboardV2.png)
 
 Implementiert 2026 durch AI
 + Android App 'gratis' dazu

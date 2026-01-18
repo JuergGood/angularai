@@ -43,6 +43,93 @@ fun DashboardScreen(
     }
 }
 
+@Composable
+fun RecentActivitySection(
+    recentActivity: List<ch.goodone.angularai.android.data.remote.dto.ActionLogDTO>,
+    onNavigateToLogs: () -> Unit
+) {
+    ElevatedCard(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
+        onClick = onNavigateToLogs
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Recent Activity", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                TextButton(onClick = onNavigateToLogs) {
+                    Text("Show All")
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            recentActivity.forEachIndexed { index, log ->
+                val bgColor = if (index % 2 != 0) Color(0xFFFAFAFA) else Color.Transparent
+                Column(modifier = Modifier
+                    .fillMaxWidth()
+                    .background(bgColor)
+                    .padding(vertical = 8.dp, horizontal = 4.dp)) {
+                    Text(text = log.timestamp, fontSize = 12.sp, color = Color.Gray)
+                    Text(text = "${log.login}: ${log.action}", fontWeight = FontWeight.Medium)
+                }
+                if (index < recentActivity.size - 1) {
+                    Divider(color = Color(0xFFEEEEEE))
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PriorityTasksSection(
+    priorityTasks: List<ch.goodone.angularai.android.domain.model.Task>,
+    onNavigateToTasks: () -> Unit
+) {
+    ElevatedCard(
+        modifier = Modifier.fillMaxWidth(),
+        shape = MaterialTheme.shapes.large,
+        elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
+        onClick = onNavigateToTasks
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text("Priority Tasks", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+                TextButton(onClick = onNavigateToTasks) {
+                    Text("Show All")
+                }
+            }
+            Spacer(modifier = Modifier.height(8.dp))
+            priorityTasks.forEachIndexed { index, task ->
+                val bgColor = if (index % 2 != 0) Color(0xFFFAFAFA) else Color.Transparent
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(bgColor)
+                        .padding(vertical = 8.dp, horizontal = 4.dp)
+                ) {
+                    Icon(Icons.Default.PriorityHigh, contentDescription = null, tint = Color(0xFFD32F2F), modifier = Modifier.size(16.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Column {
+                        Text(text = task.title, fontWeight = FontWeight.SemiBold)
+                        Text(text = "Due: ${task.dueDate ?: "N/A"}", fontSize = 12.sp, color = Color.Gray)
+                    }
+                }
+                if (index < priorityTasks.size - 1) {
+                    Divider(color = Color(0xFFEEEEEE))
+                }
+            }
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DashboardContent(
@@ -81,82 +168,11 @@ fun DashboardContent(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Recent Activity
-        ElevatedCard(
-            modifier = Modifier.fillMaxWidth(),
-            shape = MaterialTheme.shapes.large,
-            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
-            onClick = onNavigateToLogs
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("Recent Activity", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                    TextButton(onClick = onNavigateToLogs) {
-                        Text("Show All")
-                    }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                dashboard.recentActivity.forEachIndexed { index, log ->
-                    val bgColor = if (index % 2 != 0) Color(0xFFFAFAFA) else Color.Transparent
-                    Column(modifier = Modifier
-                        .fillMaxWidth()
-                        .background(bgColor)
-                        .padding(vertical = 8.dp, horizontal = 4.dp)) {
-                        Text(text = log.timestamp, fontSize = 12.sp, color = Color.Gray)
-                        Text(text = "${log.login}: ${log.action}", fontWeight = FontWeight.Medium)
-                    }
-                    if (index < dashboard.recentActivity.size - 1) {
-                        Divider(color = Color(0xFFEEEEEE))
-                    }
-                }
-            }
-        }
+        RecentActivitySection(dashboard.recentActivity, onNavigateToLogs)
         Spacer(modifier = Modifier.height(16.dp))
 
         // Priority Tasks
-        ElevatedCard(
-            modifier = Modifier.fillMaxWidth(),
-            shape = MaterialTheme.shapes.large,
-            elevation = CardDefaults.elevatedCardElevation(defaultElevation = 4.dp),
-            onClick = onNavigateToTasks
-        ) {
-            Column(modifier = Modifier.padding(16.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text("Priority Tasks", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
-                    TextButton(onClick = onNavigateToTasks) {
-                        Text("Show All")
-                    }
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                dashboard.priorityTasks.forEachIndexed { index, task ->
-                    val bgColor = if (index % 2 != 0) Color(0xFFFAFAFA) else Color.Transparent
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(bgColor)
-                            .padding(vertical = 8.dp, horizontal = 4.dp)
-                    ) {
-                        Icon(Icons.Default.PriorityHigh, contentDescription = null, tint = Color(0xFFD32F2F), modifier = Modifier.size(16.dp))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Column {
-                            Text(text = task.title, fontWeight = FontWeight.SemiBold)
-                            Text(text = "Due: ${task.dueDate ?: "N/A"}", fontSize = 12.sp, color = Color.Gray)
-                        }
-                    }
-                    if (index < dashboard.priorityTasks.size - 1) {
-                        Divider(color = Color(0xFFEEEEEE))
-                    }
-                }
-            }
-        }
+        PriorityTasksSection(dashboard.priorityTasks, onNavigateToTasks)
     }
 }
 

@@ -1,6 +1,5 @@
 package ch.goodone.angularai.android.ui.tasks
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.PressInteraction
 import androidx.compose.foundation.layout.*
@@ -18,6 +17,29 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
+
+@Composable
+private fun calculateInitialDateMillis(showDatePicker: Boolean, dueDate: String): Long? {
+    return remember(showDatePicker) {
+        if (!showDatePicker) return@remember null
+        
+        try {
+            val localDate = if (dueDate.isNotBlank()) {
+                LocalDate.parse(dueDate, DateTimeFormatter.ISO_LOCAL_DATE)
+            } else {
+                LocalDate.now()
+            }
+            localDate.atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli()
+        } catch (e: Exception) {
+            LocalDate.now()
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli()
+        }
+    }
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,30 +60,7 @@ fun TaskEditScreen(
     
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = remember(showDatePicker) {
-            if (showDatePicker) {
-                try {
-                    if (dueDate.isNotBlank()) {
-                        LocalDate.parse(dueDate, DateTimeFormatter.ISO_LOCAL_DATE)
-                            .atStartOfDay(ZoneId.systemDefault())
-                            .toInstant()
-                            .toEpochMilli()
-                    } else {
-                        LocalDate.now()
-                            .atStartOfDay(ZoneId.systemDefault())
-                            .toInstant()
-                            .toEpochMilli()
-                    }
-                } catch (e: Exception) {
-                    LocalDate.now()
-                        .atStartOfDay(ZoneId.systemDefault())
-                        .toInstant()
-                        .toEpochMilli()
-                }
-            } else {
-                null
-            }
-        }
+        initialSelectedDateMillis = calculateInitialDateMillis(showDatePicker, dueDate)
     )
     
     val isDueDateValid = remember(dueDate) {

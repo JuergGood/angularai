@@ -37,7 +37,7 @@ To create the ECS Services for your frontend and backend using the AWS Console (
     *   **Application type**: Service.
     *   **Family**: Select the frontend task definition family (e.g., `frontend-task`).
     *   **Revision**: Select the latest revision.
-    *   **Service name**: Enter `frontend-service`.
+    *   **Service name**: Enter `angularai-frontend-service`.
     *   **Desired tasks**: `1`.
 3.  **Networking**:
     *   **VPC**: Select the same VPC.

@@ -21,6 +21,29 @@ import java.time.LocalDate
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 
+@Composable
+private fun calculateInitialDateMillis(showDatePicker: Boolean, birthDate: String): Long? {
+    return remember(showDatePicker) {
+        if (!showDatePicker) return@remember null
+        
+        try {
+            val localDate = if (birthDate.isNotBlank()) {
+                LocalDate.parse(birthDate, DateTimeFormatter.ISO_LOCAL_DATE)
+            } else {
+                LocalDate.now().minusYears(20)
+            }
+            localDate.atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli()
+        } catch (e: Exception) {
+            LocalDate.now().minusYears(20)
+                .atStartOfDay(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli()
+        }
+    }
+}
+
 @OptIn(ExperimentalLayoutApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun AdminUserEditScreen(
@@ -46,30 +69,7 @@ fun AdminUserEditScreen(
 
     var showDatePicker by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState(
-        initialSelectedDateMillis = remember(showDatePicker) {
-            if (showDatePicker) {
-                try {
-                    if (birthDate.isNotBlank()) {
-                        LocalDate.parse(birthDate, DateTimeFormatter.ISO_LOCAL_DATE)
-                            .atStartOfDay(ZoneId.systemDefault())
-                            .toInstant()
-                            .toEpochMilli()
-                    } else {
-                        LocalDate.now().minusYears(20)
-                            .atStartOfDay(ZoneId.systemDefault())
-                            .toInstant()
-                            .toEpochMilli()
-                    }
-                } catch (e: Exception) {
-                    LocalDate.now().minusYears(20)
-                        .atStartOfDay(ZoneId.systemDefault())
-                        .toInstant()
-                        .toEpochMilli()
-                }
-            } else {
-                null
-            }
-        }
+        initialSelectedDateMillis = calculateInitialDateMillis(showDatePicker, birthDate)
     )
 
     LaunchedEffect(user) {

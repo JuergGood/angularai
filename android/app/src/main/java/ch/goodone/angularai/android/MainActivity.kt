@@ -22,7 +22,6 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import ch.goodone.angularai.android.ui.SystemViewModel
-import ch.goodone.angularai.android.domain.model.Task
 import ch.goodone.angularai.android.domain.model.User
 import ch.goodone.angularai.android.ui.admin.AdminUserEditScreen
 import ch.goodone.angularai.android.ui.admin.AdminUserListScreen
@@ -46,6 +45,186 @@ class MainActivity : ComponentActivity() {
             AngularAITheme {
                 MainApp()
             }
+        }
+    }
+}
+
+@Composable
+fun MainDrawerContent(
+    isLoggedIn: Boolean,
+    isAdmin: Boolean,
+    scope: kotlinx.coroutines.CoroutineScope,
+    drawerState: DrawerState,
+    navController: androidx.navigation.NavHostController,
+    authViewModel: AuthViewModel
+) {
+    ModalDrawerSheet {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(Color(0xFF1A237E))
+                .padding(16.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.Filter1,
+                    contentDescription = null,
+                    tint = Color(0xFFFF4081),
+                    modifier = Modifier.size(32.dp)
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text(
+                    "GoodOne",
+                    color = Color.White,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold
+                )
+            }
+        }
+        Divider()
+        if (isLoggedIn) {
+            NavigationDrawerItem(
+                label = { Text("Dashboard") },
+                selected = false,
+                onClick = { scope.launch { drawerState.close() }; navController.navigate("dashboard") },
+                icon = { Icon(Icons.Default.Dashboard, contentDescription = null) }
+            )
+            NavigationDrawerItem(
+                label = { Text("Tasks") },
+                selected = false,
+                onClick = { scope.launch { drawerState.close() }; navController.navigate("tasks") },
+                icon = { Icon(Icons.Default.List, contentDescription = null) }
+            )
+            NavigationDrawerItem(
+                label = { Text("Profile") },
+                selected = false,
+                onClick = { scope.launch { drawerState.close() }; navController.navigate("profile") },
+                icon = { Icon(Icons.Default.Person, contentDescription = null) }
+            )
+            if (isAdmin) {
+                NavigationDrawerItem(
+                    label = { Text("User Admin") },
+                    selected = false,
+                    onClick = { scope.launch { drawerState.close() }; navController.navigate("admin") },
+                    icon = { Icon(Icons.Default.SupervisorAccount, contentDescription = null) }
+                )
+                NavigationDrawerItem(
+                    label = { Text("Logs") },
+                    selected = false,
+                    onClick = { scope.launch { drawerState.close() }; navController.navigate("logs") },
+                    icon = { Icon(Icons.Default.History, contentDescription = null) }
+                )
+            }
+            Divider()
+            NavigationDrawerItem(
+                label = { Text("Logout") },
+                selected = false,
+                onClick = { 
+                    scope.launch { 
+                        drawerState.close()
+                        authViewModel.onLogout() 
+                        navController.navigate("login") {
+                            popUpTo(0)
+                        }
+                    }
+                },
+                icon = { Icon(Icons.Default.Logout, contentDescription = null) }
+            )
+        } else {
+            NavigationDrawerItem(
+                label = { Text("Login") },
+                selected = false,
+                onClick = { scope.launch { drawerState.close() }; navController.navigate("login") },
+                icon = { Icon(Icons.Default.Login, contentDescription = null) }
+            )
+            NavigationDrawerItem(
+                label = { Text("Register") },
+                selected = false,
+                onClick = { scope.launch { drawerState.close() }; navController.navigate("register") },
+                icon = { Icon(Icons.Default.PersonAdd, contentDescription = null) }
+            )
+        }
+    }
+}
+
+@Composable
+fun MainNavHost(
+    navController: androidx.navigation.NavHostController,
+    padding: PaddingValues,
+    isLoggedIn: Boolean,
+    scope: kotlinx.coroutines.CoroutineScope,
+    onSaveTask: () -> Unit,
+    onBack: () -> Unit
+) {
+    NavHost(
+        navController = navController,
+        startDestination = if (isLoggedIn) "dashboard" else "login",
+        modifier = Modifier.padding(padding)
+    ) {
+        composable("login") {
+            LoginScreen(
+                onLoginSuccess = { user ->
+                    if (user.role == "ROLE_ADMIN" || user.role == "ROLE_ADMIN_READ") {
+                        navController.navigate("dashboard") { popUpTo("login") { inclusive = true } }
+                    } else {
+                        navController.navigate("tasks") { popUpTo("login") { inclusive = true } }
+                    }
+                },
+                onNavigateToRegister = { navController.navigate("register") }
+            )
+        }
+        composable("register") {
+            RegisterScreen(
+                onRegisterSuccess = { navController.navigate("login") },
+                onNavigateToLogin = { navController.navigate("login") }
+            )
+        }
+        composable("dashboard") {
+            DashboardScreen(
+                onNavigateToTasks = { navController.navigate("tasks") }
+            )
+        }
+        composable("tasks") {
+            TaskListScreen(
+                onAddTask = { navController.navigate("task_edit") },
+                onEditTask = { taskId -> navController.navigate("task_edit?taskId=$taskId") }
+            )
+        }
+        composable(
+            route = "task_edit?taskId={taskId}",
+            arguments = listOf(navArgument("taskId") {
+                type = NavType.LongType
+                defaultValue = -1L
+            })
+        ) { backStackEntry ->
+            val taskId = backStackEntry.arguments?.getLong("taskId")?.let { if (it == -1L) null else it }
+            TaskEditScreen(
+                taskId = taskId,
+                onSave = onSaveTask,
+                onBack = onBack
+            )
+        }
+        composable("profile") {
+            ProfileScreen()
+        }
+        composable("admin") {
+            AdminUserListScreen(
+                onEditUser = { userId -> navController.navigate("admin_edit/$userId") }
+            )
+        }
+        composable(
+            route = "admin_edit/{userId}",
+            arguments = listOf(navArgument("userId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getLong("userId")
+            AdminUserEditScreen(
+                userId = userId ?: 0,
+                onSave = { navController.popBackStack() },
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable("logs") {
+            LogScreen()
         }
     }
 }
@@ -99,272 +278,177 @@ fun MainApp(
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(Color(0xFF1A237E))
-                        .padding(16.dp)
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Filter1,
-                            contentDescription = null,
-                            tint = Color(0xFFFF4081),
-                            modifier = Modifier.size(32.dp)
-                        )
-                        Spacer(modifier = Modifier.width(12.dp))
-                        Text(
-                            "GoodOne",
-                            color = Color.White,
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Bold
-                        )
-                    }
-                }
-                Divider()
-                if (isLoggedIn) {
-                    NavigationDrawerItem(
-                        label = { Text("Dashboard") },
-                        selected = false,
-                        onClick = { scope.launch { drawerState.close() }; navController.navigate("dashboard") },
-                        icon = { Icon(Icons.Default.Dashboard, contentDescription = null) }
-                    )
-                    NavigationDrawerItem(
-                        label = { Text("Tasks") },
-                        selected = false,
-                        onClick = { scope.launch { drawerState.close() }; navController.navigate("tasks") },
-                        icon = { Icon(Icons.Default.List, contentDescription = null) }
-                    )
-                    NavigationDrawerItem(
-                        label = { Text("Profile") },
-                        selected = false,
-                        onClick = { scope.launch { drawerState.close() }; navController.navigate("profile") },
-                        icon = { Icon(Icons.Default.Person, contentDescription = null) }
-                    )
-                    if (isAdmin) {
-                        NavigationDrawerItem(
-                            label = { Text("User Admin") },
-                            selected = false,
-                            onClick = { scope.launch { drawerState.close() }; navController.navigate("admin") },
-                            icon = { Icon(Icons.Default.SupervisorAccount, contentDescription = null) }
-                        )
-                        NavigationDrawerItem(
-                            label = { Text("Logs") },
-                            selected = false,
-                            onClick = { scope.launch { drawerState.close() }; navController.navigate("logs") },
-                            icon = { Icon(Icons.Default.History, contentDescription = null) }
-                        )
-                    }
-                    Divider()
-                    NavigationDrawerItem(
-                        label = { Text("Logout") },
-                        selected = false,
-                        onClick = { 
-                            scope.launch { 
-                                drawerState.close()
-                                authViewModel.onLogout() 
-                                navController.navigate("login") {
-                                    popUpTo(0)
-                                }
-                            }
-                        },
-                        icon = { Icon(Icons.Default.Logout, contentDescription = null) }
-                    )
-                } else {
-                    NavigationDrawerItem(
-                        label = { Text("Login") },
-                        selected = false,
-                        onClick = { scope.launch { drawerState.close() }; navController.navigate("login") },
-                        icon = { Icon(Icons.Default.Login, contentDescription = null) }
-                    )
-                    NavigationDrawerItem(
-                        label = { Text("Register") },
-                        selected = false,
-                        onClick = { scope.launch { drawerState.close() }; navController.navigate("register") },
-                        icon = { Icon(Icons.Default.PersonAdd, contentDescription = null) }
-                    )
-                }
-            }
+            MainDrawerContent(
+                isLoggedIn = isLoggedIn,
+                isAdmin = isAdmin,
+                scope = scope,
+                drawerState = drawerState,
+                navController = navController,
+                authViewModel = authViewModel
+            )
         },
         gesturesEnabled = true
     ) {
         Scaffold(
             topBar = {
-                if (isLoggedIn) {
-                    TopAppBar(
-                        title = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Default.Filter1,
-                                    contentDescription = null,
-                                    tint = Color(0xFFFF4081),
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("GoodOne")
-                            }
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                                Icon(Icons.Default.Menu, contentDescription = "Menu")
-                            }
-                        },
-                        actions = {
-                            Box {
-                                IconButton(onClick = { showSettingsMenu = true }) {
-                                    Icon(Icons.Default.Settings, contentDescription = "Settings")
-                                }
-                                DropdownMenu(
-                                    expanded = showSettingsMenu,
-                                    onDismissRequest = { showSettingsMenu = false }
-                                ) {
-                                    DropdownMenuItem(
-                                        text = { Text("Version: ${systemInfo?.version ?: "..."}") },
-                                        onClick = { showSettingsMenu = false },
-                                        leadingIcon = { Icon(Icons.Default.Info, contentDescription = null) },
-                                        enabled = false
-                                    )
-                                    DropdownMenuItem(
-                                        text = { Text("Mode: ${systemInfo?.mode ?: "..."}") },
-                                        onClick = { showSettingsMenu = false },
-                                        leadingIcon = { Icon(Icons.Default.Layers, contentDescription = null) },
-                                        enabled = false
-                                    )
-                                    DropdownMenuItem(
-                                        text = { Text("Help") },
-                                        onClick = { 
-                                            showSettingsMenu = false
-                                            showHelpDialog = true
-                                        },
-                                        leadingIcon = { Icon(Icons.Default.Help, contentDescription = null) }
-                                    )
-                                }
-                            }
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color(0xFF1A237E),
-                            titleContentColor = Color.White,
-                            navigationIconContentColor = Color.White,
-                            actionIconContentColor = Color.White
-                        )
-                    )
-                } else {
-                    TopAppBar(
-                        title = {
-                            Row(verticalAlignment = Alignment.CenterVertically) {
-                                Icon(
-                                    imageVector = Icons.Default.Filter1,
-                                    contentDescription = null,
-                                    tint = Color(0xFFFF4081),
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("GoodOne")
-                            }
-                        },
-                        navigationIcon = {
-                            IconButton(onClick = { scope.launch { drawerState.open() } }) {
-                                Icon(Icons.Default.Menu, contentDescription = "Menu")
-                            }
-                        },
-                        colors = TopAppBarDefaults.topAppBarColors(
-                            containerColor = Color(0xFF1A237E),
-                            titleContentColor = Color.White,
-                            navigationIconContentColor = Color.White,
-                            actionIconContentColor = Color.White
-                        )
-                    )
-                }
+                MainTopBar(
+                    isLoggedIn = isLoggedIn,
+                    systemInfo = systemInfo,
+                    scope = scope,
+                    drawerState = drawerState,
+                    onSettingsClick = { showSettingsMenu = true }
+                )
             }
         ) { padding ->
-            NavHost(
+            MainNavHost(
                 navController = navController,
-                startDestination = "login",
-                modifier = Modifier.padding(padding)
-            ) {
-                composable("login") {
-                    LoginScreen(
-                        onLoginSuccess = { user ->
-                            if (user.role == "ROLE_ADMIN" || user.role == "ROLE_ADMIN_READ") {
-                                navController.navigate("dashboard") { popUpTo("login") { inclusive = true } }
-                            } else {
-                                navController.navigate("tasks") { popUpTo("login") { inclusive = true } }
-                            }
-                        },
-                        onNavigateToRegister = { navController.navigate("register") }
-                    )
-                }
-                composable("register") {
-                    RegisterScreen(
-                        onRegisterSuccess = { navController.navigate("login") },
-                        onNavigateToLogin = { navController.navigate("login") }
-                    )
-                }
-                composable("dashboard") {
-                    DashboardScreen(
-                        onNavigateToTasks = { navController.navigate("tasks") },
-                        onNavigateToLogs = { navController.navigate("logs") },
-                        onNavigateToUsers = { navController.navigate("admin") }
-                    )
-                }
-                composable("tasks") {
-                    TaskListScreen(
-                        onTaskClick = { task -> navController.navigate("task_edit/${task.id}") },
-                        onAddTask = { navController.navigate("task_add") }
-                    )
-                }
-                composable("task_add") {
-                    TaskEditScreen(
-                        taskId = null,
-                        onSave = { navController.popBackStack() },
-                        onBack = { navController.popBackStack() }
-                    )
-                }
-                composable(
-                    "task_edit/{taskId}",
-                    arguments = listOf(navArgument("taskId") { type = NavType.LongType })
-                ) { backStackEntry ->
-                    val taskId = backStackEntry.arguments?.getLong("taskId")
-                    TaskEditScreen(
-                        taskId = taskId,
-                        onSave = { navController.popBackStack() },
-                        onBack = { navController.popBackStack() }
-                    )
-                }
-                composable("profile") {
-                    ProfileScreen()
-                }
-                composable("logs") {
-                    if (isAdmin) {
-                        LogScreen()
-                    }
-                }
-                composable("admin") {
-                    AdminUserListScreen(
-                        onUserClick = { user -> navController.navigate("admin_user_edit/${user.id}") },
-                        onAddUser = { navController.navigate("admin_user_add") }
-                    )
-                }
-                composable("admin_user_add") {
-                    AdminUserEditScreen(
-                        userId = null,
-                        onSave = { navController.popBackStack() },
-                        onBack = { navController.popBackStack() }
-                    )
-                }
-                composable(
-                    "admin_user_edit/{userId}",
-                    arguments = listOf(navArgument("userId") { type = NavType.LongType })
-                ) { backStackEntry ->
-                    val userId = backStackEntry.arguments?.getLong("userId")
-                    AdminUserEditScreen(
-                        userId = userId,
-                        onSave = { navController.popBackStack() },
-                        onBack = { navController.popBackStack() }
-                    )
-                }
-            }
+                padding = padding,
+                isLoggedIn = isLoggedIn,
+                isAdmin = isAdmin,
+                onSaveTask = { navController.popBackStack() },
+                onBack = { navController.popBackStack() }
+            )
         }
     }
+}
+
+@Composable
+fun MainNavHost(
+    navController: androidx.navigation.NavHostController,
+    padding: PaddingValues,
+    isLoggedIn: Boolean,
+    isAdmin: Boolean,
+    onSaveTask: () -> Unit,
+    onBack: () -> Unit
+) {
+    NavHost(
+        navController = navController,
+        startDestination = "login",
+        modifier = Modifier.padding(padding)
+    ) {
+        composable("login") {
+            LoginScreen(
+                onLoginSuccess = { user ->
+                    if (user.role == "ROLE_ADMIN" || user.role == "ROLE_ADMIN_READ") {
+                        navController.navigate("dashboard") { popUpTo("login") { inclusive = true } }
+                    } else {
+                        navController.navigate("tasks") { popUpTo("login") { inclusive = true } }
+                    }
+                },
+                onNavigateToRegister = { navController.navigate("register") }
+            )
+        }
+        composable("register") {
+            RegisterScreen(
+                onRegisterSuccess = { navController.navigate("login") },
+                onNavigateToLogin = { navController.navigate("login") }
+            )
+        }
+        composable("dashboard") {
+            DashboardScreen(
+                onNavigateToTasks = { navController.navigate("tasks") },
+                onNavigateToLogs = { navController.navigate("logs") },
+                onNavigateToUsers = { navController.navigate("admin") }
+            )
+        }
+        composable("tasks") {
+            TaskListScreen(
+                onTaskClick = { task -> navController.navigate("task_edit/${task.id}") },
+                onAddTask = { navController.navigate("task_add") }
+            )
+        }
+        composable("task_add") {
+            TaskEditScreen(
+                taskId = null,
+                onSave = onSaveTask,
+                onBack = onBack
+            )
+        }
+        composable(
+            "task_edit/{taskId}",
+            arguments = listOf(navArgument("taskId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val taskId = backStackEntry.arguments?.getLong("taskId")
+            TaskEditScreen(
+                taskId = taskId,
+                onSave = onSaveTask,
+                onBack = onBack
+            )
+        }
+        composable("profile") {
+            ProfileScreen()
+        }
+        composable("logs") {
+            if (isAdmin) {
+                LogScreen()
+            }
+        }
+        composable("admin") {
+            AdminUserListScreen(
+                onUserClick = { user -> navController.navigate("admin_user_edit/${user.id}") },
+                onAddUser = { navController.navigate("admin_user_add") }
+            )
+        }
+        composable("admin_user_add") {
+            AdminUserEditScreen(
+                userId = null,
+                onSave = { navController.popBackStack() },
+                onBack = { navController.popBackStack() }
+            )
+        }
+        composable(
+            "admin_user_edit/{userId}",
+            arguments = listOf(navArgument("userId") { type = NavType.LongType })
+        ) { backStackEntry ->
+            val userId = backStackEntry.arguments?.getLong("userId")
+            AdminUserEditScreen(
+                userId = userId,
+                onSave = { navController.popBackStack() },
+                onBack = { navController.popBackStack() }
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun MainTopBar(
+    isLoggedIn: Boolean,
+    systemInfo: ch.goodone.angularai.android.domain.model.SystemInfo?,
+    scope: kotlinx.coroutines.CoroutineScope,
+    drawerState: DrawerState,
+    onSettingsClick: () -> Unit
+) {
+    TopAppBar(
+        title = {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(
+                    imageVector = Icons.Default.Filter1,
+                    contentDescription = null,
+                    tint = Color(0xFFFF4081),
+                    modifier = Modifier.size(24.dp)
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("GoodOne")
+            }
+        },
+        navigationIcon = {
+            IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                Icon(Icons.Default.Menu, contentDescription = "Menu")
+            }
+        },
+        actions = {
+            if (isLoggedIn) {
+                IconButton(onClick = onSettingsClick) {
+                    Icon(Icons.Default.Settings, contentDescription = "Settings")
+                }
+            }
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = Color(0xFF1A237E),
+            titleContentColor = Color.White,
+            navigationIconContentColor = Color.White,
+            actionIconContentColor = Color.White
+        )
+    )
 }

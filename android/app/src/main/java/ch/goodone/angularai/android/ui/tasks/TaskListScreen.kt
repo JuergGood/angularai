@@ -21,6 +21,52 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 
+@Composable
+fun TaskListHeader(
+    statusFilter: TaskStatus?,
+    onStatusFilterChange: (TaskStatus?) -> Unit,
+    onResetSorting: () -> Unit
+) {
+    var showFilterMenu by remember { mutableStateOf(false) }
+    
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Box {
+            TextButton(onClick = { showFilterMenu = true }) {
+                Icon(Icons.Default.FilterList, contentDescription = null)
+                Spacer(Modifier.width(4.dp))
+                Text(statusFilter?.name?.lowercase()?.replace("_", " ")?.split(" ")?.joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } } ?: "All Status")
+            }
+            DropdownMenu(
+                expanded = showFilterMenu,
+                onDismissRequest = { showFilterMenu = false }
+            ) {
+                DropdownMenuItem(
+                    text = { Text("All Status") },
+                    onClick = { onStatusFilterChange(null); showFilterMenu = false }
+                )
+                TaskStatus.values().forEach { status ->
+                    DropdownMenuItem(
+                        text = { Text(status.name.lowercase().replace("_", " ").split(" ").joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }) },
+                        onClick = { onStatusFilterChange(status); showFilterMenu = false }
+                    )
+                }
+            }
+        }
+        
+        TextButton(onClick = onResetSorting) {
+            Icon(Icons.Default.Sort, contentDescription = null)
+            Spacer(Modifier.width(4.dp))
+            Text("Reset Sorting")
+        }
+    }
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TaskListScreen(
@@ -34,42 +80,11 @@ fun TaskListScreen(
 
     Scaffold(
         topBar = {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Box {
-                    TextButton(onClick = { showFilterMenu = true }) {
-                        Icon(Icons.Default.FilterList, contentDescription = null)
-                        Spacer(Modifier.width(4.dp))
-                        Text(statusFilter?.name?.lowercase()?.replace("_", " ")?.split(" ")?.joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } } ?: "All Status")
-                    }
-                    DropdownMenu(
-                        expanded = showFilterMenu,
-                        onDismissRequest = { showFilterMenu = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("All Status") },
-                            onClick = { viewModel.onStatusFilterChange(null); showFilterMenu = false }
-                        )
-                        TaskStatus.values().forEach { status ->
-                            DropdownMenuItem(
-                                text = { Text(status.name.lowercase().replace("_", " ").split(" ").joinToString(" ") { it.replaceFirstChar { char -> char.uppercase() } }) },
-                                onClick = { viewModel.onStatusFilterChange(status); showFilterMenu = false }
-                            )
-                        }
-                    }
-                }
-                
-                TextButton(onClick = { viewModel.onResetSorting() }) {
-                    Icon(Icons.Default.Sort, contentDescription = null)
-                    Spacer(Modifier.width(4.dp))
-                    Text("Reset Sorting")
-                }
-            }
+            TaskListHeader(
+                statusFilter = statusFilter,
+                onStatusFilterChange = { viewModel.onStatusFilterChange(it) },
+                onResetSorting = { viewModel.onResetSorting() }
+            )
         },
         floatingActionButton = {
             FloatingActionButton(onClick = onAddTask) {

@@ -13,8 +13,8 @@ When you run the `pandoc` command with `--reference-doc doc/ai/presentation/temp
 I have successfully regenerated the presentation using this command:
 
 ```bash
-pandoc doc\ai\presentation\presentation-slides-pandoc-de.md `
-       -o doc\ai\presentation\generated\SoftwareDevelopmentWithAIPandoc.pptx `
+pandoc doc\ai\presentation\presentation-slides.md `
+       -o doc\ai\presentation\SoftwareDevelopmentAI.pptx `
        --reference-doc doc\ai\presentation\template.pptx `
        --resource-path=doc\ai\presentation
 ```

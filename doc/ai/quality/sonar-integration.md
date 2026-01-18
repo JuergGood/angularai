@@ -26,7 +26,20 @@ TypeScript, Java, and other supported languages.
 
 > ⚠️ Store the token securely. Do not commit it to git.
 
+**PowerShell:**
+```powershell
+$env:SONAR_TOKEN="your_actual_token_here"
+```
+
+**Bash:**
+```bash
+export SONAR_TOKEN="your_actual_token_here"
+```
+
+
 ---
+
+
 
 ## Step 2: Call the SonarCloud Issues API
 
@@ -34,8 +47,14 @@ SonarCloud does not provide a UI download button, but all issues are accessible 
 
 ### API Endpoint
 
+**PowerShell:**
+```powershell
+curl.exe -k -u "${env:SONAR_TOKEN}:" "https://sonarcloud.io/api/issues/search?componentKeys=JuergGood_angularai&statuses=OPEN,CONFIRMED&ps=500" -o sonar-issues.json
+```
+
+**Bash:**
 ```bash
-curl.exe -k -u "YOUR_TOKEN:" "https://sonarcloud.io/api/issues/search?componentKeys=JuergGood_angularai&statuses=OPEN,CONFIRMED&ps=500" -o sonar-issues.json
+curl -k -u "$SONAR_TOKEN:" "https://sonarcloud.io/api/issues/search?componentKeys=JuergGood_angularai&statuses=OPEN,CONFIRMED&ps=500" -o sonar-issues.json
 ```
 
 ---
@@ -52,18 +71,18 @@ curl.exe -k -u "YOUR_TOKEN:" "https://sonarcloud.io/api/issues/search?componentK
 To run a full SonarCloud analysis locally and see the results on the dashboard before pushing:
 
 ### Option A: Using the Helper Script (Recommended)
-We have provided a PowerShell script that handles the build, tests, and analysis:
+We have provided a PowerShell script that handles the build, tests, and analysis. It automatically uses the `$env:SONAR_TOKEN` if set:
 
 ```bash
-.\scripts\sonar-analysis.ps1 -Token "YOUR_SONAR_TOKEN"
+.\scripts\sonar-analysis.ps1
 ```
 
-### Option B: Manual Maven Command
+### Option B: Manual Maven Command (PowerShell)
 Run the following command from the project root:
 
-```bash
+```powershell
 mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar `
-  -Dsonar.token="YOUR_SONAR_TOKEN" `
+  -Dsonar.token="$env:SONAR_TOKEN" `
   -Dsonar.projectKey=JuergGood_angularai `
   -Dsonar.organization=juerggood `
   -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info `
