@@ -12,9 +12,34 @@ When you run the `pandoc` command with `--reference-doc doc/ai/presentation/temp
 ### Generation Command:
 I have successfully regenerated the presentation using this command:
 
+Templates
+Title Slide
+Title and Content
+Title and Table
+Title and Two Content
+
+
+Titelfolie
+Agenda
+2 Spalten
+
 Latest
+
+```bash
+pandoc presentation-slides.md -o SoftwareEntwicklungAI.pptx --reference-doc template.pptx --resource-path=.
+```
+
 ```bash
 pandoc presentation-slides.md -o SoftwareEntwicklungAI.pptx --reference-doc template-company.pptx --resource-path=.
+```
+ChatGPT
+```bash
+pandoc presentation-slides.md -o SoftwareEntwicklungChatAI.pptx --reference-doc pandoc-template-clean.pptx --resource-path=.
+```
+
+ChatGPT
+```bash
+pandoc presentation-slides.md -o SoftwareEntwicklungChatAI.pptx --reference-doc pandoc-minimal-zkb-safe-v2.pptx --resource-path=.
 ```
 
 ```bash
