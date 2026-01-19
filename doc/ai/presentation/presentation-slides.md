@@ -26,14 +26,14 @@ Kurz die Erwartung setzen: nicht „AI ersetzt Entwickler“, sondern „AI vers
 Übersicht über den Ablauf. Fokus: reale Umsetzung inkl. Tests/QA, nicht nur Prototyp.
 :::
 
-# Anwendungsübersicht
+# Frontends
 
 ::: columns
 ::: column
 ![Web UI · www.goodone.ch](files/images/DashboardImplementation.png)
 :::
 ::: column
-![Android App](files/images/AndroidTaskMenu.png)
+![Android App](files/images/AndroidApp.png)
 :::
 :::
 
@@ -45,10 +45,10 @@ Wichtig: zwei Clients, ein Backend. Das zeigt AI-Einsatz über mehrere Ebenen.
 
 ::: columns
 ::: column
-![**Geplant:** Vorlage aus Projekt 2020](files/images/GoodOne2020_Users.png)
+![Geplant](files/images/GoodOne2020_Users.png)
 :::
 ::: column
-![**Resultat:** Web + Android mit AI](files/images/DashboardImplementation.png)
+![**Resultat:** Web + Android on top](files/images/DashboardImplementation.png)
 :::
 :::
 
@@ -64,7 +64,7 @@ Key Message: Android kam „on top“ dazu, ohne klassischen Mehraufwand wie fr�
   - Benutzerverwaltung (Profil + Login)
 
 - **Erster Plan (AI-generiert)**
-  - Projekte initialisieren (`backend`, `frontend`)
+  - Projekte initialisieren (backend, frontend)
   - Entity/Repository + REST API (CRUD + Login)
   - Frontend Services + Login + Profilseite
 
@@ -81,6 +81,11 @@ Wichtig: Der Start ist „ein sauberer Plan“. Danach iterativ: Review → Impl
 - Doku/Diagramme
 
 ::: notes
+- www.goodone.ch
+- Code-Generierung
+- UI E2E Tests
+- Refactoring
+- Dokumentation
 Wenn Zeit knapp: Demo priorisieren: Feature-Change → Tests → QA → Merge-ready.
 :::
 
@@ -94,7 +99,7 @@ Containerisiert in AWS. Docker für reproduzierbare Builds, ECS Fargate reduzier
 
 # AI-unterstützte Entwicklung: Wo hilft was?
 
-![](files/images/IdeIntegration.png)
+![](files/images/IntellJ.png)
 
 ::: notes
 Übergang: Von Architektur zu Arbeitsweise. Danach Toolset & Vorgehen.
@@ -133,16 +138,16 @@ Explizit sagen: AI ist Teil des Prozesses, aber Qualitätssicherung bleibt mensc
   - Android App mit identischen Features wie Web
 
 - **Qualität & Fixes**
-  - Behebe Sonar Findings ohne Behavior Change
-  - Refactor: bessere Testbarkeit, saubere Struktur
+  - Behebe alle Sonar Findings
+  - Refactor: bessere Testbarkeit, einheitliche Struktur
 
 - **Testing**
   - Cypress E2E Tests, Coverage > 80%
-  - Stabile Selectors, weniger Flakiness
 
 - **DevOps & Doku**
-  - AWS Deployment (Fargate, RDS)
-  - Architekturdiagramm, User Guide
+  - User Guide, Architekturdiagramm
+  - AWS Deployment
+
 
 ::: notes
 Prompts funktionieren nur gut mit klarem Kontext,
@@ -151,22 +156,36 @@ Constraints und Definition of Done.
 
 
 # Junie (IDE-zentriert)
-
+::: columns
+::: column
 - **Stark**, wenn der Code-Kontext entscheidend ist
   - Abhängigkeiten, Build-Fehler, Tests, Refactorings
 - **Schnell**, weil Feedback Loop kurz ist
 - **Ideal** für: Implementierung, Fixes, Testausbau
+
+:::
+::: column
+![](files/images/IntellJ.png)
+:::
+:::
 
 ::: notes
 Hier die Stärke erklären: AI „sieht“ das Projekt direkt.
 :::
 
 # ChatGPT (extern & beratend)
-
+::: columns
+::: column
 - **Stark**, wenn es um Alternativen/Reviews geht
   - Architektur/UX Feedback, Tradeoffs, Kommunikation
 - **Ideal** für: Konzept, UX, Doku, Präsentationen
 - **Achtung**: Kein direkter Code-Zugriff → Inputs präzise liefern
+
+:::
+::: column
+![](files/images/ChatGpt.png)
+:::
+:::
 
 ::: notes
 Im Firmenumfeld oft ein Vorteil: weniger Risiko, klar getrennt.
@@ -190,11 +209,11 @@ Zeigen: AI kann UX iterativ verbessern – aber Entscheidung bleibt bei uns.
 # Resultat
 
 - **Modernes UI** und konsistente UX
-- **Aktueller Tech Stack** (Angular/Spring Boot/Compose)
+- **Aktueller Tech Stack** (Angular/Spring Boot/Android-Compose)
 - **Hohe Code-Qualität** (Sonar/Qodana)
 - **Automatisierte Tests** (Backend + UI E2E)
 - **Automatisierte Pipelines** (Build/Test)
-- **Erfahrung**: deutlich schneller als klassischer Ansatz (≈ Faktor 4)
+- **Erfahrung**: deutlich schneller als klassischer Ansatz (> Faktor 2)
 - **Bonus**: schnellere Einarbeitung in neue Technologien
 
 ::: notes
@@ -206,7 +225,7 @@ Zahlen nur nennen, wenn du sie kurz begründen kannst („Vergleich Projekt 2020
 - **Security & Compliance**
   - Keine Kundendaten extern, Prompt-Sanitizing
 - **Tool-Vorgaben**
-  - Freigaben, Policies, evtl. On-Prem/Enterprise
+  - Freigaben, Policies, On-Prem
 - **Technologie-Gap**
   - Verzögerter Zugriff auf aktuelle Modelle/Features
 - **Know-how**
@@ -219,7 +238,7 @@ AI verstärkt Know-how, ersetzt es nicht.
 
 # Fazit
 
-- **AI ist produktiv**: besonders stark bei Prototyp + QA + Refactoring
+- **AI ist produktiv**: stark bei Prototyp + QA + Refactoring
 - **Junie + ChatGPT** ergänzen sich: Implementierung vs. Review/UX/Doku
 - **Weniger Routine**, mehr Fokus auf Architektur & Qualität
 - **Ausblick**: AI-gestützte Entwicklung wird Standard – Prozesse müssen mitziehen
@@ -258,7 +277,7 @@ Offen für Diskussion: Where to start? Welche Policies? Welche Quick Wins?
 
 - <https://www.goodone.ch>
 - <https://github.com/JuergGood/angularai.git>
-- <https://sonarcloud.io/summary/overall?id=JuergGood_angularai&branch=master>
+- <https://sonarcloud.io/summary/overall?id=JuergGood_angularai>
 
 # Architektur – Logisch
 
@@ -282,9 +301,9 @@ Mehrere Clients greifen auf dieselbe REST API zu. Lokal bewusst leichtgewichtig.
 ![E2E Tests mit Cypress](files/images/CypressTests.png)
 
 # Sonar Report
-![A Rating](files/images/SonarSummary.png)
+![A-Rating, Coverage > 80%](files/images/SonarSummary.png)
 
-# Tech Stack & Umfang (Stand Jan 2026)
+# Tech Stack & Umfang
 
 ::: columns
 ::: column
@@ -322,13 +341,6 @@ Wenn jemand fragt: LOC ist nur grober Indikator – wichtiger sind Tests/QA und 
 Hinweis: Abdeckung ist kein Selbstzweck – entscheidend sind kritische Pfade + stabile E2E Tests.
 :::
 
-# Demo
-
-- www.goodone.ch
-- Code-Generierung
-- UI E2E Tests
-- Refactoring
-- Dokumentation
 
 # Management-Takeaway: AI in der Software-Entwicklung
 
