@@ -1,23 +1,23 @@
-# Task Management Implementation Plan
+# Task Management Implementation Plan - COMPLETED
 
 This document outlines the execution strategy for the proposed Task Management improvements, as specified in `task_management_proposed_improvements.md`.
 
 ## 1. Feasibility and Effort Assessment
 
-| Feature | Effort | Feasibility | Technical Notes |
+| Feature | Effort | Feasibility | Status |
 | :--- | :--- | :--- | :--- |
-| **Quick Add Task** | Medium | High | Requires new minimal API and simple FE input logic. |
-| **Inline Editing** | Medium-High | High | Significant FE change (component state management). Requires `PATCH` on backend. |
-| **Extended Statuses** | Low | High | Simple enum update + migration. |
-| **Visual Status Encoding** | Low | High | CSS-only change. |
-| **Relative Due Dates** | Low | High | FE utility function for display. |
-| **Smart Filter Chips** | Medium | High | FE state management + BE query specification/params. |
-| **Persist Preferences** | Low-Medium | High | Use `localStorage` for Phase 1; backend persistence in Phase 2. |
-| **Completion Animation** | Low | High | CSS/Angular animations. |
-| **Completed Section** | Medium | High | FE grouping logic and collapsible UI. |
-| **View Density Toggle** | Low | High | CSS class switching. |
-| **Bulk Actions** | Medium-High | High | Requires bulk API support and multi-select UI. |
-| **Tags** | Medium | High | Data model change (Many-to-Many or ElementCollection). |
+| **Quick Add Task** | Medium | High | ✓ Done |
+| **Inline Editing** | Medium-High | High | ✓ Done |
+| **Extended Statuses** | Low | High | ✓ Done |
+| **Visual Status Encoding** | Low | High | ✓ Done |
+| **Relative Due Dates** | Low | High | ✓ Done |
+| **Smart Filter Chips** | Medium | High | ✓ Done |
+| **Persist Preferences** | Low-Medium | High | ✓ Done (FE state/Signals) |
+| **Completion Animation** | Low | High | ✓ Done (CSS transitions) |
+| **Completed Section** | Medium | High | ✓ Done |
+| **View Density Toggle** | Low | High | ✓ Done |
+| **Bulk Actions** | Medium-High | High | ✓ Done |
+| **Tags** | Medium | High | ✓ Done (BE + DTO support) |
 
 ---
 

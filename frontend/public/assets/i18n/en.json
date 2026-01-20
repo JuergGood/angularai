@@ -56,6 +56,7 @@
     "ALL": "All",
     "RESET_SORT": "Reset Sorting",
     "SORT_DESC": "Sort by Priority (High > Medium > Low)",
+    "VIEW_MODE": "Toggle View Mode",
     "FORM": {
       "TITLE": "Title",
       "TITLE_PH": "Enter a descriptive title for this task",
@@ -72,11 +73,33 @@
     "STATUS": {
       "OPEN": "Open",
       "IN_PROGRESS": "In Progress",
-      "COMPLETED": "Completed",
-      "CLOSED": "Closed"
+      "DONE": "Done",
+      "ARCHIVED": "Archived"
+    },
+    "QUICK_ADD_PLACEHOLDER": "Add a task...",
+    "QUICK_ADD_HINT": "Press Enter to save",
+    "NO_DUE_DATE": "No due date",
+    "FILTERS": {
+      "ALL": "All",
+      "TODAY": "Today",
+      "UPCOMING": "Upcoming",
+      "OVERDUE": "Overdue",
+      "HIGH_PRIORITY": "High Priority"
+    },
+    "DATES": {
+      "TODAY": "Today",
+      "TOMORROW": "Tomorrow",
+      "YESTERDAY": "Yesterday",
+      "IN_DAYS": "In {{days}} days",
+      "OVERDUE_DAYS": "Overdue ({{days}} days)"
     },
     "EMPTY": "No tasks found.",
-    "DELETE_CONFIRM": "Are you sure you want to delete this task?"
+    "DELETE_CONFIRM": "Are you sure you want to delete this task?",
+    "SELECTED": "selected",
+    "BULK_STATUS": "Set Status",
+    "BULK_PRIORITY": "Set Priority",
+    "COMPLETED_RECENTLY": "Completed Recently",
+    "COMPLETED_AT": "Completed at"
   },
   "ADMIN": {
     "TITLE": "User Administration",

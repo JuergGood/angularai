@@ -29,21 +29,14 @@ describe('TasksComponent', () => {
   ];
 
   beforeEach(async () => {
-    // try {
-    //   TestBed.initTestEnvironment(
-    //     BrowserDynamicTestingModule,
-    //     platformBrowserDynamicTesting()
-    //   );
-    // } catch (e) {
-    //   // already initialized
-    // }
-
     taskServiceSpy = {
       getTasks: vi.fn().mockReturnValue(of(mockTasks)),
       createTask: vi.fn().mockReturnValue(of({ ...mockTasks[0], id: 2 })),
       updateTask: vi.fn().mockReturnValue(of(mockTasks[0])),
+      patchTask: vi.fn().mockReturnValue(of(mockTasks[0])),
       deleteTask: vi.fn().mockReturnValue(of(null)),
-      reorderTasks: vi.fn().mockReturnValue(of([]))
+      reorderTasks: vi.fn().mockReturnValue(of([])),
+      tasks: signal(mockTasks)
     };
 
     dialogSpy = {

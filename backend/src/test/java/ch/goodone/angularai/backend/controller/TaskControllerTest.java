@@ -11,7 +11,8 @@ import ch.goodone.angularai.backend.service.ActionLogService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import ch.goodone.angularai.backend.config.SecurityConfig;
@@ -80,11 +81,36 @@ class TaskControllerTest {
     @Test
     @WithMockUser(username = "testuser")
     void shouldGetTasks() throws Exception {
-        when(taskRepository.findByUserOrderByPositionAsc(any())).thenReturn(Collections.singletonList(testTask));
+        when(taskRepository.findAll(any(Specification.class), any(Sort.class))).thenReturn(Collections.singletonList(testTask));
 
         mockMvc.perform(get("/api/tasks"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].title").value("Test Task"));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
+    void shouldGetTasksWithSmartFilter() throws Exception {
+        when(taskRepository.findAll(any(Specification.class), any(Sort.class))).thenReturn(Collections.singletonList(testTask));
+
+        mockMvc.perform(get("/api/tasks?smartFilter=TODAY"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
+    void shouldPatchTask() throws Exception {
+        TaskDTO patchDTO = new TaskDTO();
+        patchDTO.setStatus("DONE");
+        
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(testTask));
+        when(taskRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        mockMvc.perform(patch("/api/tasks/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(patchDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("DONE"));
     }
 
     @Test
@@ -118,10 +144,10 @@ class TaskControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
-    void shouldCreateTaskWithClosedStatus() throws Exception {
-        TaskDTO taskDTO = new TaskDTO(null, "Closed Task", "Desc", null, Priority.LOW, "CLOSED", 0);
-        Task savedTask = new Task("Closed Task", "Desc", null, Priority.LOW, testUser);
-        savedTask.setStatus(ch.goodone.angularai.backend.model.TaskStatus.CLOSED);
+    void shouldCreateTaskWithDoneStatus() throws Exception {
+        TaskDTO taskDTO = new TaskDTO(null, "Done Task", "Desc", null, Priority.LOW, "DONE", 0);
+        Task savedTask = new Task("Done Task", "Desc", null, Priority.LOW, testUser);
+        savedTask.setStatus(ch.goodone.angularai.backend.model.TaskStatus.DONE);
         savedTask.setId(3L);
         when(taskRepository.save(any())).thenReturn(savedTask);
         
@@ -129,7 +155,7 @@ class TaskControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(taskDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value("CLOSED"));
+                .andExpect(jsonPath("$.status").value("DONE"));
     }
 
     @Test

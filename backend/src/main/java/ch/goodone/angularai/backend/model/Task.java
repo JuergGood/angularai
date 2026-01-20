@@ -40,6 +40,17 @@ public class Task {
     @Column(name = "created_at", nullable = false, updatable = false)
     private java.time.LocalDateTime createdAt;
 
+    @Column(name = "updated_at")
+    private java.time.LocalDateTime updatedAt;
+
+    @Column(name = "completed_at")
+    private java.time.LocalDateTime completedAt;
+
+    @ElementCollection
+    @CollectionTable(name = "task_tags", joinColumns = @JoinColumn(name = "task_id"))
+    @Column(name = "tag")
+    private java.util.List<String> tags = new java.util.ArrayList<>();
+
     public Task() {}
 
     public Task(String title, String description, LocalDate dueDate, Priority priority, User user) {
@@ -50,6 +61,7 @@ public class Task {
         this.user = user;
         this.status = TaskStatus.OPEN;
         this.createdAt = java.time.LocalDateTime.now();
+        this.updatedAt = java.time.LocalDateTime.now();
     }
 
     @PrePersist
@@ -57,6 +69,14 @@ public class Task {
         if (createdAt == null) {
             createdAt = java.time.LocalDateTime.now();
         }
+        if (updatedAt == null) {
+            updatedAt = java.time.LocalDateTime.now();
+        }
+    }
+
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = java.time.LocalDateTime.now();
     }
 
     public Long getId() { return id; }
@@ -75,7 +95,14 @@ public class Task {
     public void setPriority(Priority priority) { this.priority = priority; }
 
     public TaskStatus getStatus() { return status; }
-    public void setStatus(TaskStatus status) { this.status = status; }
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+        if (status == TaskStatus.DONE) {
+            this.completedAt = java.time.LocalDateTime.now();
+        } else {
+            this.completedAt = null;
+        }
+    }
 
     public Integer getPosition() { return position; }
     public void setPosition(Integer position) { this.position = position; }
@@ -85,4 +112,13 @@ public class Task {
 
     public java.time.LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(java.time.LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public java.time.LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(java.time.LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public java.time.LocalDateTime getCompletedAt() { return completedAt; }
+    public void setCompletedAt(java.time.LocalDateTime completedAt) { this.completedAt = completedAt; }
+
+    public java.util.List<String> getTags() { return tags; }
+    public void setTags(java.util.List<String> tags) { this.tags = tags; }
 }

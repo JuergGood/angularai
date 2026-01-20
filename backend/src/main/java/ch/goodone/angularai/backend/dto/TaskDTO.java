@@ -14,14 +14,19 @@ public class TaskDTO {
     private Integer position;
     @com.fasterxml.jackson.annotation.JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private java.time.LocalDateTime createdAt;
+    @com.fasterxml.jackson.annotation.JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private java.time.LocalDateTime updatedAt;
+    @com.fasterxml.jackson.annotation.JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private java.time.LocalDateTime completedAt;
+    private java.util.List<String> tags;
 
     public TaskDTO() {}
 
     public TaskDTO(Long id, String title, String description, LocalDate dueDate, Priority priority, String status, Integer position) {
-        this(id, title, description, dueDate, priority, status, position, null);
+        this(id, title, description, dueDate, priority, status, position, null, null, null, null);
     }
 
-    public TaskDTO(Long id, String title, String description, LocalDate dueDate, Priority priority, String status, Integer position, java.time.LocalDateTime createdAt) {
+    public TaskDTO(Long id, String title, String description, LocalDate dueDate, Priority priority, String status, Integer position, java.time.LocalDateTime createdAt, java.time.LocalDateTime updatedAt, java.time.LocalDateTime completedAt, java.util.List<String> tags) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -30,6 +35,9 @@ public class TaskDTO {
         this.status = status;
         this.position = position;
         this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.completedAt = completedAt;
+        this.tags = tags;
     }
 
     public static TaskDTO fromEntity(Task task) {
@@ -41,7 +49,10 @@ public class TaskDTO {
                 task.getPriority(),
                 task.getStatus() != null ? task.getStatus().name() : null,
                 task.getPosition(),
-                task.getCreatedAt()
+                task.getCreatedAt(),
+                task.getUpdatedAt(),
+                task.getCompletedAt(),
+                task.getTags() != null ? new java.util.ArrayList<>(task.getTags()) : null
         );
     }
 
@@ -68,4 +79,13 @@ public class TaskDTO {
 
     public java.time.LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(java.time.LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public java.time.LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(java.time.LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public java.time.LocalDateTime getCompletedAt() { return completedAt; }
+    public void setCompletedAt(java.time.LocalDateTime completedAt) { this.completedAt = completedAt; }
+
+    public java.util.List<String> getTags() { return tags; }
+    public void setTags(java.util.List<String> tags) { this.tags = tags; }
 }

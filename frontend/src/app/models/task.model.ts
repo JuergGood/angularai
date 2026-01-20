@@ -7,7 +7,8 @@ export enum Priority {
 export enum TaskStatus {
   OPEN = 'OPEN',
   IN_PROGRESS = 'IN_PROGRESS',
-  CLOSED = 'CLOSED'
+  DONE = 'DONE',
+  ARCHIVED = 'ARCHIVED'
 }
 
 export interface Task {
@@ -19,4 +20,7 @@ export interface Task {
   status: TaskStatus;
   position?: number;
   createdAt?: string;
+  updatedAt?: string;
+  completedAt?: string;
+  tags?: string[];
 }

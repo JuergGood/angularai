@@ -1,6 +1,6 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, effect, computed, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -10,12 +10,20 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatListModule } from '@angular/material/list';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
 import { Task, Priority, TaskStatus } from '../../models/task.model';
-import { TaskService } from '../../services/task.service';
+import { TaskService, SmartFilter } from '../../services/task.service';
 import { ConfirmDialogComponent } from './confirm-dialog.component';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { QuickAddTaskComponent } from './quick-add-task.component';
+import { TaskFilterChipsComponent } from './task-filter-chips.component';
+import { CompletedTasksSectionComponent } from './completed-tasks-section.component';
+import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
 
 @Component({
   selector: 'app-tasks',
@@ -23,6 +31,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     MatCardModule,
     MatButtonModule,
     MatIconModule,
@@ -32,8 +41,15 @@ import { TranslateModule } from '@ngx-translate/core';
     MatDatepickerModule,
     MatChipsModule,
     MatDialogModule,
+    MatMenuModule,
+    MatCheckboxModule,
+    MatExpansionModule,
+    MatListModule,
     DragDropModule,
-    TranslateModule
+    TranslateModule,
+    QuickAddTaskComponent,
+    TaskFilterChipsComponent,
+    CompletedTasksSectionComponent
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './tasks.component.html',
@@ -63,6 +79,114 @@ import { TranslateModule } from '@ngx-translate/core';
       font-weight: 700;
       color: #1f2937;
     }
+    .quick-add-container {
+      width: 100%;
+    }
+    .bulk-actions-bar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 8px 16px;
+      background: #f3f4f6;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+    .task-card {
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb !important;
+      box-shadow: none !important;
+      transition: all 0.2s ease;
+    }
+    .task-card:hover {
+      border-color: var(--primary) !important;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    }
+    .task-card.cdk-drag-placeholder {
+      opacity: 0;
+    }
+    .task-card.cdk-drag-animating {
+      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    }
+    .task-row {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      gap: 12px;
+    }
+    .task-row.compact {
+      padding: 4px 16px;
+    }
+    .task-row.compact .task-title-text {
+      font-size: 14px;
+    }
+    .task-row:hover {
+      background: rgba(0,0,0,0.02);
+    }
+    .task-status-btn {
+      color: #9ca3af;
+    }
+    .task-status-btn.done {
+      color: #10b981;
+    }
+    .task-title-container {
+      flex: 1;
+      cursor: text;
+    }
+    .task-title-input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-size: 16px;
+      font-family: inherit;
+      padding: 4px 0;
+      border-bottom: 2px solid var(--primary);
+      outline: none;
+    }
+    .task-title-text {
+      font-size: 16px;
+      color: #374151;
+    }
+    .task-title-text.done {
+      text-decoration: line-through;
+      color: #9ca3af;
+    }
+    .task-meta-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: #6b7280;
+    }
+    .due-date-info.overdue {
+      color: #ef4444;
+      font-weight: 500;
+    }
+    .priority-badge {
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+    .priority-high { background: #fee2e2; color: #ef4444; }
+    .priority-medium { background: #fef3c7; color: #f59e0b; }
+    .priority-low { background: #f3f4f6; color: #6b7280; }
+
+    .status-pill {
+      font-size: 12px;
+      font-weight: 500;
+      padding: 4px 10px;
+      border-radius: 16px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .status-open { background: #e0f2fe; color: #0284c7; }
+    .status-in_progress { background: #fef9c3; color: #ca8a04; }
+    .status-done { background: #dcfce7; color: #16a34a; }
+    .status-archived { background: #f3f4f6; color: #4b5563; }
+
     .add-task-btn {
       border-radius: 10px;
       padding: 0 20px;
@@ -301,32 +425,130 @@ export class TasksComponent implements OnInit {
   editingTask = false;
   showForm = false;
 
+  editingTitleId: number | null = null;
+  activeFilter: SmartFilter = 'ALL';
+  isOverdue = isOverdue;
+  viewMode: 'COMFORTABLE' | 'COMPACT' = 'COMFORTABLE';
+
+  selectedTaskIds = signal<Set<number>>(new Set<number>());
+
+  completedRecently = computed(() =>
+    this.taskService.tasks().filter(t => t.status === TaskStatus.DONE)
+      .sort((a, b) => new Date(b.completedAt || 0).getTime() - new Date(a.completedAt || 0).getTime())
+      .slice(0, 10)
+  );
+
   filterStatus: string = 'ALL';
 
   constructor(
-    private taskService: TaskService,
+    public taskService: TaskService,
     private dialog: MatDialog,
-    private cdr: ChangeDetectorRef
-  ) {}
+    private cdr: ChangeDetectorRef,
+    private translate: TranslateService
+  ) {
+    effect(() => {
+      this.filteredTasks = this.taskService.tasks();
+      this.cdr.detectChanges();
+    });
+  }
 
   ngOnInit() {
     this.loadTasks();
   }
 
   loadTasks() {
-    this.taskService.getTasks().subscribe(tasks => {
-      this.tasks = tasks;
-      this.applyFilter();
-      this.cdr.detectChanges();
+    this.taskService.getTasks({ smartFilter: this.activeFilter }).subscribe();
+  }
+
+  newSet(): Set<number> {
+    return new Set<number>();
+  }
+
+  onFilterChange(filter: SmartFilter): void {
+    this.activeFilter = filter;
+    this.selectedTaskIds.set(new Set<number>());
+    this.loadTasks();
+  }
+
+  toggleTaskSelection(taskId: number | undefined): void {
+    if (taskId === undefined) return;
+    this.selectedTaskIds.update((ids: Set<number>) => {
+      const newIds = new Set(ids);
+      if (newIds.has(taskId)) {
+        newIds.delete(taskId);
+      } else {
+        newIds.add(taskId);
+      }
+      return newIds;
     });
   }
 
-  applyFilter() {
-    if (this.filterStatus === 'ALL') {
-      this.filteredTasks = [...this.tasks];
-    } else {
-      this.filteredTasks = this.tasks.filter(t => t.status === this.filterStatus);
+  toggleViewMode(): void {
+    this.viewMode = this.viewMode === 'COMFORTABLE' ? 'COMPACT' : 'COMFORTABLE';
+  }
+
+  isTaskSelected(taskId: number | undefined): boolean {
+    return taskId !== undefined && this.selectedTaskIds().has(taskId);
+  }
+
+  bulkUpdateStatus(status: TaskStatus): void {
+    const ids: number[] = Array.from(this.selectedTaskIds());
+    if (ids.length === 0) return;
+    this.taskService.bulkPatchTasks(ids, { status }).subscribe({
+      next: () => this.selectedTaskIds.set(new Set<number>())
+    });
+  }
+
+  bulkUpdatePriority(priority: Priority): void {
+    const ids: number[] = Array.from(this.selectedTaskIds());
+    if (ids.length === 0) return;
+    this.taskService.bulkPatchTasks(ids, { priority }).subscribe({
+      next: () => this.selectedTaskIds.set(new Set<number>())
+    });
+  }
+
+  startEditTitle(task: Task): void {
+    if (task.id) {
+      this.editingTitleId = task.id;
     }
+  }
+
+  saveTitle(task: Task, newTitle: string): void {
+    if (task.id && newTitle.trim() && newTitle !== task.title) {
+      this.taskService.patchTask(task.id, { title: newTitle.trim() }).subscribe();
+    }
+    this.editingTitleId = null;
+  }
+
+  toggleTaskDone(task: Task): void {
+    if (task.id) {
+      const newStatus = task.status === TaskStatus.DONE ? TaskStatus.OPEN : TaskStatus.DONE;
+      this.taskService.patchTask(task.id, { status: newStatus }).subscribe();
+    }
+  }
+
+  cycleStatus(task: Task, event: MouseEvent): void {
+    event.stopPropagation();
+    if (task.id) {
+      const statusCycle = [TaskStatus.OPEN, TaskStatus.IN_PROGRESS, TaskStatus.DONE, TaskStatus.ARCHIVED];
+      const currentIndex = statusCycle.indexOf(task.status);
+      const nextIndex = (currentIndex + 1) % statusCycle.length;
+      this.taskService.patchTask(task.id, { status: statusCycle[nextIndex] }).subscribe();
+    }
+  }
+
+  setPriority(task: Task, priority: Priority): void {
+    if (task.id) {
+      this.taskService.patchTask(task.id, { priority }).subscribe();
+    }
+  }
+
+  formatDate(date: string | null | undefined): string {
+    return formatRelativeDue(date, this.translate);
+  }
+
+  applyFilter() {
+    this.loadTasks();
   }
 
   clearFilter() {

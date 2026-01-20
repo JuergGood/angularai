@@ -10,11 +10,16 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -32,14 +37,75 @@ public class TaskController {
     }
 
     @GetMapping
-    @Operation(summary = "Get current user's tasks")
+    @Operation(summary = "Get current user's tasks with filtering and sorting")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "List of tasks retrieved successfully"),
             @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
-    public List<TaskDTO> getMyTasks(Authentication authentication) {
+    public List<TaskDTO> getMyTasks(
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String smartFilter,
+            @RequestParam(required = false) String sort,
+            Authentication authentication) {
         User user = getCurrentUser(authentication);
-        return taskRepository.findByUserOrderByPositionAsc(user).stream()
+        
+        Specification<Task> spec = (root, query, cb) -> cb.equal(root.get("user"), user);
+        
+        if (status != null) {
+            final String statusVal = status;
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.valueOf(statusVal)));
+        }
+        
+        if (smartFilter != null) {
+            LocalDate today = LocalDate.now();
+            switch (smartFilter.toUpperCase()) {
+                case "TODAY":
+                    spec = spec.and((root, query, cb) -> cb.and(
+                            cb.equal(root.get("dueDate"), today),
+                            cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.DONE),
+                            cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.ARCHIVED)
+                    ));
+                    break;
+                case "UPCOMING":
+                    spec = spec.and((root, query, cb) -> cb.and(
+                            cb.greaterThan(root.get("dueDate"), today),
+                            cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.DONE),
+                            cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.ARCHIVED)
+                    ));
+                    break;
+                case "OVERDUE":
+                    spec = spec.and((root, query, cb) -> cb.and(
+                            cb.lessThan(root.get("dueDate"), today),
+                            cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.DONE),
+                            cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.ARCHIVED)
+                    ));
+                    break;
+                case "HIGH":
+                    spec = spec.and((root, query, cb) -> cb.and(
+                            cb.equal(root.get("priority"), ch.goodone.angularai.backend.model.Priority.HIGH),
+                            cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.DONE),
+                            cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.ARCHIVED)
+                    ));
+                    break;
+            }
+        }
+
+        Sort sortObj = Sort.by(Sort.Direction.ASC, "position");
+        if (sort != null) {
+            switch (sort) {
+                case "DUE_ASC":
+                    sortObj = Sort.by(Sort.Direction.ASC, "dueDate").and(Sort.by(Sort.Direction.ASC, "position"));
+                    break;
+                case "PRIO_DESC":
+                    sortObj = Sort.by(Sort.Direction.DESC, "priority").and(Sort.by(Sort.Direction.ASC, "position"));
+                    break;
+                case "UPDATED_DESC":
+                    sortObj = Sort.by(Sort.Direction.DESC, "updatedAt");
+                    break;
+            }
+        }
+        
+        return taskRepository.findAll(spec, sortObj).stream()
                 .map(TaskDTO::fromEntity)
                 .toList();
     }
@@ -66,6 +132,9 @@ public class TaskController {
         if (taskDTO.getStatus() != null) {
             task.setStatus(ch.goodone.angularai.backend.model.TaskStatus.valueOf(taskDTO.getStatus()));
         }
+        if (taskDTO.getTags() != null) {
+            task.setTags(new java.util.ArrayList<>(taskDTO.getTags()));
+        }
 
         Task savedTask = taskRepository.save(task);
         actionLogService.log(user.getLogin(), "TASK_ADDED", "Task created: " + savedTask.getTitle());
@@ -88,12 +157,76 @@ public class TaskController {
                     if (taskDTO.getPosition() != null) {
                         task.setPosition(taskDTO.getPosition());
                     }
+                    if (taskDTO.getTags() != null) {
+                        task.setTags(new java.util.ArrayList<>(taskDTO.getTags()));
+                    }
                     Task updatedTask = taskRepository.save(task);
                     actionLogService.log(user.getLogin(), "TASK_UPDATED", "Task updated: " + updatedTask.getTitle());
                     return ResponseEntity.ok(TaskDTO.fromEntity(updatedTask));
                 })
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<TaskDTO> patchTask(@PathVariable Long id, @RequestBody TaskDTO taskDTO, Authentication authentication) {
+        User user = getCurrentUser(authentication);
+        return taskRepository.findById(id)
+                .filter(task -> task.getUser().getId().equals(user.getId()))
+                .map(task -> {
+                    if (taskDTO.getTitle() != null) {
+                        task.setTitle(taskDTO.getTitle());
+                    }
+                    if (taskDTO.getDescription() != null) {
+                        task.setDescription(taskDTO.getDescription());
+                    }
+                    if (taskDTO.getDueDate() != null) {
+                        task.setDueDate(taskDTO.getDueDate());
+                    }
+                    if (taskDTO.getPriority() != null) {
+                        task.setPriority(taskDTO.getPriority());
+                    }
+                    if (taskDTO.getStatus() != null) {
+                        task.setStatus(ch.goodone.angularai.backend.model.TaskStatus.valueOf(taskDTO.getStatus()));
+                    }
+                    if (taskDTO.getPosition() != null) {
+                        task.setPosition(taskDTO.getPosition());
+                    }
+                    if (taskDTO.getTags() != null) {
+                        task.setTags(new java.util.ArrayList<>(taskDTO.getTags()));
+                    }
+                    Task updatedTask = taskRepository.save(task);
+                    actionLogService.log(user.getLogin(), "TASK_PATCHED", "Task patched: " + updatedTask.getTitle());
+                    return ResponseEntity.ok(TaskDTO.fromEntity(updatedTask));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("/bulk")
+    public ResponseEntity<List<TaskDTO>> bulkPatchTasks(@RequestBody BulkPatchRequest req, Authentication authentication) {
+        User user = getCurrentUser(authentication);
+        List<Task> tasks = taskRepository.findAllById(req.ids());
+        
+        List<Task> updatedTasks = tasks.stream()
+                .filter(task -> task.getUser().getId().equals(user.getId()))
+                .map(task -> {
+                    TaskDTO patch = req.patch();
+                    if (patch.getTitle() != null) task.setTitle(patch.getTitle());
+                    if (patch.getDescription() != null) task.setDescription(patch.getDescription());
+                    if (patch.getDueDate() != null) task.setDueDate(patch.getDueDate());
+                    if (patch.getPriority() != null) task.setPriority(patch.getPriority());
+                    if (patch.getStatus() != null) task.setStatus(ch.goodone.angularai.backend.model.TaskStatus.valueOf(patch.getStatus()));
+                    if (patch.getTags() != null) task.setTags(new java.util.ArrayList<>(patch.getTags()));
+                    return task;
+                })
+                .toList();
+        
+        List<Task> savedTasks = taskRepository.saveAll(updatedTasks);
+        actionLogService.log(user.getLogin(), "TASK_BULK_PATCHED", "Bulk updated " + savedTasks.size() + " tasks");
+        
+        return ResponseEntity.ok(savedTasks.stream().map(TaskDTO::fromEntity).toList());
+    }
+
+    public record BulkPatchRequest(List<Long> ids, TaskDTO patch) {}
 
     @PutMapping("/reorder")
     public ResponseEntity<Void> reorderTasks(@RequestBody List<Long> taskIds, Authentication authentication) {

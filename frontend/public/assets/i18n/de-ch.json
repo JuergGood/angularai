@@ -56,6 +56,7 @@
     "ALL": "Alle",
     "RESET_SORT": "Sortierung zurücksetzen",
     "SORT_DESC": "Nach Priorität sortieren (Hoch > Mittel > Niedrig)",
+    "VIEW_MODE": "Ansicht umschalten",
     "FORM": {
       "TITLE": "Titel",
       "TITLE_PH": "Geben Sie einen aussagekräftigen Titel für diese Aufgabe ein",
@@ -72,11 +73,33 @@
     "STATUS": {
       "OPEN": "Offen",
       "IN_PROGRESS": "In Bearbeitung",
-      "COMPLETED": "Erledigt",
-      "CLOSED": "Geschlossen"
+      "DONE": "Erledigt",
+      "ARCHIVED": "Archiviert"
+    },
+    "QUICK_ADD_PLACEHOLDER": "Aufgabe hinzufügen...",
+    "QUICK_ADD_HINT": "Drücken Sie die Eingabetaste zum Speichern",
+    "NO_DUE_DATE": "Kein Fälligkeitsdatum",
+    "FILTERS": {
+      "ALL": "Alle",
+      "TODAY": "Heute",
+      "UPCOMING": "Anstehend",
+      "OVERDUE": "Überfällig",
+      "HIGH_PRIORITY": "Hohe Priorität"
+    },
+    "DATES": {
+      "TODAY": "Heute",
+      "TOMORROW": "Morgen",
+      "YESTERDAY": "Gestern",
+      "IN_DAYS": "In {{days}} Tagen",
+      "OVERDUE_DAYS": "Überfällig ({{days}} Tage)"
     },
     "EMPTY": "Keine Aufgaben gefunden.",
-    "DELETE_CONFIRM": "Sind Sie sicher, dass Sie diese Aufgabe löschen möchten?"
+    "DELETE_CONFIRM": "Sind Sie sicher, dass Sie diese Aufgabe löschen möchten?",
+    "SELECTED": "ausgewählt",
+    "BULK_STATUS": "Status setzen",
+    "BULK_PRIORITY": "Priorität setzen",
+    "COMPLETED_RECENTLY": "Kürzlich erledigt",
+    "COMPLETED_AT": "Erledigt am"
   },
   "ADMIN": {
     "TITLE": "Benutzerverwaltung",

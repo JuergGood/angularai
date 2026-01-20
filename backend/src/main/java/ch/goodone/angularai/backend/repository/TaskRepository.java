@@ -6,9 +6,10 @@ import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.model.TaskStatus;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import java.util.List;
 
-public interface TaskRepository extends JpaRepository<Task, Long> {
+public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificationExecutor<Task> {
     List<Task> findByUserOrderByPositionAsc(User user);
     long countByStatus(TaskStatus status);
     List<Task> findByPriorityOrderByIdDesc(Priority priority, Pageable pageable);

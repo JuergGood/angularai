@@ -42,7 +42,7 @@ class DashboardServiceTest {
         // Arrange
         when(taskRepository.countByStatus(TaskStatus.OPEN)).thenReturn(5L);
         when(taskRepository.countByStatus(TaskStatus.IN_PROGRESS)).thenReturn(3L);
-        when(taskRepository.countByStatus(TaskStatus.COMPLETED)).thenReturn(10L);
+        when(taskRepository.countByStatus(TaskStatus.DONE)).thenReturn(10L);
         when(userRepository.count()).thenReturn(20L);
         when(actionLogRepository.countByTimestampAfter(any(LocalDateTime.class))).thenReturn(15L);
         when(taskRepository.count()).thenReturn(18L);
