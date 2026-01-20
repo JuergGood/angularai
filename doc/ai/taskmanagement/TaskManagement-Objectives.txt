@@ -1,0 +1,8 @@
+Initial Prompt
+
+Improve Task Management. 
+
+Attached is the screenshot of the current implementation of Task Management of my App. 
+Suggest additional features 
+- to make it easy so use. 
+- improve/add features that would turn it into an easy to use ToDo-List management system.

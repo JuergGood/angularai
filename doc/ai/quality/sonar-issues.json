@@ -1,0 +1,2308 @@
+{
+  "total": 28,
+  "p": 1,
+  "ps": 500,
+  "paging": {
+    "pageIndex": 1,
+    "pageSize": 500,
+    "total": 28
+  },
+  "effortTotal": 144,
+  "debtTotal": 144,
+  "issues": [
+    {
+      "key": "AZvRjufXU_q8bSFwLC9v",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+      "project": "JuergGood_angularai",
+      "line": 3,
+      "hash": "1ad5ae806aa65ef1c2e1d443fc07e9f6",
+      "textRange": {
+        "startLine": 3,
+        "endLine": 3,
+        "startOffset": 7,
+        "endOffset": 44
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-18T14:42:20+0000",
+      "updateDate": "2026-01-18T14:42:20+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvRjufXU_q8bSFwLC9w",
+      "rule": "kotlin:S3776",
+      "severity": "CRITICAL",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+      "project": "JuergGood_angularai",
+      "line": 24,
+      "hash": "5fa5a1edec9d62b6f6ee1c8ed2505913",
+      "textRange": {
+        "startLine": 24,
+        "endLine": 24,
+        "startOffset": 4,
+        "endOffset": 18
+      },
+      "flows": [
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+              "textRange": {
+                "startLine": 42,
+                "endLine": 42,
+                "startOffset": 12,
+                "endOffset": 14
+              },
+              "msg": "+2 (incl 1 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+              "textRange": {
+                "startLine": 61,
+                "endLine": 61,
+                "startOffset": 14,
+                "endOffset": 18
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+              "textRange": {
+                "startLine": 44,
+                "endLine": 44,
+                "startOffset": 20,
+                "endOffset": 22
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+              "textRange": {
+                "startLine": 49,
+                "endLine": 49,
+                "startOffset": 22,
+                "endOffset": 26
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+              "textRange": {
+                "startLine": 55,
+                "endLine": 55,
+                "startOffset": 18,
+                "endOffset": 23
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+              "textRange": {
+                "startLine": 68,
+                "endLine": 68,
+                "startOffset": 26,
+                "endOffset": 28
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+              "textRange": {
+                "startLine": 86,
+                "endLine": 86,
+                "startOffset": 20,
+                "endOffset": 22
+              },
+              "msg": "+2 (incl 1 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+              "textRange": {
+                "startLine": 100,
+                "endLine": 100,
+                "startOffset": 8,
+                "endOffset": 10
+              },
+              "msg": "+2 (incl 1 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+              "textRange": {
+                "startLine": 136,
+                "endLine": 136,
+                "startOffset": 24,
+                "endOffset": 26
+              },
+              "msg": "+5 (incl 4 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+              "textRange": {
+                "startLine": 149,
+                "endLine": 149,
+                "startOffset": 16,
+                "endOffset": 18
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+              "textRange": {
+                "startLine": 156,
+                "endLine": 156,
+                "startOffset": 8,
+                "endOffset": 10
+              },
+              "msg": "+2 (incl 1 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+              "textRange": {
+                "startLine": 189,
+                "endLine": 189,
+                "startOffset": 16,
+                "endOffset": 18
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+              "textRange": {
+                "startLine": 202,
+                "endLine": 202,
+                "startOffset": 39,
+                "endOffset": 41
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+              "textRange": {
+                "startLine": 204,
+                "endLine": 204,
+                "startOffset": 12,
+                "endOffset": 14
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+              "textRange": {
+                "startLine": 209,
+                "endLine": 209,
+                "startOffset": 14,
+                "endOffset": 18
+              },
+              "msg": "+1"
+            }
+          ]
+        }
+      ],
+      "status": "OPEN",
+      "message": "Refactor this method to reduce its Cognitive Complexity from 33 to the 15 allowed.",
+      "effort": "23min",
+      "debt": "23min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "architecture",
+        "brain-overload"
+      ],
+      "creationDate": "2026-01-18T14:42:20+0000",
+      "updateDate": "2026-01-18T14:42:20+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "FOCUSED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "HIGH"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZI_A7UvkmTxqdvr",
+      "rule": "kotlin:S3776",
+      "severity": "CRITICAL",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/dashboard/DashboardScreen.kt",
+      "project": "JuergGood_angularai",
+      "line": 48,
+      "hash": "5d0f7df297c8b60a934a6b6a896049a6",
+      "textRange": {
+        "startLine": 48,
+        "endLine": 48,
+        "startOffset": 4,
+        "endOffset": 20
+      },
+      "flows": [
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/dashboard/DashboardScreen.kt",
+              "textRange": {
+                "startLine": 103,
+                "endLine": 103,
+                "startOffset": 34,
+                "endOffset": 36
+              },
+              "msg": "+5 (incl 4 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/dashboard/DashboardScreen.kt",
+              "textRange": {
+                "startLine": 111,
+                "endLine": 111,
+                "startOffset": 20,
+                "endOffset": 22
+              },
+              "msg": "+5 (incl 4 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/dashboard/DashboardScreen.kt",
+              "textRange": {
+                "startLine": 139,
+                "endLine": 139,
+                "startOffset": 34,
+                "endOffset": 36
+              },
+              "msg": "+5 (incl 4 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/dashboard/DashboardScreen.kt",
+              "textRange": {
+                "startLine": 154,
+                "endLine": 154,
+                "startOffset": 20,
+                "endOffset": 22
+              },
+              "msg": "+5 (incl 4 for nesting)"
+            }
+          ]
+        }
+      ],
+      "status": "OPEN",
+      "message": "Refactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.",
+      "effort": "10min",
+      "debt": "10min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "architecture",
+        "brain-overload"
+      ],
+      "creationDate": "2026-01-14T18:23:54+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "FOCUSED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "HIGH"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZJTA7UvkmTxqdvy",
+      "rule": "kotlin:S3776",
+      "severity": "CRITICAL",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+      "project": "JuergGood_angularai",
+      "line": 55,
+      "hash": "a0a8c8a8cb4d0e36599b75f2c722f9f6",
+      "textRange": {
+        "startLine": 55,
+        "endLine": 55,
+        "startOffset": 4,
+        "endOffset": 11
+      },
+      "flows": [
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+              "textRange": {
+                "startLine": 65,
+                "endLine": 65,
+                "startOffset": 52,
+                "endOffset": 54
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+              "textRange": {
+                "startLine": 73,
+                "endLine": 73,
+                "startOffset": 8,
+                "endOffset": 10
+              },
+              "msg": "+2 (incl 1 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+              "textRange": {
+                "startLine": 78,
+                "endLine": 78,
+                "startOffset": 4,
+                "endOffset": 6
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+              "textRange": {
+                "startLine": 126,
+                "endLine": 126,
+                "startOffset": 16,
+                "endOffset": 18
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+              "textRange": {
+                "startLine": 174,
+                "endLine": 174,
+                "startOffset": 18,
+                "endOffset": 22
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+              "textRange": {
+                "startLine": 145,
+                "endLine": 145,
+                "startOffset": 20,
+                "endOffset": 22
+              },
+              "msg": "+4 (incl 3 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+              "textRange": {
+                "startLine": 194,
+                "endLine": 194,
+                "startOffset": 16,
+                "endOffset": 18
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+              "textRange": {
+                "startLine": 252,
+                "endLine": 252,
+                "startOffset": 18,
+                "endOffset": 22
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+              "textRange": {
+                "startLine": 289,
+                "endLine": 289,
+                "startOffset": 28,
+                "endOffset": 30
+              },
+              "msg": "+6 (incl 5 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+              "textRange": {
+                "startLine": 291,
+                "endLine": 291,
+                "startOffset": 30,
+                "endOffset": 34
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+              "textRange": {
+                "startLine": 289,
+                "endLine": 289,
+                "startOffset": 58,
+                "endOffset": 60
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+              "textRange": {
+                "startLine": 339,
+                "endLine": 339,
+                "startOffset": 20,
+                "endOffset": 22
+              },
+              "msg": "+5 (incl 4 for nesting)"
+            }
+          ]
+        }
+      ],
+      "status": "OPEN",
+      "message": "Refactor this method to reduce its Cognitive Complexity from 29 to the 15 allowed.",
+      "effort": "19min",
+      "debt": "19min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "architecture",
+        "brain-overload"
+      ],
+      "creationDate": "2026-01-14T18:11:51+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "FOCUSED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "HIGH"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZHGA7UvkmTxqdvZ",
+      "rule": "kotlin:S6517",
+      "severity": "MAJOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/data/remote/DashboardApi.kt",
+      "project": "JuergGood_angularai",
+      "line": 6,
+      "hash": "5eae7e2a391a94aa6f068521ea3bf506",
+      "textRange": {
+        "startLine": 6,
+        "endLine": 6,
+        "startOffset": 0,
+        "endOffset": 9
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Make this interface functional or replace it with a function type.",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [],
+      "creationDate": "2026-01-14T14:46:15+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZI3A7UvkmTxqdvq",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/dashboard/DashboardViewModel.kt",
+      "project": "JuergGood_angularai",
+      "line": 3,
+      "hash": "48ae562713a867ed6d0d115d3fbcda65",
+      "textRange": {
+        "startLine": 3,
+        "endLine": 3,
+        "startOffset": 7,
+        "endOffset": 37
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-14T14:46:15+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZJTA7UvkmTxqdvu",
+      "rule": "kotlin:S1481",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+      "project": "JuergGood_angularai",
+      "line": 66,
+      "hash": "6cfffeda2424d53e70f7bc65d8ebbf3c",
+      "textRange": {
+        "startLine": 66,
+        "endLine": 66,
+        "startOffset": 8,
+        "endOffset": 20
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused \"canEditAdmin\" local variable.",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-14T10:43:25+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZIVA7UvkmTxqdvl",
+      "rule": "kotlin:S3776",
+      "severity": "CRITICAL",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+      "project": "JuergGood_angularai",
+      "line": 26,
+      "hash": "5b802dbb4b955d4d15f2aed6664dbe69",
+      "textRange": {
+        "startLine": 26,
+        "endLine": 26,
+        "startOffset": 4,
+        "endOffset": 23
+      },
+      "flows": [
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 50,
+                "endLine": 50,
+                "startOffset": 12,
+                "endOffset": 14
+              },
+              "msg": "+2 (incl 1 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 69,
+                "endLine": 69,
+                "startOffset": 14,
+                "endOffset": 18
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 52,
+                "endLine": 52,
+                "startOffset": 20,
+                "endOffset": 22
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 57,
+                "endLine": 57,
+                "startOffset": 22,
+                "endOffset": 26
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 63,
+                "endLine": 63,
+                "startOffset": 18,
+                "endOffset": 23
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 93,
+                "endLine": 93,
+                "startOffset": 20,
+                "endOffset": 22
+              },
+              "msg": "+2 (incl 1 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 93,
+                "endLine": 93,
+                "startOffset": 55,
+                "endOffset": 57
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 100,
+                "endLine": 100,
+                "startOffset": 8,
+                "endOffset": 10
+              },
+              "msg": "+2 (incl 1 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 109,
+                "endLine": 109,
+                "startOffset": 8,
+                "endOffset": 10
+              },
+              "msg": "+2 (incl 1 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 109,
+                "endLine": 109,
+                "startOffset": 27,
+                "endOffset": 29
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 145,
+                "endLine": 145,
+                "startOffset": 24,
+                "endOffset": 26
+              },
+              "msg": "+5 (incl 4 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 152,
+                "endLine": 152,
+                "startOffset": 16,
+                "endOffset": 18
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 170,
+                "endLine": 170,
+                "startOffset": 42,
+                "endOffset": 44
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 170,
+                "endLine": 170,
+                "startOffset": 59,
+                "endOffset": 61
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 179,
+                "endLine": 179,
+                "startOffset": 8,
+                "endOffset": 10
+              },
+              "msg": "+2 (incl 1 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 185,
+                "endLine": 185,
+                "startOffset": 32,
+                "endOffset": 34
+              },
+              "msg": "+4 (incl 3 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+              "textRange": {
+                "startLine": 200,
+                "endLine": 200,
+                "startOffset": 17,
+                "endOffset": 19
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        }
+      ],
+      "status": "OPEN",
+      "message": "Refactor this method to reduce its Cognitive Complexity from 39 to the 15 allowed.",
+      "effort": "29min",
+      "debt": "29min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "architecture",
+        "brain-overload"
+      ],
+      "creationDate": "2026-01-14T10:43:25+0000",
+      "updateDate": "2026-01-18T14:42:20+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "FOCUSED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "HIGH"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZIEA7UvkmTxqdvj",
+      "rule": "kotlin:S3776",
+      "severity": "CRITICAL",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/auth/RegisterScreen.kt",
+      "project": "JuergGood_angularai",
+      "line": 17,
+      "hash": "0e7997e9df3c6f1a5a85fbb29bec08fb",
+      "textRange": {
+        "startLine": 17,
+        "endLine": 17,
+        "startOffset": 4,
+        "endOffset": 18
+      },
+      "flows": [
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/auth/RegisterScreen.kt",
+              "textRange": {
+                "startLine": 39,
+                "endLine": 39,
+                "startOffset": 12,
+                "endOffset": 16
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/auth/RegisterScreen.kt",
+              "textRange": {
+                "startLine": 80,
+                "endLine": 80,
+                "startOffset": 8,
+                "endOffset": 10
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/auth/RegisterScreen.kt",
+              "textRange": {
+                "startLine": 82,
+                "endLine": 82,
+                "startOffset": 10,
+                "endOffset": 14
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/auth/RegisterScreen.kt",
+              "textRange": {
+                "startLine": 85,
+                "endLine": 85,
+                "startOffset": 20,
+                "endOffset": 22
+              },
+              "msg": "+5 (incl 4 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/auth/RegisterScreen.kt",
+              "textRange": {
+                "startLine": 85,
+                "endLine": 85,
+                "startOffset": 44,
+                "endOffset": 46
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/auth/RegisterScreen.kt",
+              "textRange": {
+                "startLine": 89,
+                "endLine": 89,
+                "startOffset": 20,
+                "endOffset": 22
+              },
+              "msg": "+5 (incl 4 for nesting)"
+            }
+          ]
+        }
+      ],
+      "status": "OPEN",
+      "message": "Refactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.",
+      "effort": "8min",
+      "debt": "8min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "architecture",
+        "brain-overload"
+      ],
+      "creationDate": "2026-01-08T22:44:44+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "FOCUSED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "HIGH"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZIEA7UvkmTxqdvi",
+      "rule": "kotlin:S1481",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/auth/RegisterScreen.kt",
+      "project": "JuergGood_angularai",
+      "line": 23,
+      "hash": "bfa108d7cbf220f355348def5c904d6d",
+      "textRange": {
+        "startLine": 23,
+        "endLine": 23,
+        "startOffset": 8,
+        "endOffset": 13
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused \"scope\" local variable.",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-08T22:44:44+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZImA7UvkmTxqdvo",
+      "rule": "kotlin:S3776",
+      "severity": "CRITICAL",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogScreen.kt",
+      "project": "JuergGood_angularai",
+      "line": 24,
+      "hash": "af53cdd8caf66900dfa934985576ba68",
+      "textRange": {
+        "startLine": 24,
+        "endLine": 24,
+        "startOffset": 4,
+        "endOffset": 13
+      },
+      "flows": [
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogScreen.kt",
+              "textRange": {
+                "startLine": 34,
+                "endLine": 34,
+                "startOffset": 4,
+                "endOffset": 6
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogScreen.kt",
+              "textRange": {
+                "startLine": 61,
+                "endLine": 61,
+                "startOffset": 4,
+                "endOffset": 6
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogScreen.kt",
+              "textRange": {
+                "startLine": 116,
+                "endLine": 116,
+                "startOffset": 102,
+                "endOffset": 104
+              },
+              "msg": "+6 (incl 5 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogScreen.kt",
+              "textRange": {
+                "startLine": 126,
+                "endLine": 126,
+                "startOffset": 16,
+                "endOffset": 18
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogScreen.kt",
+              "textRange": {
+                "startLine": 126,
+                "endLine": 126,
+                "startOffset": 44,
+                "endOffset": 46
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogScreen.kt",
+              "textRange": {
+                "startLine": 137,
+                "endLine": 137,
+                "startOffset": 12,
+                "endOffset": 14
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogScreen.kt",
+              "textRange": {
+                "startLine": 139,
+                "endLine": 139,
+                "startOffset": 14,
+                "endOffset": 18
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogScreen.kt",
+              "textRange": {
+                "startLine": 137,
+                "endLine": 137,
+                "startOffset": 32,
+                "endOffset": 34
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogScreen.kt",
+              "textRange": {
+                "startLine": 141,
+                "endLine": 141,
+                "startOffset": 14,
+                "endOffset": 18
+              },
+              "msg": "+1"
+            }
+          ]
+        }
+      ],
+      "status": "OPEN",
+      "message": "Refactor this method to reduce its Cognitive Complexity from 18 to the 15 allowed.",
+      "effort": "8min",
+      "debt": "8min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "architecture",
+        "brain-overload"
+      ],
+      "creationDate": "2026-01-08T22:44:44+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "FOCUSED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "HIGH"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZIeA7UvkmTxqdvm",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogViewModel.kt",
+      "project": "JuergGood_angularai",
+      "line": 3,
+      "hash": "48ae562713a867ed6d0d115d3fbcda65",
+      "textRange": {
+        "startLine": 3,
+        "endLine": 3,
+        "startOffset": 7,
+        "endOffset": 37
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-08T22:44:44+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZIeA7UvkmTxqdvn",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogViewModel.kt",
+      "project": "JuergGood_angularai",
+      "line": 12,
+      "hash": "3684f5fdb1f89babe9737d8b167d46d1",
+      "textRange": {
+        "startLine": 12,
+        "endLine": 12,
+        "startOffset": 7,
+        "endOffset": 26
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-08T22:44:44+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZHzA7UvkmTxqdvg",
+      "rule": "kotlin:S3776",
+      "severity": "CRITICAL",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskListScreen.kt",
+      "project": "JuergGood_angularai",
+      "line": 26,
+      "hash": "aca31eae3b11fa38142b2a6fe56b12df",
+      "textRange": {
+        "startLine": 26,
+        "endLine": 26,
+        "startOffset": 4,
+        "endOffset": 18
+      },
+      "flows": [
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskListScreen.kt",
+              "textRange": {
+                "startLine": 85,
+                "endLine": 85,
+                "startOffset": 12,
+                "endOffset": 14
+              },
+              "msg": "+3 (incl 2 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskListScreen.kt",
+              "textRange": {
+                "startLine": 89,
+                "endLine": 89,
+                "startOffset": 14,
+                "endOffset": 18
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskListScreen.kt",
+              "textRange": {
+                "startLine": 85,
+                "endLine": 85,
+                "startOffset": 32,
+                "endOffset": 34
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskListScreen.kt",
+              "textRange": {
+                "startLine": 93,
+                "endLine": 93,
+                "startOffset": 14,
+                "endOffset": 18
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskListScreen.kt",
+              "textRange": {
+                "startLine": 102,
+                "endLine": 102,
+                "startOffset": 39,
+                "endOffset": 41
+              },
+              "msg": "+6 (incl 5 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskListScreen.kt",
+              "textRange": {
+                "startLine": 102,
+                "endLine": 102,
+                "startOffset": 53,
+                "endOffset": 55
+              },
+              "msg": "+1"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskListScreen.kt",
+              "textRange": {
+                "startLine": 103,
+                "endLine": 103,
+                "startOffset": 41,
+                "endOffset": 43
+              },
+              "msg": "+6 (incl 5 for nesting)"
+            }
+          ]
+        },
+        {
+          "locations": [
+            {
+              "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskListScreen.kt",
+              "textRange": {
+                "startLine": 103,
+                "endLine": 103,
+                "startOffset": 74,
+                "endOffset": 76
+              },
+              "msg": "+1"
+            }
+          ]
+        }
+      ],
+      "status": "OPEN",
+      "message": "Refactor this method to reduce its Cognitive Complexity from 20 to the 15 allowed.",
+      "effort": "10min",
+      "debt": "10min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "architecture",
+        "brain-overload"
+      ],
+      "creationDate": "2026-01-08T22:44:44+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "FOCUSED",
+      "cleanCodeAttributeCategory": "ADAPTABLE",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "HIGH"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZJTA7UvkmTxqdvv",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+      "project": "JuergGood_angularai",
+      "line": 21,
+      "hash": "0e5a15071e254b5f342b874c62a5885a",
+      "textRange": {
+        "startLine": 21,
+        "endLine": 21,
+        "startOffset": 7,
+        "endOffset": 63
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-04T18:29:58+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZG-A7UvkmTxqdvY",
+      "rule": "kotlin:S6517",
+      "severity": "MAJOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/data/remote/SystemApi.kt",
+      "project": "JuergGood_angularai",
+      "line": 6,
+      "hash": "3552bef40b32ba4cb3284d94908c3f9a",
+      "textRange": {
+        "startLine": 6,
+        "endLine": 6,
+        "startOffset": 0,
+        "endOffset": 9
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Make this interface functional or replace it with a function type.",
+      "effort": "5min",
+      "debt": "5min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [],
+      "creationDate": "2026-01-04T18:29:58+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "MEDIUM"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZIvA7UvkmTxqdvp",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/SystemViewModel.kt",
+      "project": "JuergGood_angularai",
+      "line": 3,
+      "hash": "48ae562713a867ed6d0d115d3fbcda65",
+      "textRange": {
+        "startLine": 3,
+        "endLine": 3,
+        "startOffset": 7,
+        "endOffset": 37
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-04T18:29:58+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZHhA7UvkmTxqdvc",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+      "project": "JuergGood_angularai",
+      "line": 11,
+      "hash": "cd48966c4a3a3fe006b3da7024e4637d",
+      "textRange": {
+        "startLine": 11,
+        "endLine": 11,
+        "startOffset": 7,
+        "endOffset": 46
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-04T18:29:58+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZJTA7UvkmTxqdvw",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+      "project": "JuergGood_angularai",
+      "line": 25,
+      "hash": "16a59ce2690d58f5db6adb8ddd1245c9",
+      "textRange": {
+        "startLine": 25,
+        "endLine": 25,
+        "startOffset": 7,
+        "endOffset": 53
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-04T16:24:11+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZJTA7UvkmTxqdvx",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+      "project": "JuergGood_angularai",
+      "line": 26,
+      "hash": "4f114092759cc9494b653c567ca3e024",
+      "textRange": {
+        "startLine": 26,
+        "endLine": 26,
+        "startOffset": 7,
+        "endOffset": 53
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-04T16:24:11+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZJJA7UvkmTxqdvt",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/di/NetworkModule.kt",
+      "project": "JuergGood_angularai",
+      "line": 16,
+      "hash": "df8425ee2796a9542034058eceb197d4",
+      "textRange": {
+        "startLine": 16,
+        "endLine": 16,
+        "startOffset": 7,
+        "endOffset": 66
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-04T16:24:11+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZINA7UvkmTxqdvk",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminViewModel.kt",
+      "project": "JuergGood_angularai",
+      "line": 3,
+      "hash": "48ae562713a867ed6d0d115d3fbcda65",
+      "textRange": {
+        "startLine": 3,
+        "endLine": 3,
+        "startOffset": 7,
+        "endOffset": 37
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-04T16:24:11+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZH8A7UvkmTxqdvh",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/auth/AuthViewModel.kt",
+      "project": "JuergGood_angularai",
+      "line": 3,
+      "hash": "48ae562713a867ed6d0d115d3fbcda65",
+      "textRange": {
+        "startLine": 3,
+        "endLine": 3,
+        "startOffset": 7,
+        "endOffset": 37
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-04T16:24:11+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZHPA7UvkmTxqdva",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/profile/ProfileScreen.kt",
+      "project": "JuergGood_angularai",
+      "line": 9,
+      "hash": "4f114092759cc9494b653c567ca3e024",
+      "textRange": {
+        "startLine": 9,
+        "endLine": 9,
+        "startOffset": 7,
+        "endOffset": 53
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-04T16:24:11+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZHXA7UvkmTxqdvb",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/profile/ProfileViewModel.kt",
+      "project": "JuergGood_angularai",
+      "line": 3,
+      "hash": "48ae562713a867ed6d0d115d3fbcda65",
+      "textRange": {
+        "startLine": 3,
+        "endLine": 3,
+        "startOffset": 7,
+        "endOffset": 37
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-04T16:24:11+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZHzA7UvkmTxqdvf",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskListScreen.kt",
+      "project": "JuergGood_angularai",
+      "line": 6,
+      "hash": "938df609facc36ca102d1677b6b5b31a",
+      "textRange": {
+        "startLine": 6,
+        "endLine": 6,
+        "startOffset": 7,
+        "endOffset": 45
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-04T16:24:11+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZHqA7UvkmTxqdvd",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskViewModel.kt",
+      "project": "JuergGood_angularai",
+      "line": 3,
+      "hash": "48ae562713a867ed6d0d115d3fbcda65",
+      "textRange": {
+        "startLine": 3,
+        "endLine": 3,
+        "startOffset": 7,
+        "endOffset": 37
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-04T16:24:11+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    },
+    {
+      "key": "AZvF0ZHqA7UvkmTxqdve",
+      "rule": "kotlin:S1128",
+      "severity": "MINOR",
+      "component": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskViewModel.kt",
+      "project": "JuergGood_angularai",
+      "line": 16,
+      "hash": "fc27301d70ca5c7a199ed372d7e4469f",
+      "textRange": {
+        "startLine": 16,
+        "endLine": 16,
+        "startOffset": 7,
+        "endOffset": 37
+      },
+      "flows": [],
+      "status": "OPEN",
+      "message": "Remove this unused import.",
+      "effort": "1min",
+      "debt": "1min",
+      "assignee": "JuergGood-0OBYU@github",
+      "author": "sub@goodfamily.ch",
+      "tags": [
+        "unused"
+      ],
+      "creationDate": "2026-01-04T16:24:11+0000",
+      "updateDate": "2026-01-17T13:52:36+0000",
+      "type": "CODE_SMELL",
+      "organization": "juerggood",
+      "cleanCodeAttribute": "CLEAR",
+      "cleanCodeAttributeCategory": "INTENTIONAL",
+      "impacts": [
+        {
+          "softwareQuality": "MAINTAINABILITY",
+          "severity": "LOW"
+        }
+      ],
+      "issueStatus": "OPEN",
+      "projectName": "angularai-parent"
+    }
+  ],
+  "components": [
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogViewModel.kt",
+      "uuid": "AZvF0YvGA7UvkmTxqdtz",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "LogViewModel.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogViewModel.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogViewModel.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/di/NetworkModule.kt",
+      "uuid": "AZvF0YvHA7UvkmTxqdt9",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "NetworkModule.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/di/NetworkModule.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/di/NetworkModule.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/SystemViewModel.kt",
+      "uuid": "AZvF0YvGA7UvkmTxqdt2",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "SystemViewModel.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/ui/SystemViewModel.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/ui/SystemViewModel.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/dashboard/DashboardScreen.kt",
+      "uuid": "AZvF0YvGA7UvkmTxqdt4",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "DashboardScreen.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/ui/dashboard/DashboardScreen.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/ui/dashboard/DashboardScreen.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/auth/RegisterScreen.kt",
+      "uuid": "AZvF0YvGA7UvkmTxqdtt",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "RegisterScreen.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/ui/auth/RegisterScreen.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/ui/auth/RegisterScreen.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/dashboard/DashboardViewModel.kt",
+      "uuid": "AZvF0YvGA7UvkmTxqdt3",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "DashboardViewModel.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/ui/dashboard/DashboardViewModel.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/ui/dashboard/DashboardViewModel.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/auth/AuthViewModel.kt",
+      "uuid": "AZvF0YvGA7UvkmTxqdts",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "AuthViewModel.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/ui/auth/AuthViewModel.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/ui/auth/AuthViewModel.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminViewModel.kt",
+      "uuid": "AZvF0YvGA7UvkmTxqdtv",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "AdminViewModel.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminViewModel.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminViewModel.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+      "uuid": "AZvF0YvGA7UvkmTxqdtx",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "AdminUserEditScreen.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/ui/admin/AdminUserEditScreen.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/profile/ProfileViewModel.kt",
+      "uuid": "AZvF0YvGA7UvkmTxqdtl",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "ProfileViewModel.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/ui/profile/ProfileViewModel.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/ui/profile/ProfileViewModel.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/profile/ProfileScreen.kt",
+      "uuid": "AZvF0YvGA7UvkmTxqdtk",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "ProfileScreen.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/ui/profile/ProfileScreen.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/ui/profile/ProfileScreen.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+      "uuid": "AZvF0YvGA7UvkmTxqdtn",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "TaskEditScreen.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskEditScreen.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogScreen.kt",
+      "uuid": "AZvF0YvGA7UvkmTxqdt0",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "LogScreen.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogScreen.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/ui/log/LogScreen.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskListScreen.kt",
+      "uuid": "AZvF0YvGA7UvkmTxqdtp",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "TaskListScreen.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskListScreen.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskListScreen.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskViewModel.kt",
+      "uuid": "AZvF0YvGA7UvkmTxqdto",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "TaskViewModel.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskViewModel.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/ui/tasks/TaskViewModel.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+      "uuid": "AZvF0YvHA7UvkmTxqduE",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "MainActivity.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/MainActivity.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai",
+      "uuid": "AZvFz7Ixlt9MKUCnZ3rs",
+      "enabled": true,
+      "qualifier": "TRK",
+      "name": "angularai-parent",
+      "longName": "angularai-parent"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/data/remote/DashboardApi.kt",
+      "uuid": "AZvF0YvGA7UvkmTxqdth",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "DashboardApi.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/data/remote/DashboardApi.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/data/remote/DashboardApi.kt"
+    },
+    {
+      "organization": "juerggood",
+      "key": "JuergGood_angularai:android/app/src/main/java/ch/goodone/angularai/android/data/remote/SystemApi.kt",
+      "uuid": "AZvF0YvGA7UvkmTxqdtg",
+      "enabled": true,
+      "qualifier": "FIL",
+      "name": "SystemApi.kt",
+      "longName": "android/app/src/main/java/ch/goodone/angularai/android/data/remote/SystemApi.kt",
+      "path": "android/app/src/main/java/ch/goodone/angularai/android/data/remote/SystemApi.kt"
+    }
+  ],
+  "organizations": [
+    {
+      "key": "juerggood",
+      "name": "JuergGood"
+    }
+  ],
+  "facets": []
+}
