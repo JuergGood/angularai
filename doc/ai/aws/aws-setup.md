@@ -14,7 +14,7 @@ You need to host your Docker images in a private registry.
 *   **AWS Service**: **Amazon ECR (Elastic Container Registry)**.
 *   **Steps**:
     1. Create two ECR repositories: `angularai-frontend` and `angularai-backend`.
-    2. Authenticate your local Docker CLI to ECR (see [ECR Push Instructions](aws_ecs_push_instructions.md) for details on authentication and SSO).
+    2. Authenticate your local Docker CLI to ECR (see [ECR Push Instructions](ecs-push-instructions.md) for details on authentication and SSO).
     3. Tag your local images with the ECR repository URLs.
     4. Push the images: `docker push 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend`.
 
@@ -36,7 +36,7 @@ You need to host your Docker images in a private registry.
 *   **Why Fargate**: It's "serverless" for containers—you don't have to manage the underlying EC2 instances.
 *   **Steps**:
     1. **Define Task Definitions**:
-        - **Backend Task**: Add the backend image URL. Set environment variables to override `application.properties` (e.g., `SPRING_DATASOURCE_URL=jdbc:postgresql://YOUR_RDS_ENDPOINT:5432/dbname`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`).
+        - **Backend Task**: Add the backend image URL. Set environment variables to override `application.properties` (e.g., `SPRING-DATASOURCE-URL=jdbc:postgresql://YOUR-RDS-ENDPOINT:5432/dbname`, `SPRING-DATASOURCE-USERNAME`, `SPRING-DATASOURCE-PASSWORD`).
         - **Frontend Task**: Add the frontend image URL.
     2. **Create ECS Cluster**: A logical grouping for your services.
     3. **Create ECS Services**:

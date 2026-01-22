@@ -260,10 +260,15 @@ import { TranslateModule } from '@ngx-translate/core';
       color: #1d4ed8;
       border: 1px solid rgba(59, 130, 246, 0.2);
     }
+    .status-completed {
+      background: rgba(76, 175, 80, 0.1);
+      color: #2e7d32;
+      border: 1px solid rgba(76, 175, 80, 0.2);
+    }
     .status-closed {
-      background: rgba(16, 185, 129, 0.1);
-      color: #047857;
-      border: 1px solid rgba(16, 185, 129, 0.2);
+      background: rgba(0, 150, 136, 0.1);
+      color: #00796b;
+      border: 1px solid rgba(0, 150, 136, 0.2);
     }
 
     .empty-message {

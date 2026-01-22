@@ -21,6 +21,17 @@ public class ActionLog {
     private String action;
 
     private String details;
+    
+    @Column(name = "ip_address")
+    private String ipAddress;
+
+    private String country;
+    private String city;
+    private Double latitude;
+    private Double longitude;
+
+    @Column(name = "user_agent")
+    private String userAgent;
 
     public ActionLog() {}
 
@@ -49,4 +60,22 @@ public class ActionLog {
 
     public String getDetails() { return details; }
     public void setDetails(String details) { this.details = details; }
+
+    public String getIpAddress() { return ipAddress; }
+    public void setIpAddress(String ipAddress) { this.ipAddress = ipAddress; }
+
+    public String getCountry() { return country; }
+    public void setCountry(String country) { this.country = country; }
+
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
+
+    public Double getLatitude() { return latitude; }
+    public void setLatitude(Double latitude) { this.latitude = latitude; }
+
+    public Double getLongitude() { return longitude; }
+    public void setLongitude(Double longitude) { this.longitude = longitude; }
+
+    public String getUserAgent() { return userAgent; }
+    public void setUserAgent(String userAgent) { this.userAgent = userAgent; }
 }

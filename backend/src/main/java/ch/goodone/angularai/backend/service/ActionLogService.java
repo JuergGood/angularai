@@ -7,6 +7,7 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,15 +21,35 @@ public class ActionLogService {
     private static final String ACTION_FIELD = "action";
 
     private final ActionLogRepository actionLogRepository;
+    private final IpLocationService ipLocationService;
 
-    public ActionLogService(ActionLogRepository actionLogRepository) {
+    public ActionLogService(ActionLogRepository actionLogRepository, IpLocationService ipLocationService) {
         this.actionLogRepository = actionLogRepository;
+        this.ipLocationService = ipLocationService;
     }
 
     @Transactional
     public void log(String login, String action, String details) {
         ActionLog actionLog = new ActionLog(login, action, details);
         actionLogRepository.save(actionLog);
+    }
+
+    @Async
+    @Transactional
+    public void logLogin(String login, String ip, String userAgent) {
+        IpLocationService.GeoLocation location = ipLocationService.lookup(ip);
+        
+        String uaDetails = userAgent != null ? userAgent : "Unknown";
+
+        ActionLog log = new ActionLog(login, "USER_LOGIN", "User logged in successfully");
+        log.setIpAddress(ip);
+        log.setCountry(location.getCountry());
+        log.setCity(location.getCity());
+        log.setLatitude(location.getLatitude());
+        log.setLongitude(location.getLongitude());
+        log.setUserAgent(uaDetails);
+        
+        actionLogRepository.save(log);
     }
 
     public Page<ActionLogDTO> getLogs(Pageable pageable, String type, LocalDateTime start, LocalDateTime end) {

@@ -6,7 +6,7 @@ The files are located in the new `deploy/aws/` directory:
 **File**: `deploy/aws/backend-task-definition.json`
 *   **CPU/Memory**: 256 CPU units, 512 MiB Memory.
 *   **Port**: 8080.
-*   **Configuration**: Includes environment variable placeholders for connecting to your AWS RDS PostgreSQL database (`SPRING_DATASOURCE_URL`, etc.).
+*   **Configuration**: Includes environment variable placeholders for connecting to your AWS RDS PostgreSQL database (`SPRING-DATASOURCE-URL`, etc.).
 *   **Profile**: Automatically activates the `postgres` profile.
 
 ### 2. Frontend Task Definition
@@ -36,11 +36,11 @@ The files are located in the new `deploy/aws/` directory:
 4.  **RDS Database**: Your PostgreSQL database should be running and accessible (Only required for `backend-task-definition.json`).
 
 #### B. Registering Tasks via CLI
-**CRITICAL**: You must manually edit the `.json` files in `deploy/aws/` and replace all placeholders (e.g., `426141506813`, `eu-central-1`, `YOUR_RDS_ENDPOINT`) with your actual AWS values. 
+**CRITICAL**: You must manually edit the `.json` files in `deploy/aws/` and replace all placeholders (e.g., `426141506813`, `eu-central-1`, `YOUR-RDS-ENDPOINT`) with your actual AWS values. 
 
 Failure to replace `426141506813` in the `executionRoleArn` and `taskRoleArn` fields will result in a `ClientException: Role is not valid` error.
 
-**Note for PowerShell users:** Placeholders like `YOUR_RDS_ENDPOINT` are written in plain text. If you see documentation with angle brackets like `<PLACEHOLDER>`, avoid using them in PowerShell as they are reserved for redirection.
+**Note for PowerShell users:** Placeholders like `YOUR-RDS-ENDPOINT` are written in plain text. If you see documentation with angle brackets like `<PLACEHOLDER>`, avoid using them in PowerShell as they are reserved for redirection.
 
 Once edited, you can register these task definitions using the AWS CLI:
 
@@ -63,4 +63,4 @@ aws ecs register-task-definition --cli-input-json file://deploy/aws/frontend-tas
     *   The **Frontend Service** should be associated with an Application Load Balancer (ALB) to be accessible from the internet.
     *   The ALB should route `/api/*` requests to the Backend Service and all other requests to the Frontend Service.
 
-> **Note**: Remember to replace the placeholders in the JSON files (like `<AWS_ACCOUNT_ID>`, `<REGION>`, `<RDS_ENDPOINT>`, etc.) with your actual AWS resource details before registering.
+> **Note**: Remember to replace the placeholders in the JSON files (like `<AWS-ACCOUNT-ID>`, `<REGION>`, `<RDS-ENDPOINT>`, etc.) with your actual AWS resource details before registering.

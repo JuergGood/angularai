@@ -106,10 +106,11 @@ class DTOTest {
         assertEquals(7, summary.getTodayLogs());
         assertEquals(8, summary.getTodayLogsDelta());
 
-        DashboardDTO.TaskStatusDistribution dist = new DashboardDTO.TaskStatusDistribution(1, 2, 3, 6);
+        DashboardDTO.TaskStatusDistribution dist = new DashboardDTO.TaskStatusDistribution(1, 2, 3, 0, 6);
         assertEquals(1, dist.getOpen());
         assertEquals(2, dist.getInProgress());
         assertEquals(3, dist.getCompleted());
+        assertEquals(0, dist.getClosed());
         assertEquals(6, dist.getTotal());
         
         DashboardDTO dash = new DashboardDTO();

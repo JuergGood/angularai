@@ -3,7 +3,7 @@ To stop and restart your ECS Fargate services, you can use the following AWS CLI
 ### 1. Backend Service (`angularai-backend-test-service`)
 
 **Deploy a Specific Version ($VERSION):**
-To deploy a new version (e.g., `1.0.1`), you must first update the Task Definition. See [Push Instructions](aws_ecs_push_instructions.md#updating-ecs-task-definitions) for details on pushing images and registering new task definitions.
+To deploy a new version (e.g., `1.0.3`), you must first update the Task Definition. See [Push Instructions](ecs-push-instructions.md#updating-ecs-task-definitions) for details on pushing images and registering new task definitions.
 
 ```bash
 # 1. Register new task definition (after updating the 'image' tag in your JSON)
@@ -67,7 +67,7 @@ aws ecs update-service --cluster angular-boot --service angularai-frontend-servi
 ### 3. Fallback Page (When Stopped)
 When you stop your services for cost reasons, it is recommended to configure a **Fallback Page** on the Load Balancer to avoid showing users a generic `503 Service Unavailable` error.
 
-See [AWS ALB Fallback Configuration](aws_alb_fallback.md) for instructions on how to set this up.
+See [AWS ALB Fallback Configuration](alb-fallback.md) for instructions on how to set this up.
 
 ---
 
@@ -88,7 +88,7 @@ aws ecs update-service --cluster angular-boot --service angularai-backend-test-s
 ```
 *(Repeat for `angularai-frontend-service` if needed)*
 
-**Note for PowerShell users:** If you use angle brackets like `<CLUSTER_NAME>`, PowerShell might throw a `ParserError`. Use plain text placeholders instead.
+**Note for PowerShell users:** If you use angle brackets like `<CLUSTER-NAME>`, PowerShell might throw a `ParserError`. Use plain text placeholders instead.
 
 **Via AWS Management Console:**
 1.  Navigate to the **Amazon ECS Console**.
@@ -121,5 +121,5 @@ Once you have triggered the rerun:
 3.  Click on the Task ID and go to the **Logs** tab to see the Spring Boot startup logs, confirming that the H2 database and application are initializing correctly.
 4.  **Verify Version**: Access the system info endpoint to confirm the correct version is deployed:
     - `https://<your-alb-dns>/api/system/info`
-    - Expected output: `{"version":"1.0.1","mode":"Postgres"}` (or "H2" depending on profile)
-    - **Note**: If you still see `0.0.1-SNAPSHOT`, ensure you have pushed the new image to ECR and updated the Task Definition to point to the new version tag. See the Troubleshooting section in [Full Deployment Guide](aws_full_deployment.md#62-troubleshooting-old-version-still-displayed).
+    - Expected output: `{"version":"1.0.3","mode":"Postgres"}` (or "H2" depending on profile)
+    - **Note**: If you still see `0.0.1-SNAPSHOT`, ensure you have pushed the new image to ECR and updated the Task Definition to point to the new version tag. See the Troubleshooting section in [Full Deployment Guide](full-deployment.md#62-troubleshooting-old-version-still-displayed).

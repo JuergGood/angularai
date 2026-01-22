@@ -435,6 +435,7 @@ mat-card-title {
 .dot.open { background-color: #3f51b5; }
 .dot.progress { background-color: #2196f3; }
 .dot.completed { background-color: #4caf50; }
+.dot.closed { background-color: #009688; }
 
 .empty-msg {
   padding: 32px;

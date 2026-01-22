@@ -247,17 +247,19 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  getPieChartData(data: { open: number, inProgress: number, completed: number, total: number }) {
+  getPieChartData(data: { open: number, inProgress: number, completed: number, closed: number, total: number }) {
     if (data.total === 0) return [];
 
     const openP = (data.open / data.total) * 100;
     const inProgressP = (data.inProgress / data.total) * 100;
     const completedP = (data.completed / data.total) * 100;
+    const closedP = (data.closed / data.total) * 100;
 
     return [
       { color: '#3f51b5', value: openP, offset: 0 },
       { color: '#2196f3', value: inProgressP, offset: openP },
-      { color: '#4caf50', value: completedP, offset: openP + inProgressP }
+      { color: '#4caf50', value: completedP, offset: openP + inProgressP },
+      { color: '#009688', value: closedP, offset: openP + inProgressP + completedP }
     ];
   }
 }

@@ -34,7 +34,7 @@ To verify that your ALB is correctly routing `/api/*` to the backend and everyth
 ⚠️ **Note for HTTPS Users**: If you have enabled HTTPS, you must perform these steps for **BOTH** the HTTP (80) and HTTPS (443) listeners.
 
 **If Rule 1 or the Target Group is missing:**
-- Follow the [Creating a Backend Target Group](aws_create_target_group.md) guide to create the group and add the rule.
+- Follow the [Creating a Backend Target Group](create-target-group.md) guide to create the group and add the rule.
 
 ### 3. Verify Target Group Health
 If the routing rules are correct but you still get a `502 Bad Gateway` or `504 Gateway Timeout`:

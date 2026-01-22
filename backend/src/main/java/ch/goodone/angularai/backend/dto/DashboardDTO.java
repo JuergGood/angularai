@@ -79,14 +79,16 @@ public class DashboardDTO {
         private long open;
         private long inProgress;
         private long completed;
+        private long closed;
         private long total;
 
         public TaskStatusDistribution() {}
 
-        public TaskStatusDistribution(long open, long inProgress, long completed, long total) {
+        public TaskStatusDistribution(long open, long inProgress, long completed, long closed, long total) {
             this.open = open;
             this.inProgress = inProgress;
             this.completed = completed;
+            this.closed = closed;
             this.total = total;
         }
 
@@ -96,6 +98,8 @@ public class DashboardDTO {
         public void setInProgress(long inProgress) { this.inProgress = inProgress; }
         public long getCompleted() { return completed; }
         public void setCompleted(long completed) { this.completed = completed; }
+        public long getClosed() { return closed; }
+        public void setClosed(long closed) { this.closed = closed; }
         public long getTotal() { return total; }
         public void setTotal(long total) { this.total = total; }
     }

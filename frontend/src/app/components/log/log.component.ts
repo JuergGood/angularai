@@ -52,7 +52,7 @@ export class LogComponent implements OnInit {
   startDate: Date | null = null;
   endDate: Date | null = null;
 
-  displayedColumns: string[] = ['timestamp', 'login', 'action', 'details'];
+  displayedColumns: string[] = ['timestamp', 'login', 'action', 'details', 'metadata'];
 
   /**
    * Action presentation: semantic chip colors and labels.

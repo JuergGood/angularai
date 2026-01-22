@@ -35,6 +35,7 @@
     "OPEN": "Offen",
     "IN_PROGRESS": "In Bearbeitung",
     "COMPLETED": "Erledigt",
+    "CLOSED": "Geschlossen",
     "RECENT_ACTIVITY": "Kürzliche Aktivitäten",
     "TIME": "Zeit",
     "USER": "Benutzer",

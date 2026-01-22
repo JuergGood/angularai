@@ -25,5 +25,6 @@ export interface TaskStatusDistribution {
   open: number;
   inProgress: number;
   completed: number;
+  closed: number;
   total: number;
 }

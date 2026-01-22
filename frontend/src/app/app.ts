@@ -1,7 +1,10 @@
 import { Component, signal, OnInit } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { SidenavComponent } from './components/layout/sidenav.component';
 import { AuthService } from './services/auth.service';
+import { filter } from 'rxjs';
+
+declare var gtag: Function;
 
 @Component({
   selector: 'app-root',
@@ -14,7 +17,17 @@ import { AuthService } from './services/auth.service';
   styles: []
 })
 export class App implements OnInit {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService, private router: Router) {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd)
+    ).subscribe((event: NavigationEnd) => {
+      if (typeof gtag === 'function') {
+        gtag('config', 'G-N366JDK5K0', {
+          'page_path': event.urlAfterRedirects
+        });
+      }
+    });
+  }
 
   ngOnInit() {
     this.authService.init();

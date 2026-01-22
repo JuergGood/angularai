@@ -1,10 +1,15 @@
 # AWS Deployment Script
 # This script builds Docker images, pushes them to ECR, and restarts ECS services.
 
+# Load environment variables from .env file
+if (Test-Path ".\scripts\load-env.ps1") {
+    . .\scripts\load-env.ps1
+}
+
 # Configuration - Update these values if necessary
 $REGION = "eu-central-1"
 $AWS_ACCOUNT_ID = "426141506813"
-$VERSION = "1.0.2"
+$VERSION = "1.0.3"
 $ECR_REGISTRY = "$AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com"
 $CLUSTER_NAME = "angular-boot" # Update with your actual cluster name
 $BACKEND_SERVICE = "angularai-backend-test-service"

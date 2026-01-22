@@ -128,7 +128,7 @@ aws elbv2 modify-rule `
 
 ## Restoring Service
 
-When you are ready to start the services again (as described in [aws_rerun_service.md](aws_rerun_service.md)), you **must revert the ALB rules** to forward traffic back to the Frontend Target Group.
+When you are ready to start the services again (as described in [rerun-service.md](rerun-service.md)), you **must revert the ALB rules** to forward traffic back to the Frontend Target Group.
 
 ### 1. Via AWS Management Console
 1.  Navigate to the **EC2 Console** -> **Load Balancers**.
@@ -168,6 +168,6 @@ aws elbv2 modify-listener `
   --listener-arn arn:aws:elasticloadbalancing:eu-central-1:426141506813:listener/app/angular-boot-lb-frontend/935a795fe8bb72ca/9521f3b60cb2ee69 `
   --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:eu-central-1:426141506813:targetgroup/angular-boot-frontend2/5c1b885c9fdcac54
 ```
-*Note: Replace `YOUR_FRONTEND_TG_ARN` with the actual ARN of your frontend target group (e.g., the one for `angularai-frontend-tg`).*
+*Note: Replace `YOUR-FRONTEND-TG-ARN` with the actual ARN of your frontend target group (e.g., the one for `angularai-frontend-tg`).*
 
 **Important**: If you don't revert these rules, users will continue to see the fallback page even after your containers are running.

@@ -5,6 +5,7 @@ import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.UserRepository;
 import ch.goodone.angularai.backend.service.ActionLogService;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +31,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserDTO> login(Authentication authentication) {
+    public ResponseEntity<UserDTO> login(Authentication authentication, HttpServletRequest request) {
         if (authentication == null) {
             logger.error("Login attempt failed: Authentication object is null");
             return ResponseEntity.status(401).build();
@@ -43,7 +44,15 @@ public class AuthController {
         if (user == null) {
             return ResponseEntity.status(401).build();
         }
-        actionLogService.log(user.getLogin(), "USER_LOGIN", "User logged in successfully");
+        
+        String ip = request.getHeader("X-Forwarded-For");
+        if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
+            ip = request.getRemoteAddr();
+        }
+        String ua = request.getHeader("User-Agent");
+        
+        actionLogService.logLogin(user.getLogin(), ip, ua);
+        
         return ResponseEntity.ok(UserDTO.fromEntity(user));
     }
 

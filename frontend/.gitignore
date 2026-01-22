@@ -42,4 +42,5 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 /cypress/screenshots/
-/target/aifrontend-1.0.1.jar
+/target/aifrontend-1.0.3.jar
+/target/

@@ -25,12 +25,12 @@ The `$VERSION` variable must match the version defined in `pom.xml` and `package
 
 **PowerShell:**
 ```powershell
-$VERSION="1.0.2"
+$VERSION="1.0.3"
 ```
 
 **Bash:**
 ```bash
-VERSION="1.0.2"
+VERSION="1.0.3"
 ```
 
 ---
@@ -85,7 +85,7 @@ docker push 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-frontend:l
 ### 5.1 Update Task Definitions
 1.  Open `deploy/aws/backend-task-definition.json` and `deploy/aws/frontend-task-definition.json`.
 2.  Update the `image` field to use the new `$VERSION` tag.
-3.  For Backend: Ensure `SPRING_PROFILES_ACTIVE` is set to `h2` for troubleshooting.
+3.  For Backend: Ensure `SPRING-PROFILES-ACTIVE` is set to `h2` for troubleshooting.
 
 ### 5.2 Backend Deployment
 ```bash
@@ -115,18 +115,18 @@ aws ecs update-service --cluster angular-boot --service angularai-frontend-servi
 ### 6.1 Verification
 Confirm the deployment by checking the system info endpoint:
 - **URL**: `https://<your-alb-dns>/api/system/info`
-- **Expected Version**: `1.0.2`
+- **Expected Version**: `1.0.3`
 - **Expected Mode**: `H2`
 
 ### 6.2 Troubleshooting "Old Version Still Displayed"
 If you still see `0.0.1-SNAPSHOT` after a successful deployment:
 
-1.  **Check ECR Timestamps**: Go to the AWS Console -> ECR -> `angularai-backend` repository. Check the "Pushed at" time for the `latest` tag and the `1.0.2` tag. If they are old, your `docker push` didn't work.
-2.  **Verify Local Tagging**: Run `docker images` and ensure that `angularai-backend:1.0.2` and the ECR-tagged version exist and have a recent "CREATED" time.
+1.  **Check ECR Timestamps**: Go to the AWS Console -> ECR -> `angularai-backend` repository. Check the "Pushed at" time for the `latest` tag and the `1.0.3` tag. If they are old, your `docker push` didn't work.
+2.  **Verify Local Tagging**: Run `docker images` and ensure that `angularai-backend:1.0.3` and the ECR-tagged version exist and have a recent "CREATED" time.
 3.  **Ensure Push Succeeded**: Re-run the `docker push` commands and look for "Layer already exists" vs "Pushed". If it says "Layer already exists" for everything but the version is wrong, you might be pushing an old local image.
 4.  **Clean Local Build**: Sometimes Docker caches old layers. Try building with `--no-cache`:
     ```bash
     docker build --no-cache -t angularai-backend:$VERSION -f backend/Dockerfile .
     ```
-5.  **Force ECS Pull**: When using the `latest` tag, ECS sometimes doesn't pull the new image if the tag hasn't changed. The `aws ecs update-service --force-new-deployment` command *should* fix this, but using an explicit version (e.g., `:1.0.2`) in your Task Definition is **much safer**.
+5.  **Force ECS Pull**: When using the `latest` tag, ECS sometimes doesn't pull the new image if the tag hasn't changed. The `aws ecs update-service --force-new-deployment` command *should* fix this, but using an explicit version (e.g., `:1.0.3`) in your Task Definition is **much safer**.
 6.  **Check Task Definition**: Double-check that you actually ran `aws ecs register-task-definition` **AFTER** updating the JSON file with the new version, and that you used the **new numeric REVISION** in the `update-service` command.
