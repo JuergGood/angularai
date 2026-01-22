@@ -51,7 +51,7 @@ This document outlines the best practices and standards for the AngularAI projec
 - **Icons**: Use Material Icons (already configured in `index.html`).
 - **Theming**: Follow the `indigo-pink` theme.
 - **Accessibility**: Use appropriate Material components for forms and buttons.
-- **Consistency**: Follow the [Frontend Style Guideline](../doc/ai/frontend-style-guideline.md) for all UI changes to ensure consistent look and feel.
+- **Consistency**: Follow the [Frontend Style Guideline](frontend-style-guideline.md) for all UI changes to ensure consistent look and feel.
 
 ### 4. Testing (Vitest/Angular Testing Library)
 - **Providers**: Use `provideHttpClient()`, `provideHttpClientTesting()`, and `provideAnimations()` for test setup.

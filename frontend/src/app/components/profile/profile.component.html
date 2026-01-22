@@ -1,57 +1,64 @@
-<div class="profile-page">
+<div class="page-container profile-page">
   @if (user) {
-  <mat-card class="profile-card">
-    <mat-card-header>
-      <mat-card-title>{{ 'NAV.PROFILE' | translate }}</mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <form (ngSubmit)="onSubmit()" #profileForm="ngForm">
-        <mat-form-field appearance="fill">
-          <mat-label>{{ 'ADMIN.FIRST_NAME' | translate }}</mat-label>
-          <input matInput name="firstName" [(ngModel)]="user.firstName" required>
-        </mat-form-field>
+    <div class="page-toolbar">
+      <div class="left">
+        <h2 class="page-title">{{ 'NAV.PROFILE' | translate }}</h2>
+      </div>
+    </div>
 
-        <mat-form-field appearance="fill">
-          <mat-label>{{ 'ADMIN.LAST_NAME' | translate }}</mat-label>
-          <input matInput name="lastName" [(ngModel)]="user.lastName" required>
-        </mat-form-field>
+    <mat-card class="main-card profile-card">
+      <mat-card-content style="padding: 24px;">
+        <form (ngSubmit)="onSubmit()" #profileForm="ngForm">
+          <div class="form-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'ADMIN.FIRST_NAME' | translate }}</mat-label>
+              <input matInput name="firstName" [(ngModel)]="user.firstName" required>
+            </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>{{ 'ADMIN.LOGIN' | translate }}</mat-label>
-          <input matInput name="login" [(ngModel)]="user.login" disabled>
-        </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'ADMIN.LAST_NAME' | translate }}</mat-label>
+              <input matInput name="lastName" [(ngModel)]="user.lastName" required>
+            </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>{{ 'ADMIN.EMAIL' | translate }}</mat-label>
-          <input matInput type="email" name="email" [(ngModel)]="user.email" required email #email="ngModel">
-          @if (email.invalid && (email.dirty || email.touched)) {
-            <mat-error>{{ 'ADMIN.ERROR_EMAIL' | translate }}</mat-error>
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'ADMIN.LOGIN' | translate }}</mat-label>
+              <input matInput name="login" [(ngModel)]="user.login" disabled>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'ADMIN.EMAIL' | translate }}</mat-label>
+              <input matInput type="email" name="email" [(ngModel)]="user.email" required email #email="ngModel">
+              @if (email.invalid && (email.dirty || email.touched)) {
+                <mat-error>{{ 'ADMIN.ERROR_EMAIL' | translate }}</mat-error>
+              }
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'ADMIN.BIRTH_DATE' | translate }}</mat-label>
+              <input matInput [matDatepicker]="picker" name="birthDate" [(ngModel)]="user.birthDate">
+              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>{{ 'ADMIN.ADDRESS' | translate }}</mat-label>
+              <textarea matInput name="address" [(ngModel)]="user.address"></textarea>
+            </mat-form-field>
+          </div>
+
+          <div class="form-actions">
+            <button mat-flat-button color="primary" type="submit" id="save-btn" [disabled]="!profileForm.form.valid">
+              {{ 'ADMIN.SAVE' | translate }}
+            </button>
+          </div>
+
+          @if (message) {
+            <p id="profile-message" [class.success]="message === 'COMMON.SUCCESS'" [class.error]="message === 'COMMON.ERROR'">
+              {{ message | translate }}
+            </p>
           }
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-          <mat-label>{{ 'ADMIN.BIRTH_DATE' | translate }}</mat-label>
-          <input matInput [matDatepicker]="picker" name="birthDate" [(ngModel)]="user.birthDate">
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
-
-        <mat-form-field appearance="fill">
-          <mat-label>{{ 'ADMIN.ADDRESS' | translate }}</mat-label>
-          <textarea matInput name="address" [(ngModel)]="user.address"></textarea>
-        </mat-form-field>
-
-        <div class="actions">
-          <button mat-raised-button color="primary" type="submit" id="save-btn" [disabled]="!profileForm.form.valid">{{ 'ADMIN.SAVE' | translate }}</button>
-        </div>
-
-        @if (message) {
-          <p id="profile-message" [class.success]="message === 'COMMON.SUCCESS'" [class.error]="message === 'COMMON.ERROR'">
-            {{ message | translate }}
-          </p>
-        }
-      </form>
-    </mat-card-content>
-  </mat-card>
+        </form>
+      </mat-card-content>
+    </mat-card>
   }
 </div>

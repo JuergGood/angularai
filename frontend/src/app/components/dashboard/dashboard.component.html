@@ -12,11 +12,11 @@
       </mat-card-header>
       <mat-card-content>
         <div class="stat-value">{{ data.summary.openTasks }}</div>
-        <mat-chip-set class="stat-chip-set">
-          <mat-chip class="delta-chip" color="primary" selected>
+        <div class="stat-chip-set">
+          <div class="custom-delta-chip tasks-chip">
             +{{ data.summary.openTasksDelta }} {{ 'DASHBOARD.TODAY' | translate }}
-          </mat-chip>
-        </mat-chip-set>
+          </div>
+        </div>
       </mat-card-content>
     </mat-card>
 
@@ -28,11 +28,11 @@
       </mat-card-header>
       <mat-card-content>
         <div class="stat-value">{{ data.summary.activeUsers }}</div>
-        <mat-chip-set class="stat-chip-set">
-          <mat-chip class="delta-chip" color="primary" selected>
+        <div class="stat-chip-set">
+          <div class="custom-delta-chip users-chip">
             +{{ data.summary.activeUsersDelta }} {{ 'DASHBOARD.TODAY' | translate }}
-          </mat-chip>
-        </mat-chip-set>
+          </div>
+        </div>
       </mat-card-content>
     </mat-card>
 
@@ -42,11 +42,11 @@
       </mat-card-header>
       <mat-card-content>
         <div class="stat-value">{{ data.summary.completedTasks }}</div>
-        <mat-chip-set class="stat-chip-set">
-          <mat-chip class="delta-chip" color="primary" selected>
+        <div class="stat-chip-set">
+          <div class="custom-delta-chip completed-chip">
             +{{ data.summary.completedTasksDelta }} {{ 'DASHBOARD.TODAY' | translate }}
-          </mat-chip>
-        </mat-chip-set>
+          </div>
+        </div>
       </mat-card-content>
     </mat-card>
 
@@ -62,11 +62,11 @@
       </mat-card-header>
       <mat-card-content>
         <div class="stat-value">{{ data.summary.todayLogs }}</div>
-        <mat-chip-set class="stat-chip-set">
-          <mat-chip class="delta-chip" color="primary" selected>
+        <div class="stat-chip-set">
+          <div class="custom-delta-chip logs-chip">
             +{{ data.summary.todayLogsDelta }} {{ 'DASHBOARD.SINCE_1H' | translate }}
-          </mat-chip>
-        </mat-chip-set>
+          </div>
+        </div>
       </mat-card-content>
     </mat-card>
   </div>
