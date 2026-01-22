@@ -5,7 +5,7 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 
 enum class Priority { LOW, MEDIUM, HIGH }
-enum class TaskStatus { OPEN, IN_PROGRESS, COMPLETED }
+enum class TaskStatus { OPEN, IN_PROGRESS, COMPLETED, CLOSED }
 
 data class TaskDTO(
     val id: Long? = null,

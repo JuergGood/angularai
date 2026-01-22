@@ -55,9 +55,10 @@ public class DashboardService {
         long openCount = taskRepository.countByStatus(TaskStatus.OPEN);
         long inProgressCount = taskRepository.countByStatus(TaskStatus.IN_PROGRESS);
         long completedCount = taskRepository.countByStatus(TaskStatus.DONE);
+        long archivedCount = taskRepository.countByStatus(TaskStatus.ARCHIVED);
         long totalCount = taskRepository.count();
         DashboardDTO.TaskStatusDistribution distribution = new DashboardDTO.TaskStatusDistribution(
-                openCount, inProgressCount, completedCount, totalCount
+                openCount, inProgressCount, completedCount, archivedCount, totalCount
         );
 
         // Recent Data

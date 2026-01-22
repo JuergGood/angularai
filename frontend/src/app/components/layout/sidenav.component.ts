@@ -118,6 +118,10 @@ import { TranslateModule } from '@ngx-translate/core';
       align-items: center;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     }
+    body.theme-dark .header-toolbar {
+      background: linear-gradient(90deg, #1e293b 0%, #0f172a 100%) !important;
+      border-bottom: 1px solid var(--border);
+    }
     .header-spacer {
       flex: 1 1 auto;
     }
@@ -245,7 +249,6 @@ import { TranslateModule } from '@ngx-translate/core';
       margin: 4px 12px;
       border-radius: 0 8px 8px 0;
       height: 48px !important;
-      color: var(--text-muted) !important;
       transition: all 0.3s ease;
       position: relative;
     }
@@ -254,7 +257,6 @@ import { TranslateModule } from '@ngx-translate/core';
       color: var(--brand) !important;
     }
     mat-nav-list a mat-icon {
-      color: var(--text-muted) !important;
       margin-right: 16px;
       transition: color 0.3s ease;
     }

@@ -19,6 +19,9 @@ import tools.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -49,11 +52,15 @@ class AuthControllerTest {
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
 
         mockMvc.perform(post("/api/auth/login")
-                        .with(httpBasic(login, password)))
+                        .with(httpBasic(login, password))
+                        .header("X-Forwarded-For", "1.2.3.4")
+                        .header("User-Agent", "Mozilla/5.0"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.login").value(login))
                 .andExpect(jsonPath("$.firstName").value("Admin"))
                 .andExpect(jsonPath("$.email").value("admin@example.com"));
+
+        verify(actionLogService).logLogin(eq(login), eq("1.2.3.4"), eq("Mozilla/5.0"));
     }
 
     @Test

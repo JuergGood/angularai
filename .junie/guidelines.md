@@ -5,6 +5,10 @@ This document outlines the best practices and standards for the AngularAI projec
 ## General Principles
 - **Modern Standards**: Use the latest stable versions of frameworks (Angular 21+, Spring Boot 4+).
 - **Consistency**: Follow existing naming conventions and project structure.
+- **Centralized Versioning**: 
+    - The **Root `pom.xml`** is the single source of truth for the project version.
+    - All modules (Backend, Frontend, Android, Test Client) must share the same version.
+    - Use `.\scripts\sync-version.ps1` to propagate version changes from the root `pom.xml` to other files (package.json, build.gradle, deployment scripts, and documentation).
 - **Testing**: Maintain high test coverage for both frontend and backend.
 - **Docker First**: Ensure all changes are compatible with the Docker-based deployment.
 
@@ -12,12 +16,14 @@ This document outlines the best practices and standards for the AngularAI projec
 
 ### 1. Architecture
 - **Controllers**: Use RESTful controllers in `ch.goodone.angularai.backend.controller`.
-- **Models**: Use JPA entities in `ch.goodone.angularai.backend.model`.
+- **Models**: Use JPA entities in `ch.goodone.angularai.backend.model`. Always create a Flyway migration script (in `backend/src/main/resources/db/migration/`) whenever a JPA entity is created or modified to ensure the database schema stays in sync.
 - **Repositories**: Use Spring Data JPA repositories in `ch.goodone.angularai.backend.repository`.
 - **DTOs**: Use DTOs for API requests and responses to avoid leaking internal entity structures. Implement `fromEntity()` static methods in DTOs for centralized mapping.
 
 ### 2. Best Practices
-- **Security**: Use `@MockitoBean` instead of `@MockBean` in tests (Spring Boot 4 requirement).
+- **Security**: 
+    - Use `@MockitoBean` instead of `@MockBean` in tests (Spring Boot 4 requirement).
+    - **No Hardcoded Keys**: Never include sensitive API keys, tokens, or credentials in the source code, configuration files (e.g., `application.properties`), or IDE settings committed to Git (e.g., `.idea/workspace.xml`). Use environment variables and placeholders (e.g., `${MY_API_KEY}`) instead.
 - **Validation**: Use `@Column` annotations for explicit database mapping. Use unique constraints where appropriate (e.g., login, email).
 - **JSON Handling**: Use `tools.jackson.databind.ObjectMapper` for JSON processing in tests.
 - **Date/Time**: Use `LocalDate` for dates. Use `@JsonFormat(pattern = "yyyy-MM-dd")` for DTO date fields.
@@ -45,6 +51,7 @@ This document outlines the best practices and standards for the AngularAI projec
 - **Icons**: Use Material Icons (already configured in `index.html`).
 - **Theming**: Follow the `indigo-pink` theme.
 - **Accessibility**: Use appropriate Material components for forms and buttons.
+- **Consistency**: Follow the [Frontend Style Guideline](frontend-style-guideline.md) for all UI changes to ensure consistent look and feel.
 
 ### 4. Testing (Vitest/Angular Testing Library)
 - **Providers**: Use `provideHttpClient()`, `provideHttpClientTesting()`, and `provideAnimations()` for test setup.

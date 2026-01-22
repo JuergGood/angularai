@@ -1,7 +1,6 @@
 .log-container {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0;
 }
 
 .page-toolbar {
@@ -22,9 +21,9 @@
 
 .page-title {
   margin: 0;
-  font-size: 26px;
-  font-weight: 800;
-  color: #111827;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
   letter-spacing: -0.5px;
 }
 
@@ -95,13 +94,14 @@
 }
 
 .mat-mdc-header-cell {
-  color: var(--text-muted) !important;
+  color: var(--text) !important;
   font-weight: 600 !important;
-  font-size: 11px !important;
+  font-size: 13px !important;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   padding: 0 16px !important;
   font-family: inherit !important;
+  opacity: 0.7;
 }
 
 .mat-mdc-cell {
@@ -124,9 +124,14 @@
   background-color: color-mix(in srgb, var(--surface-2) 70%, transparent);
 }
 
+body.theme-dark .full-width-table tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
 .log-timestamp {
-  color: var(--text-muted);
-  font-size: 13px;
+  color: var(--text);
+  font-size: 14px;
+  opacity: 0.8;
 }
 
 .log-login {
@@ -139,7 +144,7 @@
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  color: var(--text-muted) !important;
+  color: var(--text) !important;
 }
 
 .action-chip {
@@ -147,7 +152,7 @@
   align-items: center;
   padding: 2px 10px;
   border-radius: 12px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -159,14 +164,29 @@
   color: var(--brand) !important;
 }
 
+body.theme-dark .action-chip.action-login {
+  background: rgba(138, 162, 255, 0.2) !important;
+  color: #8aa2ff !important;
+}
+
 .action-chip.action-logout {
   background: rgba(211, 47, 47, 0.12) !important;
   color: #c62828 !important;
 }
 
+body.theme-dark .action-chip.action-logout {
+  background: rgba(211, 47, 47, 0.2) !important;
+  color: #ef5350 !important;
+}
+
 .action-chip.action-neutral {
-  background: var(--surface-2) !important;
+  background: color-mix(in srgb, var(--surface-2) 70%, transparent) !important;
   color: var(--text-muted) !important;
+}
+
+body.theme-dark .action-chip.action-neutral {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
 .paginator-container {

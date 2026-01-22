@@ -9,7 +9,13 @@ This is a full-stack application with a Spring Boot backend and an Angular front
 
 ## Running with Docker
 
-To run the entire application using Docker Compose, navigate to the root directory and run:
+To run the entire application using Docker Compose, navigate to the root directory. First, create a `.env` file in the root directory with your API keys:
+
+```bash
+IPSTACK_API_KEY=your_api_key_here
+```
+
+Then run:
 
 ```bash
 docker compose up --build
@@ -22,12 +28,13 @@ The application will be available at:
 
 ## Deployment Scripts
 
-Scripts are available in the `scripts/` folder for common deployment tasks (PowerShell and Windows CMD):
+Scripts are available in the `scripts/` folder for common deployment tasks (PowerShell and Windows CMD). **Note: PowerShell scripts automatically load variables from your local `.env` file.**
 
 - **Local Docker Deployment**: `.\scripts\deploy-local.ps1` or `.\scripts\deploy-local.bat`
   - Runs `docker compose up --build -d` to start the application locally in the background.
 - **AWS Deployment**: `.\scripts\deploy-aws.ps1` or `.\scripts\deploy-aws.bat`
   - Authenticates with AWS ECR, builds, tags, and pushes frontend and backend images, and forces a new deployment on ECS services.
+- **Environment Loading**: The `load-env.ps1` script is used by other PowerShell scripts to ensure sensitive keys (like `IPSTACK_API_KEY`) are available in the session.
 
 ## Project Structure
 
@@ -38,8 +45,10 @@ Scripts are available in the `scripts/` folder for common deployment tasks (Powe
 
 ## Development
 
-### Backend
-Navigate to `backend/` and run `./mvnw spring-boot:run`.
+### IntelliJ IDEA Setup
+To run the backend from IntelliJ, you must ensure that required environment variables (like `IPSTACK_API_KEY`) are available. 
+- You can manually add them to your Run Configurations.
+- Alternatively, use a plugin like **EnvFile** to automatically load the `.env` file into your Run Configurations. **Do not commit these keys to Git.**
 
 ### Frontend (Web)
 Navigate to `frontend/` and run `npm install` and then `npm start`.

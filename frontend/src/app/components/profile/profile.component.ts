@@ -30,22 +30,36 @@ import { provideNativeDateAdapter } from '@angular/material/core';
   templateUrl: './profile.component.html',
   styles: [`
     .profile-page {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    .page-toolbar {
       display: flex;
-      justify-content: center;
-      padding: 20px;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 24px;
+      gap: 16px;
+      flex-wrap: wrap;
     }
-    .profile-card {
-      width: 100%;
-      max-width: 500px;
+    .page-title {
+      margin: 0;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: -0.5px;
     }
-    mat-form-field {
-      width: 100%;
-      margin-bottom: 10px;
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
     }
-    .actions {
+    .form-actions {
       display: flex;
-      flex-direction: column;
-      gap: 10px;
+      justify-content: flex-end;
+      gap: 12px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
     }
     .success { color: #4caf50; margin-top: 10px; text-align: center; }
     .error { color: #f44336; margin-top: 10px; text-align: center; }

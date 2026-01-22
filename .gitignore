@@ -11,3 +11,4 @@
 /frontend/.nyc_output/
 /doc/ai/presentation/old/
 /doc/ai/presentation/tmp/
+.env

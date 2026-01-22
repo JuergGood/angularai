@@ -57,7 +57,6 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
     .tasks-container {
       max-width: 900px;
       margin: 0 auto;
-      padding: 0;
     }
     .page-toolbar {
       display: flex;
@@ -77,7 +76,8 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
       margin: 0;
       font-size: 24px;
       font-weight: 700;
-      color: #1f2937;
+      color: var(--text);
+      letter-spacing: -0.5px;
     }
     .quick-add-container {
       width: 100%;
@@ -191,7 +191,6 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
       border-radius: 10px;
       padding: 0 20px;
       height: 44px !important;
-      box-shadow: 0 2px 6px rgba(0,0,0,.15);
       font-weight: 500;
     }
     .filter-select {
@@ -200,8 +199,8 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
     .reset-sort-btn {
       height: 44px !important;
       border-radius: 10px !important;
-      border-color: #e5e7eb !important;
-      color: #374151 !important;
+      border-color: var(--border) !important;
+      color: var(--text) !important;
       font-weight: 500;
     }
     .filter-select ::ng-deep .mat-mdc-form-field-subscript-wrapper {
@@ -260,21 +259,17 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
       gap: 20px;
     }
     .task-card {
-      border-radius: 12px;
+      border-radius: var(--r);
       padding: 20px;
-      border: none;
-      box-shadow:
-        0 1px 2px rgba(0,0,0,.06),
-        0 4px 12px rgba(0,0,0,.06);
+      border: 1px solid var(--border);
+      box-shadow: var(--shadow-1);
       transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
       cursor: pointer;
       position: relative;
-      background: white;
+      background: var(--surface);
     }
     .task-card:hover {
-      box-shadow:
-        0 4px 12px rgba(0,0,0,.08),
-        0 12px 28px rgba(0,0,0,.08);
+      box-shadow: var(--shadow-2);
       transform: translateY(-2px);
     }
     .task-card-header {
@@ -300,7 +295,7 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
       margin: 0 0 4px 0;
       font-size: 18px;
       font-weight: 600;
-      color: #111827;
+      color: var(--text);
       line-height: 1.4;
     }
     .task-meta {
@@ -308,7 +303,7 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
       align-items: center;
       gap: 12px;
       font-size: 13px;
-      color: #6b7280; /* gray-500 */
+      color: var(--text-muted);
     }
     .meta-item {
       display: flex;
@@ -323,7 +318,7 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
     .task-description {
       margin: 0;
       font-size: 15px;
-      color: #4b5563;
+      color: var(--text-muted);
       line-height: 1.6;
       max-width: 720px;
       white-space: pre-wrap;
@@ -336,7 +331,8 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
       gap: 4px;
       opacity: 0;
       transition: opacity 0.2s ease;
-      background: rgba(255, 255, 255, 0.9);
+      background: var(--surface);
+      border: 1px solid var(--border);
       border-radius: 8px;
       padding: 2px;
     }
@@ -362,38 +358,41 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      border: 1px solid var(--border);
     }
-    .priority-low { background: rgba(16, 185, 129, 0.1); color: #065f46; }
-    .priority-medium { background: rgba(245, 158, 11, 0.12); color: #b45309; }
-    .priority-high { background: rgba(239, 68, 68, 0.12); color: #b91c1c; }
-    .priority-critical { background: rgba(124, 58, 237, 0.15); color: #5b21b6; }
+    .priority-low { background: rgba(76, 175, 80, 0.16); color: #2e7d32; }
+    .priority-medium { background: rgba(63, 81, 181, 0.14); color: var(--brand); }
+    .priority-high { background: rgba(255, 152, 0, 0.16); color: #e65100; }
+    .priority-critical { background: rgba(211, 47, 47, 0.12); color: #c62828; }
 
     .status-chip {
       padding: 4px 12px;
       border-radius: 20px;
       font-size: 12px;
       font-weight: 600;
+      border: 1px solid var(--border);
     }
     .status-open {
-      background: #f3f4f6;
-      color: #374151;
-      border: 1px solid #e5e7eb;
+      background: color-mix(in srgb, var(--surface-2) 70%, transparent);
+      color: var(--text-muted);
     }
     .status-in_progress {
-      background: rgba(59, 130, 246, 0.1);
-      color: #1d4ed8;
-      border: 1px solid rgba(59, 130, 246, 0.2);
+      background: rgba(63, 81, 181, 0.14);
+      color: var(--brand);
+    }
+    .status-completed {
+      background: rgba(76, 175, 80, 0.16);
+      color: #2e7d32;
     }
     .status-closed {
-      background: rgba(16, 185, 129, 0.1);
-      color: #047857;
-      border: 1px solid rgba(16, 185, 129, 0.2);
+      background: rgba(0, 150, 136, 0.1);
+      color: #00796b;
     }
 
     .empty-message {
       text-align: center;
       padding: 40px;
-      color: #6b7280;
+      color: var(--text-muted);
       font-style: italic;
     }
 

@@ -56,7 +56,7 @@ class DashboardControllerTest {
                 Collections.emptyList(),
                 Collections.emptyList(),
                 Collections.emptyList(),
-                new DashboardDTO.TaskStatusDistribution(5, 5, 20, 30)
+                new DashboardDTO.TaskStatusDistribution(5, 5, 20, 0, 30)
         );
 
         when(dashboardService.getDashboardData()).thenReturn(dto);

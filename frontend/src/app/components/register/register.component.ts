@@ -32,24 +32,31 @@ import { User } from '../../models/user.model';
     .register-page {
       display: flex;
       justify-content: center;
-      padding: 20px;
+      padding: 24px;
     }
     .register-card {
       width: 100%;
-      max-width: 500px;
+      max-width: 650px;
+    }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
     }
     mat-form-field {
       width: 100%;
-      margin-bottom: 10px;
     }
-    .actions {
+    .form-actions {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-top: 10px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
     }
-    .error { color: #f44336; margin-top: 10px; text-align: center; }
-    .success { color: #4caf50; margin-top: 10px; text-align: center; }
+    .error { color: #f44336; margin-top: 16px; text-align: center; }
+    .success { color: #4caf50; margin-top: 16px; text-align: center; }
   `]
 })
 export class RegisterComponent {

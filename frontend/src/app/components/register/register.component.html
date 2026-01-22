@@ -1,74 +1,80 @@
 <div class="register-page">
-  <mat-card class="register-card">
+  <mat-card class="main-card register-card">
     <mat-card-header>
       <mat-card-title>{{ 'ADMIN.CREATE_USER' | translate }}</mat-card-title>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content style="padding: 24px;">
       <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
-        <mat-form-field appearance="fill">
-          <mat-label>{{ 'ADMIN.FIRST_NAME' | translate }}</mat-label>
-          <input matInput name="firstName" [(ngModel)]="user.firstName" required #firstName="ngModel">
-          @if (firstName.invalid && (firstName.dirty || firstName.touched)) {
-            <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
-          }
-        </mat-form-field>
+        <div class="form-grid">
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'ADMIN.FIRST_NAME' | translate }}</mat-label>
+            <input matInput name="firstName" [(ngModel)]="user.firstName" required #firstName="ngModel">
+            @if (firstName.invalid && (firstName.dirty || firstName.touched)) {
+              <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+            }
+          </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>{{ 'ADMIN.LAST_NAME' | translate }}</mat-label>
-          <input matInput name="lastName" [(ngModel)]="user.lastName" required #lastName="ngModel">
-          @if (lastName.invalid && (lastName.dirty || lastName.touched)) {
-            <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
-          }
-        </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'ADMIN.LAST_NAME' | translate }}</mat-label>
+            <input matInput name="lastName" [(ngModel)]="user.lastName" required #lastName="ngModel">
+            @if (lastName.invalid && (lastName.dirty || lastName.touched)) {
+              <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+            }
+          </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>{{ 'ADMIN.LOGIN' | translate }}</mat-label>
-          <input matInput name="login" [(ngModel)]="user.login" required #login="ngModel">
-          @if (login.invalid && (login.dirty || login.touched)) {
-            <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
-          }
-        </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'ADMIN.LOGIN' | translate }}</mat-label>
+            <input matInput name="login" [(ngModel)]="user.login" required #login="ngModel">
+            @if (login.invalid && (login.dirty || login.touched)) {
+              <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+            }
+          </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>{{ 'ADMIN.PASSWORD' | translate }}</mat-label>
-          <input matInput type="password" name="password" [(ngModel)]="user.password" required id="password" #password="ngModel">
-          @if (password.invalid && (password.dirty || password.touched)) {
-            <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
-          }
-        </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'ADMIN.EMAIL' | translate }}</mat-label>
+            <input matInput type="email" name="email" [(ngModel)]="user.email" required email #email="ngModel">
+            @if (email.invalid && (email.dirty || email.touched)) {
+              <mat-error>{{ 'ADMIN.ERROR_EMAIL' | translate }}</mat-error>
+            }
+          </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>{{ 'ADMIN.CONFIRM_PASSWORD' | translate }}</mat-label>
-          <input matInput type="password" name="confirmPassword" [(ngModel)]="confirmPassword" required id="confirm-password" #confirmPwd="ngModel">
-          @if (confirmPwd.invalid && (confirmPwd.dirty || confirmPwd.touched)) {
-            <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
-          }
-          @if (user.password !== confirmPassword && confirmPassword && !confirmPwd.invalid) {
-            <mat-error>{{ 'ADMIN.ERROR_PASSWORD_MATCH' | translate }}</mat-error>
-          }
-        </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'ADMIN.BIRTH_DATE' | translate }}</mat-label>
+            <input matInput [matDatepicker]="picker" name="birthDate" [(ngModel)]="user.birthDate" required #birthDate="ngModel">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+            @if (birthDate.invalid && (birthDate.dirty || birthDate.touched)) {
+              <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+            }
+          </mat-form-field>
 
-        <mat-form-field appearance="fill">
-          <mat-label>{{ 'ADMIN.EMAIL' | translate }}</mat-label>
-          <input matInput type="email" name="email" [(ngModel)]="user.email" required email #email="ngModel">
-          @if (email.invalid && (email.dirty || email.touched)) {
-            <mat-error>{{ 'ADMIN.ERROR_EMAIL' | translate }}</mat-error>
-          }
-        </mat-form-field>
+          <div></div> <!-- Spacer for grid -->
 
-        <mat-form-field appearance="fill">
-          <mat-label>{{ 'ADMIN.BIRTH_DATE' | translate }}</mat-label>
-          <input matInput [matDatepicker]="picker" name="birthDate" [(ngModel)]="user.birthDate" required #birthDate="ngModel">
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-          @if (birthDate.invalid && (birthDate.dirty || birthDate.touched)) {
-            <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
-          }
-        </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'ADMIN.PASSWORD' | translate }}</mat-label>
+            <input matInput type="password" name="password" [(ngModel)]="user.password" required id="password" #password="ngModel">
+            @if (password.invalid && (password.dirty || password.touched)) {
+              <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+            }
+          </mat-form-field>
 
-        <div class="actions">
-          <button mat-raised-button color="primary" type="submit" [disabled]="!registerForm.form.valid || user.password !== confirmPassword" id="register-btn">{{ 'ADMIN.ADD_USER' | translate }}</button>
+          <mat-form-field appearance="outline">
+            <mat-label>{{ 'ADMIN.CONFIRM_PASSWORD' | translate }}</mat-label>
+            <input matInput type="password" name="confirmPassword" [(ngModel)]="confirmPassword" required id="confirm-password" #confirmPwd="ngModel">
+            @if (confirmPwd.invalid && (confirmPwd.dirty || confirmPwd.touched)) {
+              <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+            }
+            @if (user.password !== confirmPassword && confirmPassword && !confirmPwd.invalid) {
+              <mat-error>{{ 'ADMIN.ERROR_PASSWORD_MATCH' | translate }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-actions register-actions">
           <a mat-button routerLink="/login">{{ 'NAV.LOGIN' | translate }}</a>
+          <button mat-flat-button color="primary" type="submit" [disabled]="!registerForm.form.valid || user.password !== confirmPassword" id="register-btn">
+            {{ 'ADMIN.ADD_USER' | translate }}
+          </button>
         </div>
 
         @if (error) {

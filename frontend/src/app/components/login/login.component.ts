@@ -20,23 +20,27 @@ import { MatIconModule } from '@angular/material/icon';
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 80vh;
+      height: 85vh;
+      padding: 24px;
     }
     .login-card {
-      width: 400px;
+      width: 100%;
+      max-width: 420px;
     }
     mat-form-field {
       width: 100%;
-      margin-bottom: 10px;
     }
-    .actions {
+    .form-actions {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
     }
     .error {
       color: #f44336;
-      margin-top: 10px;
+      margin-top: 16px;
       text-align: center;
     }
   `]

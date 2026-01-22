@@ -35,6 +35,7 @@
     "OPEN": "Open",
     "IN_PROGRESS": "In Progress",
     "COMPLETED": "Completed",
+    "CLOSED": "Closed",
     "RECENT_ACTIVITY": "Recent Activity",
     "TIME": "Time",
     "USER": "User",

@@ -1,39 +1,43 @@
 {
-  "family": "angularai-backend",
-  "networkMode": "awsvpc",
-  "containerDefinitions": [
-    {
-      "name": "backend",
-      "image": "426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:1.0.2",
-      "essential": true,
-      "portMappings": [
-        {
-          "containerPort": 8080,
-          "hostPort": 8080,
-          "protocol": "tcp"
-        }
-      ],
-      "environment": [
-        {
-          "name": "SPRING_PROFILES_ACTIVE",
-          "value": "h2"
-        }
-      ],
-      "logConfiguration": {
-        "logDriver": "awslogs",
-        "options": {
-          "awslogs-group": "/ecs/angularai-backend",
-          "awslogs-region": "eu-central-1",
-          "awslogs-stream-prefix": "ecs"
-        }
-      }
-    }
-  ],
-  "requiresCompatibilities": [
-    "FARGATE"
-  ],
-  "cpu": "256",
-  "memory": "512",
-  "executionRoleArn": "arn:aws:iam::426141506813:role/ecsTaskExecutionRole",
-  "taskRoleArn": "arn:aws:iam::426141506813:role/ecsTaskExecutionRole"
+    "family":  "angularai-backend",
+    "networkMode":  "awsvpc",
+    "containerDefinitions":  [
+                                 {
+                                     "name":  "backend",
+                                     "image":  "426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:1.0.3",
+                                     "essential":  true,
+                                     "portMappings":  [
+                                                          {
+                                                              "containerPort":  8080,
+                                                              "hostPort":  8080,
+                                                              "protocol":  "tcp"
+                                                          }
+                                                      ],
+                                     "environment":  [
+                                                         {
+                                                             "name":  "SPRING_PROFILES_ACTIVE",
+                                                             "value":  "h2"
+                                                         },
+                                                         {
+                                                             "name":  "IPSTACK_API_KEY",
+                                                             "value":  "PLACEHOLDER_IPSTACK_API_KEY"
+                                                         }
+                                                     ],
+                                     "logConfiguration":  {
+                                                              "logDriver":  "awslogs",
+                                                              "options":  {
+                                                                              "awslogs-group":  "/ecs/angularai-backend",
+                                                                              "awslogs-region":  "eu-central-1",
+                                                                              "awslogs-stream-prefix":  "ecs"
+                                                                          }
+                                                          }
+                                 }
+                             ],
+    "requiresCompatibilities":  [
+                                    "FARGATE"
+                                ],
+    "cpu":  "256",
+    "memory":  "512",
+    "executionRoleArn":  "arn:aws:iam::426141506813:role/ecsTaskExecutionRole",
+    "taskRoleArn":  "arn:aws:iam::426141506813:role/ecsTaskExecutionRole"
 }

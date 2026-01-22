@@ -1,15 +1,16 @@
 <div class="login-page">
-  <mat-card class="login-card">
+  <mat-card class="main-card login-card">
     <mat-card-header>
       <mat-card-title>{{ 'NAV.LOGIN' | translate }}</mat-card-title>
     </mat-card-header>
-    <mat-card-content>
+    <mat-card-content style="padding: 24px;">
       <form (ngSubmit)="onSubmit()">
-        <mat-form-field appearance="fill">
+        <mat-form-field appearance="outline">
           <mat-label>{{ 'ADMIN.LOGIN' | translate }}</mat-label>
           <input matInput type="text" name="login" [(ngModel)]="login" required>
         </mat-form-field>
-        <mat-form-field appearance="fill">
+
+        <mat-form-field appearance="outline">
           <mat-label>{{ 'ADMIN.PASSWORD' | translate }}</mat-label>
           <input matInput [type]="hidePassword ? 'password' : 'text'" name="password" [(ngModel)]="password" required>
           <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword" type="button">
@@ -17,12 +18,14 @@
           </button>
         </mat-form-field>
 
-        <div class="actions">
+        <div class="form-actions login-actions">
           <a mat-button routerLink="/register">{{ 'ADMIN.ADD_USER' | translate }}</a>
-          <button mat-raised-button color="primary" type="submit" id="login-btn">{{ 'NAV.LOGIN' | translate }}</button>
+          <button mat-flat-button color="primary" type="submit" id="login-btn">{{ 'NAV.LOGIN' | translate }}</button>
         </div>
 
-        <p id="login-error" class="error" *ngIf="error">{{ error | translate }}</p>
+        @if (error) {
+          <p id="login-error" class="error">{{ error | translate }}</p>
+        }
       </form>
     </mat-card-content>
   </mat-card>

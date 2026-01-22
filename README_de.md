@@ -22,12 +22,13 @@ Die Anwendung ist verfügbar unter:
 
 ## Deployment-Skripte
 
-Skripte für gängige Deployment-Aufgaben finden Sie im Ordner `scripts/` (PowerShell und Windows CMD):
+Skripte für gängige Deployment-Aufgaben finden Sie im Ordner `scripts/` (PowerShell und Windows CMD). **Hinweis: PowerShell-Skripte laden Variablen automatisch aus Ihrer lokalen `.env`-Datei.**
 
 - **Lokales Docker-Deployment**: `.\scripts\deploy-local.ps1` oder `.\scripts\deploy-local.bat`
   - Führt `docker compose up --build -d` aus, um die Anwendung lokal im Hintergrund zu starten.
 - **AWS-Deployment**: `.\scripts\deploy-aws.ps1` oder `.\scripts\deploy-aws.bat`
   - Authentifiziert sich bei AWS ECR, erstellt, taggt und pusht Frontend- und Backend-Images und erzwingt ein neues Deployment auf ECS-Services.
+- **Umgebung laden**: Das Skript `load-env.ps1` wird von anderen PowerShell-Skripten verwendet, um sicherzustellen, dass sensible Schlüssel (wie `IPSTACK_API_KEY`) in der Sitzung verfügbar sind.
 
 ## Projektstruktur
 
@@ -38,8 +39,10 @@ Skripte für gängige Deployment-Aufgaben finden Sie im Ordner `scripts/` (Power
 
 ## Entwicklung
 
-### Backend
-Navigieren Sie zu `backend/` und führen Sie `./mvnw spring-boot:run` aus.
+### IntelliJ IDEA Setup
+Um das Backend von IntelliJ auszuführen, müssen Sie sicherstellen, dass die erforderlichen Umgebungsvariablen (wie `IPSTACK_API_KEY`) verfügbar sind.
+- Sie können diese manuell zu Ihren Run-Konfigurationen hinzufügen.
+- Alternativ können Sie ein Plugin wie **EnvFile** verwenden, um die `.env`-Datei automatisch in Ihre Run-Konfigurationen zu laden. **Übergeben (commit) Sie diese Schlüssel niemals an Git.**
 
 ### Frontend (Web)
 Navigieren Sie zu `frontend/` und führen Sie `npm install` und dann `npm start` aus.

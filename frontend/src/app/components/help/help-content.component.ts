@@ -13,24 +13,23 @@ import { I18nService } from '../../services/i18n.service';
   templateUrl: './help-content.component.html',
   styles: [`
     .help-container {
-      padding: 24px;
       max-width: 900px;
       margin: 0 auto;
     }
     .help-card {
-      padding: 16px;
+      /* Padding is now handled by mat-card-content */
     }
-    ::ng-deep .help-content h1 { font-size: 2.2rem; margin-bottom: 1.5rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
-    ::ng-deep .help-content h2 { font-size: 1.8rem; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 1px solid #f0f0f0; }
-    ::ng-deep .help-content h3 { font-size: 1.4rem; margin-top: 1.5rem; }
-    ::ng-deep .help-content p { line-height: 1.6; margin-bottom: 1rem; color: #333; }
-    ::ng-deep .help-content ul, ::ng-deep .help-content ol { margin-bottom: 1rem; padding-left: 2rem; }
+    ::ng-deep .help-content h1 { font-size: 2.2rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; color: var(--text); }
+    ::ng-deep .help-content h2 { font-size: 1.8rem; margin-top: 2rem; margin-bottom: 1rem; border-bottom: 1px solid var(--border); color: var(--text); }
+    ::ng-deep .help-content h3 { font-size: 1.4rem; margin-top: 1.5rem; color: var(--text); }
+    ::ng-deep .help-content p { line-height: 1.6; margin-bottom: 1rem; color: var(--text); }
+    ::ng-deep .help-content ul, ::ng-deep .help-content ol { margin-bottom: 1rem; padding-left: 2rem; color: var(--text); }
     ::ng-deep .help-content li { margin-bottom: 0.5rem; }
-    ::ng-deep .help-content code { background-color: #f5f5f5; padding: 2px 4px; border-radius: 4px; font-family: monospace; }
-    ::ng-deep .help-content pre { background-color: #f5f5f5; padding: 1rem; border-radius: 8px; overflow-x: auto; margin-bottom: 1rem; }
-    ::ng-deep .help-content pre code { background-color: transparent; padding: 0; }
-    ::ng-deep .help-content blockquote { border-left: 4px solid #ddd; padding-left: 1rem; margin-left: 0; color: #666; font-style: italic; }
-    ::ng-deep .help-content a { color: #3f51b5; text-decoration: none; cursor: pointer; }
+    ::ng-deep .help-content code { background-color: var(--surface-2); padding: 2px 4px; border-radius: 4px; font-family: monospace; color: var(--brand); }
+    ::ng-deep .help-content pre { background-color: var(--surface-2); padding: 1rem; border-radius: 8px; overflow-x: auto; margin-bottom: 1rem; border: 1px solid var(--border); }
+    ::ng-deep .help-content pre code { background-color: transparent; padding: 0; color: var(--text); }
+    ::ng-deep .help-content blockquote { border-left: 4px solid var(--brand); padding-left: 1rem; margin-left: 0; color: var(--text-muted); font-style: italic; }
+    ::ng-deep .help-content a { color: var(--brand); text-decoration: none; cursor: pointer; }
     ::ng-deep .help-content a:hover { text-decoration: underline; }
   `]
 })

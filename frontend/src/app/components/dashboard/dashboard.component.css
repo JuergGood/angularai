@@ -217,18 +217,28 @@
   background-color: color-mix(in srgb, var(--surface-2) 70%, transparent);
 }
 
+body.theme-dark .full-width-table tr:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
 .full-width-table tr:hover {
   background-color: var(--brand-weak) !important;
 }
 
+body.theme-dark .full-width-table tr:hover {
+  background-color: rgba(138, 162, 255, 0.08) !important;
+}
+
 .full-width-table th {
-  font-weight: 600;
-  color: var(--text-muted);
+  color: var(--text) !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
   text-transform: uppercase;
-  font-size: 11px;
   letter-spacing: 0.5px;
   padding: 12px 16px !important;
   background-color: var(--surface-2) !important;
+  opacity: 0.7;
+  font-family: inherit !important;
 }
 
 .full-width-table td {
@@ -271,12 +281,20 @@
   font-weight: 800;
 }
 
+body.theme-dark .percentage {
+  fill: var(--text);
+}
+
 .label {
   fill: var(--text-muted);
   font-family: sans-serif;
   font-size: 0.2rem;
   text-anchor: middle;
   font-weight: 500;
+}
+
+body.theme-dark .label {
+  fill: var(--text-muted);
 }
 
 .interactive-card {
@@ -380,6 +398,11 @@ mat-card-title {
 
 .due-chip {
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
 }
 
 .due-chip.danger {
@@ -435,6 +458,7 @@ mat-card-title {
 .dot.open { background-color: #3f51b5; }
 .dot.progress { background-color: #2196f3; }
 .dot.completed { background-color: #4caf50; }
+.dot.closed { background-color: #009688; }
 
 .empty-msg {
   padding: 32px;
@@ -444,65 +468,83 @@ mat-card-title {
 }
 
 
-/* KPI delta as chip */
 .stat-chip-set {
   display: flex;
   justify-content: center;
   margin-top: 6px;
 }
 
-.delta-chip {
+.custom-delta-chip {
   font-size: 0.78rem;
-  font-weight: 600;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
   border: 1px solid var(--border);
 }
 
-/* KPI delta chips: semantic look (do not rely on Material theme colors) */
-.summary-card.tasks .delta-chip {
-  background: rgba(76, 175, 80, 0.16) !important;
-  color: #2e7d32 !important;
+.tasks-chip {
+  background-color: rgba(76, 175, 80, 0.16);
+  color: #2e7d32;
 }
 
-.summary-card.users .delta-chip,
-.summary-card.completed .delta-chip {
-  background: rgba(63, 81, 181, 0.14) !important;
-  color: var(--brand) !important;
+.users-chip, .completed-chip {
+  background-color: rgba(63, 81, 181, 0.14);
+  color: var(--brand);
 }
 
-.summary-card.logs .delta-chip {
-  background: rgba(33, 150, 243, 0.14) !important;
-  color: #1565c0 !important;
+.logs-chip {
+  background-color: rgba(33, 150, 243, 0.14);
+  color: #1565c0;
 }
 
-/* Recent Activity action chips */
-.action-chip {
-  height: 22px;
-  font-size: 0.75rem;
-  font-weight: 600;
-  border: 1px solid var(--border);
+/* Aggressive Dark Mode Overrides for Custom Chips */
+body.theme-dark .custom-delta-chip {
+  border-color: transparent !important;
+  font-weight: 800 !important;
 }
 
-.action-chip.action-login {
-  background: rgba(63, 81, 181, 0.14) !important;
-  color: var(--brand) !important;
+body.theme-dark .tasks-chip {
+  background-color: #a5d6a7 !important;
+  color: #000000 !important;
 }
 
-.action-chip.action-logout {
-  background: rgba(211, 47, 47, 0.12) !important;
-  color: #c62828 !important;
+body.theme-dark .users-chip,
+body.theme-dark .completed-chip {
+  background-color: #8aa2ff !important;
+  color: #000000 !important;
 }
 
-.action-chip.action-neutral {
-  background: color-mix(in srgb, var(--surface-2) 70%, transparent) !important;
-  color: var(--text-muted) !important;
+body.theme-dark .logs-chip {
+  background-color: #90caf9 !important;
+  color: #000000 !important;
 }
 
-/* User role chips */
 .role-chip {
   height: 22px;
-  font-size: 0.75rem;
+  padding: 0 10px;
+  border-radius: 12px;
+  font-size: 12px;
   font-weight: 600;
+  display: inline-flex;
+  align-items: center;
   border: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.action-chip {
+  height: 22px;
+  padding: 0 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .role-chip.role-admin {
@@ -510,9 +552,19 @@ mat-card-title {
   color: #e65100 !important;
 }
 
+body.theme-dark .role-chip.role-admin {
+  background: rgba(255, 152, 0, 0.25) !important;
+  color: #ffb74d !important;
+}
+
 .role-chip.role-admin-read {
   background: rgba(63, 81, 181, 0.14) !important;
   color: var(--brand) !important;
+}
+
+body.theme-dark .role-chip.role-admin-read {
+  background: rgba(138, 162, 255, 0.2) !important;
+  color: #8aa2ff !important;
 }
 
 .role-chip.role-user {
@@ -520,9 +572,19 @@ mat-card-title {
   color: #2e7d32 !important;
 }
 
+body.theme-dark .role-chip.role-user {
+  background: rgba(76, 175, 80, 0.25) !important;
+  color: #81c784 !important;
+}
+
 .role-chip.role-neutral {
   background: color-mix(in srgb, var(--surface-2) 70%, transparent) !important;
   color: var(--text-muted) !important;
+}
+
+body.theme-dark .role-chip.role-neutral {
+  background: rgba(255, 255, 255, 0.1) !important;
+  color: rgba(255, 255, 255, 0.7) !important;
 }
 
 

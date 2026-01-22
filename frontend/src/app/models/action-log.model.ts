@@ -4,6 +4,12 @@ export interface ActionLog {
     login: string;
     action: string;
     details: string;
+    ipAddress?: string;
+    country?: string;
+    city?: string;
+    latitude?: number;
+    longitude?: number;
+    userAgent?: string;
 }
 
 export interface ActionLogResponse {

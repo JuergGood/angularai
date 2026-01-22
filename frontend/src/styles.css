@@ -2,6 +2,8 @@
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
 
 :root {
+  color-scheme: light dark;
+
   /* Surfaces */
   --bg: #f8f9fa;
   --surface: #ffffff;
@@ -38,6 +40,117 @@ body.theme-dark {
 
   --brand: #8aa2ff;
   --brand-weak: rgba(138, 162, 255, 0.14);
+}
+
+/* Ensure all parts of the material text field use the --surface token and handle autofill */
+.mdc-text-field:not(.mdc-text-field--disabled),
+.mat-mdc-text-field-wrapper,
+.mat-mdc-form-field-flex,
+.mdc-text-field--filled:not(.mdc-text-field--disabled),
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) {
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+}
+
+/* Material Select, Option and Menu global dark mode fixes */
+body.theme-dark .mat-mdc-select-value,
+body.theme-dark .mat-mdc-select-arrow {
+  color: var(--text) !important;
+}
+
+body.theme-dark .mat-mdc-option {
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+}
+
+body.theme-dark .mat-mdc-option.mdc-list-item--selected:not(.mdc-list-item--disabled) .mdc-list-item__primary-text {
+  color: var(--brand) !important;
+}
+
+body.theme-dark .mat-mdc-select-panel,
+body.theme-dark .mat-mdc-menu-panel,
+body.theme-dark .mat-mdc-autocomplete-panel {
+  background-color: var(--surface) !important;
+  border: 1px solid var(--border);
+}
+
+/* Dialogs */
+body.theme-dark .mat-mdc-dialog-container .mdc-dialog__surface {
+  background-color: var(--surface) !important;
+  color: var(--text);
+}
+
+body.theme-dark .mat-mdc-dialog-title {
+  color: var(--text) !important;
+}
+
+body.theme-dark .mat-mdc-dialog-content {
+  color: var(--text-muted) !important;
+}
+
+/* Tables */
+body.theme-dark .mat-mdc-table {
+  background-color: var(--surface) !important;
+}
+
+body.theme-dark .mat-mdc-header-cell {
+  background-color: var(--surface-2) !important;
+  color: var(--text) !important;
+}
+
+body.theme-dark .mat-mdc-row:nth-child(even) {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+body.theme-dark .mat-mdc-cell {
+  color: var(--text) !important;
+}
+
+/* Fix for background-line artifact: ensure notch and flex containers have transparent background
+   so they don't create overlapping layers over the notch. Focus overlay should also be transparent
+   to avoid layering issues when focused. */
+.mat-mdc-form-field-focus-overlay,
+.mdc-text-field__ripple,
+.mdc-notched-outline,
+.mdc-notched-outline__leading,
+.mdc-notched-outline__notch,
+.mdc-notched-outline__trailing,
+.mdc-notched-outline__leading::before,
+.mdc-notched-outline__leading::after,
+.mdc-notched-outline__notch::before,
+.mdc-notched-outline__notch::after,
+.mdc-notched-outline__trailing::before,
+.mdc-notched-outline__trailing::after {
+  background-color: transparent !important;
+  background: transparent !important;
+}
+
+/* Specific fix for vertical line artifact in outlined fields:
+   The notch segments often have borders that can create double lines or artifacts
+   when customized. Ensure internal borders that might create vertical lines are suppressed
+   while maintaining the main outline. */
+.mdc-notched-outline__notch {
+  border-left: none !important;
+  border-right: none !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--text) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--surface) inset !important;
+  transition: background-color 5000s ease-in-out 0s !important;
+}
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__leading,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__notch,
+.mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-notched-outline__trailing {
+  border-color: var(--border) !important;
 }
 
 html, body {
@@ -83,12 +196,6 @@ body {
 }
 
 /* Form fields (filter/search) look very "light" otherwise in dark mode */
-body.theme-dark .mdc-text-field,
-body.theme-dark .mdc-text-field--filled,
-body.theme-dark .mdc-text-field--outlined {
-  background: var(--surface-2) !important;
-}
-
 body.theme-dark .mat-mdc-form-field-focus-overlay {
   background: transparent !important;
 }
@@ -115,7 +222,171 @@ body.theme-dark .mdc-floating-label {
   color: var(--text) !important;
 }
 
-/* Subtle dividers in both themes */
+/* Page Container */
+.page-container {
+  padding: 24px;
+  background-color: var(--bg);
+}
+
+/* Buttons */
+body.theme-dark .mat-mdc-button:not(.mat-mdc-button-base[disabled]),
+body.theme-dark .mat-mdc-unelevated-button:not(.mat-mdc-button-base[disabled]),
+body.theme-dark .mat-mdc-raised-button:not(.mat-mdc-button-base[disabled]),
+body.theme-dark .mat-mdc-outlined-button:not(.mat-mdc-button-base[disabled]) {
+  color: var(--text) !important;
+}
+
+body.theme-dark .mat-mdc-flat-button.mat-primary {
+  background-color: var(--brand) !important;
+  color: #0b1220 !important; /* Dark text on bright brand primary button */
+}
+
+body.theme-dark .mat-mdc-button.mat-warn,
+body.theme-dark .mat-mdc-outlined-button.mat-warn {
+  color: #ff8a80 !important;
+}
+
+/* Breadcrumbs / Chips / Mini-items (Dashboard today breadcrumbs etc) */
+body.theme-dark .due-chip,
+body.theme-dark .status-chip,
+body.theme-dark .priority-chip {
+  filter: brightness(1.2);
+}
+
+body.theme-dark .priority-row .priority-title {
+  color: var(--text) !important;
+}
+
+/* Global Text Colors */
+body.theme-dark {
+  --mdc-theme-text-primary-on-background: var(--text);
+  --mdc-theme-text-secondary-on-background: var(--text-muted);
+  --mdc-theme-text-hint-on-background: var(--text-muted);
+  --mdc-theme-text-disabled-on-background: rgba(255, 255, 255, 0.3);
+  --mdc-theme-text-icon-on-background: var(--text-muted);
+}
+
+/* Standard Material Surface overrides */
+body.theme-dark .mat-mdc-card {
+  --mdc-elevated-card-container-color: var(--surface);
+  --mdc-elevated-card-text-label-text-color: var(--text);
+}
+
+body.theme-dark .mat-divider {
+  border-top-color: var(--border) !important;
+}
+
 .mat-divider {
   border-top-color: var(--border) !important;
+}
+
+/* Fix for black text on primary buttons */
+body.theme-dark .mat-mdc-flat-button.mat-primary .mdc-button__label,
+body.theme-dark .mat-mdc-raised-button.mat-primary .mdc-button__label {
+  color: #000 !important;
+  font-weight: 700;
+}
+
+/* Zebra striping + Table headers */
+body.theme-dark .mat-mdc-header-row {
+  background-color: var(--surface-2) !important;
+}
+
+/* Specific fix for breadcrumbs/today in dashboard */
+body.theme-dark .priority-sub {
+  color: var(--text-muted) !important;
+}
+
+/* Material Datepicker Icon Fix */
+body.theme-dark .mat-datepicker-toggle,
+body.theme-dark .mat-datepicker-content .mat-calendar-next-button,
+body.theme-dark .mat-datepicker-content .mat-calendar-previous-button {
+  color: var(--text) !important;
+}
+
+body.theme-dark .mat-mdc-button-base .mat-mdc-button-touch-target + .mat-icon {
+  color: var(--text) !important;
+}
+
+/* Global Material Icon color in dark mode */
+body.theme-dark mat-icon:not(.mat-primary mat-icon):not(.mat-warn mat-icon):not(.mat-accent mat-icon) {
+  color: #ffffff !important;
+  opacity: 0.9 !important;
+}
+
+/* Aggressive Dark Mode Overrides for Sidenav and Muted text */
+body.theme-dark {
+  /* Sidenav overrides */
+  --mdc-list-list-item-label-text-color: #ffffff !important;
+  --mdc-list-list-item-leading-icon-color: #ffffff !important;
+}
+
+body.theme-dark .mat-mdc-list-item-title,
+body.theme-dark .mat-mdc-list-item-content,
+body.theme-dark .mat-mdc-nav-list .mat-mdc-list-item,
+body.theme-dark .mat-mdc-nav-list .mat-mdc-list-item .mat-icon,
+body.theme-dark .mdc-list-item__primary-text {
+  color: #ffffff !important;
+  opacity: 1 !important;
+}
+
+body.theme-dark .mat-mdc-list-item:not(.active-link) {
+  opacity: 0.9 !important;
+}
+
+body.theme-dark .mat-mdc-list-item .mat-icon:not(.active-link mat-icon) {
+  opacity: 0.8 !important;
+}
+
+/* Global Muted text contrast */
+body.theme-dark .muted,
+body.theme-dark .text-muted,
+body.theme-dark .priority-sub {
+  color: #ffffff !important;
+  opacity: 0.8 !important;
+}
+
+body.theme-dark .mat-mdc-card-subtitle,
+body.theme-dark .mat-card-subtitle {
+  color: #ffffff !important;
+  opacity: 0.7 !important;
+}
+
+/* High Contrast Fix for Chips in Dark Mode (Deterministic Override) */
+body.theme-dark .high-contrast-chip,
+body.theme-dark .mat-mdc-chip.high-contrast-chip,
+body.theme-dark .mat-mdc-standard-chip.high-contrast-chip {
+  opacity: 1 !important;
+  --mdc-chip-label-text-color: #000000 !important;
+  --mdc-chip-elevated-container-color: #ffffff !important;
+  --mdc-chip-selected-label-text-color: #000000 !important;
+}
+
+body.theme-dark .high-contrast-chip .mdc-chip__text-label,
+body.theme-dark .mat-mdc-chip.high-contrast-chip .mdc-chip__text-label {
+  color: #000000 !important;
+  font-weight: 800 !important;
+}
+
+/* Specific colors for summary categories in dark mode */
+body.theme-dark .summary-card.tasks .high-contrast-chip {
+  --mdc-chip-elevated-container-color: #a5d6a7 !important; /* Vibrant Green */
+  background-color: #a5d6a7 !important;
+}
+
+body.theme-dark .summary-card.users .high-contrast-chip,
+body.theme-dark .summary-card.completed .high-contrast-chip {
+  --mdc-chip-elevated-container-color: #8aa2ff !important; /* Vibrant Blue */
+  background-color: #8aa2ff !important;
+}
+
+body.theme-dark .summary-card.logs .high-contrast-chip {
+  --mdc-chip-elevated-container-color: #90caf9 !important; /* Vibrant Light Blue */
+  background-color: #90caf9 !important;
+}
+
+/* Ensure the background applies even if Material's internal theme tries to override */
+body.theme-dark .mat-mdc-chip.high-contrast-chip .mdc-chip__container,
+body.theme-dark .mat-mdc-chip.high-contrast-chip .mdc-chip__content {
+  background-color: inherit !important;
 }
