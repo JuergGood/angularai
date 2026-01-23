@@ -40,8 +40,6 @@ The files are located in the new `deploy/aws/` directory:
 
 Failure to replace `426141506813` in the `executionRoleArn` and `taskRoleArn` fields will result in a `ClientException: Role is not valid` error.
 
-**Note for PowerShell users:** Placeholders like `YOUR-RDS-ENDPOINT` are written in plain text. If you see documentation with angle brackets like `<PLACEHOLDER>`, avoid using them in PowerShell as they are reserved for redirection.
-
 Once edited, you can register these task definitions using the AWS CLI:
 
 ```bash

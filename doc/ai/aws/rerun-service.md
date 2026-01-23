@@ -88,8 +88,6 @@ aws ecs update-service --cluster angular-boot --service angularai-backend-test-s
 ```
 *(Repeat for `angularai-frontend-service` if needed)*
 
-**Note for PowerShell users:** If you use angle brackets like `<CLUSTER-NAME>`, PowerShell might throw a `ParserError`. Use plain text placeholders instead.
-
 **Via AWS Management Console:**
 1.  Navigate to the **Amazon ECS Console**.
 2.  Select your **Cluster**.

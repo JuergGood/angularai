@@ -117,13 +117,16 @@ public class TaskController {
         if (sort != null) {
             switch (sort) {
                 case "DUE_ASC":
-                    sortObj = Sort.by(Sort.Direction.ASC, "dueDate").and(Sort.by(Sort.Direction.ASC, "position"));
+                    sortObj = Sort.by(Sort.Direction.ASC, DUE_DATE).and(Sort.by(Sort.Direction.ASC, POSITION));
                     break;
                 case "PRIO_DESC":
-                    sortObj = Sort.by(Sort.Direction.DESC, "priority").and(Sort.by(Sort.Direction.ASC, "position"));
+                    sortObj = Sort.by(Sort.Direction.DESC, PRIORITY).and(Sort.by(Sort.Direction.ASC, POSITION));
                     break;
                 case "UPDATED_DESC":
                     sortObj = Sort.by(Sort.Direction.DESC, "updatedAt");
+                    break;
+                default:
+                    // Default sorting already set
                     break;
             }
         }

@@ -153,6 +153,97 @@ select:-webkit-autofill:focus {
   border-color: var(--border) !important;
 }
 
+/* Material Datepicker Dark Mode Fix */
+body.theme-dark .mat-datepicker-content,
+body.theme-dark .mat-calendar,
+body.theme-dark .mat-mdc-paginator {
+  background-color: var(--surface) !important;
+  color: var(--text) !important;
+}
+
+body.theme-dark .mat-mdc-paginator-container {
+  color: var(--text) !important;
+}
+
+body.theme-dark .mat-mdc-paginator-page-size-label,
+body.theme-dark .mat-mdc-paginator-range-label {
+  color: var(--text-muted) !important;
+}
+
+body.theme-dark .mat-calendar-body-label,
+body.theme-dark .mat-calendar-body-cell-content,
+body.theme-dark .mat-calendar-table-header th {
+  color: var(--text) !important;
+}
+
+body.theme-dark .mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+  border-color: var(--brand) !important;
+}
+
+body.theme-dark .mat-calendar-arrow {
+  fill: var(--text) !important;
+}
+
+/* Material Chips Dark Mode Fix (Unselected Chips) - Aggressive Overrides */
+body.theme-dark .mat-mdc-chip-option:not(.mdc-chip--selected),
+body.theme-dark .mat-mdc-chip:not(.mdc-chip--selected),
+body.theme-dark .mat-mdc-standard-chip:not(.mdc-chip--selected),
+body.theme-dark .mat-mdc-chip-listbox .mat-mdc-chip-option:not(.mdc-chip--selected) {
+  --mdc-chip-elevated-unselected-container-color: var(--surface-2) !important;
+  --mdc-chip-label-text-color: var(--text) !important;
+  --mdc-chip-with-icon-leading-icon-color: var(--text) !important;
+  --mdc-chip-flat-unselected-outline-color: var(--border) !important;
+  --mdc-chip-flat-unselected-container-color: var(--surface-2) !important;
+  --mdc-chip-unselected-flat-label-text-color: var(--text) !important;
+  background-color: var(--surface-2) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border) !important;
+}
+
+body.theme-dark .mat-mdc-chip-option:not(.mdc-chip--selected) .mdc-chip__container,
+body.theme-dark .mat-mdc-chip:not(.mdc-chip--selected) .mdc-chip__container,
+body.theme-dark .mat-mdc-standard-chip:not(.mdc-chip--selected) .mdc-chip__container,
+body.theme-dark .mat-mdc-chip .mdc-chip__container,
+body.theme-dark .mat-mdc-chip-option:not(.mdc-chip--selected) .mdc-chip__content,
+body.theme-dark .mat-mdc-chip:not(.mdc-chip--selected) .mdc-chip__content,
+body.theme-dark .mat-mdc-standard-chip:not(.mdc-chip--selected) .mdc-chip__content,
+body.theme-dark .mat-mdc-chip .mdc-chip__content {
+  background-color: inherit !important;
+}
+
+body.theme-dark .mat-mdc-chip-option:not(.mdc-chip--selected) .mdc-chip__text-label,
+body.theme-dark .mat-mdc-chip:not(.mdc-chip--selected) .mdc-chip__text-label,
+body.theme-dark .mat-mdc-standard-chip:not(.mdc-chip--selected) .mdc-chip__text-label,
+body.theme-dark .mat-mdc-chip .mdc-chip__text-label {
+  color: inherit !important;
+  opacity: 1 !important;
+}
+
+body.theme-dark .mat-mdc-chip-option:not(.mdc-chip--selected) mat-icon,
+body.theme-dark .mat-mdc-chip:not(.mdc-chip--selected) mat-icon,
+body.theme-dark .mat-mdc-standard-chip:not(.mdc-chip--selected) mat-icon,
+body.theme-dark .mat-mdc-chip mat-icon {
+  color: var(--text) !important;
+  opacity: 1 !important;
+}
+
+body.theme-dark .mat-mdc-chip-option.mdc-ripple-upgraded--background-focused,
+body.theme-dark .mat-mdc-chip-option:hover {
+  --mdc-chip-elevated-unselected-container-color: var(--brand-weak) !important;
+}
+
+body.theme-dark .mat-mdc-chip-option.mdc-chip--selected {
+  --mdc-chip-elevated-selected-container-color: var(--brand) !important;
+  --mdc-chip-selected-label-text-color: #0b1220 !important;
+}
+
+/* Quick Add Hint Dark Mode Fix */
+body.theme-dark .goodone-hint,
+body.theme-dark .mat-mdc-form-field-hint {
+  color: var(--text-muted) !important;
+  opacity: 0.9 !important;
+}
+
 html, body {
   height: 100%;
 }
@@ -310,8 +401,27 @@ body.theme-dark .mat-mdc-button-base .mat-mdc-button-touch-target + .mat-icon {
 
 /* Global Material Icon color in dark mode */
 body.theme-dark mat-icon:not(.mat-primary mat-icon):not(.mat-warn mat-icon):not(.mat-accent mat-icon) {
-  color: #ffffff !important;
+  color: var(--text) !important;
   opacity: 0.9 !important;
+}
+
+/* Material Checkbox Dark Mode Fix */
+body.theme-dark .mat-mdc-checkbox .mdc-checkbox__native-control:enabled:not(:checked) ~ .mdc-checkbox__background {
+  border-color: rgba(255, 255, 255, 0.7) !important;
+}
+
+body.theme-dark .mat-mdc-checkbox .mdc-checkbox__native-control:enabled:checked ~ .mdc-checkbox__background {
+  border-color: var(--brand) !important;
+  background-color: var(--brand) !important;
+}
+
+body.theme-dark .mat-mdc-checkbox .mdc-checkbox__native-control:enabled ~ .mdc-checkbox__background .mdc-checkbox__checkmark {
+  color: #0b1220 !important;
+}
+
+/* Material Checkbox hover state in dark mode */
+body.theme-dark .mat-mdc-checkbox:hover .mdc-checkbox__native-control:enabled:not(:checked) ~ .mdc-checkbox__background {
+  border-color: #ffffff !important;
 }
 
 /* GoodOne Custom Tooltip */
@@ -417,4 +527,21 @@ body.theme-dark .summary-card.logs .high-contrast-chip {
 body.theme-dark .mat-mdc-chip.high-contrast-chip .mdc-chip__container,
 body.theme-dark .mat-mdc-chip.high-contrast-chip .mdc-chip__content {
   background-color: inherit !important;
+}
+
+/* Fix for unselected chips in Quick Add Task preview */
+body.theme-dark .parsed-preview .mat-mdc-chip:not(.high-contrast-chip) .mdc-chip__container,
+body.theme-dark .parsed-preview .mat-mdc-chip:not(.high-contrast-chip) .mdc-chip__content,
+body.theme-dark .parsed-preview .mat-mdc-chip:not(.high-contrast-chip),
+body.theme-dark .mat-mdc-chip:not(.mdc-chip--selected):not(.high-contrast-chip) {
+  --mdc-chip-elevated-unselected-container-color: var(--surface-2) !important;
+  --mdc-chip-label-text-color: var(--text) !important;
+  background-color: var(--surface-2) !important;
+  border: 1px solid var(--border) !important;
+}
+
+body.theme-dark .parsed-preview .mat-mdc-chip:not(.high-contrast-chip) .mdc-chip__text-label,
+body.theme-dark .mat-mdc-chip:not(.mdc-chip--selected):not(.high-contrast-chip) .mdc-chip__text-label {
+  color: var(--text) !important;
+  opacity: 1 !important;
 }

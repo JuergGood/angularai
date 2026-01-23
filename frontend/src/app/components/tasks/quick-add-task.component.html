@@ -21,7 +21,6 @@
   @if (parsedTask(); as task) {
     @if (titleControl.value.trim()) {
       <div class="parsed-preview">
-        <mat-chip-listbox>
           @if (task.title) {
             <mat-chip class="preview-chip title-chip">
               <mat-icon matChipAvatar>title</mat-icon>
@@ -41,18 +40,17 @@
             </mat-chip>
           }
           @if (task.priority) {
-            <mat-chip class="preview-chip prio-chip" [ngClass]="'prio-' + task.priority.toLowerCase()">
+            <mat-chip class="preview-chip prio-chip high-contrast-chip" [ngClass]="'prio-' + task.priority.toLowerCase()">
               <mat-icon matChipAvatar>priority_high</mat-icon>
               {{ 'TASKS.PRIORITY.' + task.priority | translate }}
             </mat-chip>
           }
           @if (task.status) {
-            <mat-chip class="preview-chip status-chip" [ngClass]="'status-' + task.status.toLowerCase()">
+            <mat-chip class="preview-chip status-chip high-contrast-chip" [ngClass]="'status-' + task.status.toLowerCase()">
               <mat-icon matChipAvatar>info</mat-icon>
               {{ 'TASKS.STATUS.' + task.status | translate }}
             </mat-chip>
           }
-        </mat-chip-listbox>
       </div>
     }
   }

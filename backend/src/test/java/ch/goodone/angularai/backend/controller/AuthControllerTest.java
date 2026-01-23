@@ -19,8 +19,6 @@ import tools.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
@@ -60,7 +58,7 @@ class AuthControllerTest {
                 .andExpect(jsonPath("$.firstName").value("Admin"))
                 .andExpect(jsonPath("$.email").value("admin@example.com"));
 
-        verify(actionLogService).logLogin(eq(login), eq("1.2.3.4"), eq("Mozilla/5.0"));
+        verify(actionLogService).logLogin(login, "1.2.3.4", "Mozilla/5.0");
     }
 
     @Test

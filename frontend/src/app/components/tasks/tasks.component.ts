@@ -87,20 +87,22 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
       align-items: center;
       gap: 16px;
       padding: 8px 16px;
-      background: #f3f4f6;
+      background: var(--surface-2);
       border-radius: 8px;
       margin-bottom: 16px;
       font-size: 14px;
+      color: var(--text);
     }
     .task-card {
       margin-bottom: 12px;
       border-radius: 8px;
-      border: 1px solid #e5e7eb !important;
+      border: 1px solid var(--border) !important;
+      background: var(--surface);
       box-shadow: none !important;
       transition: all 0.2s ease;
     }
     .task-card:hover {
-      border-color: var(--primary) !important;
+      border-color: var(--brand) !important;
       box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
     }
     .task-card.cdk-drag-placeholder {
@@ -146,18 +148,18 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
     }
     .task-title-text {
       font-size: 16px;
-      color: #374151;
+      color: var(--text);
     }
     .task-title-text.done {
       text-decoration: line-through;
-      color: #9ca3af;
+      color: var(--text-muted);
     }
     .task-meta-info {
       display: flex;
       align-items: center;
       gap: 12px;
       font-size: 14px;
-      color: #6b7280;
+      color: var(--text-muted);
     }
     .due-date-info.overdue {
       color: #ef4444;
@@ -171,9 +173,9 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
       text-transform: uppercase;
     }
     .priority-critical { background: #7f1d1d; color: #ffffff; }
-    .priority-high { background: #fee2e2; color: #ef4444; }
-    .priority-medium { background: #fef3c7; color: #f59e0b; }
-    .priority-low { background: #f3f4f6; color: #6b7280; }
+    .priority-high { background: var(--brand-weak); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
+    .priority-medium { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
+    .priority-low { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); }
 
     .status-pill {
       font-size: 12px;
@@ -183,10 +185,10 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
       cursor: pointer;
       user-select: none;
     }
-    .status-open { background: #e0f2fe; color: #0284c7; }
-    .status-in_progress { background: #fef9c3; color: #ca8a04; }
-    .status-done { background: #dcfce7; color: #16a34a; }
-    .status-archived { background: #f3f4f6; color: #4b5563; }
+    .status-open { background: rgba(2, 132, 199, 0.1); color: #0284c7; border: 1px solid rgba(2, 132, 199, 0.2); }
+    .status-in_progress { background: rgba(202, 138, 4, 0.1); color: #ca8a04; border: 1px solid rgba(202, 138, 4, 0.2); }
+    .status-done { background: rgba(22, 163, 74, 0.1); color: #16a34a; border: 1px solid rgba(22, 163, 74, 0.2); }
+    .status-archived { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); }
 
     .add-task-btn {
       border-radius: 10px;

@@ -28,10 +28,9 @@ aws configure sso
 - **SSO region**: The AWS Region where IAM Identity Center is located (e.g., `eu-central-1`).
 - **SSO registration scopes**: Leave as default (`sso:account:access`).
 
-**Note for PowerShell users:** Do not use angle brackets (e.g., `<REGION>`) as they are reserved for redirection. Use plain text instead.
-
 ```bash
 aws ecr get-login-password --region eu-central-1 | docker login --username AWS --password-stdin 426141506813.dkr.ecr.eu-central-1.amazonaws.com
+```
 ---
 
 ## Step 2: Create ECR Repositories
@@ -59,12 +58,6 @@ It is highly recommended to use a specific version tag (e.g., `1.0.3`) instead o
 - **Backend**: `pom.xml` (`<version>1.0.3</version>`)
 - **Frontend**: `package.json` (`"version": "1.0.3"`)
 
-**PowerShell:**
-```powershell
-$VERSION="1.0.3"
-```
-
-**Bash:**
 ```bash
 VERSION="1.0.3"
 ```

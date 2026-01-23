@@ -14,12 +14,23 @@
 .preview-chip {
   font-size: 12px;
 }
-.title-chip { --mdc-chip-label-text-color: #4b5563; }
-.desc-chip { --mdc-chip-label-text-color: #6b7280; }
+.title-chip, .desc-chip, .date-chip { --mdc-chip-label-text-color: #4b5563; }
+
+body.theme-dark .title-chip,
+body.theme-dark .desc-chip,
+body.theme-dark .date-chip {
+  --mdc-chip-label-text-color: var(--text) !important;
+}
+
 .prio-low { --mdc-chip-label-text-color: #2e7d32; }
 .prio-medium { --mdc-chip-label-text-color: var(--brand); }
 .prio-high { --mdc-chip-label-text-color: #e65100; }
 .prio-critical { --mdc-chip-label-text-color: #c62828; }
+
+body.theme-dark .prio-low { --mdc-chip-label-text-color: #81c784 !important; }
+body.theme-dark .prio-medium { --mdc-chip-label-text-color: var(--brand) !important; }
+body.theme-dark .prio-high { --mdc-chip-label-text-color: #ffb74d !important; }
+body.theme-dark .prio-critical { --mdc-chip-label-text-color: #e57373 !important; }
 
 .help-icon {
   cursor: pointer;

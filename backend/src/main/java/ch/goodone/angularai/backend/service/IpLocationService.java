@@ -22,8 +22,8 @@ public class IpLocationService {
     private final RestTemplate restTemplate;
     private final SystemSettingService systemSettingService;
 
-    public IpLocationService(SystemSettingService systemSettingService) {
-        this.restTemplate = new RestTemplate();
+    public IpLocationService(SystemSettingService systemSettingService, RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
         this.systemSettingService = systemSettingService;
     }
 

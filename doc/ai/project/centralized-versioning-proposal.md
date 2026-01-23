@@ -21,11 +21,11 @@ Update child modules to inherit the version from the parent without restating it
 - **Root `pom.xml`**: Keep `<version>1.x.y</version>`.
 - **Sub-modules (`backend`, `frontend`, `test-client`)**: Remove the redundant `<version>` tag from their `pom.xml`.
 
-#### B. Synchronization Script (`scripts/sync-version.ps1`)
-Create a PowerShell script that performs the following:
+#### B. Synchronization Script (`scripts/sync-version.sh`)
+Create a Bash script that performs the following:
 1.  **Read** the current version from the root `pom.xml`.
 2.  **Update** `frontend/package.json`.
-3.  **Update** `scripts/deploy-aws.ps1` (`$VERSION = "..."`).
+3.  **Update** `scripts/deploy-aws.sh` (`VERSION="..."`).
 4.  **Update** AWS Task Definitions (`deploy/aws/*.json`).
 5.  **Update** Documentation files in `doc/ai/` using regex to replace version patterns.
 6.  **Update** `frontend/.gitignore` (specifically the `.jar` exclusion).
@@ -37,7 +37,7 @@ For files needed during the build (like `package.json`), we can use the `exec-ma
 ## 3. Workflow for Developers
 1.  Open the root `pom.xml`.
 2.  Update the `<version>` value.
-3.  Run `.\scripts\sync-version.ps1` (or let Maven do it during build).
+3.  Run `./scripts/sync-version.sh` (or let Maven do it during build).
 4.  Commit the changes.
 
 ## 4. Benefits
@@ -46,26 +46,21 @@ For files needed during the build (like `package.json`), we can use the `exec-ma
 - **Reliability**: Automation reduces the risk of forgetting a file.
 
 ## 5. Script Preview (Concept)
-```powershell
-# scripts/sync-version.ps1
-[xml]$pom = Get-Content "pom.xml"
-$version = $pom.project.version
+```bash
+# scripts/sync-version.sh
+VERSION=$(grep -m 1 "<version>" pom.xml | sed -E 's/.*<version>(.*)<\/version>.*/\1/')
 
-Write-Host "Syncing version $version across project..." -ForegroundColor Cyan
+echo "Syncing version $VERSION across project..."
 
 # 1. Update package.json
-$packageJson = Get-Content "frontend/package.json" -Raw | ConvertFrom-Json
-$packageJson.version = $version
-$packageJson | ConvertTo-Json -Depth 10 | Set-Content "frontend/package.json"
+sed -i "s/\"version\": \".*\"/\"version\": \"$VERSION\"/" frontend/package.json
 
-# 2. Update deploy-aws.ps1
-(Get-Content "scripts/deploy-aws.ps1") -replace '\$VERSION = ".*"', "`$VERSION = `"$version`"" | Set-Content "scripts/deploy-aws.ps1"
+# 2. Update deploy-aws.sh
+sed -i "s/VERSION=\".*\"/VERSION=\"$VERSION\"/" scripts/deploy-aws.sh
 
 # 3. Update Markdown Docs (Regex based)
-Get-ChildItem -Path "doc/ai/" -Filter "*.md" -Recurse | ForEach-Object {
-    (Get-Content $_.FullName) -replace '1\.0\.3', $version | Set-Content $_.FullName
-}
+find doc/ai/ -name "*.md" -exec sed -i "s/1\.0\.3/$VERSION/g" {} +
 
 # 4. Update Android build.gradle
-(Get-Content "android/app/build.gradle") -replace 'versionName ".*"', "versionName `"$version`"" | Set-Content "android/app/build.gradle"
+sed -i "s/versionName \".*\"/versionName \"$VERSION\"/" android/app/build.gradle
 ```

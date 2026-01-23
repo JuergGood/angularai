@@ -83,7 +83,7 @@
     "QUICK_ADD_PLACEHOLDER": "Add a task...",
     "QUICK_ADD_HINT": "Format: Title, Description, Due Date (DD.MM.YYYY), Priority, Status",
     "QUICK_ADD_HELP": "Separators: use ',' (default), '|' or ';' between fields. Hover for detailed help.",
-    "QUICK_ADD_HELP_DETAILED": "Syntax:\n\n• Title: \n• Description: Optional details\n• Due Date: DD.MM.YYYY, 'today', 'tomorrow', 'next week', '3 days'\n• Priority: low, medium, high, critical\n• Status: open, progress, done, archived\n\nExample: Buy milk, Grocery store, tomorrow, high, open",
+    "QUICK_ADD_HELP_DETAILED": "Syntax:\n\n• Title: \n• Description: Optional details\n• Due Date: DD.MM.YYYY, today, next week, 3 days\n• Priority: low, medium, high, critical\n• Status: open, progress, done, archived\n\nExample: Buy milk, Grocery store, tomorrow, high, open",
     "ERROR_TITLE_REQUIRED": "Title is required when using separators",
     "ERROR_INVALID_DATE": "Invalid date format. Use DD.MM.YYYY or shortcuts like 'tomorrow', 'übermorgen'",
     "ERROR_INVALID_PRIORITY": "Invalid priority. Use low, medium, high, or critical",

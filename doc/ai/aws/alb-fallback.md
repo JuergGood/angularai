@@ -33,11 +33,10 @@ This is the easiest way to show a "Maintenance" or "Off-hours" message without m
         ```
 8.  Save the changes.
 
-### 2. Via AWS CLI
+#### Via AWS CLI
 
 To automate this when you stop your services, use the following commands.
 
-#### For Linux/Bash (macOS, WSL, Linux)
 ```bash
 # Update HTTP (Port 80) Listener
 aws elbv2 modify-listener \
@@ -48,22 +47,6 @@ aws elbv2 modify-listener \
 aws elbv2 modify-listener \
   --listener-arn arn:aws:elasticloadbalancing:eu-central-1:426141506813:listener/app/angular-boot-lb-frontend/935a795fe8bb72ca/9521f3b60cb2ee69 \
   --default-actions Type=fixed-response,FixedResponseConfig="{StatusCode=503,ContentType=text/html,MessageBody='<html><body style=\"font-family:Arial;text-align:center;padding:50px;\"><h1>Application Offline</h1><p>Service is shut down during off-hours.</p></body></html>'}"
-```
-
-#### For Windows (PowerShell)
-*Note: PowerShell requires triple quotes (`"""`) for internal JSON values to preserve them when calling the AWS CLI.*
-
-
-```bash
-# Update HTTP (Port 80) Listener
-aws elbv2 modify-listener `
-  --listener-arn arn:aws:elasticloadbalancing:eu-central-1:426141506813:listener/app/angular-boot-lb-frontend/935a795fe8bb72ca/46b92b1b6c16c338 `
-  --default-actions 'Type=fixed-response,FixedResponseConfig={StatusCode=503,ContentType=text/html,MessageBody="""<html><body style=\"font-family:Arial;text-align:center;padding:50px;\"><h1>Application Offline</h1><p>Service is shut down during off-hours.</p></body></html>"""}'
-
-# Update HTTPS (Port 443) Listener
-aws elbv2 modify-listener `
-  --listener-arn arn:aws:elasticloadbalancing:eu-central-1:426141506813:listener/app/angular-boot-lb-frontend/935a795fe8bb72ca/9521f3b60cb2ee69 `
-  --default-actions 'Type=fixed-response,FixedResponseConfig={StatusCode=503,ContentType=text/html,MessageBody="""<html><body style=\"font-family:Arial;text-align:center;padding:50px;\"><h1>Application Offline</h1><p>Service is shut down during off-hours.</p></body></html>"""}'
 ```
 
 ---
@@ -93,34 +76,18 @@ If you have a specific rule (e.g., a path-based rule for `/api/*`) that you want
 ### 1. Enable Maintenance Mode (Fixed Response)
 This "disables" the normal forwarding by replacing the action with a fixed response.
 
-#### For Linux/Bash
 ```bash
 aws elbv2 modify-rule \
   --rule-arn arn:aws:elasticloadbalancing:eu-central-1:426141506813:listener-rule/app/angular-boot-lb-frontend/935a795fe8bb72ca/9521f3b60cb2ee69/6d5a138969cbadf5 \
   --actions Type=fixed-response,FixedResponseConfig="{StatusCode=503,ContentType=text/html,MessageBody='<html><body><h1>API Maintenance</h1></body></html>'}"
 ```
 
-#### For Windows (PowerShell)
-```bash
-aws elbv2 modify-rule `
-  --rule-arn arn:aws:elasticloadbalancing:eu-central-1:426141506813:listener-rule/app/angular-boot-lb-frontend/935a795fe8bb72ca/9521f3b60cb2ee69/6d5a138969cbadf5 `
-  --actions 'Type=fixed-response,FixedResponseConfig={StatusCode=503,ContentType=text/html,MessageBody="""<html><body><h1>API Maintenance</h1></body></html>"""}'
-```
-
 ### 2. Disable Maintenance Mode (Restore Forwarding)
 This restores the rule to its normal state (forwarding to the target group).
 
-#### For Linux/Bash
 ```bash
 aws elbv2 modify-rule \
   --rule-arn arn:aws:elasticloadbalancing:eu-central-1:426141506813:listener-rule/app/angular-boot-lb-frontend/935a795fe8bb72ca/9521f3b60cb2ee69/6d5a138969cbadf5 \
-  --actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:eu-central-1:426141506813:targetgroup/angular-boot-frontend2/5c1b885c9fdcac54
-```
-
-#### For Windows (PowerShell)
-```bash
-aws elbv2 modify-rule `
-  --rule-arn arn:aws:elasticloadbalancing:eu-central-1:426141506813:listener-rule/app/angular-boot-lb-frontend/935a795fe8bb72ca/9521f3b60cb2ee69/6d5a138969cbadf5 `
   --actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:eu-central-1:426141506813:targetgroup/angular-boot-frontend2/5c1b885c9fdcac54
 ```
 
@@ -139,10 +106,9 @@ When you are ready to start the services again (as described in [rerun-service.m
 6.  Select the `angularai-frontend-tg` target group.
 7.  Save changes.
 
-### 2. Via AWS CLI
+### Via AWS CLI
 Use the following commands to restore forwarding to the frontend target group.
 
-#### For Linux/Bash (macOS, WSL, Linux)
 ```bash
 # Restore HTTP (Port 80)
 aws elbv2 modify-listener \
@@ -152,20 +118,6 @@ aws elbv2 modify-listener \
 # Restore HTTPS (Port 443)
 aws elbv2 modify-listener \
   --listener-arn arn:aws:elasticloadbalancing:eu-central-1:426141506813:listener/app/angular-boot-lb-frontend/935a795fe8bb72ca/9521f3b60cb2ee69 \
-  --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:eu-central-1:426141506813:targetgroup/angular-boot-frontend2/5c1b885c9fdcac54
-```
-
-#### For Windows (PowerShell)
-
-```bash
-# Restore HTTP (Port 80)
-aws elbv2 modify-listener `
-  --listener-arn arn:aws:elasticloadbalancing:eu-central-1:426141506813:listener/app/angular-boot-lb-frontend/935a795fe8bb72ca/46b92b1b6c16c338 `
-  --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:eu-central-1:426141506813:targetgroup/angular-boot-frontend2/5c1b885c9fdcac54
-
-# Restore HTTPS (Port 443)
-aws elbv2 modify-listener `
-  --listener-arn arn:aws:elasticloadbalancing:eu-central-1:426141506813:listener/app/angular-boot-lb-frontend/935a795fe8bb72ca/9521f3b60cb2ee69 `
   --default-actions Type=forward,TargetGroupArn=arn:aws:elasticloadbalancing:eu-central-1:426141506813:targetgroup/angular-boot-frontend2/5c1b885c9fdcac54
 ```
 *Note: Replace `YOUR-FRONTEND-TG-ARN` with the actual ARN of your frontend target group (e.g., the one for `angularai-frontend-tg`).*

@@ -23,12 +23,6 @@ aws ecr get-login-password --region eu-central-1 | docker login --username AWS -
 ## 2. Define Version & Sync
 The `$VERSION` variable must match the version defined in `pom.xml` and `package.json`.
 
-**PowerShell:**
-```powershell
-$VERSION="1.0.3"
-```
-
-**Bash:**
 ```bash
 VERSION="1.0.3"
 ```

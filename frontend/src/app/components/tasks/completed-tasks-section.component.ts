@@ -37,14 +37,22 @@ import { TranslateModule } from '@ngx-translate/core';
   styles: [`
     .completed-panel {
       margin-top: 24px;
-      border: 1px solid #e5e7eb;
+      border: 1px solid var(--border);
+      background: var(--surface) !important;
       box-shadow: none !important;
     }
     mat-panel-title {
       display: flex;
       align-items: center;
       gap: 8px;
-      color: #6b7280;
+      color: var(--text-muted);
+    }
+    body.theme-dark .completed-panel {
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+    :host ::ng-deep .mat-expansion-panel-content {
+      background: var(--surface) !important;
+      color: var(--text) !important;
     }
   `]
 })

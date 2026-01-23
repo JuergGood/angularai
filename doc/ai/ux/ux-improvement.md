@@ -11,7 +11,7 @@ The most effective way to improve design is a tripartite collaboration:
 
 ### How to interact with ChatGPT for Design
 ChatGPT is excellent at visual analysis and CSS. To get the best results, you should provide:
-- **Screenshots**: Upload images of the current UI.
+- **Screenshots**: Upload images of the current UI. You can use the [Automated Screenshot Script](screenshot-automation.md) to generate these quickly.
 - **Context**: Explain the goal (e.g., "Make this dashboard look more professional and data-driven").
 - **Constraints**: Mention we use **Angular 21**, **Angular Material**, and **Tailwind CSS** (if applicable) or **Standard CSS**.
 - **Source Code**: Paste the relevant `.html` and `.css` files.
