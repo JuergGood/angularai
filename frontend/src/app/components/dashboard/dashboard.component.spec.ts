@@ -129,4 +129,68 @@ describe('DashboardComponent', () => {
     const container = fixture.debugElement.query(By.css('.dashboard-container'));
     expect(container).toBeFalsy();
   });
+
+  it('should humanize roles correctly', () => {
+    // Access private method via any
+    expect((component as any).humanizeRole('ROLE_ADMIN')).toBe('Admin');
+    expect((component as any).humanizeRole('ROLE_USER')).toBe('User');
+    expect((component as any).humanizeRole('UNKNOWN')).toBe('unknown');
+  });
+
+  it('should return correct role classes', () => {
+    expect((component as any).roleClass('ROLE_ADMIN')).toBe('role-admin');
+    expect((component as any).roleClass('ROLE_USER')).toBe('role-user');
+    expect((component as any).roleClass('OTHER')).toBe('role-neutral');
+  });
+
+  it('should humanize actions correctly', () => {
+    expect(component.humanizeAction('TASK_CREATED')).toBe('Task created');
+    expect(component.humanizeAction('USER_LOGIN')).toBe('Login');
+    expect(component.humanizeAction('UNKNOWN_ACTION')).toBe('Unknown action');
+  });
+
+  it('should return correct action classes', () => {
+    expect((component as any).actionClass('TASK_CREATED')).toBe('action-neutral');
+    expect((component as any).actionClass('USER_LOGIN')).toBe('action-login');
+    expect((component as any).actionClass('OTHER')).toBe('action-neutral');
+  });
+
+  it('should clear activity filter', () => {
+    component.activityFilter.set('something');
+    component.clearActivityFilter();
+    expect(component.activityFilter()).toBe('');
+  });
+
+  it('should calculate pie chart data', () => {
+    const data = { open: 1, inProgress: 1, completed: 1, archived: 1, total: 4 };
+    const pieData = component.getPieChartData(data);
+    expect(pieData.length).toBe(4);
+    expect(pieData[0].value).toBe(25);
+  });
+
+  it('should parse date only strings correctly', () => {
+    expect((component as any).parseDateOnly('2026-01-23')).toBeInstanceOf(Date);
+    expect((component as any).parseDateOnly(null)).toBeNull();
+  });
+
+  it('should return correct due chip labels and tones', () => {
+    const todayStr = new Date().toISOString().split('T')[0];
+
+    const overdueDate = new Date();
+    overdueDate.setDate(overdueDate.getDate() - 5);
+    const overdueStr = overdueDate.toISOString().split('T')[0];
+
+    const futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 10);
+    const futureStr = futureDate.toISOString().split('T')[0];
+
+    expect(component.getDueChip({ dueDate: todayStr } as any).label).toBe('Today');
+    expect(component.getDueChip({ dueDate: todayStr } as any).tone).toBe('warning');
+
+    expect(component.getDueChip({ dueDate: overdueStr } as any).label).toBe('Overdue');
+    expect(component.getDueChip({ dueDate: overdueStr } as any).tone).toBe('danger');
+
+    expect(component.getDueChip({ dueDate: futureStr } as any).label).toBe(futureStr);
+    expect(component.getDueChip({ dueDate: futureStr } as any).tone).toBe('neutral');
+  });
 });

@@ -31,6 +31,21 @@ class ActionLogServiceTest {
     @InjectMocks
     private ActionLogService actionLogService;
 
+    @Mock
+    private IpLocationService ipLocationService;
+
+    @Test
+    void logLogin_shouldSaveActionLog() {
+        IpLocationService.GeoLocation loc = new IpLocationService.GeoLocation();
+        loc.setCountry("CH");
+        loc.setCity("Zurich");
+        loc.setLatitude(47.0);
+        loc.setLongitude(8.0);
+        when(ipLocationService.lookup(anyString())).thenReturn(loc);
+        actionLogService.logLogin("user", "127.0.0.1", "Mozilla/5.0");
+        verify(actionLogRepository).save(any(ActionLog.class));
+    }
+
     @Test
     void log_shouldSaveActionLog() {
         actionLogService.log("user", "ACTION", "Details");

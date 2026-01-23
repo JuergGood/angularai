@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import org.springframework.http.MediaType;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -111,5 +112,20 @@ class ActionLogControllerTest {
     void adminReadShouldNotClearLogs() throws Exception {
         mockMvc.perform(delete("/api/admin/logs"))
                 .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    void shouldCreateLog() throws Exception {
+        ActionLogDTO logDTO = new ActionLogDTO();
+        logDTO.setDetails("Manual Log");
+        
+        when(actionLogService.createLog(any())).thenReturn(logDTO);
+
+        mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/admin/logs")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"details\":\"Manual Log\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.details").value("Manual Log"));
     }
 }

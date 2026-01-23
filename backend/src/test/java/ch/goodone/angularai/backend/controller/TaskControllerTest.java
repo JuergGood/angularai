@@ -105,15 +105,45 @@ class TaskControllerTest {
     void shouldPatchTask() throws Exception {
         TaskDTO patchDTO = new TaskDTO();
         patchDTO.setStatus("DONE");
+        patchDTO.setTitle("New Title");
+        patchDTO.setDescription("New Desc");
+        patchDTO.setDueDate(LocalDate.now());
+        patchDTO.setPriority(Priority.CRITICAL);
+        patchDTO.setTags(java.util.List.of("Tag"));
         
         when(taskRepository.findById(1L)).thenReturn(Optional.of(testTask));
         when(taskRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
 
         mockMvc.perform(patch("/api/tasks/1")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(patchDTO)))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(patchDTO)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.status").value("DONE"));
+                .andExpect(jsonPath("$.status").value("DONE"))
+                .andExpect(jsonPath("$.title").value("New Title"));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
+    void shouldReturnNotFoundWhenPatchingNonExistentTask() throws Exception {
+        when(taskRepository.findById(1L)).thenReturn(Optional.empty());
+        mockMvc.perform(patch("/api/tasks/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
+    void shouldReturnNotFoundWhenPatchingOtherUserTask() throws Exception {
+        User otherUser = new User();
+        otherUser.setId(2L);
+        testTask.setUser(otherUser);
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(testTask));
+
+        mockMvc.perform(patch("/api/tasks/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{}"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
@@ -172,21 +202,6 @@ class TaskControllerTest {
 
     @Test
     @WithMockUser(username = "testuser")
-    void shouldNotDeleteOtherUserTask() throws Exception {
-        User otherUser = new User();
-        otherUser.setId(2L);
-        Task otherTask = new Task();
-        otherTask.setUser(otherUser);
-        otherTask.setId(1L);
-
-        when(taskRepository.findById(1L)).thenReturn(Optional.of(otherTask));
-
-        mockMvc.perform(delete("/api/tasks/1"))
-                .andExpect(status().isNotFound());
-    }
-
-    @Test
-    @WithMockUser(username = "testuser")
     void shouldReorderTasks() throws Exception {
         java.util.List<Long> taskIds = java.util.Arrays.asList(1L, 2L);
         when(taskRepository.findByUserOrderByPositionAsc(any())).thenReturn(Collections.singletonList(testTask));
@@ -195,5 +210,94 @@ class TaskControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(taskIds)))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
+    void shouldReturnNotFoundWhenDeletingNonExistentTask() throws Exception {
+        when(taskRepository.findById(1L)).thenReturn(Optional.empty());
+        mockMvc.perform(delete("/api/tasks/1"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
+    void shouldReturnNotFoundWhenDeletingOtherUserTask() throws Exception {
+        User otherUser = new User();
+        otherUser.setId(2L);
+        testTask.setUser(otherUser);
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(testTask));
+
+        mockMvc.perform(delete("/api/tasks/1"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
+    void shouldAnalyzeTask() throws Exception {
+        var parsed = new ch.goodone.angularai.backend.service.TaskParserService.ParsedTask(
+                "Analyzed Task", "Desc", LocalDate.now(), Priority.HIGH, ch.goodone.angularai.backend.model.TaskStatus.OPEN, java.util.List.of()
+        );
+        when(taskParserService.parse(any())).thenReturn(parsed);
+
+        mockMvc.perform(post("/api/tasks/analyze")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("some input"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Analyzed Task"))
+                .andExpect(jsonPath("$.priority").value("HIGH"));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
+    void shouldBulkDeleteTasks() throws Exception {
+        when(taskRepository.findAllById(any())).thenReturn(Collections.singletonList(testTask));
+
+        mockMvc.perform(delete("/api/tasks/bulk")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(Collections.singletonList(1L))))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
+    void shouldUpdateTask() throws Exception {
+        TaskDTO updateDTO = new TaskDTO();
+        updateDTO.setTitle("Updated Title");
+        updateDTO.setStatus("IN_PROGRESS");
+        updateDTO.setPriority(Priority.HIGH);
+
+        when(taskRepository.findById(1L)).thenReturn(Optional.of(testTask));
+        when(taskRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        mockMvc.perform(put("/api/tasks/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(updateDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Updated Title"));
+    }
+
+    @Test
+    @WithMockUser(username = "testuser")
+    void shouldHandleBulkPatchTasks() throws Exception {
+        TaskDTO patch = new TaskDTO();
+        patch.setTitle("Bulk Title");
+        patch.setDescription("Bulk Desc");
+        patch.setDueDate(LocalDate.now());
+        patch.setPriority(Priority.LOW);
+        patch.setTags(java.util.List.of("BulkTag"));
+        patch.setStatus("ARCHIVED");
+
+        String json = objectMapper.writeValueAsString(new TaskController.BulkPatchRequest(java.util.List.of(1L), patch));
+
+        when(taskRepository.findAllById(any())).thenReturn(Collections.singletonList(testTask));
+        when(taskRepository.saveAll(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
+        mockMvc.perform(patch("/api/tasks/bulk")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].status").value("ARCHIVED"))
+                .andExpect(jsonPath("$[0].title").value("Bulk Title"));
     }
 }

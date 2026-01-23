@@ -283,6 +283,7 @@ public class TaskParserService {
         if (text.equals("übermorgen")) return today.plusDays(2);
         if (text.equals("yesterday") || text.equals("gestern")) return today.minusDays(1);
         if (text.equals("week") || text.equals("woche")) return today.plusWeeks(1);
+        if (text.equals("nächste woche") || text.equals("next week")) return today.plusWeeks(1);
 
         // More robust parsing for "in X days" or "X days"
         String[] parts = text.split("\\s+");

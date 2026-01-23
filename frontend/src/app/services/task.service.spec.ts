@@ -99,4 +99,80 @@ describe('TaskService', () => {
     expect(req.request.body).toEqual(taskIds);
     req.flush(null);
   });
+
+  it('should patch task', () => {
+    const patch: Partial<Task> = { status: TaskStatus.DONE };
+    const mockTask: Task = { id: 1, title: 'T', status: TaskStatus.DONE };
+    service.patchTask(1, patch).subscribe(task => {
+      expect(task).toEqual(mockTask);
+    });
+
+    const req = httpMock.expectOne('/api/tasks/1');
+    expect(req.request.method).toBe('PATCH');
+    req.flush(mockTask);
+  });
+
+  it('should analyze task', () => {
+    const mockTask: Task = { title: 'Analyzed' };
+    service.analyzeTask('some input').subscribe(task => {
+      expect(task).toEqual(mockTask);
+    });
+
+    const req = httpMock.expectOne('/api/tasks/analyze');
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toBe('some input');
+    req.flush(mockTask);
+  });
+
+  it('should quickAdd task', () => {
+    const mockTask: Task = { id: 1, title: 'Quick' };
+    service.quickAdd('Quick').subscribe(task => {
+      expect(task).toEqual(mockTask);
+    });
+
+    const req = httpMock.expectOne('/api/tasks');
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ title: 'Quick' });
+    req.flush(mockTask);
+  });
+
+  it('should bulkPatch tasks', () => {
+    const ids = [1, 2];
+    const patch = { status: TaskStatus.DONE };
+    const mockTasks = [{ id: 1, status: TaskStatus.DONE }, { id: 2, status: TaskStatus.DONE }];
+    service.bulkPatchTasks(ids, patch).subscribe(tasks => {
+      expect(tasks).toEqual(mockTasks as any);
+    });
+
+    const req = httpMock.expectOne('/api/tasks/bulk');
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({ ids, patch });
+    req.flush(mockTasks);
+  });
+
+  it('should bulkDelete tasks', () => {
+    const ids = [1, 2];
+    service.bulkDeleteTasks(ids).subscribe();
+
+    const req = httpMock.expectOne('/api/tasks/bulk');
+    expect(req.request.method).toBe('DELETE');
+    expect(req.request.body).toEqual(ids);
+    req.flush(null);
+  });
+
+  it('should get tasks with params', () => {
+    service.getTasks({ status: TaskStatus.IN_PROGRESS, smartFilter: 'TODAY', sort: 'title,asc' }).subscribe();
+    const req = httpMock.expectOne(req => req.url === '/api/tasks' && req.params.get('status') === TaskStatus.IN_PROGRESS);
+    expect(req.request.params.get('smartFilter')).toBe('TODAY');
+    expect(req.request.params.get('sort')).toBe('title,asc');
+    req.flush([]);
+  });
+
+  it('should handle getHeaders without auth', () => {
+    authServiceSpy.getAuthHeader.mockReturnValue(null);
+    service.getTasks().subscribe();
+    const req = httpMock.expectOne('/api/tasks');
+    expect(req.request.headers.has('Authorization')).toBe(false);
+    req.flush([]);
+  });
 });

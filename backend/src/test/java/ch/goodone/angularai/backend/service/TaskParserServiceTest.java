@@ -135,6 +135,65 @@ class TaskParserServiceTest {
     }
 
     @Test
+    void shouldHandleNullOrEmptyInput() {
+        var resultNull = service.parse(null);
+        assertThat(resultNull.title()).isEmpty();
+        
+        var resultEmpty = service.parse("");
+        assertThat(resultEmpty.title()).isEmpty();
+
+        var resultBlank = service.parse("   ");
+        assertThat(resultBlank.title()).isEmpty();
+    }
+
+    @Test
+    void shouldHandleCsvWithTwoPartsMetadata() {
+        var resultPrio = service.parse("Task, HIGH");
+        assertThat(resultPrio.title()).isEqualTo("Task");
+        assertThat(resultPrio.priority()).isEqualTo(Priority.HIGH);
+        assertThat(resultPrio.description()).isEmpty();
+
+        var resultStatus = service.parse("Task, DONE");
+        assertThat(resultStatus.title()).isEqualTo("Task");
+        assertThat(resultStatus.status()).isEqualTo(TaskStatus.DONE);
+
+        var resultDate = service.parse("Task, tomorrow");
+        assertThat(resultDate.title()).isEqualTo("Task");
+        assertThat(resultDate.dueDate()).isEqualTo(LocalDate.now().plusDays(1));
+    }
+
+    @Test
+    void shouldHandleHeuristicWithoutSpecificTokens() {
+        var result = service.parse("Just some words");
+        assertThat(result.title()).isEqualTo("Just some words");
+        assertThat(result.priority()).isEqualTo(Priority.MEDIUM);
+        assertThat(result.status()).isEqualTo(TaskStatus.OPEN);
+        assertThat(result.dueDate()).isNull();
+    }
+
+    @Test
+    void shouldHandleHeuristicWithOnlyDate() {
+        var result = service.parse("Meeting tomorrow");
+        assertThat(result.title()).isEqualTo("Meeting");
+        assertThat(result.dueDate()).isEqualTo(LocalDate.now().plusDays(1));
+    }
+
+    @Test
+    void shouldHandleHeuristicWithMultipleDateTokens() {
+        // "in 5 days"
+        var result = service.parse("Call Bob in 5 days");
+        assertThat(result.title()).isEqualTo("Call Bob");
+        assertThat(result.dueDate()).isEqualTo(LocalDate.now().plusDays(5));
+    }
+
+    @Test
+    void shouldHandleGermanSpecificFormats() {
+        var result2 = service.parse("Einkaufen nächste Woche");
+        assertThat(result2.title()).isEqualTo("Einkaufen");
+        assertThat(result2.dueDate()).isEqualTo(LocalDate.now().plusDays(7));
+    }
+
+    @Test
     void shouldInferCurrentYear() {
         int currentYear = LocalDate.now().getYear();
         

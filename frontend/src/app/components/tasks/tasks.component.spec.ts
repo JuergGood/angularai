@@ -36,7 +36,9 @@ describe('TasksComponent', () => {
       patchTask: vi.fn().mockReturnValue(of(mockTasks[0])),
       deleteTask: vi.fn().mockReturnValue(of(null)),
       reorderTasks: vi.fn().mockReturnValue(of([])),
-      tasks: signal(mockTasks)
+      tasks: signal(mockTasks),
+      bulkPatchTasks: vi.fn().mockReturnValue(of([])),
+      bulkDeleteTasks: vi.fn().mockReturnValue(of(null))
     };
 
     dialogSpy = {
@@ -45,60 +47,92 @@ describe('TasksComponent', () => {
       })
     };
 
-    translateServiceSpy = {
-      get: vi.fn().mockReturnValue(of('translated')),
-      onTranslationChange: of({}),
-      onLangChange: of({}),
-      onDefaultLangChange: of({}),
-      instant: vi.fn().mockReturnValue('translated'),
-      stream: vi.fn().mockReturnValue(of('translated')),
-      get currentLang() { return 'en'; }
-    };
-
     authServiceSpy = {
       hasAdminWriteAccess: vi.fn().mockReturnValue(true),
       currentUser: signal({ login: 'admin' }),
       isInitializing: signal(false)
     };
 
-    // await TestBed.configureTestingModule({
-    //   imports: [TasksComponent, TranslateModule.forRoot()],
-    //   providers: [
-    //     provideNoopAnimations(),
-    //     provideNativeDateAdapter(),
-    //     { provide: TaskService, useValue: taskServiceSpy },
-    //     { provide: MatDialog, useValue: dialogSpy },
-    //     { provide: TranslateService, useValue: translateServiceSpy },
-    //     { provide: AuthService, useValue: authServiceSpy }
-    //   ],
-    //   schemas: [NO_ERRORS_SCHEMA]
-    // }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [TasksComponent, TranslateModule.forRoot()],
+      providers: [
+        provideNoopAnimations(),
+        provideNativeDateAdapter(),
+        { provide: TaskService, useValue: taskServiceSpy },
+        { provide: MatDialog, useValue: dialogSpy },
+        { provide: AuthService, useValue: authServiceSpy }
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
 
-    // fixture = TestBed.createComponent(TasksComponent);
-    // component = fixture.componentInstance;
-    // fixture.detectChanges();
+    fixture = TestBed.createComponent(TasksComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
-    expect(true).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
-  it('should load tasks on init', () => {
-    expect(true).toBeTruthy();
+  it('should toggle task selection', () => {
+    component.toggleTaskSelection(1);
+    expect(component.selectedTaskIds()).toContain(1);
+    component.toggleTaskSelection(1);
+    expect(component.selectedTaskIds()).not.toContain(1);
   });
 
-  it('should create a new task', () => {
-    // skip logic that triggers heavy template rendering in shallow test
-    expect(true).toBeTruthy();
+  it('should toggle select all', () => {
+    component.toggleSelectAll(true);
+    expect(component.selectedTaskIds()).toContain(1);
+    component.toggleSelectAll(false);
+    expect(component.selectedTaskIds()).not.toContain(1);
   });
 
-  it('should create a new task without dueDate', () => {
-    // skip logic that triggers heavy template rendering in shallow test
-    expect(true).toBeTruthy();
+  it('should check if all selected', () => {
+    component.toggleSelectAll(true);
+    expect(component.isAllSelected()).toBe(true);
   });
 
-  it('should delete a task after confirmation', () => {
-    // skip logic that triggers heavy template rendering in shallow test
-    expect(true).toBeTruthy();
+  it('should bulk update status', () => {
+    component.selectedTaskIds.set([1]);
+    component.bulkUpdateStatus(TaskStatus.DONE);
+    expect(taskServiceSpy.bulkPatchTasks).toHaveBeenCalledWith([1], { status: TaskStatus.DONE });
+  });
+
+  it('should bulk update priority', () => {
+    component.selectedTaskIds.set([1]);
+    component.bulkUpdatePriority(Priority.HIGH);
+    expect(taskServiceSpy.bulkPatchTasks).toHaveBeenCalledWith([1], { priority: Priority.HIGH });
+  });
+
+  it('should bulk delete', () => {
+    component.selectedTaskIds.set([1]);
+    component.bulkDelete();
+    expect(taskServiceSpy.bulkDeleteTasks).toHaveBeenCalledWith([1]);
+  });
+
+  it('should toggle task done', () => {
+    const task = { ...mockTasks[0], status: TaskStatus.OPEN };
+    component.toggleTaskDone(task);
+    expect(taskServiceSpy.patchTask).toHaveBeenCalledWith(task.id, { status: TaskStatus.DONE });
+  });
+
+  it('should cycle status', () => {
+    const task = { ...mockTasks[0], status: TaskStatus.OPEN };
+    const event = { stopPropagation: vi.fn() };
+    component.cycleStatus(task, event as any);
+    expect(taskServiceSpy.patchTask).toHaveBeenCalledWith(task.id, { status: TaskStatus.IN_PROGRESS });
+  });
+
+  it('should set priority', () => {
+    const task = mockTasks[0];
+    component.setPriority(task, Priority.HIGH);
+    expect(taskServiceSpy.patchTask).toHaveBeenCalledWith(task.id, { priority: Priority.HIGH });
+  });
+
+  it('should handle view mode toggle', () => {
+    const initialMode = component.viewMode();
+    component.toggleViewMode();
+    expect(component.viewMode()).not.toBe(initialMode);
   });
 });
