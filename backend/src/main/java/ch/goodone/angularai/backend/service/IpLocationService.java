@@ -32,17 +32,17 @@ public class IpLocationService {
             return new GeoLocation();
         }
         if (ip == null || ip.equals("0:0:0:0:0:0:0:1") || ip.equals("127.0.0.1") || ip.startsWith("192.168.") || ip.startsWith("10.") || ip.startsWith("172.")) {
-            logger.info("Skipping geolocation lookup for local/private IP: {}", ip);
+            logger.info("Skipping geolocation lookup for local/private IP");
             return new GeoLocation();
         }
         try {
             String url = String.format("%s%s?access_key=%s", apiUrl, ip, apiKey);
-            logger.info("Requesting geolocation for IP: {} (URL: {}{})", ip, apiUrl, ip);
+            logger.info("Requesting geolocation for IP from provider");
             Map<String, Object> response = restTemplate.getForObject(url, Map.class);
             
             if (response != null) {
                 if (response.containsKey("error")) {
-                    logger.error("IpStack API returned error: {}", response.get("error"));
+                    logger.error("IpStack API returned error");
                     return new GeoLocation();
                 }
 
@@ -52,13 +52,13 @@ public class IpLocationService {
                 loc.setLatitude(toDouble(response.get("latitude")));
                 loc.setLongitude(toDouble(response.get("longitude")));
                 
-                logger.info("Geolocation found for IP {}: {}, {}", ip, loc.getCity(), loc.getCountry());
+                logger.info("Geolocation lookup successful");
                 return loc;
             } else {
-                logger.warn("IpStack API returned null response for IP: {}", ip);
+                logger.warn("IpStack API returned null response");
             }
         } catch (Exception e) {
-            logger.error("Error looking up IP location for {}: {}", ip, e.getMessage(), e);
+            logger.error("Error looking up IP location");
         }
         return new GeoLocation();
     }

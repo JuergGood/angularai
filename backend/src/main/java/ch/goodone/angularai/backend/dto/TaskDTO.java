@@ -23,10 +23,6 @@ public class TaskDTO {
     public TaskDTO() {}
 
     public TaskDTO(Long id, String title, String description, LocalDate dueDate, Priority priority, String status, Integer position) {
-        this(id, title, description, dueDate, priority, status, position, null, null, null, null);
-    }
-
-    public TaskDTO(Long id, String title, String description, LocalDate dueDate, Priority priority, String status, Integer position, java.time.LocalDateTime createdAt, java.time.LocalDateTime updatedAt, java.time.LocalDateTime completedAt, java.util.List<String> tags) {
         this.id = id;
         this.title = title;
         this.description = description;
@@ -34,26 +30,23 @@ public class TaskDTO {
         this.priority = priority;
         this.status = status;
         this.position = position;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.completedAt = completedAt;
-        this.tags = tags;
     }
 
+
     public static TaskDTO fromEntity(Task task) {
-        return new TaskDTO(
-                task.getId(),
-                task.getTitle(),
-                task.getDescription(),
-                task.getDueDate(),
-                task.getPriority(),
-                task.getStatus() != null ? task.getStatus().name() : null,
-                task.getPosition(),
-                task.getCreatedAt(),
-                task.getUpdatedAt(),
-                task.getCompletedAt(),
-                task.getTags() != null ? new java.util.ArrayList<>(task.getTags()) : null
-        );
+        TaskDTO dto = new TaskDTO();
+        dto.setId(task.getId());
+        dto.setTitle(task.getTitle());
+        dto.setDescription(task.getDescription());
+        dto.setDueDate(task.getDueDate());
+        dto.setPriority(task.getPriority());
+        dto.setStatus(task.getStatus() != null ? task.getStatus().name() : null);
+        dto.setPosition(task.getPosition());
+        dto.setCreatedAt(task.getCreatedAt());
+        dto.setUpdatedAt(task.getUpdatedAt());
+        dto.setCompletedAt(task.getCompletedAt());
+        dto.setTags(task.getTags() != null ? new java.util.ArrayList<>(task.getTags()) : null);
+        return dto;
     }
 
     public Long getId() { return id; }

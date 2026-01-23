@@ -17,14 +17,16 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/tasks")
 @Tag(name = "Tasks", description = "Endpoints for managing user tasks")
 public class TaskController {
+    private static final String STATUS = "status";
+    private static final String DUE_DATE = "dueDate";
+    private static final String PRIORITY = "priority";
+    private static final String POSITION = "position";
 
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
@@ -68,7 +70,7 @@ public class TaskController {
         
         if (status != null) {
             final String statusVal = status;
-            spec = spec.and((root, query, cb) -> cb.equal(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.valueOf(statusVal)));
+            spec = spec.and((root, query, cb) -> cb.equal(root.get(STATUS), ch.goodone.angularai.backend.model.TaskStatus.valueOf(statusVal)));
         }
         
         if (smartFilter != null) {
@@ -76,39 +78,42 @@ public class TaskController {
             switch (smartFilter.toUpperCase()) {
                 case "TODAY":
                     spec = spec.and((root, query, cb) -> cb.and(
-                            cb.equal(root.get("dueDate"), today),
-                            cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.DONE),
-                            cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.ARCHIVED)
+                            cb.equal(root.get(DUE_DATE), today),
+                            cb.notEqual(root.get(STATUS), ch.goodone.angularai.backend.model.TaskStatus.DONE),
+                            cb.notEqual(root.get(STATUS), ch.goodone.angularai.backend.model.TaskStatus.ARCHIVED)
                     ));
                     break;
                 case "UPCOMING":
                     spec = spec.and((root, query, cb) -> cb.and(
-                            cb.greaterThan(root.get("dueDate"), today),
-                            cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.DONE),
-                            cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.ARCHIVED)
+                            cb.greaterThan(root.get(DUE_DATE), today),
+                            cb.notEqual(root.get(STATUS), ch.goodone.angularai.backend.model.TaskStatus.DONE),
+                            cb.notEqual(root.get(STATUS), ch.goodone.angularai.backend.model.TaskStatus.ARCHIVED)
                     ));
                     break;
                 case "OVERDUE":
                     spec = spec.and((root, query, cb) -> cb.and(
-                            cb.lessThan(root.get("dueDate"), today),
-                            cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.DONE),
-                            cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.ARCHIVED)
+                            cb.lessThan(root.get(DUE_DATE), today),
+                            cb.notEqual(root.get(STATUS), ch.goodone.angularai.backend.model.TaskStatus.DONE),
+                            cb.notEqual(root.get(STATUS), ch.goodone.angularai.backend.model.TaskStatus.ARCHIVED)
                     ));
                     break;
                 case "HIGH":
                     spec = spec.and((root, query, cb) -> cb.and(
                             cb.or(
-                                cb.equal(root.get("priority"), ch.goodone.angularai.backend.model.Priority.HIGH),
-                                cb.equal(root.get("priority"), ch.goodone.angularai.backend.model.Priority.CRITICAL)
+                                cb.equal(root.get(PRIORITY), ch.goodone.angularai.backend.model.Priority.HIGH),
+                                cb.equal(root.get(PRIORITY), ch.goodone.angularai.backend.model.Priority.CRITICAL)
                             ),
-                            cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.DONE),
-                            cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.ARCHIVED)
+                            cb.notEqual(root.get(STATUS), ch.goodone.angularai.backend.model.TaskStatus.DONE),
+                            cb.notEqual(root.get(STATUS), ch.goodone.angularai.backend.model.TaskStatus.ARCHIVED)
                     ));
+                    break;
+                default:
+                    // No additional filtering for unknown smart filters
                     break;
             }
         }
 
-        Sort sortObj = Sort.by(Sort.Direction.ASC, "position");
+        Sort sortObj = Sort.by(Sort.Direction.ASC, POSITION);
         if (sort != null) {
             switch (sort) {
                 case "DUE_ASC":

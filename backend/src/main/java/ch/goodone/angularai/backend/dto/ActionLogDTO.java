@@ -29,35 +29,21 @@ public class ActionLogDTO {
         this.details = details;
     }
 
-    public ActionLogDTO(Long id, LocalDateTime timestamp, String login, String action, String details, 
-                        String ipAddress, String country, String city, Double latitude, Double longitude, String userAgent) {
-        this.id = id;
-        this.timestamp = timestamp;
-        this.login = login;
-        this.action = action;
-        this.details = details;
-        this.ipAddress = ipAddress;
-        this.country = country;
-        this.city = city;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.userAgent = userAgent;
-    }
 
     public static ActionLogDTO fromEntity(ActionLog log) {
-        return new ActionLogDTO(
-                log.getId(),
-                log.getTimestamp(),
-                log.getLogin(),
-                log.getAction(),
-                log.getDetails(),
-                log.getIpAddress(),
-                log.getCountry(),
-                log.getCity(),
-                log.getLatitude(),
-                log.getLongitude(),
-                log.getUserAgent()
-        );
+        ActionLogDTO dto = new ActionLogDTO();
+        dto.setId(log.getId());
+        dto.setTimestamp(log.getTimestamp());
+        dto.setLogin(log.getLogin());
+        dto.setAction(log.getAction());
+        dto.setDetails(log.getDetails());
+        dto.setIpAddress(log.getIpAddress());
+        dto.setCountry(log.getCountry());
+        dto.setCity(log.getCity());
+        dto.setLatitude(log.getLatitude());
+        dto.setLongitude(log.getLongitude());
+        dto.setUserAgent(log.getUserAgent());
+        return dto;
     }
 
     public Long getId() { return id; }

@@ -5,10 +5,7 @@ import ch.goodone.angularai.backend.model.TaskStatus;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Arrays;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Service
 public class TaskParserService {
@@ -314,54 +311,40 @@ public class TaskParserService {
     private Priority parsePriority(String input, Priority defaultVal) {
         String s = input.toUpperCase();
         switch (s) {
-            case "HOCH":
-            case "DRINGEND":
-            case "WICHTIG":
-            case "HIGH":
+            case "HOCH", "DRINGEND", "WICHTIG", "HIGH":
                 return Priority.HIGH;
-            case "TIEF":
-            case "UNWICHTIG":
-            case "NIEDRIG":
-            case "LOW":
+            case "TIEF", "UNWICHTIG", "NIEDRIG", "LOW":
                 return Priority.LOW;
-            case "MITTEL":
-            case "MEDIUM":
+            case "MITTEL", "MEDIUM":
                 return Priority.MEDIUM;
-            case "KRITISCH":
-            case "CRITICAL":
+            case "KRITISCH", "CRITICAL":
                 return Priority.CRITICAL;
-        }
-        try {
-            return Priority.valueOf(s);
-        } catch (Exception e) {
-            return defaultVal;
+            default:
+                try {
+                    return Priority.valueOf(s);
+                } catch (Exception e) {
+                    return defaultVal;
+                }
         }
     }
 
     private TaskStatus parseStatus(String input, TaskStatus defaultVal) {
         String s = input.toUpperCase().replace(" ", "_");
         switch (s) {
-            case "PROGRESS":
-            case "HÄNGIG":
-            case "PENDENT":
-            case "IN_PROGRESS":
+            case "PROGRESS", "HÄNGIG", "PENDENT", "IN_PROGRESS":
                 return TaskStatus.IN_PROGRESS;
-            case "OFFEN":
-            case "OPEN":
+            case "OFFEN", "OPEN":
                 return TaskStatus.OPEN;
-            case "ERLEDIGT":
-            case "FERTIG":
-            case "DONE":
+            case "ERLEDIGT", "FERTIG", "DONE":
                 return TaskStatus.DONE;
-            case "ARCHIV":
-            case "ARCHIVIERT":
-            case "ARCHIVED":
+            case "ARCHIV", "ARCHIVIERT", "ARCHIVED":
                 return TaskStatus.ARCHIVED;
-        }
-        try {
-            return TaskStatus.valueOf(s);
-        } catch (Exception e) {
-            return defaultVal;
+            default:
+                try {
+                    return TaskStatus.valueOf(s);
+                } catch (Exception e) {
+                    return defaultVal;
+                }
         }
     }
 }
