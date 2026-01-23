@@ -1,5 +1,9 @@
 # Release Notes
 
+## Version 1.0.4 (2026-01-23)
+*   New release version 1.0.4.
+
+
 ## Version 1.0.3 (2026-01-23)
 *   **Geolocation Service**: Integrated IP-based location lookup, including a system setting to toggle the feature and automatic local/loopback address skipping.
 *   **Enhanced Environment Management**: Added `.env.example` template and improved environment loading logic for better local development setup.
@@ -32,3 +36,4 @@
 *   **Foundation**: Established the core project structure with Spring Boot backend and Angular standalone components.
 *   **Infrastructure**: Set up Docker-based deployment and Nginx reverse proxy configuration.
 *   **Architecture**: Defined the "AngularAI" ecosystem diagrams and core design principles.
+

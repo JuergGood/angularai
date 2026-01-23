@@ -4,7 +4,7 @@
     "containerDefinitions":  [
                                  {
                                      "name":  "backend",
-                                     "image":  "426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:1.0.3",
+                                     "image":  "426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:$NewVersion",
                                      "essential":  true,
                                      "portMappings":  [
                                                           {

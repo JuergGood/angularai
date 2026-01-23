@@ -1,7 +1,7 @@
 # Proposal: Centralized Version Management
 
 ## 1. Problem Statement
-Currently, the project version (e.g., `1.0.3`) is hardcoded in over 70 locations across multiple file types:
+Currently, the project version (e.g., `$NewVersion`) is hardcoded in over 70 locations across multiple file types:
 - Maven `pom.xml` files (4 locations)
 - Frontend `package.json` (1 location)
 - Deployment scripts `deploy-aws.ps1` (1 location)

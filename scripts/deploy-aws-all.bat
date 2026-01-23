@@ -49,10 +49,10 @@ docker push %ECR_URL%/%FRONTEND_REPO%:latest
 :: Step 5: Trigger ECS Deployment
 echo [5/5] Triggering Force New Deployment on ECS...
 echo Updating Backend Service: %BACKEND_SERVICE%
-aws ecs update-service --cluster %CLUSTER_NAME% --service %BACKEND_SERVICE% --desired-count 1 --force-new-deployment --query "service.serviceName" --output text
+aws ecs update-service --cluster %CLUSTER_NAME% --service %BACKEND_SERVICE% --desired-count 1 --force-new-deployment --query "service.serviceName" --output text --region %REGION%
 
 echo Updating Frontend Service: %FRONTEND_SERVICE%
-aws ecs update-service --cluster %CLUSTER_NAME% --service %FRONTEND_SERVICE% --desired-count 1 --force-new-deployment --query "service.serviceName" --output text
+aws ecs update-service --cluster %CLUSTER_NAME% --service %FRONTEND_SERVICE% --desired-count 1 --force-new-deployment --query "service.serviceName" --output text --region %REGION%
 
 echo ==========================================
 echo Deployment Triggered Successfully!

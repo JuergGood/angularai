@@ -46,11 +46,11 @@ if %ERRORLEVEL% neq 0 (echo Frontend push failed & exit /b %ERRORLEVEL%)
 echo Restarting ECS services to pick up latest images...
 
 echo Updating Backend service...
-aws ecs update-service --cluster %CLUSTER_NAME% --service %BACKEND_SERVICE% --desired-count 1 --force-new-deployment --region %REGION%
+aws ecs update-service --cluster %CLUSTER_NAME% --service %BACKEND_SERVICE% --desired-count 1 --force-new-deployment --region %REGION% --query "service.serviceName" --output text
 if %ERRORLEVEL% neq 0 (echo Backend service update failed.)
 
 echo Updating Frontend service...
-aws ecs update-service --cluster %CLUSTER_NAME% --service %FRONTEND_SERVICE% --desired-count 1 --force-new-deployment --region %REGION%
+aws ecs update-service --cluster %CLUSTER_NAME% --service %FRONTEND_SERVICE% --desired-count 1 --force-new-deployment --region %REGION% --query "service.serviceName" --output text
 if %ERRORLEVEL% neq 0 (echo Frontend service update failed.)
 
 echo AWS Deployment complete!
