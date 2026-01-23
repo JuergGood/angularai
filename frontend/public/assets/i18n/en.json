@@ -21,7 +21,8 @@
     "ADMIN_GUIDE": "Admin Guide",
     "FAQ": "FAQ",
     "RELEASE_NOTES": "Release Notes",
-    "DASHBOARD_SHORT": "Dashboard"
+    "DASHBOARD_SHORT": "Dashboard",
+    "GEOLOCATION": "Geolocation"
   },
   "DASHBOARD": {
     "TITLE": "Dashboard",
@@ -166,6 +167,8 @@
     "LOADING": "Loading...",
     "SUCCESS": "Success",
     "ERROR": "Error",
-    "CONFIRM": "Confirm Action"
+    "CONFIRM": "Confirm Action",
+    "ON": "On",
+    "OFF": "Off"
   }
 }

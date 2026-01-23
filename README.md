@@ -68,3 +68,25 @@ The Angular development server is configured to proxy `/api` requests to `http:/
 - [Creating a Backend Target Group](doc/ai/aws/aws_create_target_group.md)
 - [ALB and Connectivity Troubleshooting](doc/ai/aws/aws_alb_troubleshooting.md)
 - [Pushing Images to Amazon ECR](doc/ai/aws/aws_ecs_push_instructions.md)
+
+## Release Process
+
+To create a new release (e.g., version 1.0.3):
+
+1.  **Preparation**: Ensure all changes are committed and tested.
+2.  **Run Release Script**: Execute the following command in PowerShell:
+    ```powershell
+    .\scripts\release.ps1 -NewVersion "1.0.3"
+    ```
+    This script will:
+    - Update the version in `pom.xml`.
+    - Synchronize the version across all project files (package.json, build.gradle, etc.).
+    - Add a header for the new version in `release-notes.md`.
+    - Regenerate the help data JSON files.
+    - Create a git commit and a git tag (e.g., `v1.0.3`).
+3.  **Manual Step**: Edit `doc/userguide/release-notes.md` to provide meaningful details for the release.
+4.  **Push**: Push the changes and tags to the repository:
+    ```powershell
+    git push origin main --tags
+    ```
+5.  **Next Version**: To start development on the next version (e.g., 1.0.4), simply run the script again with the new version number when you are ready to release it. During development, you can manually update the version in `pom.xml` if needed and run `.\scripts\sync-version.ps1`.

@@ -1,6 +1,7 @@
 # Release Notes
 
 ## Version 1.0.3 (2026-01-23)
+*   **Geolocation Service**: Integrated IP-based location lookup, including a system setting to toggle the feature and automatic local/loopback address skipping.
 *   **Enhanced Environment Management**: Added `.env.example` template and improved environment loading logic for better local development setup.
 *   **Advanced Task Parsing**: Implemented comprehensive task parsing logic with a dedicated test suite to improve natural language task entry.
 *   **UI/UX Improvements**: Fixed dark mode issues and refined the task management interface.

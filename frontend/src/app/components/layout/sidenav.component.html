@@ -110,11 +110,21 @@
           <span>{{ 'NAV.LANGUAGE' | translate }}</span>
         </button>
 
+        <!-- Geolocation Toggle (Admin Only) -->
+        @if (authService.isAdmin()) {
+          <button mat-menu-item (click)="toggleGeolocation()">
+            <mat-icon>{{ geolocationEnabled() ? 'location_on' : 'location_off' }}</mat-icon>
+            <span>{{ 'NAV.GEOLOCATION' | translate }}: {{ (geolocationEnabled() ? 'COMMON.ON' : 'COMMON.OFF') | translate }}</span>
+          </button>
+        }
+
         <!-- Help Submenu -->
-        <button mat-menu-item [matMenuTriggerFor]="helpMenu">
-          <mat-icon>help</mat-icon>
-          <span>{{ 'NAV.HELP' | translate }}</span>
-        </button>
+        @if (authService.isLoggedIn()) {
+          <button mat-menu-item [matMenuTriggerFor]="helpMenu">
+            <mat-icon>help</mat-icon>
+            <span>{{ 'NAV.HELP' | translate }}</span>
+          </button>
+        }
 
         <!-- About Submenu -->
         <button mat-menu-item [matMenuTriggerFor]="aboutMenu">

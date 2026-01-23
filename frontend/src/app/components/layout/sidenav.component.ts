@@ -1,4 +1,4 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, computed, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -270,6 +270,7 @@ export class SidenavComponent {
   isMobile = signal(false);
   isHandheld = signal(false);
   systemInfo = signal<SystemInfo | null>(null);
+  geolocationEnabled = signal(false);
 
   isCollapsed = computed(() => this.isHandheld() && !this.isMobile());
 
@@ -284,6 +285,17 @@ export class SidenavComponent {
     private breakpointObserver: BreakpointObserver
   ) {
     this.systemService.getSystemInfo().subscribe(info => this.systemInfo.set(info));
+
+    // Reactively fetch geolocation setting when admin status changes
+    effect(() => {
+      if (this.authService.isAdmin()) {
+        this.systemService.getGeolocationEnabled().subscribe({
+          next: res => this.geolocationEnabled.set(res.enabled),
+          error: err => console.error('Failed to fetch geolocation status', err)
+        });
+      }
+    });
+
     this.breakpointObserver.observe([
       Breakpoints.Handset,
       Breakpoints.Tablet
@@ -305,6 +317,20 @@ export class SidenavComponent {
 
   showHelp() {
     this.dialog.open(HelpDialogComponent);
+  }
+
+  toggleGeolocation() {
+    const newState = !this.geolocationEnabled();
+    this.systemService.setGeolocationEnabled(newState).subscribe({
+      next: () => {
+        this.geolocationEnabled.set(newState);
+        this.snackBar.open(`Geolocation ${newState ? 'enabled' : 'disabled'}`, 'Close', { duration: 3000 });
+      },
+      error: (err) => {
+        this.snackBar.open('Failed to update geolocation setting', 'Close', { duration: 3000 });
+        console.error('Error toggling geolocation', err);
+      }
+    });
   }
 }
 

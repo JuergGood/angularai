@@ -20,13 +20,19 @@ public class IpLocationService {
     private String apiUrl;
 
     private final RestTemplate restTemplate;
+    private final SystemSettingService systemSettingService;
 
-    public IpLocationService() {
+    public IpLocationService(SystemSettingService systemSettingService) {
         this.restTemplate = new RestTemplate();
+        this.systemSettingService = systemSettingService;
     }
 
     public GeoLocation lookup(String ip) {
-        if (ip == null || ip.equals("0:0:0:0:0:0:0:1") || ip.equals("127.0.0.1")) {
+        if (!systemSettingService.isGeolocationEnabled()) {
+            return new GeoLocation();
+        }
+        if (ip == null || ip.equals("0:0:0:0:0:0:0:1") || ip.equals("127.0.0.1") || ip.startsWith("192.168.") || ip.startsWith("10.")) {
+            logger.debug("Skipping geolocation lookup for local IP: {}", ip);
             return new GeoLocation();
         }
         try {
