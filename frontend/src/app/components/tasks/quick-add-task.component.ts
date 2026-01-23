@@ -42,30 +42,42 @@ import { Task } from '../../models/task.model';
       </mat-form-field>
 
       @if (parsedTask(); as task) {
-        <div class="parsed-preview" *ngIf="titleControl.value.trim()">
-          <mat-chip-listbox>
-            <mat-chip *ngIf="task.title" class="preview-chip title-chip">
-              <mat-icon matChipAvatar>title</mat-icon>
-              {{ task.title }}
-            </mat-chip>
-            <mat-chip *ngIf="task.description" class="preview-chip desc-chip">
-              <mat-icon matChipAvatar>description</mat-icon>
-              {{ task.description }}
-            </mat-chip>
-            <mat-chip *ngIf="task.dueDate" class="preview-chip date-chip">
-              <mat-icon matChipAvatar>calendar_today</mat-icon>
-              {{ task.dueDate }}
-            </mat-chip>
-            <mat-chip *ngIf="task.priority" class="preview-chip prio-chip" [ngClass]="'prio-' + task.priority.toLowerCase()">
-              <mat-icon matChipAvatar>priority_high</mat-icon>
-              {{ 'TASKS.PRIORITY.' + task.priority | translate }}
-            </mat-chip>
-            <mat-chip *ngIf="task.status" class="preview-chip status-chip" [ngClass]="'status-' + task.status.toLowerCase()">
-              <mat-icon matChipAvatar>info</mat-icon>
-              {{ 'TASKS.STATUS.' + task.status | translate }}
-            </mat-chip>
-          </mat-chip-listbox>
-        </div>
+        @if (titleControl.value.trim()) {
+          <div class="parsed-preview">
+            <mat-chip-listbox>
+              @if (task.title) {
+                <mat-chip class="preview-chip title-chip">
+                  <mat-icon matChipAvatar>title</mat-icon>
+                  {{ task.title }}
+                </mat-chip>
+              }
+              @if (task.description) {
+                <mat-chip class="preview-chip desc-chip">
+                  <mat-icon matChipAvatar>description</mat-icon>
+                  {{ task.description }}
+                </mat-chip>
+              }
+              @if (task.dueDate) {
+                <mat-chip class="preview-chip date-chip">
+                  <mat-icon matChipAvatar>calendar_today</mat-icon>
+                  {{ task.dueDate }}
+                </mat-chip>
+              }
+              @if (task.priority) {
+                <mat-chip class="preview-chip prio-chip" [ngClass]="'prio-' + task.priority.toLowerCase()">
+                  <mat-icon matChipAvatar>priority_high</mat-icon>
+                  {{ 'TASKS.PRIORITY.' + task.priority | translate }}
+                </mat-chip>
+              }
+              @if (task.status) {
+                <mat-chip class="preview-chip status-chip" [ngClass]="'status-' + task.status.toLowerCase()">
+                  <mat-icon matChipAvatar>info</mat-icon>
+                  {{ 'TASKS.STATUS.' + task.status | translate }}
+                </mat-chip>
+              }
+            </mat-chip-listbox>
+          </div>
+        }
       }
     </div>
   `,

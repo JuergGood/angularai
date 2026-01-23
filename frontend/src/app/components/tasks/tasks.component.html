@@ -8,10 +8,12 @@
       <button mat-icon-button (click)="toggleViewMode()" [title]="'TASKS.VIEW_MODE' | translate">
         <mat-icon>{{ viewMode === 'COMFORTABLE' ? 'view_headline' : 'view_stream' }}</mat-icon>
       </button>
-      <button mat-flat-button color="primary" class="add-task-btn" (click)="showAddTaskForm()" *ngIf="!showForm">
-        <mat-icon>add</mat-icon>
-        {{ 'TASKS.ADD_TASK' | translate }}
-      </button>
+      @if (!showForm) {
+        <button mat-flat-button color="primary" class="add-task-btn" (click)="showAddTaskForm()">
+          <mat-icon>add</mat-icon>
+          {{ 'TASKS.ADD_TASK' | translate }}
+        </button>
+      }
       <button mat-stroked-button class="reset-sort-btn" (click)="resetSorting()" [title]="'TASKS.SORT_DESC' | translate">
         <mat-icon>sort</mat-icon>
         {{ 'TASKS.RESET_SORT' | translate }}
@@ -25,13 +27,15 @@
 
   <app-task-filter-chips [activeFilter]="activeFilter" (filterChange)="onFilterChange($event)"></app-task-filter-chips>
 
-  <div class="selection-toolbar" *ngIf="filteredTasks.length > 0">
-    <mat-checkbox (change)="toggleSelectAll($event.checked)"
-                  [checked]="isAllSelected()"
-                  [indeterminate]="isPartiallySelected()">
-      {{ 'TASKS.SELECT_ALL' | translate }}
-    </mat-checkbox>
-  </div>
+  @if (filteredTasks.length > 0) {
+    <div class="selection-toolbar">
+      <mat-checkbox (change)="toggleSelectAll($event.checked)"
+                    [checked]="isAllSelected()"
+                    [indeterminate]="isPartiallySelected()">
+        {{ 'TASKS.SELECT_ALL' | translate }}
+      </mat-checkbox>
+    </div>
+  }
 
   @if (selectedTaskIds().size > 0) {
     <div class="bulk-actions-bar">

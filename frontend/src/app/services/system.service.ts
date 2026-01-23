@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { AuthService } from './auth.service';
 
 export interface SystemInfo {
   backendVersion: string;
@@ -15,17 +16,25 @@ export class SystemService {
   private apiUrl = '/api/system';
   private adminUrl = '/api/admin/settings';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private authService: AuthService) {}
+
+  private getHeaders(): HttpHeaders {
+    const auth = this.authService.getAuthHeader();
+    return new HttpHeaders({
+      'Authorization': 'Basic ' + auth,
+      'Content-Type': 'application/json'
+    });
+  }
 
   getSystemInfo(): Observable<SystemInfo> {
     return this.http.get<SystemInfo>(`${this.apiUrl}/info`);
   }
 
   getGeolocationEnabled(): Observable<{enabled: boolean}> {
-    return this.http.get<{enabled: boolean}>(`${this.adminUrl}/geolocation`);
+    return this.http.get<{enabled: boolean}>(`${this.adminUrl}/geolocation`, { headers: this.getHeaders() });
   }
 
   setGeolocationEnabled(enabled: boolean): Observable<void> {
-    return this.http.post<void>(`${this.adminUrl}/geolocation`, { enabled });
+    return this.http.post<void>(`${this.adminUrl}/geolocation`, { enabled }, { headers: this.getHeaders() });
   }
 }

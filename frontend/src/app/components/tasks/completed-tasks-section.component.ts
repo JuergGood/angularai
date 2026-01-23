@@ -20,13 +20,17 @@ import { TranslateModule } from '@ngx-translate/core';
       </mat-expansion-panel-header>
 
       <mat-list>
-        <mat-list-item *ngFor="let task of tasks">
-          <mat-icon matListItemIcon>task_alt</mat-icon>
-          <div matListItemTitle [style.text-decoration]="'line-through'">{{ task.title }}</div>
-          <div matListItemLine *ngIf="task.completedAt">
-            {{ 'TASKS.COMPLETED_AT' | translate }}: {{ task.completedAt | date:'short' }}
-          </div>
-        </mat-list-item>
+        @for (task of tasks; track task.id) {
+          <mat-list-item>
+            <mat-icon matListItemIcon>task_alt</mat-icon>
+            <div matListItemTitle [style.text-decoration]="'line-through'">{{ task.title }}</div>
+            @if (task.completedAt) {
+              <div matListItemLine>
+                {{ 'TASKS.COMPLETED_AT' | translate }}: {{ task.completedAt | date:'short' }}
+              </div>
+            }
+          </mat-list-item>
+        }
       </mat-list>
     </mat-expansion-panel>
   `,
