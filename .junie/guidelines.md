@@ -40,9 +40,9 @@ This document outlines the best practices and standards for the AngularAI projec
 ## Frontend Development (Angular)
 
 ### 1. Architecture
+- **Templates & Styles**: ALWAYS extract templates and styles into separate `.html` and `.css` files. For very small components (typically < 60 lines total for the `.ts` file), inlining templates and styles is acceptable to reduce file clutter. Do NOT use deprecated `*ngIf` or `*ngFor` regardless of inlining.
 - **Standalone Components**: All new components must be `standalone: true`.
 - **Control Flow**: Use modern Angular control flow (`@if`, `@for`, `@empty`) instead of `*ngIf` and `*ngFor`.
-- **Templates**: Keep templates in separate `.html` files for better maintainability.
 - **Styles**: Use Scoped CSS within the component or external `.css` files. Prefer Material Design for UI elements.
 
 ### 2. State & Data

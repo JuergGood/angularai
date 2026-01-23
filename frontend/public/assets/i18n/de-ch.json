@@ -83,7 +83,7 @@
     "QUICK_ADD_PLACEHOLDER": "Aufgabe hinzufügen...",
     "QUICK_ADD_HINT": "Format: Titel, Beschreibung, Datum (TT.MM.JJJJ), Priorität, Status",
     "QUICK_ADD_HELP": "Trennzeichen: ',' '|' oder ';' verwenden. Mauszeiger für Details.",
-    "QUICK_ADD_HELP_DETAILED": "Detaillierte Syntax:\n- Titel: Erforderlich\n- Beschreibung: Optional\n- Datum: TT.MM.JJJJ oder 'heute', 'morgen', 'übermorgen', 'woche', 'X tage'\n- Priorität: tief, mittel, hoch, kritisch\n- Status: offen, hängig, erledigt, archiviert\n\nBeispiel: Milch kaufen, Migros, morgen, hoch, offen",
+    "QUICK_ADD_HELP_DETAILED": "Syntax:\n- Titel: \n• Beschreibung: Optional\n• Datum: TT.MM.JJJJ, 'heute', 'morgen', 'nächste woche', '3 tage'\n• Priorität: tief, mittel, hoch, kritisch\n• Status: offen, hängig, erledigt, archiviert\n\nBeispiel: Milch kaufen, Migros, morgen, hoch, offen",
     "ERROR_TITLE_REQUIRED": "Titel ist erforderlich bei Verwendung von Trennzeichen",
     "ERROR_INVALID_DATE": "Ungültiges Datumsformat. Verwenden Sie TT.MM.JJJJ oder Kürzel wie 'morgen', 'übermorgen'",
     "ERROR_INVALID_PRIORITY": "Ungültige Priorität. Verwenden Sie tief, mittel, hoch oder kritisch",

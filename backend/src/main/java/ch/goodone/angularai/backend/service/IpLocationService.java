@@ -31,26 +31,43 @@ public class IpLocationService {
         if (!systemSettingService.isGeolocationEnabled()) {
             return new GeoLocation();
         }
-        if (ip == null || ip.equals("0:0:0:0:0:0:0:1") || ip.equals("127.0.0.1") || ip.startsWith("192.168.") || ip.startsWith("10.")) {
-            logger.debug("Skipping geolocation lookup for local IP: {}", ip);
+        if (ip == null || ip.equals("0:0:0:0:0:0:0:1") || ip.equals("127.0.0.1") || ip.startsWith("192.168.") || ip.startsWith("10.") || ip.startsWith("172.")) {
+            logger.info("Skipping geolocation lookup for local/private IP: {}", ip);
             return new GeoLocation();
         }
         try {
             String url = String.format("%s%s?access_key=%s", apiUrl, ip, apiKey);
+            logger.info("Requesting geolocation for IP: {} (URL: {}{})", ip, apiUrl, ip);
             Map<String, Object> response = restTemplate.getForObject(url, Map.class);
             
             if (response != null) {
+                if (response.containsKey("error")) {
+                    logger.error("IpStack API returned error: {}", response.get("error"));
+                    return new GeoLocation();
+                }
+
                 GeoLocation loc = new GeoLocation();
                 loc.setCountry((String) response.get("country_name"));
                 loc.setCity((String) response.get("city"));
-                loc.setLatitude((Double) response.get("latitude"));
-                loc.setLongitude((Double) response.get("longitude"));
+                loc.setLatitude(toDouble(response.get("latitude")));
+                loc.setLongitude(toDouble(response.get("longitude")));
+                
+                logger.info("Geolocation found for IP {}: {}, {}", ip, loc.getCity(), loc.getCountry());
                 return loc;
+            } else {
+                logger.warn("IpStack API returned null response for IP: {}", ip);
             }
         } catch (Exception e) {
-            logger.error("Error looking up IP location for {}: {}", ip, e.getMessage());
+            logger.error("Error looking up IP location for {}: {}", ip, e.getMessage(), e);
         }
         return new GeoLocation();
+    }
+
+    private Double toDouble(Object value) {
+        if (value instanceof Number number) {
+            return number.doubleValue();
+        }
+        return null;
     }
 
     public static class GeoLocation {

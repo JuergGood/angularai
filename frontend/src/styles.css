@@ -314,6 +314,34 @@ body.theme-dark mat-icon:not(.mat-primary mat-icon):not(.mat-warn mat-icon):not(
   opacity: 0.9 !important;
 }
 
+/* GoodOne Custom Tooltip */
+.mat-mdc-tooltip.goodone-tooltip .mdc-tooltip__surface {
+  background: var(--surface) !important;
+  color: var(--text) !important;
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--brand);
+  border-radius: var(--r);
+  padding: 10px 12px;
+  max-width: 360px;
+  white-space: pre-line;
+  font-size: 12.5px;
+  line-height: 1.35;
+  letter-spacing: 0.1px;
+  box-shadow: var(--shadow-2);
+  transform-origin: top left;
+  animation: goodoneTooltipIn 120ms ease-out;
+}
+
+.mat-mdc-tooltip.goodone-tooltip .mdc-tooltip__surface strong {
+  font-weight: 600;
+  color: var(--text);
+}
+
+@keyframes goodoneTooltipIn {
+  from { opacity: 0; transform: translateY(4px) scale(0.98); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
 /* Aggressive Dark Mode Overrides for Sidenav and Muted text */
 body.theme-dark {
   /* Sidenav overrides */

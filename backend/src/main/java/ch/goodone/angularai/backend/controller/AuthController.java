@@ -46,10 +46,17 @@ public class AuthController {
         }
         
         String ip = request.getHeader("X-Forwarded-For");
+        logger.info("Login request from IP (X-Forwarded-For): {}", ip);
         if (ip == null || ip.isEmpty() || "unknown".equalsIgnoreCase(ip)) {
             ip = request.getRemoteAddr();
+            logger.info("Login request from IP (RemoteAddr): {}", ip);
+        } else if (ip.contains(",")) {
+            // If there are multiple IPs, the first one is the client IP
+            ip = ip.split(",")[0].trim();
+            logger.info("Parsed client IP from X-Forwarded-For: {}", ip);
         }
         String ua = request.getHeader("User-Agent");
+        logger.info("Login request User-Agent: {}", ua);
         
         actionLogService.logLogin(user.getLogin(), ip, ua);
         

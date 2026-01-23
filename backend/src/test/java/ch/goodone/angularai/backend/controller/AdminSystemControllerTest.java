@@ -2,6 +2,7 @@ package ch.goodone.angularai.backend.controller;
 
 import ch.goodone.angularai.backend.config.SecurityConfig;
 import ch.goodone.angularai.backend.service.ActionLogService;
+import ch.goodone.angularai.backend.service.IpLocationService;
 import ch.goodone.angularai.backend.service.SystemSettingService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -44,6 +45,9 @@ class AdminSystemControllerTest {
     @MockitoBean
     private ActionLogService actionLogService;
 
+    @MockitoBean
+    private IpLocationService ipLocationService;
+
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -75,6 +79,20 @@ class AdminSystemControllerTest {
 
         verify(systemSettingService).setGeolocationEnabled(true);
         verify(actionLogService).log(eq("admin"), eq("SETTING_CHANGED"), anyString());
+    }
+
+    @Test
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
+    void shouldTestGeolocation() throws Exception {
+        IpLocationService.GeoLocation loc = new IpLocationService.GeoLocation();
+        loc.setCity("Zurich");
+        loc.setCountry("Switzerland");
+        when(ipLocationService.lookup("8.8.8.8")).thenReturn(loc);
+
+        mockMvc.perform(get("/api/admin/settings/geolocation/test").param("ip", "8.8.8.8"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.city").value("Zurich"))
+                .andExpect(jsonPath("$.country").value("Switzerland"));
     }
 
     @Test

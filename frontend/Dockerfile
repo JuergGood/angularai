@@ -4,6 +4,8 @@ WORKDIR /app
 COPY frontend/package*.json ./
 RUN npm install --legacy-peer-deps
 COPY frontend/ ./
+# Ensure no local dist/ folder is present before building
+RUN rm -rf dist
 RUN npm run build -- --configuration production
 
 # Run stage

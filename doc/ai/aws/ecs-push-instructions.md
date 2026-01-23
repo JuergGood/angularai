@@ -165,6 +165,17 @@ To deploy the new version:
     ```
     *(Replace `REVISION` with the number returned by the register command)*
 
+### Verifying the Deployment
+To verify that the Task Definition is correctly pointing to the intended image version:
+
+```bash
+# Verify Backend Task Definition
+aws ecs describe-task-definition --task-definition angularai-backend --region eu-central-1 --query "taskDefinition.containerDefinitions[].{name:name, image:image}" --output table
+
+# Verify Frontend Task Definition
+aws ecs describe-task-definition --task-definition angularai-frontend --region eu-central-1 --query "taskDefinition.containerDefinitions[].{name:name, image:image}" --output table
+```
+
 ---
 
 ## Troubleshooting: Version Mismatch

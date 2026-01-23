@@ -1,0 +1,59 @@
+<div class="quick-add-container">
+  <mat-form-field appearance="outline" class="quick-add-field" [subscriptSizing]="'dynamic'">
+    <mat-icon matPrefix>add</mat-icon>
+    <mat-label>{{ 'TASKS.QUICK_ADD_PLACEHOLDER' | translate }}</mat-label>
+    <input matInput [formControl]="titleControl"
+           (keydown.enter)="submit()"
+           [placeholder]="'TASKS.QUICK_ADD_HINT' | translate">
+    <mat-icon matSuffix
+              class="help-icon"
+              [matTooltip]="'TASKS.QUICK_ADD_HELP_DETAILED' | translate"
+              matTooltipPosition="above"
+              matTooltipClass="goodone-tooltip"
+              (click)="$event.stopPropagation(); tooltip.toggle()"
+              #tooltip="matTooltip">info_outline</mat-icon>
+    <mat-hint class="goodone-hint">{{ 'TASKS.QUICK_ADD_HELP' | translate }}</mat-hint>
+    @if (errorMessage()) {
+      <mat-error>{{ errorMessage() | translate }}</mat-error>
+    }
+  </mat-form-field>
+
+  @if (parsedTask(); as task) {
+    @if (titleControl.value.trim()) {
+      <div class="parsed-preview">
+        <mat-chip-listbox>
+          @if (task.title) {
+            <mat-chip class="preview-chip title-chip">
+              <mat-icon matChipAvatar>title</mat-icon>
+              {{ task.title }}
+            </mat-chip>
+          }
+          @if (task.description) {
+            <mat-chip class="preview-chip desc-chip">
+              <mat-icon matChipAvatar>description</mat-icon>
+              {{ task.description }}
+            </mat-chip>
+          }
+          @if (task.dueDate) {
+            <mat-chip class="preview-chip date-chip">
+              <mat-icon matChipAvatar>calendar_today</mat-icon>
+              {{ task.dueDate }}
+            </mat-chip>
+          }
+          @if (task.priority) {
+            <mat-chip class="preview-chip prio-chip" [ngClass]="'prio-' + task.priority.toLowerCase()">
+              <mat-icon matChipAvatar>priority_high</mat-icon>
+              {{ 'TASKS.PRIORITY.' + task.priority | translate }}
+            </mat-chip>
+          }
+          @if (task.status) {
+            <mat-chip class="preview-chip status-chip" [ngClass]="'status-' + task.status.toLowerCase()">
+              <mat-icon matChipAvatar>info</mat-icon>
+              {{ 'TASKS.STATUS.' + task.status | translate }}
+            </mat-chip>
+          }
+        </mat-chip-listbox>
+      </div>
+    }
+  }
+</div>

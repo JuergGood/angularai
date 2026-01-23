@@ -1,6 +1,7 @@
 package ch.goodone.angularai.backend.controller;
 
 import ch.goodone.angularai.backend.service.ActionLogService;
+import ch.goodone.angularai.backend.service.IpLocationService;
 import ch.goodone.angularai.backend.service.SystemSettingService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
@@ -16,10 +17,12 @@ public class AdminSystemController {
 
     private final SystemSettingService systemSettingService;
     private final ActionLogService actionLogService;
+    private final IpLocationService ipLocationService;
 
-    public AdminSystemController(SystemSettingService systemSettingService, ActionLogService actionLogService) {
+    public AdminSystemController(SystemSettingService systemSettingService, ActionLogService actionLogService, IpLocationService ipLocationService) {
         this.systemSettingService = systemSettingService;
         this.actionLogService = actionLogService;
+        this.ipLocationService = ipLocationService;
     }
 
     @GetMapping("/geolocation")
@@ -33,5 +36,10 @@ public class AdminSystemController {
         systemSettingService.setGeolocationEnabled(enabled);
         actionLogService.log(authentication.getName(), "SETTING_CHANGED", "Geolocation enabled set to: " + enabled);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/geolocation/test")
+    public ResponseEntity<IpLocationService.GeoLocation> testGeolocation(@RequestParam String ip) {
+        return ResponseEntity.ok(ipLocationService.lookup(ip));
     }
 }

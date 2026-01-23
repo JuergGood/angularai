@@ -1,0 +1,43 @@
+.quick-add-container {
+  margin-bottom: 24px;
+}
+.quick-add-field {
+  width: 100%;
+  margin-bottom: 8px;
+}
+.parsed-preview {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+  margin-bottom: 16px;
+}
+.preview-chip {
+  font-size: 12px;
+}
+.title-chip { --mdc-chip-label-text-color: #4b5563; }
+.desc-chip { --mdc-chip-label-text-color: #6b7280; }
+.prio-low { --mdc-chip-label-text-color: #2e7d32; }
+.prio-medium { --mdc-chip-label-text-color: var(--brand); }
+.prio-high { --mdc-chip-label-text-color: #e65100; }
+.prio-critical { --mdc-chip-label-text-color: #c62828; }
+
+.help-icon {
+  cursor: pointer;
+  color: var(--text-muted);
+  font-size: 20px;
+  width: 20px;
+  height: 20px;
+  margin-right: 4px;
+  transition: color 0.2s;
+}
+.help-icon:hover {
+  color: var(--brand);
+}
+
+.goodone-hint {
+  font-size: 11px;
+  line-height: 1.4;
+  color: var(--text-muted);
+  display: block;
+  margin-top: 4px;
+}
