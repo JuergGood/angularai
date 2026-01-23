@@ -57,6 +57,7 @@ Der Angular-Entwicklungsserver ist so konfiguriert, dass er `/api`-Anfragen an `
 ## Dokumentation
 
 - [Benutzerhandbuch](doc/userguide/user-guide.md)
+- [Versionshinweise](doc/userguide/release-notes.md)
 - [Administrator-Handbuch](doc/userguide/admin-guide.md)
 - [FAQ](doc/userguide/faq.md)
 - [Confluence-Exportskript](scripts/md_to_confluence.py)

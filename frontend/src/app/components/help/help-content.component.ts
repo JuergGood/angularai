@@ -98,6 +98,7 @@ export class HelpContentComponent implements OnInit, AfterViewChecked {
               if (href.includes('user-guide')) pageId = 'user-guide';
               else if (href.includes('admin-guide')) pageId = 'admin-guide';
               else if (href.includes('faq')) pageId = 'faq';
+              else if (href.includes('release-notes')) pageId = 'release-notes';
               else if (href.includes('README')) pageId = 'readme';
               else if (href.includes('android-build-instructions')) pageId = 'android-build-instructions';
               else if (href.includes('aws_setup')) pageId = 'aws-setup';

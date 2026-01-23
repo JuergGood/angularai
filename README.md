@@ -57,6 +57,7 @@ The Angular development server is configured to proxy `/api` requests to `http:/
 ## Documentation
 
 - [User Guide](doc/userguide/user-guide.md)
+- [Release Notes](doc/userguide/release-notes.md)
 - [Admin Guide](doc/userguide/admin-guide.md)
 - [FAQ](doc/userguide/faq.md)
 - [Confluence Export Script](scripts/md_to_confluence.py)
