@@ -62,7 +62,7 @@ public class DashboardService {
         );
 
         // Recent Data
-        List<TaskDTO> priorityTasks = taskRepository.findByPriorityOrderByIdDesc(Priority.HIGH, PageRequest.of(0, 5))
+        List<TaskDTO> priorityTasks = taskRepository.findByPriorityInOrderByIdDesc(List.of(Priority.CRITICAL, Priority.HIGH), PageRequest.of(0, 5))
                 .stream().map(TaskDTO::fromEntity).toList();
 
         List<ActionLogDTO> recentActivity = actionLogRepository.findAllByOrderByTimestampDesc(PageRequest.of(0, 5))

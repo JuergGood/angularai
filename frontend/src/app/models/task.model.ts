@@ -1,7 +1,8 @@
 export enum Priority {
   LOW = 'LOW',
   MEDIUM = 'MEDIUM',
-  HIGH = 'HIGH'
+  HIGH = 'HIGH',
+  CRITICAL = 'CRITICAL'
 }
 
 export enum TaskStatus {

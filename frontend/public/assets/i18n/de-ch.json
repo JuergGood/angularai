@@ -35,7 +35,7 @@
     "OPEN": "Offen",
     "IN_PROGRESS": "In Bearbeitung",
     "COMPLETED": "Erledigt",
-    "CLOSED": "Geschlossen",
+    "ARCHIVED": "Archiviert",
     "RECENT_ACTIVITY": "Kürzliche Aktivitäten",
     "TIME": "Zeit",
     "USER": "Benutzer",
@@ -69,7 +69,8 @@
     "PRIORITY": {
       "HIGH": "Hoch",
       "MEDIUM": "Mittel",
-      "LOW": "Niedrig"
+      "LOW": "Niedrig",
+      "CRITICAL": "Kritisch"
     },
     "STATUS": {
       "OPEN": "Offen",
@@ -78,7 +79,8 @@
       "ARCHIVED": "Archiviert"
     },
     "QUICK_ADD_PLACEHOLDER": "Aufgabe hinzufügen...",
-    "QUICK_ADD_HINT": "Drücken Sie die Eingabetaste zum Speichern",
+    "QUICK_ADD_HINT": "Format: Titel | Beschreibung | Datum (JJJJ-MM-TT) | Priorität | Status",
+    "QUICK_ADD_HELP": "Trennzeichen: '|' oder ';' verwenden. Prioritäten: LOW, MEDIUM, HIGH, CRITICAL. Status: OPEN, IN_PROGRESS, DONE, ARCHIVED.",
     "NO_DUE_DATE": "Kein Fälligkeitsdatum",
     "FILTERS": {
       "ALL": "Alle",

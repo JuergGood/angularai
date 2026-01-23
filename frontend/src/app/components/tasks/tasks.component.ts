@@ -384,7 +384,7 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
       background: rgba(76, 175, 80, 0.16);
       color: #2e7d32;
     }
-    .status-closed {
+    .status-archived {
       background: rgba(0, 150, 136, 0.1);
       color: #00796b;
     }
@@ -638,9 +638,10 @@ export class TasksComponent implements OnInit {
 
   resetSorting() {
     const priorityMap: Record<Priority, number> = {
-      [Priority.HIGH]: 0,
-      [Priority.MEDIUM]: 1,
-      [Priority.LOW]: 2
+      [Priority.CRITICAL]: 0,
+      [Priority.HIGH]: 1,
+      [Priority.MEDIUM]: 2,
+      [Priority.LOW]: 3
     };
 
     this.tasks.sort((a, b) => {

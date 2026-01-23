@@ -35,7 +35,7 @@
     "OPEN": "Open",
     "IN_PROGRESS": "In Progress",
     "COMPLETED": "Completed",
-    "CLOSED": "Closed",
+    "ARCHIVED": "Archived",
     "RECENT_ACTIVITY": "Recent Activity",
     "TIME": "Time",
     "USER": "User",
@@ -69,7 +69,8 @@
     "PRIORITY": {
       "HIGH": "High",
       "MEDIUM": "Medium",
-      "LOW": "Low"
+      "LOW": "Low",
+      "CRITICAL": "Critical"
     },
     "STATUS": {
       "OPEN": "Open",
@@ -78,7 +79,8 @@
       "ARCHIVED": "Archived"
     },
     "QUICK_ADD_PLACEHOLDER": "Add a task...",
-    "QUICK_ADD_HINT": "Press Enter to save",
+    "QUICK_ADD_HINT": "Format: Title | Description | Due Date (YYYY-MM-DD) | Priority | Status",
+    "QUICK_ADD_HELP": "Separators: use '|' or ';' between fields. Priorities: LOW, MEDIUM, HIGH, CRITICAL. Statuses: OPEN, IN_PROGRESS, DONE, ARCHIVED.",
     "NO_DUE_DATE": "No due date",
     "FILTERS": {
       "ALL": "All",

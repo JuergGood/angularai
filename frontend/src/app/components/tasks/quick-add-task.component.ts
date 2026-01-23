@@ -23,15 +23,13 @@ import { TranslateModule } from '@ngx-translate/core';
       <mat-icon matPrefix>add</mat-icon>
       <mat-label>{{ 'TASKS.QUICK_ADD_PLACEHOLDER' | translate }}</mat-label>
       <input matInput [formControl]="titleControl" (keydown.enter)="submit()" [placeholder]="'TASKS.QUICK_ADD_HINT' | translate">
+      <mat-hint>{{ 'TASKS.QUICK_ADD_HELP' | translate }}</mat-hint>
     </mat-form-field>
   `,
   styles: [`
     .quick-add-field {
       width: 100%;
-      margin-bottom: 24px;
-    }
-    .quick-add-field ::ng-deep .mat-mdc-form-field-subscript-wrapper {
-      display: none;
+      margin-bottom: 32px;
     }
   `]
 })
@@ -41,9 +39,39 @@ export class QuickAddTaskComponent {
   constructor(private taskService: TaskService) {}
 
   submit() {
-    const title = this.titleControl.value.trim();
-    if (title) {
-      this.taskService.quickAdd(title).subscribe({
+    const value = this.titleControl.value.trim();
+    if (!value) return;
+
+    // Parsing logic: Title | Description | Due Date | Priority | Status
+    // Separators: | or ;
+    const parts = value.split(/[|;]/).map(p => p.trim());
+
+    if (parts.length === 1) {
+      // Simple title-only add
+      this.taskService.quickAdd(value).subscribe({
+        next: () => this.titleControl.reset()
+      });
+    } else {
+      // Detailed add
+      const [title, description, dueDate, priority, status] = parts;
+
+      const task: any = { title };
+      if (description) task.description = description;
+      if (dueDate && /^\d{4}-\d{2}-\d{2}$/.test(dueDate)) task.dueDate = dueDate;
+      if (priority) {
+        const p = priority.toUpperCase();
+        if (['LOW', 'MEDIUM', 'HIGH', 'CRITICAL'].includes(p)) {
+          task.priority = p;
+        }
+      }
+      if (status) {
+        const s = status.toUpperCase();
+        if (['OPEN', 'IN_PROGRESS', 'DONE', 'ARCHIVED'].includes(s)) {
+          task.status = s;
+        }
+      }
+
+      this.taskService.createTask(task).subscribe({
         next: () => this.titleControl.reset()
       });
     }

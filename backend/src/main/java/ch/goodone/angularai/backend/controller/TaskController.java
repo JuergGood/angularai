@@ -82,7 +82,10 @@ public class TaskController {
                     break;
                 case "HIGH":
                     spec = spec.and((root, query, cb) -> cb.and(
-                            cb.equal(root.get("priority"), ch.goodone.angularai.backend.model.Priority.HIGH),
+                            cb.or(
+                                cb.equal(root.get("priority"), ch.goodone.angularai.backend.model.Priority.HIGH),
+                                cb.equal(root.get("priority"), ch.goodone.angularai.backend.model.Priority.CRITICAL)
+                            ),
                             cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.DONE),
                             cb.notEqual(root.get("status"), ch.goodone.angularai.backend.model.TaskStatus.ARCHIVED)
                     ));

@@ -110,7 +110,7 @@ class DTOTest {
         assertEquals(1, dist.getOpen());
         assertEquals(2, dist.getInProgress());
         assertEquals(3, dist.getCompleted());
-        assertEquals(0, dist.getClosed());
+        assertEquals(0, dist.getArchived());
         assertEquals(6, dist.getTotal());
         
         DashboardDTO dash = new DashboardDTO();
