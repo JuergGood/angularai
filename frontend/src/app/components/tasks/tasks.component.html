@@ -25,6 +25,14 @@
 
   <app-task-filter-chips [activeFilter]="activeFilter" (filterChange)="onFilterChange($event)"></app-task-filter-chips>
 
+  <div class="selection-toolbar" *ngIf="filteredTasks.length > 0">
+    <mat-checkbox (change)="toggleSelectAll($event.checked)"
+                  [checked]="isAllSelected()"
+                  [indeterminate]="isPartiallySelected()">
+      {{ 'TASKS.SELECT_ALL' | translate }}
+    </mat-checkbox>
+  </div>
+
   @if (selectedTaskIds().size > 0) {
     <div class="bulk-actions-bar">
       <span>{{ selectedTaskIds().size }} {{ 'TASKS.SELECTED' | translate }}</span>
@@ -47,6 +55,11 @@
           <button mat-menu-item (click)="bulkUpdatePriority(p)">{{ 'TASKS.PRIORITY.' + p | translate }}</button>
         }
       </mat-menu>
+
+      <button mat-button color="warn" (click)="bulkDelete()">
+        <mat-icon>delete</mat-icon>
+        {{ 'ADMIN.DELETE' | translate }}
+      </button>
 
       <span style="flex: 1"></span>
       <button mat-icon-button (click)="selectedTaskIds.set(newSet())">

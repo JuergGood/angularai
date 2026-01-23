@@ -170,6 +170,7 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
       font-weight: 500;
       text-transform: uppercase;
     }
+    .priority-critical { background: #7f1d1d; color: #ffffff; }
     .priority-high { background: #fee2e2; color: #ef4444; }
     .priority-medium { background: #fef3c7; color: #f59e0b; }
     .priority-low { background: #f3f4f6; color: #6b7280; }
@@ -503,6 +504,50 @@ export class TasksComponent implements OnInit {
     if (ids.length === 0) return;
     this.taskService.bulkPatchTasks(ids, { priority }).subscribe({
       next: () => this.selectedTaskIds.set(new Set<number>())
+    });
+  }
+
+  toggleSelectAll(checked: boolean): void {
+    if (checked) {
+      const allIds = this.filteredTasks.map(t => t.id).filter((id): id is number => id !== undefined);
+      this.selectedTaskIds.set(new Set(allIds));
+    } else {
+      this.selectedTaskIds.set(new Set<number>());
+    }
+  }
+
+  isAllSelected(): boolean {
+    if (this.filteredTasks.length === 0) return false;
+    return this.filteredTasks.every(t => t.id !== undefined && this.selectedTaskIds().has(t.id));
+  }
+
+  isPartiallySelected(): boolean {
+    const selectedCount = Array.from(this.selectedTaskIds()).filter(id =>
+      this.filteredTasks.some(t => t.id === id)
+    ).length;
+    return selectedCount > 0 && selectedCount < this.filteredTasks.length;
+  }
+
+  bulkDelete(): void {
+    const ids: number[] = Array.from(this.selectedTaskIds());
+    if (ids.length === 0) return;
+
+    this.translate.get('TASKS.DELETE_BULK_CONFIRM', { count: ids.length }).subscribe(msg => {
+      const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+        data: { message: msg }
+      });
+
+      dialogRef.afterClosed().subscribe(result => {
+        if (result) {
+          this.taskService.bulkDeleteTasks(ids).subscribe({
+            next: () => {
+              this.selectedTaskIds.set(new Set<number>());
+              this.loadTasks();
+              this.cdr.detectChanges();
+            }
+          });
+        }
+      });
     });
   }
 

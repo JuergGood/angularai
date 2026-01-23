@@ -11,6 +11,7 @@ This document outlines the best practices and standards for the AngularAI projec
     - Use `.\scripts\sync-version.ps1` to propagate version changes from the root `pom.xml` to other files (package.json, build.gradle, deployment scripts, and documentation).
 - **Testing**: Maintain high test coverage for both frontend and backend.
 - **Docker First**: Ensure all changes are compatible with the Docker-based deployment.
+- **Language**: Always communicate in English for all interactions, thoughts, and documentation, unless explicitly requested otherwise by the user.
 
 ## Backend Development (Spring Boot)
 

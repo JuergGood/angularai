@@ -79,8 +79,13 @@
       "ARCHIVED": "Archiviert"
     },
     "QUICK_ADD_PLACEHOLDER": "Aufgabe hinzufügen...",
-    "QUICK_ADD_HINT": "Format: Titel | Beschreibung | Datum (JJJJ-MM-TT) | Priorität | Status",
-    "QUICK_ADD_HELP": "Trennzeichen: '|' oder ';' verwenden. Prioritäten: LOW, MEDIUM, HIGH, CRITICAL. Status: OPEN, IN_PROGRESS, DONE, ARCHIVED.",
+    "QUICK_ADD_HINT": "Format: Titel, Beschreibung, Datum (TT.MM.JJJJ), Priorität, Status",
+    "QUICK_ADD_HELP": "Trennzeichen: ',' '|' oder ';' verwenden. Mauszeiger für Details.",
+    "QUICK_ADD_HELP_DETAILED": "Detaillierte Syntax:\n- Titel: Erforderlich\n- Beschreibung: Optional\n- Datum: TT.MM.JJJJ oder 'heute', 'morgen', 'übermorgen', 'woche', 'X tage'\n- Priorität: tief, mittel, hoch, kritisch\n- Status: offen, hängig, erledigt, archiviert\n\nBeispiel: Milch kaufen, Migros, morgen, hoch, offen",
+    "ERROR_TITLE_REQUIRED": "Titel ist erforderlich bei Verwendung von Trennzeichen",
+    "ERROR_INVALID_DATE": "Ungültiges Datumsformat. Verwenden Sie TT.MM.JJJJ oder Kürzel wie 'morgen', 'übermorgen'",
+    "ERROR_INVALID_PRIORITY": "Ungültige Priorität. Verwenden Sie tief, mittel, hoch oder kritisch",
+    "ERROR_INVALID_STATUS": "Ungültiger Status. Verwenden Sie 'offen', 'hängig', 'erledigt' oder 'archiviert'",
     "NO_DUE_DATE": "Kein Fälligkeitsdatum",
     "FILTERS": {
       "ALL": "Alle",
@@ -98,6 +103,8 @@
     },
     "EMPTY": "Keine Aufgaben gefunden.",
     "DELETE_CONFIRM": "Sind Sie sicher, dass Sie diese Aufgabe löschen möchten?",
+    "DELETE_BULK_CONFIRM": "Sind Sie sicher, dass Sie {{count}} Aufgaben löschen möchten?",
+    "SELECT_ALL": "Alle auswählen",
     "SELECTED": "ausgewählt",
     "BULK_STATUS": "Status setzen",
     "BULK_PRIORITY": "Priorität setzen",
@@ -157,6 +164,7 @@
   "COMMON": {
     "LOADING": "Wird geladen...",
     "SUCCESS": "Erfolgreich",
-    "ERROR": "Fehler"
+    "ERROR": "Fehler",
+    "CONFIRM": "Aktion bestätigen"
   }
 }

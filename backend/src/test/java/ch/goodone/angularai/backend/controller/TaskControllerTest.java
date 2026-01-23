@@ -56,6 +56,9 @@ class TaskControllerTest {
     @MockitoBean
     private ActionLogService actionLogService;
 
+    @MockitoBean
+    private ch.goodone.angularai.backend.service.TaskParserService taskParserService;
+
     @Autowired
     private ObjectMapper objectMapper;
 

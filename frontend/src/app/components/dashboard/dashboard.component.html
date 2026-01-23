@@ -221,7 +221,9 @@
           @for (task of data.priorityTasks; track task.id) {
             <div class="priority-row" routerLink="/tasks">
               <div class="priority-left">
-                <mat-icon class="priority-icon" color="warn">priority_high</mat-icon>
+                <mat-icon class="priority-icon" [style.color]="task.priority === 'CRITICAL' ? '#c62828' : '#f44336'">
+                  {{ task.priority === 'CRITICAL' ? 'report' : 'priority_high' }}
+                </mat-icon>
                 <div>
                   <div class="priority-title">{{ task.title }}</div>
                   <div class="priority-sub muted">{{ 'DASHBOARD.DUE' | translate }}: {{ task.dueDate }}</div>

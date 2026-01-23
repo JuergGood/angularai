@@ -1,8 +1,8 @@
-<h2 mat-dialog-title>Confirm Action</h2>
+<h2 mat-dialog-title>{{ 'COMMON.CONFIRM' | translate }}</h2>
 <mat-dialog-content>
-  Are you sure you want to proceed?
+  {{ data?.message || ('TASKS.DELETE_CONFIRM' | translate) }}
 </mat-dialog-content>
 <mat-dialog-actions align="end">
-  <button mat-button mat-dialog-close>Cancel</button>
-  <button mat-raised-button color="warn" [mat-dialog-close]="true">Confirm</button>
+  <button mat-button mat-dialog-close>{{ 'TASKS.CANCEL' | translate }}</button>
+  <button mat-raised-button color="warn" [mat-dialog-close]="true">{{ 'ADMIN.DELETE' | translate }}</button>
 </mat-dialog-actions>

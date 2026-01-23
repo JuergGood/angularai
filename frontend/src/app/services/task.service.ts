@@ -77,12 +77,26 @@ export class TaskService {
     return this.http.put<void>(`${this.apiUrl}/reorder`, taskIds, { headers: this.getHeaders() });
   }
 
+  analyzeTask(input: string): Observable<Task> {
+    return this.http.post<Task>(`${this.apiUrl}/analyze`, input, { headers: this.getHeaders() });
+  }
+
   bulkPatchTasks(ids: number[], patch: Partial<Task>): Observable<Task[]> {
     return this.http.patch<Task[]>(`${this.apiUrl}/bulk`, { ids, patch }, { headers: this.getHeaders() }).pipe(
       tap(updatedTasks => {
         const updatedMap = new Map(updatedTasks.map(t => [t.id, t]));
         this.tasksSignal.update(tasks => tasks.map(t => updatedMap.get(t.id) ?? t));
       })
+    );
+  }
+
+  bulkDeleteTasks(ids: number[]): Observable<void> {
+    const options = {
+      headers: this.getHeaders(),
+      body: ids
+    };
+    return this.http.delete<void>(`${this.apiUrl}/bulk`, options).pipe(
+      tap(() => this.tasksSignal.update(tasks => tasks.filter(t => !ids.includes(t.id!))))
     );
   }
 }

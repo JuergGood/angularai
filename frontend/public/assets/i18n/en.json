@@ -79,8 +79,13 @@
       "ARCHIVED": "Archived"
     },
     "QUICK_ADD_PLACEHOLDER": "Add a task...",
-    "QUICK_ADD_HINT": "Format: Title | Description | Due Date (YYYY-MM-DD) | Priority | Status",
-    "QUICK_ADD_HELP": "Separators: use '|' or ';' between fields. Priorities: LOW, MEDIUM, HIGH, CRITICAL. Statuses: OPEN, IN_PROGRESS, DONE, ARCHIVED.",
+    "QUICK_ADD_HINT": "Format: Title, Description, Due Date (DD.MM.YYYY), Priority, Status",
+    "QUICK_ADD_HELP": "Separators: use ',' (default), '|' or ';' between fields. Hover for detailed help.",
+    "QUICK_ADD_HELP_DETAILED": "Detailed Syntax:\n- Title: Required\n- Description: Optional\n- Due Date: DD.MM.YYYY, YYYY-MM-DD or 'today', 'tomorrow', 'übermorgen', 'week', 'X days'\n- Priority: low, medium, high, critical\n- Status: open, in_progress, done, archived\n\nExample: Buy milk, Grocery store, tomorrow, high, open",
+    "ERROR_TITLE_REQUIRED": "Title is required when using separators",
+    "ERROR_INVALID_DATE": "Invalid date format. Use DD.MM.YYYY or shortcuts like 'tomorrow', 'übermorgen'",
+    "ERROR_INVALID_PRIORITY": "Invalid priority. Use low, medium, high, or critical",
+    "ERROR_INVALID_STATUS": "Invalid status. Use open, in_progress, done, or archived",
     "NO_DUE_DATE": "No due date",
     "FILTERS": {
       "ALL": "All",
@@ -98,6 +103,8 @@
     },
     "EMPTY": "No tasks found.",
     "DELETE_CONFIRM": "Are you sure you want to delete this task?",
+    "DELETE_BULK_CONFIRM": "Are you sure you want to delete {{count}} tasks?",
+    "SELECT_ALL": "Select All",
     "SELECTED": "selected",
     "BULK_STATUS": "Set Status",
     "BULK_PRIORITY": "Set Priority",
@@ -157,6 +164,7 @@
   "COMMON": {
     "LOADING": "Loading...",
     "SUCCESS": "Success",
-    "ERROR": "Error"
+    "ERROR": "Error",
+    "CONFIRM": "Confirm Action"
   }
 }

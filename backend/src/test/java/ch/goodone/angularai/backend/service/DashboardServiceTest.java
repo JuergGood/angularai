@@ -56,7 +56,7 @@ class DashboardServiceTest {
         ActionLog actionLog = new ActionLog("jdoe", "LOGIN", "Logged in");
         actionLog.setId(1L);
 
-        when(taskRepository.findByPriorityOrderByIdDesc(eq(Priority.HIGH), any(PageRequest.class)))
+        when(taskRepository.findByPriorityInOrderByIdDesc(eq(List.of(Priority.CRITICAL, Priority.HIGH)), any(PageRequest.class)))
                 .thenReturn(List.of(task));
         when(actionLogRepository.findAllByOrderByTimestampDesc(any(PageRequest.class)))
                 .thenReturn(List.of(actionLog));
@@ -100,7 +100,7 @@ class DashboardServiceTest {
         when(actionLogRepository.countByTimestampAfter(any())).thenReturn(0L);
         when(taskRepository.count()).thenReturn(0L);
 
-        when(taskRepository.findByPriorityOrderByIdDesc(any(), any())).thenReturn(Collections.emptyList());
+        when(taskRepository.findByPriorityInOrderByIdDesc(any(), any())).thenReturn(Collections.emptyList());
         when(actionLogRepository.findAllByOrderByTimestampDesc(any())).thenReturn(Collections.emptyList());
         when(userRepository.findAllByOrderByIdDesc(any())).thenReturn(Collections.emptyList());
 

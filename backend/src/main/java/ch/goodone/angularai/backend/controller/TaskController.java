@@ -29,11 +29,26 @@ public class TaskController {
     private final TaskRepository taskRepository;
     private final UserRepository userRepository;
     private final ActionLogService actionLogService;
+    private final ch.goodone.angularai.backend.service.TaskParserService taskParserService;
 
-    public TaskController(TaskRepository taskRepository, UserRepository userRepository, ActionLogService actionLogService) {
+    public TaskController(TaskRepository taskRepository, UserRepository userRepository, ActionLogService actionLogService, ch.goodone.angularai.backend.service.TaskParserService taskParserService) {
         this.taskRepository = taskRepository;
         this.userRepository = userRepository;
         this.actionLogService = actionLogService;
+        this.taskParserService = taskParserService;
+    }
+
+    @PostMapping("/analyze")
+    public TaskDTO analyzeTask(@RequestBody String input) {
+        var parsed = taskParserService.parse(input);
+        TaskDTO dto = new TaskDTO();
+        dto.setTitle(parsed.title());
+        dto.setDescription(parsed.description());
+        dto.setDueDate(parsed.dueDate());
+        dto.setPriority(parsed.priority());
+        dto.setStatus(parsed.status().name());
+        dto.setTags(parsed.tags());
+        return dto;
     }
 
     @GetMapping
@@ -264,6 +279,20 @@ public class TaskController {
                     return ResponseEntity.noContent().<Void>build();
                 })
                 .orElse(ResponseEntity.notFound().build());
+    }
+
+    @DeleteMapping("/bulk")
+    public ResponseEntity<Void> bulkDeleteTasks(@RequestBody List<Long> ids, Authentication authentication) {
+        User user = getCurrentUser(authentication);
+        List<Task> tasks = taskRepository.findAllById(ids);
+        List<Task> toDelete = tasks.stream()
+                .filter(task -> task.getUser().getId().equals(user.getId()))
+                .toList();
+        
+        taskRepository.deleteAll(toDelete);
+        actionLogService.log(user.getLogin(), "TASK_BULK_REMOVED", "Bulk removed " + toDelete.size() + " tasks");
+        
+        return ResponseEntity.noContent().build();
     }
 
     private User getCurrentUser(Authentication authentication) {
