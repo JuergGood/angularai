@@ -9,7 +9,8 @@ This document outlines the best practices and standards for the AngularAI projec
     - The **Root `pom.xml`** is the single source of truth for the project version.
     - All modules (Backend, Frontend, Android, Test Client) must share the same version.
     - Use `.\scripts\sync-version.ps1` to propagate version changes from the root `pom.xml` to other files (package.json, build.gradle, deployment scripts, and documentation).
-- **Testing**: Maintain high test coverage for both frontend and backend.
+- **Build Integrity**: Ensure the project builds successfully (`mvn clean install`) before submitting changes.
+- **Testing**: Maintain high test coverage (>70%) for both frontend and backend at all times.
 - **Docker First**: Ensure all changes are compatible with the Docker-based deployment.
 - **Language**: Always communicate in English for all interactions, thoughts, and documentation, unless explicitly requested otherwise by the user.
 - **Translations**: Always provide translations for both supported languages (English `en.json` and German `de-ch.json`) when adding or modifying UI text.
