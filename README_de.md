@@ -9,7 +9,13 @@ Dies ist eine Full-Stack-Anwendung mit einem Spring Boot-Backend und einem Angul
 
 ## Ausführen mit Docker
 
-Um die gesamte Anwendung mit Docker Compose auszuführen, navigieren Sie zum Stammverzeichnis und führen Sie folgenden Befehl aus:
+Um die gesamte Anwendung mit Docker Compose auszuführen, navigieren Sie zum Stammverzeichnis. Erstellen Sie zunächst eine `.env`-Datei im Stammverzeichnis (Sie können `.env.example` als Vorlage kopieren):
+
+```bash
+cp .env.example .env
+```
+
+Führen Sie dann den folgenden Befehl aus:
 
 ```bash
 docker compose up --build

@@ -20,8 +20,18 @@ param (
 )
 
 if (-not $Token) {
-    Write-Error "SONAR_TOKEN is not set. Please provide it via -Token parameter or set the SONAR_TOKEN environment variable."
+    Write-Warning "SONAR_TOKEN is not set. Looking for environment variables..."
+    $Token = $env:SONAR_TOKEN
+}
+
+if (-not $Token) {
+    Write-Error "SONAR_TOKEN is not set. Please provide it via -Token parameter or set the SONAR_TOKEN environment variable in .env"
     exit 1
+}
+
+if ($Token -eq "dummy_sonar_token") {
+    Write-Warning "SONAR_TOKEN is set to 'dummy_sonar_token'. SonarCloud analysis will fail because the token is invalid."
+    Write-Warning "If you want to perform real analysis, please set a valid SONAR_TOKEN in your .env file."
 }
 
 Write-Host "Starting Local SonarCloud Analysis..." -ForegroundColor Cyan

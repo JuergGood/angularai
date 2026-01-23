@@ -9,10 +9,10 @@ This is a full-stack application with a Spring Boot backend and an Angular front
 
 ## Running with Docker
 
-To run the entire application using Docker Compose, navigate to the root directory. First, create a `.env` file in the root directory with your API keys:
+To run the entire application using Docker Compose, navigate to the root directory. First, create a `.env` file in the root directory (you can copy `.env.example` as a template):
 
 ```bash
-IPSTACK_API_KEY=your_api_key_here
+cp .env.example .env
 ```
 
 Then run:
