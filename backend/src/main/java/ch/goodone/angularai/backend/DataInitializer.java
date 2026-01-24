@@ -49,9 +49,11 @@ public class DataInitializer {
                         "admin",
                         passwordEncoder.encode(adminPassword),
                         adminEmail,
+                        "+41791234567",
                         LocalDate.of(1990, 1, 1),
                         "123 Main St",
-                        ch.goodone.angularai.backend.model.Role.ROLE_ADMIN
+                        ch.goodone.angularai.backend.model.Role.ROLE_ADMIN,
+                        ch.goodone.angularai.backend.model.UserStatus.ACTIVE
                 );
                 admin = userRepository.save(admin);
 
@@ -61,9 +63,11 @@ public class DataInitializer {
                         "user",
                         passwordEncoder.encode(userPassword),
                         userEmail,
+                        "+41797654321",
                         LocalDate.of(1995, 5, 5),
                         "456 User Ave",
-                        ch.goodone.angularai.backend.model.Role.ROLE_USER
+                        ch.goodone.angularai.backend.model.Role.ROLE_USER,
+                        ch.goodone.angularai.backend.model.UserStatus.ACTIVE
                 );
                 userRepository.save(user);
                 
@@ -73,9 +77,11 @@ public class DataInitializer {
                         "admin-read",
                         passwordEncoder.encode(adminReadPassword),
                         adminReadEmail,
+                        "+41790000000",
                         LocalDate.of(1992, 2, 2),
                         "789 Read St",
-                        ch.goodone.angularai.backend.model.Role.ROLE_ADMIN_READ
+                        ch.goodone.angularai.backend.model.Role.ROLE_ADMIN_READ,
+                        ch.goodone.angularai.backend.model.UserStatus.ACTIVE
                 );
                 userRepository.save(adminRead);
 

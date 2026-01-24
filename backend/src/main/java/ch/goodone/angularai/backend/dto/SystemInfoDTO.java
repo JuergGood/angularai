@@ -4,13 +4,19 @@ public class SystemInfoDTO {
     private String backendVersion;
     private String frontendVersion;
     private String mode;
+    private String landingMessage;
 
     public SystemInfoDTO() {}
 
     public SystemInfoDTO(String backendVersion, String frontendVersion, String mode) {
+        this(backendVersion, frontendVersion, mode, null);
+    }
+
+    public SystemInfoDTO(String backendVersion, String frontendVersion, String mode, String landingMessage) {
         this.backendVersion = backendVersion;
         this.frontendVersion = frontendVersion;
         this.mode = mode;
+        this.landingMessage = landingMessage;
     }
 
     public String getBackendVersion() {
@@ -35,5 +41,13 @@ public class SystemInfoDTO {
 
     public void setMode(String mode) {
         this.mode = mode;
+    }
+
+    public String getLandingMessage() {
+        return landingMessage;
+    }
+
+    public void setLandingMessage(String landingMessage) {
+        this.landingMessage = landingMessage;
     }
 }

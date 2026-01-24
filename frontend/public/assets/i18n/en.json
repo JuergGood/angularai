@@ -22,7 +22,8 @@
     "FAQ": "FAQ",
     "RELEASE_NOTES": "Release Notes",
     "DASHBOARD_SHORT": "Dashboard",
-    "GEOLOCATION": "Geolocation"
+    "GEOLOCATION": "Geolocation",
+    "RECAPTCHA": "reCAPTCHA Configuration"
   },
   "DASHBOARD": {
     "TITLE": "Dashboard",
@@ -133,7 +134,9 @@
     "LAST_NAME": "Last Name",
     "BIRTH_DATE": "Birth Date",
     "ADDRESS": "Address",
+    "PHONE": "Phone",
     "PASSWORD": "Password",
+    "PASSWORD_HINT": "Min. 8 characters, at least 1 letter and 1 special character",
     "CONFIRM_PASSWORD": "Confirm Password",
     "ROLES": {
       "USER": "User",
@@ -143,9 +146,16 @@
     "ACCESS_DENIED": "Access Denied. Admin privileges required.",
     "ERROR_EMAIL": "Please enter a valid email address",
     "ERROR_PASSWORD_MATCH": "Passwords do not match",
+    "ERROR_PASSWORD_STRENGTH": "Password does not meet requirements",
     "ERROR_REQUIRED": "This field is required",
     "ERROR_USER_EXISTS": "User already exists",
-    "ERROR_RECAPTCHA": "Please complete the reCAPTCHA"
+    "ERROR_EMAIL_EXISTS": "Email already exists",
+    "ERROR_RECAPTCHA": "Please complete the reCAPTCHA",
+    "STRENGTH": {
+      "WEAK": "Weak",
+      "MEDIUM": "Medium",
+      "STRONG": "Strong"
+    }
   },
   "LOGS": {
     "TITLE": "System Logs",
@@ -171,5 +181,9 @@
     "CONFIRM": "Confirm Action",
     "ON": "On",
     "OFF": "Off"
+  },
+  "REGISTER": {
+    "VERIFICATION_HINT": "To complete your registration, you must verify your email address. A verification link will be sent to you after you submit this form.",
+    "SUCCESS_MESSAGE": "Registration successful! A verification link has been sent to your email. Please verify your account before logging in."
   }
 }

@@ -7,6 +7,7 @@ export interface SystemInfo {
   backendVersion: string;
   frontendVersion: string;
   mode: string;
+  landingMessage?: string;
 }
 
 @Injectable({
@@ -40,5 +41,13 @@ export class SystemService {
 
   setGeolocationEnabled(enabled: boolean): Observable<void> {
     return this.http.post<void>(`${this.adminUrl}/geolocation`, { enabled }, { headers: this.getHeaders() });
+  }
+
+  getRecaptchaConfigIndex(): Observable<{index: number}> {
+    return this.http.get<{index: number}>(`${this.adminUrl}/recaptcha`, { headers: this.getHeaders() });
+  }
+
+  setRecaptchaConfigIndex(index: number): Observable<void> {
+    return this.http.post<void>(`${this.adminUrl}/recaptcha`, { index }, { headers: this.getHeaders() });
   }
 }

@@ -5,6 +5,8 @@ import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.UserRepository;
 import ch.goodone.angularai.backend.service.ActionLogService;
 import ch.goodone.angularai.backend.service.CaptchaService;
+import ch.goodone.angularai.backend.service.EmailService;
+import ch.goodone.angularai.backend.model.VerificationToken;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -25,12 +27,16 @@ public class AuthController {
     private final PasswordEncoder passwordEncoder;
     private final ActionLogService actionLogService;
     private final CaptchaService captchaService;
+    private final EmailService emailService;
+    private final ch.goodone.angularai.backend.repository.VerificationTokenRepository tokenRepository;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, ActionLogService actionLogService, CaptchaService captchaService) {
+    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, ActionLogService actionLogService, CaptchaService captchaService, EmailService emailService, ch.goodone.angularai.backend.repository.VerificationTokenRepository tokenRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.actionLogService = actionLogService;
         this.captchaService = captchaService;
+        this.emailService = emailService;
+        this.tokenRepository = tokenRepository;
     }
 
     @PostMapping("/login")
@@ -46,6 +52,11 @@ public class AuthController {
                 });
         if (user == null) {
             return ResponseEntity.status(401).build();
+        }
+
+        if (user.getStatus() != ch.goodone.angularai.backend.model.UserStatus.ACTIVE) {
+            logger.warn("Login attempt for non-active user: {}", user.getLogin());
+            return ResponseEntity.status(403).body(null);
         }
         
         String ip = request.getHeader("X-Forwarded-For");
@@ -94,6 +105,9 @@ public class AuthController {
         if (userDTO.getPassword() == null || userDTO.getPassword().isBlank()) {
             return ResponseEntity.badRequest().body("Password is required");
         }
+        if (userDTO.getPassword().length() < 8 || !userDTO.getPassword().matches(".*[A-Za-z].*") || !userDTO.getPassword().matches(".*[^A-Za-z0-9].*")) {
+            return ResponseEntity.badRequest().body("Password does not meet requirements");
+        }
         if (userDTO.getEmail() == null || userDTO.getEmail().isBlank()) {
             return ResponseEntity.badRequest().body("Email is required");
         }
@@ -103,6 +117,9 @@ public class AuthController {
         if (userRepository.findByLogin(userDTO.getLogin()).isPresent()) {
             return ResponseEntity.badRequest().body("User already exists");
         }
+        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
+            return ResponseEntity.badRequest().body("Email already exists");
+        }
 
         User user = new User(
                 userDTO.getFirstName(),
@@ -110,14 +127,38 @@ public class AuthController {
                 userDTO.getLogin(),
                 passwordEncoder.encode(userDTO.getPassword()),
                 userDTO.getEmail(),
+                userDTO.getPhone() != null && !userDTO.getPhone().isBlank() ? userDTO.getPhone() : null,
                 userDTO.getBirthDate(),
                 userDTO.getAddress(),
-                ch.goodone.angularai.backend.model.Role.ROLE_ADMIN_READ
+                ch.goodone.angularai.backend.model.Role.ROLE_ADMIN_READ,
+                ch.goodone.angularai.backend.model.UserStatus.PENDING
         );
 
         userRepository.save(user);
-        actionLogService.log(user.getLogin(), "USER_REGISTERED", "User registered");
+        
+        VerificationToken token = new VerificationToken(user);
+        tokenRepository.save(token);
+        
+        emailService.sendVerificationEmail(user.getEmail(), token.getToken());
+
+        actionLogService.log(user.getLogin(), "USER_REGISTERED", "User registered, pending verification");
         return ResponseEntity.ok(UserDTO.fromEntity(user));
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<String> verify(@RequestParam String token) {
+        return tokenRepository.findByToken(token)
+                .map(t -> {
+                    if (t.isExpired()) {
+                        return ResponseEntity.badRequest().body("Token expired");
+                    }
+                    User user = t.getUser();
+                    user.setStatus(ch.goodone.angularai.backend.model.UserStatus.ACTIVE);
+                    userRepository.save(user);
+                    tokenRepository.delete(t);
+                    return ResponseEntity.ok("Account verified successfully. You can now login.");
+                })
+                .orElse(ResponseEntity.badRequest().body("Invalid token"));
     }
 
     @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)

@@ -9,6 +9,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 import { User } from '../../models/user.model';
 
 @Component({
@@ -22,49 +23,11 @@ import { User } from '../../models/user.model';
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
+    MatIconModule,
     TranslateModule
   ],
   templateUrl: './register.component.html',
-  styles: [`
-    .register-page {
-      display: flex;
-      justify-content: center;
-      padding: 24px;
-    }
-    .register-card {
-      width: 100%;
-      max-width: 650px;
-    }
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    mat-form-field {
-      width: 100%;
-    }
-    .form-actions {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-    }
-    .error { color: #f44336; margin-top: 16px; text-align: center; }
-    .success { color: #4caf50; margin-top: 16px; text-align: center; }
-    .recaptcha-wrapper {
-      margin-bottom: 24px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .recaptcha-wrapper mat-error {
-      font-size: 12px;
-      margin-top: 4px;
-    }
-  `]
+  styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit, AfterViewInit {
   user: User = {
@@ -80,6 +43,8 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   error = '';
   message = '';
   recaptchaSiteKey = '';
+  isScoreBased = false;
+  passwordStrength: 'weak' | 'medium' | 'strong' | '' = '';
   private scriptLoaded = false;
 
   constructor(
@@ -92,6 +57,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   ngOnInit() {
     this.systemService.getRecaptchaSiteKey().subscribe(key => {
       this.recaptchaSiteKey = key;
+      this.isScoreBased = !!key && key.startsWith('6Lfik');
       if (this.recaptchaSiteKey && this.recaptchaSiteKey !== 'disabled') {
         this.setupRecaptcha();
       }
@@ -162,9 +128,42 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     }
   }
 
+  onPasswordChange() {
+    const pwd = this.user.password || '';
+    if (pwd.length === 0) {
+      this.passwordStrength = '';
+      return;
+    }
+
+    let score = 0;
+    if (pwd.length >= 8) score++;
+    if (pwd.length >= 12) score++;
+    if (/[A-Z]/.test(pwd)) score++;
+    if (/[a-z]/.test(pwd)) score++;
+    if (/[0-9]/.test(pwd)) score++;
+    if (/[^A-Za-z0-9]/.test(pwd)) score++;
+
+    if (score <= 3) {
+      this.passwordStrength = 'weak';
+    } else if (score <= 5) {
+      this.passwordStrength = 'medium';
+    } else {
+      this.passwordStrength = 'strong';
+    }
+  }
+
   onSubmit() {
+    this.error = '';
+    this.message = '';
+
     if (this.user.password !== this.confirmPassword) {
       this.error = 'ADMIN.ERROR_PASSWORD_MATCH';
+      return;
+    }
+
+    const passwordRegex = /^(?=.*[A-Za-z])(?=.*[^A-Za-z0-9]).{8,}$/;
+    if (this.user.password && !passwordRegex.test(this.user.password)) {
+      this.error = 'ADMIN.ERROR_PASSWORD_STRENGTH';
       return;
     }
 
@@ -204,16 +203,23 @@ export class RegisterComponent implements OnInit, AfterViewInit {
 
     this.authService.register(userToRegister).subscribe({
       next: () => {
-        this.message = 'COMMON.SUCCESS';
+        this.user.recaptchaToken = '';
+        this.message = 'REGISTER.SUCCESS_MESSAGE';
         this.error = '';
         this.cdr.detectChanges();
-        setTimeout(() => this.router.navigate(['/login']), 2000);
+        setTimeout(() => this.router.navigate(['/login']), 8000);
       },
       error: (err) => {
+        console.error('Registration failed:', err);
+        // Clear token on failure as it's likely consumed
+        this.user.recaptchaToken = '';
+
         if (err.status === 400 && typeof err.error === 'string') {
           this.error = err.error;
           if (this.error === 'User already exists') {
             this.error = 'ADMIN.ERROR_USER_EXISTS';
+          } else if (this.error === 'Email already exists') {
+            this.error = 'ADMIN.ERROR_EMAIL_EXISTS';
           } else if (this.error === 'reCAPTCHA verification failed') {
             this.error = 'ADMIN.ERROR_RECAPTCHA';
           }

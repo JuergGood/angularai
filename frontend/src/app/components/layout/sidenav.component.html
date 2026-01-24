@@ -118,6 +118,11 @@
             <mat-icon>{{ geolocationEnabled() ? 'location_on' : 'location_off' }}</mat-icon>
             <span>{{ 'NAV.GEOLOCATION' | translate }}: {{ (geolocationEnabled() ? 'COMMON.ON' : 'COMMON.OFF') | translate }}</span>
           </button>
+
+          <button mat-menu-item [matMenuTriggerFor]="recaptchaMenu">
+            <mat-icon>security</mat-icon>
+            <span>{{ 'NAV.RECAPTCHA' | translate }}</span>
+          </button>
         }
 
         <!-- Help Submenu -->
@@ -144,6 +149,21 @@
         <button mat-menu-item (click)="setLanguage('de-ch')">
           <mat-icon>{{ i18nService.currentLang() === 'de-ch' ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
           <span>{{ 'NAV.GERMAN' | translate }}</span>
+        </button>
+      </mat-menu>
+
+      <mat-menu #recaptchaMenu="matMenu">
+        <button mat-menu-item (click)="setRecaptchaConfig(1)">
+          <mat-icon>{{ recaptchaConfigIndex() === 1 ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
+          <span>1. localhost-score (Enterprise)</span>
+        </button>
+        <button mat-menu-item (click)="setRecaptchaConfig(2)">
+          <mat-icon>{{ recaptchaConfigIndex() === 2 ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
+          <span>2. localhost-visible (Legacy v2)</span>
+        </button>
+        <button mat-menu-item (click)="setRecaptchaConfig(3)">
+          <mat-icon>{{ recaptchaConfigIndex() === 3 ? 'radio_button_checked' : 'radio_button_unchecked' }}</mat-icon>
+          <span>3. productive setup fargate (Enterprise)</span>
         </button>
       </mat-menu>
 
@@ -202,6 +222,15 @@
       </mat-menu>
     </mat-toolbar>
     <main>
+      @if (systemInfo()?.landingMessage && showBanner()) {
+        <div class="landing-info-banner" [class.hiding]="isHiding()">
+          <mat-icon>info</mat-icon>
+          <span>{{ systemInfo()?.landingMessage }}</span>
+          <button mat-icon-button class="banner-close" (click)="hideBanner()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      }
       <ng-content></ng-content>
     </main>
   </mat-sidenav-content>

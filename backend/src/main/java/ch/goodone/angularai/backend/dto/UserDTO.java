@@ -14,6 +14,8 @@ public class UserDTO {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
     private String email;
+    private String phone;
+    private String status;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
     private String address;
@@ -25,15 +27,21 @@ public class UserDTO {
     public UserDTO() {}
 
     public UserDTO(Long id, String firstName, String lastName, String login, String email, LocalDate birthDate, String address, String role) {
-        this(id, firstName, lastName, login, email, birthDate, address, role, null);
+        this(id, firstName, lastName, login, email, "", "ACTIVE", birthDate, address, role, null);
     }
 
-    public UserDTO(Long id, String firstName, String lastName, String login, String email, LocalDate birthDate, String address, String role, java.time.LocalDateTime createdAt) {
+    public UserDTO(Long id, String firstName, String lastName, String login, String email, String phone, String status, LocalDate birthDate, String address, String role) {
+        this(id, firstName, lastName, login, email, phone, status, birthDate, address, role, null);
+    }
+
+    public UserDTO(Long id, String firstName, String lastName, String login, String email, String phone, String status, LocalDate birthDate, String address, String role, java.time.LocalDateTime createdAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;
         this.email = email;
+        this.phone = phone;
+        this.status = status;
         this.birthDate = birthDate;
         this.address = address;
         this.role = role;
@@ -47,6 +55,8 @@ public class UserDTO {
                 user.getLastName(),
                 user.getLogin(),
                 user.getEmail(),
+                user.getPhone(),
+                user.getStatus() != null ? user.getStatus().name() : null,
                 user.getBirthDate(),
                 user.getAddress(),
                 user.getRole() != null ? user.getRole().name() : null,
@@ -67,6 +77,10 @@ public class UserDTO {
     public void setPassword(String password) { this.password = password; }
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
     public LocalDate getBirthDate() { return birthDate; }
     public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
     public String getAddress() { return address; }

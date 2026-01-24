@@ -28,6 +28,13 @@ public class User {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
+    @Column(name = "phone", unique = true)
+    private String phone;
+
+    @Column(name = "status", nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserStatus status;
+
     @Column(name = "birth_date")
     private LocalDate birthDate;
 
@@ -44,14 +51,20 @@ public class User {
     public User() {}
 
     public User(String firstName, String lastName, String login, String password, String email, LocalDate birthDate, String address, Role role) {
+        this(firstName, lastName, login, password, email, null, birthDate, address, role, UserStatus.ACTIVE);
+    }
+
+    public User(String firstName, String lastName, String login, String password, String email, String phone, LocalDate birthDate, String address, Role role, UserStatus status) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.login = login;
         this.password = password;
         this.email = email;
+        this.phone = phone;
         this.birthDate = birthDate;
         this.address = address;
         this.role = role;
+        this.status = status;
         this.createdAt = java.time.LocalDateTime.now();
     }
 
@@ -79,6 +92,12 @@ public class User {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public UserStatus getStatus() { return status; }
+    public void setStatus(UserStatus status) { this.status = status; }
 
     public LocalDate getBirthDate() { return birthDate; }
     public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }

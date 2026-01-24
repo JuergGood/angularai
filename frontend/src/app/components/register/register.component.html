@@ -5,6 +5,10 @@
     </mat-card-header>
     <mat-card-content style="padding: 24px;">
       <form (ngSubmit)="onSubmit()" #registerForm="ngForm">
+        <p class="verification-hint">
+          <mat-icon inline="true">info</mat-icon>
+          <span>{{ 'REGISTER.VERIFICATION_HINT' | translate }}</span>
+        </p>
         <div class="form-grid">
           <mat-form-field appearance="outline">
             <mat-label>{{ 'ADMIN.FIRST_NAME' | translate }}</mat-label>
@@ -24,7 +28,7 @@
 
           <mat-form-field appearance="outline">
             <mat-label>{{ 'ADMIN.LOGIN' | translate }}</mat-label>
-            <input matInput name="login" [(ngModel)]="user.login" required #login="ngModel">
+            <input matInput name="login" [(ngModel)]="user.login" required #login="ngModel" autocomplete="off">
             @if (login.invalid && (login.dirty || login.touched)) {
               <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
             }
@@ -40,15 +44,30 @@
 
           <mat-form-field appearance="outline">
             <mat-label>{{ 'ADMIN.PASSWORD' | translate }}</mat-label>
-            <input matInput type="password" name="password" [(ngModel)]="user.password" required id="password" #password="ngModel">
+            <input matInput type="password" name="password" [(ngModel)]="user.password" (ngModelChange)="onPasswordChange()" required id="password" #password="ngModel" autocomplete="new-password" pattern="^(?=.*[A-Za-z])(?=.*[^A-Za-z0-9]).{8,}$">
+            @if (passwordStrength) {
+              <mat-icon matSuffix [class]="'strength-' + passwordStrength" [title]="'ADMIN.STRENGTH.' + (passwordStrength | uppercase) | translate">
+                {{ passwordStrength === 'strong' ? 'verified_user' : (passwordStrength === 'medium' ? 'security' : 'error_outline') }}
+              </mat-icon>
+            }
+            <mat-hint align="start">{{ 'ADMIN.PASSWORD_HINT' | translate }}</mat-hint>
+            @if (passwordStrength) {
+              <mat-hint align="end" [class]="'strength-text-' + passwordStrength">
+                {{ 'ADMIN.STRENGTH.' + (passwordStrength | uppercase) | translate }}
+              </mat-hint>
+            }
             @if (password.invalid && (password.dirty || password.touched)) {
-              <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+              @if (password.errors?.['required']) {
+                <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+              } @else if (password.errors?.['pattern']) {
+                <mat-error>{{ 'ADMIN.ERROR_PASSWORD_STRENGTH' | translate }}</mat-error>
+              }
             }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>{{ 'ADMIN.CONFIRM_PASSWORD' | translate }}</mat-label>
-            <input matInput type="password" name="confirmPassword" [(ngModel)]="confirmPassword" required id="confirm-password" #confirmPwd="ngModel">
+            <input matInput type="password" name="confirmPassword" [(ngModel)]="confirmPassword" required id="confirm-password" #confirmPwd="ngModel" autocomplete="new-password">
             @if (confirmPwd.invalid && (confirmPwd.dirty || confirmPwd.touched)) {
               <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
             }
@@ -58,16 +77,16 @@
           </mat-form-field>
         </div>
 
-        <div class="recaptcha-wrapper" [style.display]="recaptchaSiteKey.startsWith('6Lfik') ? 'none' : 'flex'">
+        <div class="recaptcha-wrapper" [style.visibility]="isScoreBased ? 'hidden' : 'visible'" [style.height]="isScoreBased ? '0' : 'auto'">
           <div id="recaptcha-container"></div>
-          @if (!user.recaptchaToken && recaptchaSiteKey && recaptchaSiteKey !== 'disabled' && !recaptchaSiteKey.startsWith('6Lfik')) {
+          @if (!user.recaptchaToken && recaptchaSiteKey && recaptchaSiteKey !== 'disabled' && !isScoreBased && registerForm.form.valid && user.password === confirmPassword && !message) {
             <mat-error>{{ 'ADMIN.ERROR_RECAPTCHA' | translate }}</mat-error>
           }
         </div>
 
         <div class="form-actions register-actions">
           <a mat-button routerLink="/login">{{ 'NAV.LOGIN' | translate }}</a>
-          <button mat-flat-button color="primary" type="submit" [disabled]="!registerForm.form.valid || user.password !== confirmPassword || (!user.recaptchaToken && recaptchaSiteKey && recaptchaSiteKey !== 'disabled' && !recaptchaSiteKey.startsWith('6Lfik'))" id="register-btn">
+          <button mat-flat-button color="primary" type="submit" [disabled]="!registerForm.form.valid || user.password !== confirmPassword || (!user.recaptchaToken && recaptchaSiteKey && recaptchaSiteKey !== 'disabled')" id="register-btn">
             {{ 'ADMIN.ADD_USER' | translate }}
           </button>
         </div>

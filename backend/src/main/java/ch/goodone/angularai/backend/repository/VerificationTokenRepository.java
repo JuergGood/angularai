@@ -1,0 +1,9 @@
+package ch.goodone.angularai.backend.repository;
+
+import ch.goodone.angularai.backend.model.VerificationToken;
+import org.springframework.data.jpa.repository.JpaRepository;
+import java.util.Optional;
+
+public interface VerificationTokenRepository extends JpaRepository<VerificationToken, Long> {
+    Optional<VerificationToken> findByToken(String token);
+}

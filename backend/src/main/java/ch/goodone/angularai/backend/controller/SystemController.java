@@ -1,7 +1,9 @@
 package ch.goodone.angularai.backend.controller;
 
 import ch.goodone.angularai.backend.dto.SystemInfoDTO;
+import ch.goodone.angularai.backend.service.SystemSettingService;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.core.env.Environment;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,12 +12,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 @RestController
 @RequestMapping("/api/system")
 public class SystemController {
 
     private final Environment environment;
+    private final SystemSettingService systemSettingService;
     
     @Value("${application.version:unknown}")
     private String backendVersion;
@@ -23,11 +27,22 @@ public class SystemController {
     @Value("${frontend.version:unknown}")
     private String frontendVersion;
 
-    @Value("${google.recaptcha.site.key:}")
-    private String recaptchaSiteKey;
+    @Value("${app.landing.message.en:}")
+    private String landingMessageEn;
 
-    public SystemController(Environment environment) {
+    @Value("${app.landing.message.de-ch:}")
+    private String landingMessageDeCh;
+
+    @Value("${google.recaptcha.1.site.key}")
+    private String siteKey1;
+    @Value("${google.recaptcha.2.site.key}")
+    private String siteKey2;
+    @Value("${google.recaptcha.3.site.key}")
+    private String siteKey3;
+
+    public SystemController(Environment environment, SystemSettingService systemSettingService) {
         this.environment = environment;
+        this.systemSettingService = systemSettingService;
     }
 
     @GetMapping("/info")
@@ -37,15 +52,31 @@ public class SystemController {
         
         if (activeProfiles.contains("postgres")) {
             mode = "Postgres";
+        } else if (activeProfiles.contains("h2-file")) {
+            mode = "H2 (File)";
+        } else if (activeProfiles.contains("h2-mem")) {
+            mode = "H2 (Memory)";
         } else if (activeProfiles.contains("h2")) {
             mode = "H2";
         }
 
-        return ResponseEntity.ok(new SystemInfoDTO(backendVersion, frontendVersion, mode));
+        Locale locale = LocaleContextHolder.getLocale();
+        String landingMessage = "de".equals(locale.getLanguage()) ? landingMessageDeCh : landingMessageEn;
+        if (landingMessage == null || landingMessage.isBlank()) {
+            landingMessage = landingMessageEn;
+        }
+
+        return ResponseEntity.ok(new SystemInfoDTO(backendVersion, frontendVersion, mode, landingMessage));
     }
 
     @GetMapping("/recaptcha-site-key")
     public ResponseEntity<String> getRecaptchaSiteKey() {
-        return ResponseEntity.ok(recaptchaSiteKey);
+        int index = systemSettingService.getRecaptchaConfigIndex();
+        String siteKey = switch (index) {
+            case 2 -> siteKey2;
+            case 3 -> siteKey3;
+            default -> siteKey1;
+        };
+        return ResponseEntity.ok(siteKey);
     }
 }

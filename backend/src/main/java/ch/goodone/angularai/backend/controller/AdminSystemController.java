@@ -38,6 +38,19 @@ public class AdminSystemController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/recaptcha")
+    public ResponseEntity<Map<String, Integer>> getRecaptchaConfigIndex() {
+        return ResponseEntity.ok(Map.of("index", systemSettingService.getRecaptchaConfigIndex()));
+    }
+
+    @PostMapping("/recaptcha")
+    public ResponseEntity<Void> setRecaptchaConfigIndex(@RequestBody Map<String, Integer> body, Authentication authentication) {
+        int index = body.getOrDefault("index", 1);
+        systemSettingService.setRecaptchaConfigIndex(index);
+        actionLogService.log(authentication.getName(), "SETTING_CHANGED", "reCAPTCHA config index set to: " + index);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/geolocation/test")
     public ResponseEntity<IpLocationService.GeoLocation> testGeolocation(@RequestParam String ip) {
         return ResponseEntity.ok(ipLocationService.lookup(ip));

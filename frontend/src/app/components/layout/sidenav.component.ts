@@ -1,4 +1,4 @@
-import { Component, computed, signal, effect } from '@angular/core';
+import { Component, computed, signal, effect, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -264,13 +264,60 @@ import { TranslateModule } from '@ngx-translate/core';
       font-weight: 500;
       font-size: 14px;
     }
+    .landing-info-banner {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 24px;
+      background: linear-gradient(90deg, #e3f2fd 0%, #bbdefb 100%);
+      border-bottom: 1px solid #90caf9;
+      color: #0d47a1;
+      font-weight: 500;
+      animation: slideDown 0.5s ease-out;
+    }
+    body.theme-dark .landing-info-banner {
+      background: linear-gradient(90deg, #1e293b 0%, #334155 100%);
+      border-bottom: 1px solid #475569;
+      color: #e2e8f0;
+    }
+    .landing-info-banner mat-icon {
+      color: #1976d2;
+    }
+    body.theme-dark .landing-info-banner mat-icon {
+      color: #38bdf8;
+    }
+    @keyframes slideDown {
+      from { transform: translateY(-100%); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .landing-info-banner.hiding {
+      animation: slideUp 0.5s ease-in forwards;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(0); opacity: 1; }
+      to { transform: translateY(-100%); opacity: 0; }
+    }
+    .banner-close {
+      margin-left: auto;
+      color: inherit;
+      opacity: 0.7;
+    }
+    .banner-close:hover {
+      opacity: 1;
+    }
   `]
 })
-export class SidenavComponent {
+export class SidenavComponent implements OnDestroy {
   isMobile = signal(false);
   isHandheld = signal(false);
   systemInfo = signal<SystemInfo | null>(null);
   geolocationEnabled = signal(false);
+  recaptchaConfigIndex = signal(1);
+  showBanner = signal(true);
+  isHiding = signal(false);
+  private actionCount = 0;
+  private autoHideTimer: any;
+  private routerSubscription: any;
 
   isCollapsed = computed(() => this.isHandheld() && !this.isMobile());
 
@@ -284,14 +331,23 @@ export class SidenavComponent {
     private dialog: MatDialog,
     private breakpointObserver: BreakpointObserver
   ) {
-    this.systemService.getSystemInfo().subscribe(info => this.systemInfo.set(info));
+    this.systemService.getSystemInfo().subscribe(info => {
+      this.systemInfo.set(info);
+      if (info.landingMessage) {
+        this.startBannerTimers();
+      }
+    });
 
-    // Reactively fetch geolocation setting when admin status changes
+    // Reactively fetch geolocation and recaptcha settings when admin status changes
     effect(() => {
       if (this.authService.isAdmin()) {
         this.systemService.getGeolocationEnabled().subscribe({
           next: res => this.geolocationEnabled.set(res.enabled),
           error: err => console.error('Failed to fetch geolocation status', err)
+        });
+        this.systemService.getRecaptchaConfigIndex().subscribe({
+          next: res => this.recaptchaConfigIndex.set(res.index),
+          error: err => console.error('Failed to fetch reCAPTCHA config index', err)
         });
       }
     });
@@ -303,6 +359,37 @@ export class SidenavComponent {
       this.isHandheld.set(result.matches);
       this.isMobile.set(this.breakpointObserver.isMatched(Breakpoints.HandsetPortrait));
     });
+
+    // Track user actions (navigation)
+    this.routerSubscription = this.router.events.subscribe(event => {
+      if (event.constructor.name === 'NavigationEnd') {
+        this.actionCount++;
+        if (this.actionCount >= 3) {
+          this.hideBanner();
+        }
+      }
+    });
+  }
+
+  private startBannerTimers() {
+    // Auto-hide after 20 seconds
+    this.autoHideTimer = setTimeout(() => {
+      this.hideBanner();
+    }, 20000);
+  }
+
+  hideBanner() {
+    if (this.isHiding()) return;
+    this.isHiding.set(true);
+    setTimeout(() => {
+      this.showBanner.set(false);
+      if (this.autoHideTimer) clearTimeout(this.autoHideTimer);
+    }, 500); // Match animation duration
+  }
+
+  ngOnDestroy() {
+    if (this.autoHideTimer) clearTimeout(this.autoHideTimer);
+    if (this.routerSubscription) this.routerSubscription.unsubscribe();
   }
 
   onLogout() {
@@ -329,6 +416,19 @@ export class SidenavComponent {
       error: (err) => {
         this.snackBar.open('Failed to update geolocation setting', 'Close', { duration: 3000 });
         console.error('Error toggling geolocation', err);
+      }
+    });
+  }
+
+  setRecaptchaConfig(index: number) {
+    this.systemService.setRecaptchaConfigIndex(index).subscribe({
+      next: () => {
+        this.recaptchaConfigIndex.set(index);
+        this.snackBar.open(`reCAPTCHA config ${index} selected. Please refresh the registration page to apply.`, 'Close', { duration: 5000 });
+      },
+      error: (err) => {
+        this.snackBar.open('Failed to update reCAPTCHA setting', 'Close', { duration: 3000 });
+        console.error('Error setting reCAPTCHA config', err);
       }
     });
   }

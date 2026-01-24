@@ -23,7 +23,7 @@ Auf der Seite Logs können Administratoren die Systemaktivitäten überwachen:
 ## Rollen und Berechtigungen
 Das System verwendet eine rollenbasierte Zugriffskontrolle (RBAC):
 - **USER**: Kann Aufgaben verwalten, das Dashboard und das eigene Profil einsehen.
-- **ADMIN**: Hat vollen Zugriff auf alle Funktionen, einschließlich Benutzerverwaltung und Logs.
+- **ADMIN**: Hat vollen Zugriff auf alle Funktionen, einschliesslich Benutzerverwaltung und Logs.
 
 ### Zuweisen von Rollen
 Rollen können während der Benutzerbearbeitung in der Benutzerverwaltungskonsole zugewiesen werden. Änderungen werden wirksam, wenn sich der Benutzer das nächste Mal anmeldet oder seine Sitzung aktualisiert.

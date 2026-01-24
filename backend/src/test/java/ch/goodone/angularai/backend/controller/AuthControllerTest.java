@@ -7,6 +7,7 @@ import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.UserRepository;
 import ch.goodone.angularai.backend.service.ActionLogService;
 import ch.goodone.angularai.backend.service.CaptchaService;
+import ch.goodone.angularai.backend.service.EmailService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,12 @@ class AuthControllerTest {
     @MockitoBean
     private CaptchaService captchaService;
 
+    @MockitoBean
+    private EmailService emailService;
+
+    @MockitoBean
+    private ch.goodone.angularai.backend.repository.VerificationTokenRepository tokenRepository;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -56,7 +63,7 @@ class AuthControllerTest {
     void login_shouldReturnUser_whenAuthenticated() throws Exception {
         String login = "admin";
         String password = "password";
-        User user = new User("Admin", "User", login, passwordEncoder.encode(password), "admin@example.com", LocalDate.of(1980, 1, 1), "Admin Home", Role.ROLE_ADMIN);
+        User user = new User("Admin", "User", login, passwordEncoder.encode(password), "admin@example.com", "+41791234567", LocalDate.of(1980, 1, 1), "Admin Home", Role.ROLE_ADMIN, ch.goodone.angularai.backend.model.UserStatus.ACTIVE);
         
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
 
@@ -74,14 +81,14 @@ class AuthControllerTest {
 
     @Test
     void register_shouldCreateUser() throws Exception {
-        UserDTO userDTO = new UserDTO(null, "New", "User", "newuser", "new@example.com", LocalDate.of(2000, 1, 1), "New Address", "ROLE_USER");
-        userDTO.setPassword("password123");
+        UserDTO userDTO = new UserDTO(null, "New", "User", "newuser", "new@example.com", "123456", "PENDING", LocalDate.of(2000, 1, 1), "New Address", "ROLE_USER");
+        userDTO.setPassword("Password@123");
 
         when(userRepository.findByLogin("newuser")).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"password\":\"password123\",\"birthDate\":\"2000-01-01\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}"))
+                        .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"phone\":\"123456\",\"password\":\"Password@123\",\"birthDate\":\"2000-01-01\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.login").value("newuser"))
                 .andExpect(jsonPath("$.email").value("new@example.com"))
@@ -90,7 +97,7 @@ class AuthControllerTest {
 
     @Test
     void register_shouldCreateUser_withoutBirthDate() throws Exception {
-        String json = "{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"password\":\"password123\",\"recaptchaToken\":\"test-token\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}";
+        String json = "{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"phone\":\"123456\",\"password\":\"Password@123\",\"recaptchaToken\":\"test-token\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}";
 
         when(userRepository.findByLogin("newuser")).thenReturn(Optional.empty());
         when(captchaService.verify("test-token")).thenReturn(true);
@@ -105,34 +112,49 @@ class AuthControllerTest {
 
     @Test
     void register_shouldReturnBadRequest_whenUserExists() throws Exception {
-        UserDTO userDTO = new UserDTO(null, "Existing", "User", "admin", "admin@example.com", LocalDate.of(1990, 1, 1), "Address", "ROLE_USER");
-        userDTO.setPassword("password123");
+        UserDTO userDTO = new UserDTO(null, "Existing", "User", "admin", "admin@example.com", "123456", "PENDING", LocalDate.of(1990, 1, 1), "Address", "ROLE_USER");
+        userDTO.setPassword("Password@123");
         
-        when(userRepository.findByLogin("admin")).thenReturn(Optional.of(new User()));
+        when(userRepository.findByLogin("admin")).thenReturn(Optional.of(new User("Admin", "User", "admin", "encoded", "admin@example.com", "123", LocalDate.now(), "Addr", Role.ROLE_ADMIN, ch.goodone.angularai.backend.model.UserStatus.ACTIVE)));
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"firstName\":\"Existing\",\"lastName\":\"User\",\"login\":\"admin\",\"email\":\"admin@example.com\",\"password\":\"password123\",\"birthDate\":\"1990-01-01\",\"address\":\"Address\",\"role\":\"ROLE_USER\"}"))
+                        .content("{\"firstName\":\"Existing\",\"lastName\":\"User\",\"login\":\"admin\",\"email\":\"admin@example.com\",\"phone\":\"123456\",\"password\":\"Password@123\",\"birthDate\":\"1990-01-01\",\"address\":\"Address\",\"role\":\"ROLE_USER\"}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("User already exists"));
     }
 
     @Test
-    void register_shouldReturnBadRequest_whenEmailInvalid() throws Exception {
-        UserDTO userDTO = new UserDTO(null, "New", "User", "newuser", "invalid-email", LocalDate.of(2000, 1, 1), "New Address", "ROLE_USER");
-        userDTO.setPassword("password123");
+    void register_shouldReturnBadRequest_whenEmailExists() throws Exception {
+        UserDTO userDTO = new UserDTO(null, "New", "User", "newuser", "admin@example.com", "123456", "PENDING", LocalDate.of(1990, 1, 1), "Address", "ROLE_USER");
+        userDTO.setPassword("Password@123");
+
+        when(userRepository.findByLogin("newuser")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("admin@example.com")).thenReturn(Optional.of(new User("Admin", "User", "admin", "encoded", "admin@example.com", "123", LocalDate.now(), "Addr", Role.ROLE_ADMIN, ch.goodone.angularai.backend.model.UserStatus.ACTIVE)));
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"invalid-email\",\"password\":\"password123\",\"birthDate\":\"2000-01-01\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}"))
+                        .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"admin@example.com\",\"phone\":\"123456\",\"password\":\"Password@123\",\"birthDate\":\"1990-01-01\",\"address\":\"Address\",\"role\":\"ROLE_USER\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Email already exists"));
+    }
+
+    @Test
+    void register_shouldReturnBadRequest_whenEmailInvalid() throws Exception {
+        UserDTO userDTO = new UserDTO(null, "New", "User", "newuser", "invalid-email", "123456", "PENDING", LocalDate.of(2000, 1, 1), "New Address", "ROLE_USER");
+        userDTO.setPassword("Password@123");
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"invalid-email\",\"phone\":\"123456\",\"password\":\"Password@123\",\"birthDate\":\"2000-01-01\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Invalid email format"));
     }
 
     @Test
     void register_shouldReturnBadRequest_whenFirstNameMissing() throws Exception {
-        UserDTO userDTO = new UserDTO(null, "", "User", "newuser", "new@example.com", LocalDate.of(2000, 1, 1), "New Address", "ROLE_USER");
-        userDTO.setPassword("password123");
+        UserDTO userDTO = new UserDTO(null, "", "User", "newuser", "new@example.com", "123456", "PENDING", LocalDate.of(2000, 1, 1), "New Address", "ROLE_USER");
+        userDTO.setPassword("Password@123");
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -143,8 +165,8 @@ class AuthControllerTest {
 
     @Test
     void register_shouldReturnBadRequest_whenLastNameMissing() throws Exception {
-        UserDTO userDTO = new UserDTO(null, "New", "", "newuser", "new@example.com", LocalDate.of(2000, 1, 1), "New Address", "ROLE_USER");
-        userDTO.setPassword("password123");
+        UserDTO userDTO = new UserDTO(null, "New", "", "newuser", "new@example.com", "123456", "PENDING", LocalDate.of(2000, 1, 1), "New Address", "ROLE_USER");
+        userDTO.setPassword("Password@123");
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -155,8 +177,8 @@ class AuthControllerTest {
 
     @Test
     void register_shouldReturnBadRequest_whenLoginMissing() throws Exception {
-        UserDTO userDTO = new UserDTO(null, "New", "User", "", "new@example.com", LocalDate.of(2000, 1, 1), "New Address", "ROLE_USER");
-        userDTO.setPassword("password123");
+        UserDTO userDTO = new UserDTO(null, "New", "User", "", "new@example.com", "123456", "PENDING", LocalDate.of(2000, 1, 1), "New Address", "ROLE_USER");
+        userDTO.setPassword("Password@123");
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -167,7 +189,7 @@ class AuthControllerTest {
 
     @Test
     void register_shouldReturnBadRequest_whenPasswordMissing() throws Exception {
-        UserDTO userDTO = new UserDTO(null, "New", "User", "newuser", "new@example.com", LocalDate.of(2000, 1, 1), "New Address", "ROLE_USER");
+        UserDTO userDTO = new UserDTO(null, "New", "User", "newuser", "new@example.com", "123456", "PENDING", LocalDate.of(2000, 1, 1), "New Address", "ROLE_USER");
         // No password set
 
         mockMvc.perform(post("/api/auth/register")
@@ -179,19 +201,74 @@ class AuthControllerTest {
 
     @Test
     void register_shouldReturnBadRequest_whenEmailMissing() throws Exception {
-        UserDTO userDTO = new UserDTO(null, "New", "User", "newuser", "", LocalDate.of(2000, 1, 1), "New Address", "ROLE_USER");
-        userDTO.setPassword("password123");
+        UserDTO userDTO = new UserDTO(null, "New", "User", "newuser", "", "123456", "PENDING", LocalDate.of(2000, 1, 1), "New Address", "ROLE_USER");
+        userDTO.setPassword("Password@123");
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"\",\"password\":\"password123\",\"birthDate\":\"2000-01-01\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}"))
+                        .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"\",\"phone\":\"123456\",\"password\":\"Password@123\",\"birthDate\":\"2000-01-01\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Email is required"));
     }
 
     @Test
+    void register_shouldReturnBadRequest_whenPasswordWeak() throws Exception {
+        UserDTO userDTO = new UserDTO(null, "New", "User", "newuser", "new@example.com", "123456", "PENDING", LocalDate.of(2000, 1, 1), "New Address", "ROLE_USER");
+        userDTO.setPassword("weak");
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"phone\":\"123456\",\"password\":\"weak\",\"birthDate\":\"2000-01-01\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Password does not meet requirements"));
+    }
+
+    @Test
+    void register_shouldCreateUser_withoutPhone() throws Exception {
+        String json = "{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"password\":\"Password@123\",\"recaptchaToken\":\"test-token\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}";
+
+        when(userRepository.findByLogin("newuser")).thenReturn(Optional.empty());
+        when(captchaService.verify("test-token")).thenReturn(true);
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.login").value("newuser"))
+                .andExpect(jsonPath("$.role").value("ROLE_ADMIN_READ"));
+
+        org.mockito.ArgumentCaptor<User> userCaptor = org.mockito.ArgumentCaptor.forClass(User.class);
+        verify(userRepository).save(userCaptor.capture());
+        org.junit.jupiter.api.Assertions.assertNull(userCaptor.getValue().getPhone());
+    }
+
+    @Test
+    void register_shouldCreateUser_withEmptyPhoneAsNull() throws Exception {
+        String json = "{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser2\",\"email\":\"new2@example.com\",\"phone\":\" \",\"password\":\"Password@123\",\"recaptchaToken\":\"test-token\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}";
+
+        when(userRepository.findByLogin("newuser2")).thenReturn(Optional.empty());
+        when(captchaService.verify("test-token")).thenReturn(true);
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk());
+
+        org.mockito.ArgumentCaptor<User> userCaptor = org.mockito.ArgumentCaptor.forClass(User.class);
+        verify(userRepository, org.mockito.Mockito.atLeastOnce()).save(userCaptor.capture());
+        
+        // Find the one for newuser2 if multiple saves happened (unlikely in this isolated test, but safe)
+        User capturedUser = userCaptor.getAllValues().stream()
+                .filter(u -> "newuser2".equals(u.getLogin()))
+                .findFirst()
+                .orElseThrow();
+        
+        org.junit.jupiter.api.Assertions.assertNull(capturedUser.getPhone());
+    }
+
+    @Test
     void register_shouldReturnBadRequest_whenBirthDateInvalid() throws Exception {
-        String json = "{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"password\":\"password123\",\"birthDate\":\"invalid-date\"}";
+        String json = "{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"phone\":\"123456\",\"password\":\"password123\",\"birthDate\":\"invalid-date\"}";
 
         mockMvc.perform(post("/api/auth/register")
                         .contentType(MediaType.APPLICATION_JSON)

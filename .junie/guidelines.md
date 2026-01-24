@@ -13,7 +13,7 @@ This document outlines the best practices and standards for the AngularAI projec
 - **Testing**: Maintain high test coverage (>80%) for both frontend and backend at all times.
 - **Docker First**: Ensure all changes are compatible with the Docker-based deployment.
 - **Language**: Always communicate in English for all interactions, thoughts, and documentation, unless explicitly requested otherwise by the user.
-- **Translations**: Always provide translations for both supported languages (English `en.json` and German `de-ch.json`) when adding or modifying UI text.
+- **Translations**: Always provide translations for both supported languages (English `en.json` and German `de-ch.json`) when adding or modifying UI text. The `ch` part of the `de-ch` locale MUST be respected: never use the letter 'ß' (Eszett) in any German translations (e.g. use 'ss' instead).
 - **Documentation**: Use Bash scripts instead of PowerShell in all documentation (`.md` files) to ensure cross-platform compatibility and consistency.
 
 ## Backend Development (Spring Boot)

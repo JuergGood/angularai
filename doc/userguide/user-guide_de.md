@@ -34,7 +34,7 @@ Die Seite Aufgabenverwaltung ermöglicht es Ihnen, Ihre Arbeit zu organisieren:
 - **Drag & Drop**: Sie können Aufgaben neu anordnen, indem Sie sie am Griff ziehen (verfügbar, wenn nicht gefiltert wird).
 
 ## Benutzerprofil
-Im Bereich Profil können Sie Ihre persönlichen Daten einsehen, einschließlich Name, E-Mail und zugewiesener Rolle.
+Im Bereich Profil können Sie Ihre persönlichen Daten einsehen, einschliesslich Name, E-Mail und zugewiesener Rolle.
 
 ## Abmelden
 Um die Anwendung sicher zu verlassen, klicken Sie auf die Schaltfläche "Abmelden" im seitlichen Navigationsmenü.
