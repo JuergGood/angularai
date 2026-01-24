@@ -144,7 +144,8 @@
     "ERROR_EMAIL": "Bitte geben Sie eine gültige E-Mail-Adresse ein",
     "ERROR_PASSWORD_MATCH": "Passwörter stimmen nicht überein",
     "ERROR_REQUIRED": "Dies ist ein Pflichtfeld",
-    "ERROR_USER_EXISTS": "Benutzer existiert bereits"
+    "ERROR_USER_EXISTS": "Benutzer existiert bereits",
+    "ERROR_RECAPTCHA": "Bitte bestätigen Sie, dass Sie kein Roboter sind (reCAPTCHA)"
   },
   "LOGS": {
     "TITLE": "Logs",

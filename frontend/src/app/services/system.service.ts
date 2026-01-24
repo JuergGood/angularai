@@ -30,6 +30,10 @@ export class SystemService {
     return this.http.get<SystemInfo>(`${this.apiUrl}/info`);
   }
 
+  getRecaptchaSiteKey(): Observable<string> {
+    return this.http.get(`${this.apiUrl}/recaptcha-site-key`, { responseType: 'text' });
+  }
+
   getGeolocationEnabled(): Observable<{enabled: boolean}> {
     return this.http.get<{enabled: boolean}>(`${this.adminUrl}/geolocation`, { headers: this.getHeaders() });
   }

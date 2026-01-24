@@ -144,7 +144,8 @@
     "ERROR_EMAIL": "Please enter a valid email address",
     "ERROR_PASSWORD_MATCH": "Passwords do not match",
     "ERROR_REQUIRED": "This field is required",
-    "ERROR_USER_EXISTS": "User already exists"
+    "ERROR_USER_EXISTS": "User already exists",
+    "ERROR_RECAPTCHA": "Please complete the reCAPTCHA"
   },
   "LOGS": {
     "TITLE": "System Logs",

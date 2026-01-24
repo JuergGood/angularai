@@ -5,8 +5,9 @@ export interface User {
     login: string;
     password?: string;
     email: string;
-    birthDate: string | null;
+    birthDate?: string | null;
     address: string;
     role?: string;
     createdAt?: string;
+    recaptchaToken?: string;
 }

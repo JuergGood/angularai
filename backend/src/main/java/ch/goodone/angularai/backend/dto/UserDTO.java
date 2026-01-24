@@ -20,6 +20,7 @@ public class UserDTO {
     private String role;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private java.time.LocalDateTime createdAt;
+    private String recaptchaToken;
 
     public UserDTO() {}
 
@@ -75,4 +76,7 @@ public class UserDTO {
 
     public java.time.LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(java.time.LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public String getRecaptchaToken() { return recaptchaToken; }
+    public void setRecaptchaToken(String recaptchaToken) { this.recaptchaToken = recaptchaToken; }
 }

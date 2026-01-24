@@ -23,6 +23,9 @@ public class SystemController {
     @Value("${frontend.version:unknown}")
     private String frontendVersion;
 
+    @Value("${google.recaptcha.site.key:}")
+    private String recaptchaSiteKey;
+
     public SystemController(Environment environment) {
         this.environment = environment;
     }
@@ -39,5 +42,10 @@ public class SystemController {
         }
 
         return ResponseEntity.ok(new SystemInfoDTO(backendVersion, frontendVersion, mode));
+    }
+
+    @GetMapping("/recaptcha-site-key")
+    public ResponseEntity<String> getRecaptchaSiteKey() {
+        return ResponseEntity.ok(recaptchaSiteKey);
     }
 }

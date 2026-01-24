@@ -6,6 +6,8 @@ import ch.goodone.angularai.backend.model.Role;
 import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.UserRepository;
 import ch.goodone.angularai.backend.service.ActionLogService;
+import ch.goodone.angularai.backend.service.CaptchaService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -38,8 +40,17 @@ class AuthControllerTest {
     @MockitoBean
     private ActionLogService actionLogService;
 
+    @MockitoBean
+    private CaptchaService captchaService;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @BeforeEach
+    void setUp() {
+        when(captchaService.verify(org.mockito.ArgumentMatchers.anyString())).thenReturn(true);
+        when(captchaService.verify(null)).thenReturn(true);
+    }
 
     @Test
     void login_shouldReturnUser_whenAuthenticated() throws Exception {
@@ -73,7 +84,23 @@ class AuthControllerTest {
                         .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"password\":\"password123\",\"birthDate\":\"2000-01-01\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.login").value("newuser"))
-                .andExpect(jsonPath("$.email").value("new@example.com"));
+                .andExpect(jsonPath("$.email").value("new@example.com"))
+                .andExpect(jsonPath("$.role").value("ROLE_ADMIN_READ"));
+    }
+
+    @Test
+    void register_shouldCreateUser_withoutBirthDate() throws Exception {
+        String json = "{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"password\":\"password123\",\"recaptchaToken\":\"test-token\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}";
+
+        when(userRepository.findByLogin("newuser")).thenReturn(Optional.empty());
+        when(captchaService.verify("test-token")).thenReturn(true);
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(json))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.login").value("newuser"))
+                .andExpect(jsonPath("$.role").value("ROLE_ADMIN_READ"));
     }
 
     @Test
@@ -173,17 +200,6 @@ class AuthControllerTest {
     }
 
     @Test
-    void register_shouldReturnBadRequest_whenBirthDateEmpty() throws Exception {
-        String json = "{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"password\":\"password123\",\"birthDate\":\"\"}";
-
-        mockMvc.perform(post("/api/auth/register")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
-                .andExpect(status().isBadRequest())
-                .andExpect(content().string("Birth date is required or invalid format. Please use yyyy-MM-dd"));
-    }
-
-    @Test
     void logout_shouldReturnOk() throws Exception {
         mockMvc.perform(post("/api/auth/logout"))
                 .andExpect(status().isOk());
@@ -195,6 +211,18 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(""))
                 .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void register_shouldFail_whenCaptchaInvalid() throws Exception {
+        when(captchaService.verify(org.mockito.ArgumentMatchers.anyString())).thenReturn(false);
+        when(captchaService.verify(null)).thenReturn(false);
+
+        mockMvc.perform(post("/api/auth/register")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"password\":\"password123\",\"birthDate\":\"2000-01-01\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("reCAPTCHA verification failed"));
     }
 
     @Test

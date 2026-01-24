@@ -7,6 +7,7 @@ import ch.goodone.angularai.backend.repository.TaskRepository;
 import ch.goodone.angularai.backend.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,6 +20,24 @@ public class DataInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
 
+    @Value("${admin.password}")
+    private String adminPassword;
+
+    @Value("${user.password}")
+    private String userPassword;
+
+    @Value("${admin.read.password}")
+    private String adminReadPassword;
+
+    @Value("${admin.email}")
+    private String adminEmail;
+
+    @Value("${user.email}")
+    private String userEmail;
+
+    @Value("${admin.read.email}")
+    private String adminReadEmail;
+
     @Bean
     @org.springframework.context.annotation.Profile("!test")
     CommandLineRunner initData(UserRepository userRepository, TaskRepository taskRepository, PasswordEncoder passwordEncoder) {
@@ -28,8 +47,8 @@ public class DataInitializer {
                         "Admin",
                         "User",
                         "admin",
-                        passwordEncoder.encode(System.getenv().getOrDefault("ADMIN_PASSWORD", "admin123")),
-                        "admin@example.com",
+                        passwordEncoder.encode(adminPassword),
+                        adminEmail,
                         LocalDate.of(1990, 1, 1),
                         "123 Main St",
                         ch.goodone.angularai.backend.model.Role.ROLE_ADMIN
@@ -40,8 +59,8 @@ public class DataInitializer {
                         "Normal",
                         "User",
                         "user",
-                        passwordEncoder.encode(System.getenv().getOrDefault("USER_PASSWORD", "user123")),
-                        "user@example.com",
+                        passwordEncoder.encode(userPassword),
+                        userEmail,
                         LocalDate.of(1995, 5, 5),
                         "456 User Ave",
                         ch.goodone.angularai.backend.model.Role.ROLE_USER
@@ -52,8 +71,8 @@ public class DataInitializer {
                         "Read-Only",
                         "Admin",
                         "admin-read",
-                        passwordEncoder.encode(System.getenv().getOrDefault("ADMIN_READ_PASSWORD", "admin123")),
-                        "admin-read@example.com",
+                        passwordEncoder.encode(adminReadPassword),
+                        adminReadEmail,
                         LocalDate.of(1992, 2, 2),
                         "789 Read St",
                         ch.goodone.angularai.backend.model.Role.ROLE_ADMIN_READ
@@ -64,7 +83,7 @@ public class DataInitializer {
                 Task task2 = new Task("Implement Login", "Create login page and auth service", LocalDate.now().plusDays(2), Priority.MEDIUM, admin);
                 taskRepository.save(task1);
                 taskRepository.save(task2);
-                logger.info("Sample data initialized: admin/admin123, admin-read/admin123 and user/user123");
+                logger.info("Sample data initialized for admin, admin-read and user");
             } else {
                 logger.info("Database already contains data, skipping initialization");
             }

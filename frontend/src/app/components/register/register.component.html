@@ -39,18 +39,6 @@
           </mat-form-field>
 
           <mat-form-field appearance="outline">
-            <mat-label>{{ 'ADMIN.BIRTH_DATE' | translate }}</mat-label>
-            <input matInput [matDatepicker]="picker" name="birthDate" [(ngModel)]="user.birthDate" required #birthDate="ngModel">
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker #picker></mat-datepicker>
-            @if (birthDate.invalid && (birthDate.dirty || birthDate.touched)) {
-              <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
-            }
-          </mat-form-field>
-
-          <div></div> <!-- Spacer for grid -->
-
-          <mat-form-field appearance="outline">
             <mat-label>{{ 'ADMIN.PASSWORD' | translate }}</mat-label>
             <input matInput type="password" name="password" [(ngModel)]="user.password" required id="password" #password="ngModel">
             @if (password.invalid && (password.dirty || password.touched)) {
@@ -70,9 +58,16 @@
           </mat-form-field>
         </div>
 
+        <div class="recaptcha-wrapper" [style.display]="recaptchaSiteKey.startsWith('6Lfik') ? 'none' : 'flex'">
+          <div id="recaptcha-container"></div>
+          @if (!user.recaptchaToken && recaptchaSiteKey && recaptchaSiteKey !== 'disabled' && !recaptchaSiteKey.startsWith('6Lfik')) {
+            <mat-error>{{ 'ADMIN.ERROR_RECAPTCHA' | translate }}</mat-error>
+          }
+        </div>
+
         <div class="form-actions register-actions">
           <a mat-button routerLink="/login">{{ 'NAV.LOGIN' | translate }}</a>
-          <button mat-flat-button color="primary" type="submit" [disabled]="!registerForm.form.valid || user.password !== confirmPassword" id="register-btn">
+          <button mat-flat-button color="primary" type="submit" [disabled]="!registerForm.form.valid || user.password !== confirmPassword || (!user.recaptchaToken && recaptchaSiteKey && recaptchaSiteKey !== 'disabled' && !recaptchaSiteKey.startsWith('6Lfik'))" id="register-btn">
             {{ 'ADMIN.ADD_USER' | translate }}
           </button>
         </div>

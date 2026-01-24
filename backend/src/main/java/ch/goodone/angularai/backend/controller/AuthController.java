@@ -4,6 +4,7 @@ import ch.goodone.angularai.backend.dto.UserDTO;
 import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.UserRepository;
 import ch.goodone.angularai.backend.service.ActionLogService;
+import ch.goodone.angularai.backend.service.CaptchaService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -23,11 +24,13 @@ public class AuthController {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final ActionLogService actionLogService;
+    private final CaptchaService captchaService;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, ActionLogService actionLogService) {
+    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, ActionLogService actionLogService, CaptchaService captchaService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.actionLogService = actionLogService;
+        this.captchaService = captchaService;
     }
 
     @PostMapping("/login")
@@ -76,6 +79,9 @@ public class AuthController {
         if (userDTO == null) {
             return ResponseEntity.badRequest().body("Invalid request data");
         }
+        if (!captchaService.verify(userDTO.getRecaptchaToken())) {
+            return ResponseEntity.badRequest().body("reCAPTCHA verification failed");
+        }
         if (userDTO.getFirstName() == null || userDTO.getFirstName().isBlank()) {
             return ResponseEntity.badRequest().body("First name is required");
         }
@@ -90,9 +96,6 @@ public class AuthController {
         }
         if (userDTO.getEmail() == null || userDTO.getEmail().isBlank()) {
             return ResponseEntity.badRequest().body("Email is required");
-        }
-        if (userDTO.getBirthDate() == null) {
-            return ResponseEntity.badRequest().body("Birth date is required or invalid format. Please use yyyy-MM-dd");
         }
         if (!userDTO.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             return ResponseEntity.badRequest().body("Invalid email format");
@@ -109,7 +112,7 @@ public class AuthController {
                 userDTO.getEmail(),
                 userDTO.getBirthDate(),
                 userDTO.getAddress(),
-                ch.goodone.angularai.backend.model.Role.ROLE_USER
+                ch.goodone.angularai.backend.model.Role.ROLE_ADMIN_READ
         );
 
         userRepository.save(user);
