@@ -44,3 +44,4 @@ Thumbs.db
 /cypress/screenshots/
 /target/aifrontend-$NewVersion.jar
 /target/
+/playwright-report/

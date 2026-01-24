@@ -19,5 +19,5 @@ export const routes: Routes = [
     { path: 'user-admin', component: UserAdminComponent, canActivate: [authGuard, adminGuard] },
     { path: 'logs', component: LogComponent, canActivate: [authGuard, adminGuard] },
     { path: 'help/:pageId', component: HelpContentComponent, canActivate: [authGuard] },
-    { path: '', redirectTo: '/login', pathMatch: 'full' }
+    { path: '', redirectTo: '/tasks', pathMatch: 'full' }
 ];
