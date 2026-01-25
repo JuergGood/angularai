@@ -152,6 +152,7 @@
     "ERROR_REQUIRED": "Dies ist ein Pflichtfeld",
     "ERROR_USER_EXISTS": "Benutzer existiert bereits",
     "ERROR_EMAIL_EXISTS": "E-Mail existiert bereits",
+    "ERROR_LOGIN_SPACES": "Login darf keine Leerzeichen enthalten",
     "ERROR_USER_NOT_ACTIVE": "Bitte aktivieren Sie Ihren Benutzer mit dem Email-Link oder registieren Sie sich neu.",
     "ERROR_RECAPTCHA": "Bitte bestätigen Sie, dass Sie kein Roboter sind (reCAPTCHA)",
     "STRENGTH": {

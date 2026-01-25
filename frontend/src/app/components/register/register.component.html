@@ -11,47 +11,48 @@
           <span>{{ 'REGISTER.VERIFICATION_HINT' | translate }}</span>
         </p>
         <div class="form-grid full-width-name">
-          <mat-form-field appearance="outline" subscriptSizing="fixed">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>{{ 'ADMIN.FULL_NAME' | translate }}</mat-label>
             <input matInput formControlName="fullName">
-            @if (registerForm.get('fullName')?.invalid && (registerForm.get('fullName')?.dirty || registerForm.get('fullName')?.touched)) {
+            <mat-hint align="start">Vorname Nachname</mat-hint>
+            @if (showError('fullName')) {
               @if (registerForm.get('fullName')?.hasError('required')) {
                 <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
               } @else if (registerForm.get('fullName')?.hasError('nameFormat')) {
                 <mat-error>{{ 'ADMIN.ERROR_NAME_FORMAT' | translate }}</mat-error>
               }
-            } @else {
-              <mat-hint align="start">Vorname Nachname</mat-hint>
             }
           </mat-form-field>
         </div>
 
         <div class="form-grid">
-          <mat-form-field appearance="outline" subscriptSizing="fixed">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>{{ 'ADMIN.LOGIN' | translate }}</mat-label>
             <input matInput formControlName="login" autocomplete="off">
-            @if (registerForm.get('login')?.invalid && (registerForm.get('login')?.dirty || registerForm.get('login')?.touched)) {
-              <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
-            } @else {
-              <mat-hint align="start">{{ 'ADMIN.LOGIN' | translate }}</mat-hint>
+            <mat-hint align="start">{{ 'ADMIN.LOGIN' | translate }}</mat-hint>
+            @if (showError('login')) {
+              @if (registerForm.get('login')?.hasError('required')) {
+                <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+              } @else if (registerForm.get('login')?.hasError('noSpaces')) {
+                <mat-error>{{ 'ADMIN.ERROR_LOGIN_SPACES' | translate }}</mat-error>
+              }
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline" subscriptSizing="fixed">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>{{ 'ADMIN.EMAIL' | translate }}</mat-label>
             <input matInput type="email" formControlName="email">
-            @if (registerForm.get('email')?.invalid && (registerForm.get('email')?.dirty || registerForm.get('email')?.touched)) {
+            <mat-hint align="start">e.g. name&#64;example.com</mat-hint>
+            @if (showError('email')) {
               @if (registerForm.get('email')?.hasError('required')) {
                 <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
               } @else if (registerForm.get('email')?.hasError('email')) {
                 <mat-error>{{ 'ADMIN.ERROR_EMAIL' | translate }}</mat-error>
               }
-            } @else {
-              <mat-hint align="start">e.g. name&#64;example.com</mat-hint>
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline" subscriptSizing="fixed" class="password-field">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic" class="password-field">
             <mat-label>{{ 'ADMIN.PASSWORD' | translate }}</mat-label>
             <!-- CR-REG-03: show/hide toggle -->
             <input matInput [type]="passwordVisible ? 'text' : 'password'" formControlName="password" autocomplete="new-password">
@@ -60,31 +61,28 @@
               <mat-icon>{{passwordVisible ? 'visibility' : 'visibility_off'}}</mat-icon>
             </button>
 
-            @if (registerForm.get('password')?.invalid && (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)) {
+            <mat-hint align="start">{{ 'ADMIN.PASSWORD_HINT' | translate }}</mat-hint>
+
+            <!-- CR-REG-03: strength indicator logic moved to hint align="end" -->
+            @if (passwordStrength && registerForm.get('password')?.value) {
+              <mat-hint align="end" [class]="'strength-text-' + passwordStrength">
+                <mat-icon inline="true" [class]="'strength-' + passwordStrength">
+                  {{ passwordStrength === 'strong' ? 'verified_user' : (passwordStrength === 'medium' ? 'security' : 'error_outline') }}
+                </mat-icon>
+                {{ 'ADMIN.STRENGTH.' + (passwordStrength | uppercase) | translate }}
+              </mat-hint>
+            }
+
+            @if (showError('password')) {
               @if (registerForm.get('password')?.hasError('required')) {
                 <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
               } @else if (registerForm.get('password')?.hasError('passwordStrength')) {
                 <mat-error>{{ 'ADMIN.ERROR_PASSWORD_STRENGTH' | translate }}</mat-error>
               }
-            } @else {
-              <ng-container>
-                <!-- CR-REG-03: clear rules helper text -->
-                <mat-hint align="start">{{ 'ADMIN.PASSWORD_HINT' | translate }}</mat-hint>
-
-                <!-- CR-REG-03: strength indicator logic moved below input per UX reference -->
-                @if (passwordStrength && registerForm.get('password')?.value) {
-                  <mat-hint align="end" [class]="'strength-text-' + passwordStrength">
-                    <mat-icon inline="true" [class]="'strength-' + passwordStrength">
-                      {{ passwordStrength === 'strong' ? 'verified_user' : (passwordStrength === 'medium' ? 'security' : 'error_outline') }}
-                    </mat-icon>
-                    {{ 'ADMIN.STRENGTH.' + (passwordStrength | uppercase) | translate }}
-                  </mat-hint>
-                }
-              </ng-container>
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline" subscriptSizing="fixed">
+          <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>{{ 'ADMIN.CONFIRM_PASSWORD' | translate }}</mat-label>
             <!-- CR-REG-03: show/hide toggle -->
             <input matInput [type]="confirmPasswordVisible ? 'text' : 'password'" formControlName="confirmPassword" autocomplete="new-password">
@@ -92,17 +90,14 @@
               <mat-icon>{{confirmPasswordVisible ? 'visibility' : 'visibility_off'}}</mat-icon>
             </button>
 
-            @if (registerForm.get('confirmPassword')?.invalid && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)) {
+            <mat-hint align="start">{{ 'ADMIN.CONFIRM_PASSWORD' | translate }}</mat-hint>
+
+            @if (showError('confirmPassword')) {
               @if (registerForm.get('confirmPassword')?.hasError('required')) {
                 <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+              } @else if (registerForm.errors?.['passwordMismatch'] || registerForm.get('confirmPassword')?.hasError('passwordMismatch')) {
+                <mat-error>{{ 'ADMIN.ERROR_PASSWORD_MATCH' | translate }}</mat-error>
               }
-            } @else {
-               <!-- Cross-field mismatch explanation -->
-               <mat-hint align="start">{{ 'ADMIN.CONFIRM_PASSWORD' | translate }}</mat-hint>
-            }
-            <!-- CR-REG-02: confirm match error -->
-            @if ((registerForm.errors?.['passwordMismatch'] || registerForm.get('confirmPassword')?.errors?.['passwordMismatch']) && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched) && !registerForm.get('confirmPassword')?.hasError('required')) {
-              <mat-error>{{ 'ADMIN.ERROR_PASSWORD_MATCH' | translate }}</mat-error>
             }
           </mat-form-field>
         </div>

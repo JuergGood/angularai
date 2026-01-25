@@ -50,6 +50,11 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   passwordStrength: 'weak' | 'medium' | 'strong' | '' = '';
   private scriptLoaded = false;
 
+  showError(controlName: string): boolean {
+    const control = this.registerForm.get(controlName);
+    return !!(control && control.invalid && (control.touched || control.dirty));
+  }
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -59,12 +64,20 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   ) {
     this.registerForm = this.fb.group({
       fullName: ['', [Validators.required, this.nameFormatValidator()]],
-      login: ['', Validators.required],
+      login: ['', [Validators.required, this.noSpacesValidator()]],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, this.passwordStrengthValidator()]],
       confirmPassword: ['', Validators.required],
       address: ['']
     }, { validators: this.passwordMatchValidator });
+  }
+
+  noSpacesValidator() {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value) return null;
+      const hasSpaces = /\s/.test(control.value);
+      return hasSpaces ? { noSpaces: true } : null;
+    };
   }
 
   passwordStrengthValidator() {
@@ -214,7 +227,12 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit() {
-    if (this.registerForm.invalid || this.isSubmitting) {
+    if (this.registerForm.invalid) {
+      this.registerForm.markAllAsTouched();
+      return;
+    }
+
+    if (this.isSubmitting) {
       return;
     }
 

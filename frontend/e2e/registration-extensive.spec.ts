@@ -63,6 +63,20 @@ test.describe('Registration Extensive E2E Tests', () => {
     await expect(page.locator('mat-error').filter({ hasText: /both first and last name|Vor- und Nachname/i })).not.toBeVisible();
   });
 
+  test('should validate login has no spaces', async ({ page }) => {
+    const loginInput = page.locator('input[formControlName="login"]');
+
+    await loginInput.fill('user name');
+    await loginInput.blur();
+
+    await expect(page.locator('mat-error')).toContainText(/not contain spaces|keine Leerzeichen/i);
+    await expect(page.locator('#register-btn')).toBeDisabled();
+
+    await loginInput.fill('username');
+    await loginInput.blur();
+    await expect(page.locator('mat-error').filter({ hasText: /not contain spaces|keine Leerzeichen/i })).not.toBeVisible();
+  });
+
   test('should validate email format', async ({ page }) => {
     const emailInput = page.locator('input[formControlName="email"]');
 

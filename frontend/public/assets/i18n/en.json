@@ -152,6 +152,7 @@
     "ERROR_REQUIRED": "This field is required",
     "ERROR_USER_EXISTS": "User already exists",
     "ERROR_EMAIL_EXISTS": "Email already exists",
+    "ERROR_LOGIN_SPACES": "Login must not contain spaces",
     "ERROR_USER_NOT_ACTIVE": "Please activate your account using the link sent to your email or register again.",
     "ERROR_RECAPTCHA": "Please complete the reCAPTCHA",
     "STRENGTH": {

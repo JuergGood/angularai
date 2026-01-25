@@ -137,6 +137,18 @@ describe('RegisterComponent', () => {
     expect(component.registerForm.get('fullName')?.hasError('nameFormat')).toBe(true);
   });
 
+  it('should validate login has no spaces', () => {
+    const loginControl = component.registerForm.get('login');
+
+    // With space
+    loginControl?.setValue('john doe');
+    expect(loginControl?.hasError('noSpaces')).toBe(true);
+
+    // Without space
+    loginControl?.setValue('johndoe');
+    expect(loginControl?.hasError('noSpaces')).toBe(false);
+  });
+
   it('should not register if passwords do not match', () => {
     component.registerForm.patchValue({
       password: 'Password@123',
