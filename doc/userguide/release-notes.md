@@ -1,5 +1,9 @@
 # Release Notes
 
+## Version 1.0.5 (2026-01-25)
+*   New release version 1.0.5.
+
+
 ## Version 1.0.4 (2026-01-25)
 *   New release version 1.0.4.
 
@@ -37,5 +41,6 @@
 *   **Foundation**: Established the core project structure with Spring Boot backend and Angular standalone components.
 *   **Infrastructure**: Set up Docker-based deployment and Nginx reverse proxy configuration.
 *   **Architecture**: Defined the "AngularAI" ecosystem diagrams and core design principles.
+
 
 
