@@ -76,7 +76,7 @@ To create a new release (e.g., version 1.0.3):
 
 1.  **Preparation**: Ensure all changes are committed and tested.
 2.  **Run Release Script**: Execute the following command in PowerShell:
-    ```powershell
+    ```bash
     .\scripts\release.ps1 -NewVersion "1.0.3"
     ```
     This script will:

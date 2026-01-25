@@ -1,0 +1,80 @@
+📧 Email body (HTML)
+
+Junie task: Replace current plain-text email with this HTML version.
+Keep plain-text fallback if your mail library supports it.
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Confirm your email</title>
+  </head>
+  <body style="margin:0; padding:0; background-color:#f5f7fa; font-family:Arial, Helvetica, sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0">
+      <tr>
+        <td align="center" style="padding:40px 16px;">
+          <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px; background:#ffffff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+
+            <!-- Header -->
+            <tr>
+              <td style="padding:24px 24px 16px; text-align:center;">
+                <h1 style="margin:0; font-size:22px; color:#1f2937;">
+                  Welcome to GoodOne
+                </h1>
+              </td>
+            </tr>
+
+            <!-- Content -->
+            <tr>
+              <td style="padding:0 24px 24px; color:#374151; font-size:14px; line-height:1.6;">
+                <p>
+                  Thanks for creating a GoodOne account.
+                </p>
+
+                <p>
+                  To complete your registration, please confirm your email address by clicking the button below:
+                </p>
+
+                <!-- Button -->
+                <p style="text-align:center; margin:32px 0;">
+                  <a
+                    href="{{VERIFICATION_URL}}"
+                    style="
+                      display:inline-block;
+                      padding:12px 24px;
+                      background:#3b82f6;
+                      color:#ffffff;
+                      text-decoration:none;
+                      border-radius:6px;
+                      font-weight:bold;
+                    "
+                  >
+                    Confirm email address
+                  </a>
+                </p>
+
+                <p style="font-size:13px; color:#6b7280;">
+                  If the button doesn’t work, copy and paste this link into your browser:
+                </p>
+
+                <p style="font-size:12px; word-break:break-all; color:#2563eb;">
+                  {{VERIFICATION_URL}}
+                </p>
+
+                <p style="font-size:13px; color:#6b7280; margin-top:24px;">
+                  If you did not create an account, you can safely ignore this email.
+                </p>
+
+                <p style="margin-top:32px;">
+                  Best regards,<br />
+                  <strong>The GoodOne Team</strong>
+                </p>
+              </td>
+            </tr>
+
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
