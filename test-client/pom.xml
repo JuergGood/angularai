@@ -5,8 +5,7 @@
     <parent>
         <groupId>ch.goodone.angularai</groupId>
         <artifactId>angularai-parent</artifactId>
-        <version>$NewVersion</version>
-        <relativePath>../pom.xml</relativePath>
+        <version>1.0.5</version>
     </parent>
     <artifactId>test-client</artifactId>
     <name>test-client</name>

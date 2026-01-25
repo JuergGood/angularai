@@ -60,6 +60,7 @@ This document outlines the best practices and standards for the AngularAI projec
 ### 4. Testing (Vitest/Angular Testing Library)
 - **Providers**: Use `provideHttpClient()`, `provideHttpClientTesting()`, and `provideAnimations()` for test setup.
 - **Clean Environment**: Initialize the test environment in `src/test.ts` using `BrowserDynamicTestingModule`.
+- **Playwright**: Always execute Playwright tests with the `--reporter=line` option to ensure consistent output and avoid interactive hanging.
 
 ## Deployment & Environments
 - **Local Dev**: Use `npm start` (Angular) and the Spring Boot application (IntelliJ). The Angular proxy (`proxy.conf.json`) handles routing to the backend on `localhost:8080`.

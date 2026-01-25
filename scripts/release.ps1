@@ -12,21 +12,46 @@ Write-Host "Starting release process for version $NewVersion..." -ForegroundColo
 
 # 1. Update version in root pom.xml
 Write-Host "Updating root pom.xml version to $NewVersion..."
-mvn versions:set -DnewVersion=$NewVersion -DgenerateBackupPoms=false
+mvn versions:set "-DnewVersion=$NewVersion" -DgenerateBackupPoms=false
 
 # 2. Sync version to all other files
 Write-Host "Syncing version across project..."
 .\scripts\sync-version.ps1
 
-# 3. Update Release Notes (Add a placeholder for the new version if it doesn't exist)
+# 3. Update Release Notes (Add commits since last tag if it doesn't exist)
 $releaseNotesPath = "doc/userguide/release-notes.md"
 if (Test-Path $releaseNotesPath) {
     $content = Get-Content $releaseNotesPath -Raw
     $versionHeader = "## Version $NewVersion ($ReleaseDate)"
     
     if ($content -notmatch [regex]::Escape($versionHeader)) {
+        Write-Host "Fetching git history since last tag..."
+        $lastTag = git describe --tags --abbrev=0 2>$null
+        if ($lastTag -eq "v$NewVersion") {
+            # If the tag was already created, find the previous one
+            $lastTag = git describe --tags --abbrev=0 "v$NewVersion^" 2>$null
+        }
+        $commits = ""
+        if ($lastTag) {
+            $commitList = git log "$lastTag..HEAD" --oneline --no-merges | ForEach-Object {
+                if ($_ -notmatch "Release version") {
+                    $msg = ($_ -replace "^[a-f0-9]+\s+", "")
+                    if ($msg -match "^(?<title>[^:]+):\s*(?<desc>.*)$") {
+                        "*   **" + $Matches.title.Trim() + "**: " + $Matches.desc.Trim()
+                    } else {
+                        "*   " + $msg
+                    }
+                }
+            }
+            $commits = $commitList -join "`n"
+        }
+        
+        if ([string]::IsNullOrWhiteSpace($commits)) {
+            $commits = "*   New release version $NewVersion."
+        }
+
         Write-Host "Adding version header to $releaseNotesPath..."
-        $newHeader = "# Release Notes`n`n$versionHeader`n*   New release version $NewVersion.`n"
+        $newHeader = "# Release Notes`n`n$versionHeader`n$commits`n"
         $content = $content -replace "^# Release Notes", $newHeader
         $content | Set-Content $releaseNotesPath
     }

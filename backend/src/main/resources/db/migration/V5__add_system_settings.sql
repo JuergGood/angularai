@@ -4,3 +4,4 @@ CREATE TABLE system_settings (
 );
 
 INSERT INTO system_settings (setting_key, setting_value) VALUES ('geolocation_enabled', 'false');
+INSERT INTO system_settings (setting_key, setting_value) VALUES ('recaptcha_config_index', '2');

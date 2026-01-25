@@ -52,14 +52,14 @@ aws ecr create-repository --repository-name angularai-frontend --region eu-centr
 **CRITICAL**: You must run these commands from the **project root directory** (`angularai/`), not from the `doc/` directory.
 
 ### 3.1 Define Release Version
-It is highly recommended to use a specific version tag (e.g., `$NewVersion`) instead of just `latest` to ensure predictable deployments.
+It is highly recommended to use a specific version tag (e.g., `1.0.5`) instead of just `latest` to ensure predictable deployments.
 
 **IMPORTANT**: Ensure that the version defined here matches the version in your project files:
-- **Backend**: `pom.xml` (`<version>$NewVersion</version>`)
-- **Frontend**: `package.json` (`"version": "$NewVersion"`)
+- **Backend**: `pom.xml` (`<version>1.0.5</version>`)
+- **Frontend**: `package.json` (`"version": "1.0.5"`)
 
 ```bash
-VERSION="$NewVersion"
+VERSION="1.0.5"
 ```
 
 ### 3.2 Backend Image
@@ -141,13 +141,13 @@ docker push 426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-frontend:l
 ## Summary of URLs
 
 After pushing, your image URLs will follow this pattern:
-- **Backend**: `426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:$NewVersion`
-- **Frontend**: `426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-frontend:$NewVersion`
+- **Backend**: `426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:1.0.5`
+- **Frontend**: `426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-frontend:1.0.5`
 
 ### Updating ECS Task Definitions
 To deploy the new version:
 1.  Open your Task Definition JSON (e.g., `deploy/aws/backend-task-definition.json`).
-2.  Update the `image` field to use the new version tag (e.g., `$NewVersion`) instead of `latest`. **This is highly recommended to avoid version confusion.**
+2.  Update the `image` field to use the new version tag (e.g., `1.0.5`) instead of `latest`. **This is highly recommended to avoid version confusion.**
 3.  Register the new task definition version:
     ```bash
     aws ecs register-task-definition --cli-input-json file://deploy/aws/backend-task-definition.json --query "taskDefinition.revision" --output text --region eu-central-1
@@ -175,4 +175,5 @@ aws ecs describe-task-definition --task-definition angularai-frontend --region e
 If you see an old version (e.g., `0.0.1-SNAPSHOT`) after deployment:
 1.  **Check Local Build**: Ensure you ran `mvn clean package` before building the Docker image if you are building outside of Docker, or ensure `backend/Dockerfile` is running `mvn clean package` (it should).
 2.  **Explicit Version**: Change `latest` to `$VERSION` in your `backend-task-definition.json` before registering. This guarantees ECS pulls that specific image.
-3.  **ECR Verification**: Check the AWS ECR console to ensure the image with tag `$NewVersion` has a recent "Pushed at" timestamp.
+3.  **ECR Verification**: Check the AWS ECR console to ensure the image with tag `1.0.5` has a recent "Pushed at" timestamp.
+

@@ -80,6 +80,16 @@ public class AuthController {
         return ResponseEntity.ok(UserDTO.fromEntity(user));
     }
 
+    @GetMapping("/info")
+    public ResponseEntity<UserDTO> getAuthInfo(Authentication authentication) {
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return ResponseEntity.status(401).build();
+        }
+        return userRepository.findByLogin(authentication.getName())
+                .map(user -> ResponseEntity.ok(UserDTO.fromEntity(user)))
+                .orElse(ResponseEntity.status(401).build());
+    }
+
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(Authentication authentication) {
         if (authentication != null) {

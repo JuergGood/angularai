@@ -15,6 +15,8 @@ To run the entire application using Docker Compose, navigate to the root directo
 cp .env.example .env
 ```
 
+Note: A `.dockerignore` file is included in the root directory to ensure that only necessary files are sent to the Docker daemon during builds. This significantly reduces build times and keeps image sizes optimized by excluding local `node_modules`, `dist`, `target` folders, and other build artifacts. This optimization applies to both Frontend and Backend builds.
+
 Then run:
 
 ```bash

@@ -13,7 +13,12 @@ class AibackendApplicationTest {
         // or we just accept that it will start and stop.
         // Actually, SpringBootTest already covers the context loading.
         // To cover the static main method specifically:
-        AibackendApplication.main(new String[]{"--server.port=0", "--spring.main.banner-mode=off"});
+        AibackendApplication.main(new String[]{
+                "--server.port=0",
+                "--spring.main.banner-mode=off",
+                "--spring.profiles.active=test",
+                "--spring.datasource.url=jdbc:h2:mem:AibackendApplicationTest;DB_CLOSE_DELAY=-1"
+        });
         
         // Assert that the application class can be instantiated (trivial but satisfies Sonar)
         assertDoesNotThrow(AibackendApplication::new);

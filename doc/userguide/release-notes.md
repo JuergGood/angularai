@@ -1,12 +1,18 @@
 # Release Notes
 
 ## Version 1.0.5 (2026-01-25)
-*   New release version 1.0.5.
-
-
-## Version 1.0.4 (2026-01-25)
-*   New release version 1.0.4.
-
+*   **Infrastructure**: Update environment variables configuration
+*   **Security**: Add resend verification feature and enhance email verification UX
+*   **UI**: Refine register component UI and functionality
+*   **Auth**: Enhance registration form validation and error handling
+*   **UX**: Enhance registration form UX with hints and improved error handling
+*   **Auth**: Refactor registration form to enforce full name validation, enhance error handling, and update tests
+*   **Testing**: Refactor registration and implement extensive validation tests
+*   **Docs**: Add UI Architecture Documentation and Enhance Auth Flow Tests
+*   **Testing**: Refactor e2e tests for improved session handling and login logic
+*   **Testing**: Add Playwright e2e tests for Tasks and Auth Flow, update routing, and document UX strategy
+*   **Quality**: Remove H2 configuration, enhance system info tests with i18n checks, add user registration and verification schema. Update i18n files for password strength and registration messages.
+*   **Security**: Integrate Google reCAPTCHA for enhanced user verification, update registration logic to include token verification, and enhance user data initializer and error handling.
 
 ## Version 1.0.4 (2026-01-23)
 *   **Security (reCAPTCHA)**: Implemented Google reCAPTCHA v2 on the registration page to ensure only real persons can register. Includes backend verification and configurable site/secret keys.

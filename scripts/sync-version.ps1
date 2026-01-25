@@ -26,6 +26,16 @@ if (Test-Path $packageJsonPath) {
     $packageJson | ConvertTo-Json -Depth 10 | Set-Content $packageJsonPath
 }
 
+# 2.1 Update frontend/package-lock.json
+$packageLockJsonPath = "frontend/package-lock.json"
+if (Test-Path $packageLockJsonPath) {
+    Write-Host "Updating $packageLockJsonPath"
+    $content = Get-Content $packageLockJsonPath -Raw
+    # Update the root version and the package version (first occurrences)
+    $content = $content -replace '"version": "\$NewVersion"', "`"version`": `"$version`""
+    $content | Set-Content $packageLockJsonPath
+}
+
 # 3. Update android/app/build.gradle (versionName)
 $androidBuildPath = "android/app/build.gradle"
 if (Test-Path $androidBuildPath) {
@@ -76,10 +86,12 @@ if (Test-Path $frontendGitignorePath) {
 # Note: This specifically targets common version patterns in docs
 Write-Host "Updating documentation in doc/ai/..."
 Get-ChildItem -Path "doc/ai" -Filter "*.md" -Recurse | ForEach-Object {
-    $content = Get-Content $_.FullName
-    # Replace '1.0.3' with current version, but avoid partial matches like '21.0.3'
-    $newContent = $content -replace '(?<!\d)1\.0\.3(?!\d)', $version
-    if ($content -join "`n" -ne ($newContent -join "`n")) {
+    $content = Get-Content $_.FullName -Raw
+    # Replace version strings like '1.0.x' with current version
+    $newContent = $content -replace '(?<!\d)1\.0\.\d+(?!\d)', $version
+    # Also replace literal $NewVersion placeholders
+    $newContent = $newContent -replace '\$NewVersion', $version
+    if ($content -ne $newContent) {
         $newContent | Set-Content $_.FullName
     }
 }
@@ -89,8 +101,8 @@ $sidenavSpecPath = "frontend/src/app/components/layout/sidenav.component.spec.ts
 if (Test-Path $sidenavSpecPath) {
     Write-Host "Updating $sidenavSpecPath"
     $content = Get-Content $sidenavSpecPath
-    $content = $content -replace "backendVersion: '1\.0\.3'", "backendVersion: '$version'"
-    $content = $content -replace "frontendVersion: '1\.0\.3'", "frontendVersion: '$version'"
+    $content = $content -replace "backendVersion: '.*'", "backendVersion: '$version'"
+    $content = $content -replace "frontendVersion: '.*'", "frontendVersion: '$version'"
     $content | Set-Content $sidenavSpecPath
 }
 
@@ -101,6 +113,16 @@ if (Test-Path $testClientDocPath) {
     $content = Get-Content $testClientDocPath
     $content = $content -replace "test-client-.*\.jar", "test-client-$version.jar"
     $content | Set-Content $testClientDocPath
+}
+
+# 10. Update application.properties in backend
+$appPropsPath = "backend/src/main/resources/application.properties"
+if (Test-Path $appPropsPath) {
+    Write-Host "Updating $appPropsPath"
+    $content = Get-Content $appPropsPath -Raw
+    $content = $content -replace "application.version=.*", "application.version=$version"
+    $content = $content -replace "frontend.version=.*", "frontend.version=$version"
+    $content | Set-Content $appPropsPath
 }
 
 Write-Host "Synchronization complete!" -ForegroundColor Green

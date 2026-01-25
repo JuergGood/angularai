@@ -21,6 +21,11 @@ Please run the tests from the `frontend` directory.
 1. Open a terminal in `frontend/`.
 2. Run the desired test suite.
 
+
+```bash
+cd ../../../frontend
+```
+
 **Registration Tests ** (Login & Registration):
 ```bash
 npx playwright test e2e/registration-extensive.spec.ts
@@ -34,6 +39,10 @@ npx playwright test e2e/registration-extensive.spec.ts  --reporter=line
 **Email Validation Tests ** (Line reporter):
 ```bash
 npx playwright test e2e/verification-flow.spec.ts  --reporter=line
+```
+** Version Info Tests ** (Line reporter):
+```bash
+npx playwright test e2e/version-info.spec.ts  --reporter=line
 ```
 
 

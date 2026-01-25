@@ -2,20 +2,20 @@
   "cookies": [
     {
       "name": "_ga",
-      "value": "GA1.1.1194834592.1769364646",
+      "value": "GA1.1.588605867.1769372625",
       "domain": "localhost",
       "path": "/",
-      "expires": 1803924645.952491,
+      "expires": 1803932624.794227,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"
     },
     {
       "name": "_ga_N366JDK5K0",
-      "value": "GS2.1.s1769364645$o1$g0$t1769364646$j59$l0$h0",
+      "value": "GS2.1.s1769372624$o1$g0$t1769372624$j60$l0$h0",
       "domain": "localhost",
       "path": "/",
-      "expires": 1803924646.203083,
+      "expires": 1803932624.919334,
       "httpOnly": false,
       "secure": false,
       "sameSite": "Lax"

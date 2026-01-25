@@ -18,6 +18,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@ActiveProfiles("test")
 @TestPropertySource(properties = {
         "app.landing.message.en=English Message",
         "app.landing.message.de-ch=German Message"

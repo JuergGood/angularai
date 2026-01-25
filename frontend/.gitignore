@@ -42,6 +42,6 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 /cypress/screenshots/
-/target/aifrontend-$NewVersion.jar
+/target/aifrontend-1.0.5.jar
 /target/
 /playwright-report/
