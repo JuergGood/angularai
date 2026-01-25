@@ -2,6 +2,18 @@ import { test, expect } from '@playwright/test';
 
 test.describe('Auth Flow (Login & Register)', () => {
 
+  test.beforeEach(async ({ page, context }) => {
+    console.log('Ensuring clean state (logged out)...');
+    // Navigate to a page on our domain first so we have access to localStorage
+    await page.goto('/login');
+    // Clear storage state to ensure we are logged out
+    await context.clearCookies();
+    await page.evaluate(() => {
+      localStorage.clear();
+      sessionStorage.clear();
+    });
+  });
+
   test('capture login screen', async ({ page }) => {
     console.log('Navigating to /login...');
     await page.goto('/login');
