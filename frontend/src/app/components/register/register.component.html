@@ -29,7 +29,6 @@
           <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>{{ 'ADMIN.LOGIN' | translate }}</mat-label>
             <input matInput formControlName="login" autocomplete="off">
-            <mat-hint align="start">{{ 'ADMIN.LOGIN' | translate }}</mat-hint>
             @if (showError('login')) {
               @if (registerForm.get('login')?.hasError('required')) {
                 <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
@@ -58,7 +57,7 @@
             <input matInput [type]="passwordVisible ? 'text' : 'password'" formControlName="password" autocomplete="new-password">
 
             <button mat-icon-button matSuffix (click)="passwordVisible = !passwordVisible" type="button" [attr.aria-label]="'Toggle password visibility'">
-              <mat-icon>{{passwordVisible ? 'visibility' : 'visibility_off'}}</mat-icon>
+              <mat-icon>{{passwordVisible ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
 
             <mat-hint align="start">{{ 'ADMIN.PASSWORD_HINT' | translate }}</mat-hint>
@@ -87,7 +86,7 @@
             <!-- CR-REG-03: show/hide toggle -->
             <input matInput [type]="confirmPasswordVisible ? 'text' : 'password'" formControlName="confirmPassword" autocomplete="new-password">
             <button mat-icon-button matSuffix (click)="confirmPasswordVisible = !confirmPasswordVisible" type="button" [attr.aria-label]="'Toggle password visibility'">
-              <mat-icon>{{confirmPasswordVisible ? 'visibility' : 'visibility_off'}}</mat-icon>
+              <mat-icon>{{confirmPasswordVisible ? 'visibility_off' : 'visibility'}}</mat-icon>
             </button>
 
             <mat-hint align="start">{{ 'ADMIN.CONFIRM_PASSWORD' | translate }}</mat-hint>

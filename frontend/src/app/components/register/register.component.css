@@ -54,8 +54,10 @@
   grid-template-columns: 1fr;
   margin-bottom: 0;
 }
+/* Ensure all fields have consistent height but not excessively high */
 mat-form-field {
   width: 100%;
+  margin-bottom: 4px;
 }
 .form-actions {
   display: flex;
@@ -113,7 +115,3 @@ mat-form-field {
   justify-content: center;
 }
 
-/* Ensure password fields have consistent height even with hints */
-.password-field {
-  min-height: 94px;
-}
