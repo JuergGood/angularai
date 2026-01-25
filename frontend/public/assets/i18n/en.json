@@ -130,6 +130,7 @@
     "CLOSE": "Close",
     "DELETE": "Delete",
     "NO_USERS": "No users found.",
+    "FULL_NAME": "Full Name",
     "FIRST_NAME": "First Name",
     "LAST_NAME": "Last Name",
     "BIRTH_DATE": "Birth Date",
@@ -184,6 +185,10 @@
   },
   "REGISTER": {
     "VERIFICATION_HINT": "To complete your registration, you must verify your email address. A verification link will be sent to you after you submit this form.",
-    "SUCCESS_MESSAGE": "Registration successful! A verification link has been sent to your email. Please verify your account before logging in."
+    "SUCCESS_MESSAGE": "Registration successful! A verification link has been sent to your email. Please verify your account before logging in.",
+    "SUCCESS_TITLE": "Account created",
+    "SUCCESS_SUBTITLE": "Check your email to verify your account. You can then sign in.",
+    "VERIFYING_RECAPTCHA": "Verifying...",
+    "RECAPTCHA_FAILED": "Verification failed, please try again."
   }
 }

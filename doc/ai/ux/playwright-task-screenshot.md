@@ -21,6 +21,11 @@ cd frontend
 cd ../../../frontend
 ```
 
+**Registration Tests ** (Login & Registration):
+```bash
+npx playwright test e2e/registration-extensive.spec.ts
+```
+
 **Auth Flow** (Login & Registration):
 ```bash
 npx playwright test e2e/auth-flow.spec.ts

@@ -1,6 +1,6 @@
-import { Component, ChangeDetectorRef, OnInit, AfterViewInit, OnDestroy } from '@angular/core';
+import { Component, ChangeDetectorRef, OnInit, AfterViewInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { SystemService } from '../../services/system.service';
@@ -10,57 +10,98 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { User } from '../../models/user.model';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-register',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     RouterLink,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,
     MatIconModule,
+    MatProgressSpinnerModule,
     TranslateModule
   ],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit, AfterViewInit {
-  user: User = {
-    firstName: '',
-    lastName: '',
-    login: '',
-    password: '',
-    email: '',
-    address: '',
-    recaptchaToken: ''
-  };
-  confirmPassword = '';
+  // CR-REG-02: reactive form + validators
+  registerForm: FormGroup;
+
+  // CR-REG-03: password UX visibility
+  passwordVisible = false;
+  confirmPasswordVisible = false;
+
+  // CR-REG-04: reCAPTCHA state machine
+  recaptchaMode: 'disabled' | 'score' | 'visible' = 'disabled';
+  recaptchaStatus: 'idle' | 'verifying' | 'verified' | 'expired' | 'error' = 'idle';
+
+  // CR-REG-06: submit/loading state
+  isSubmitting = false;
+
   error = '';
-  message = '';
   recaptchaSiteKey = '';
-  isScoreBased = false;
   passwordStrength: 'weak' | 'medium' | 'strong' | '' = '';
   private scriptLoaded = false;
 
   constructor(
+    private fb: FormBuilder,
     private authService: AuthService,
     private systemService: SystemService,
     private router: Router,
     private cdr: ChangeDetectorRef
-  ) {}
+  ) {
+    this.registerForm = this.fb.group({
+      fullName: ['', Validators.required],
+      login: ['', Validators.required],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, this.passwordStrengthValidator()]],
+      confirmPassword: ['', Validators.required],
+      address: ['']
+    }, { validators: this.passwordMatchValidator });
+  }
+
+  passwordStrengthValidator() {
+    // CR-REG-02: centralize validators
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value) return null;
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*[^A-Za-z0-9]).{8,}$/;
+      return passwordRegex.test(control.value) ? null : { passwordStrength: true };
+    };
+  }
+
+  passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
+    // CR-REG-02: confirm match as form error
+    const password = group.get('password')?.value;
+    const confirmPassword = group.get('confirmPassword')?.value;
+    return password === confirmPassword ? null : { passwordMismatch: true };
+  }
 
   ngOnInit() {
     this.systemService.getRecaptchaSiteKey().subscribe(key => {
       this.recaptchaSiteKey = key;
-      this.isScoreBased = !!key && key.startsWith('6Lfik');
-      if (this.recaptchaSiteKey && this.recaptchaSiteKey !== 'disabled') {
+      if (!key || key === 'disabled') {
+        this.recaptchaMode = 'disabled';
+      } else if (key.startsWith('6Lfik')) {
+        this.recaptchaMode = 'score';
+      } else {
+        this.recaptchaMode = 'visible';
+      }
+
+      if (this.recaptchaMode !== 'disabled') {
         this.setupRecaptcha();
       }
+    });
+
+    // CR-REG-03: strength indicator logic
+    this.registerForm.get('password')?.valueChanges.subscribe(pwd => {
+      this.onPasswordChange(pwd);
     });
   }
 
@@ -91,23 +132,12 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   }
 
   renderRecaptcha() {
-    if (!this.recaptchaSiteKey || this.recaptchaSiteKey === 'disabled' || !this.scriptLoaded) {
+    if (this.recaptchaMode !== 'visible' || !this.scriptLoaded) {
       return;
     }
 
     const container = document.getElementById('recaptcha-container');
-    if (!container) {
-      return;
-    }
-
-    // Key starting with 6Lfik... is score-based according to user docs
-    if (this.recaptchaSiteKey.startsWith('6Lfik')) {
-      console.log('Detected Score-based reCAPTCHA Enterprise key - no render needed');
-      return;
-    }
-
-    // Check if already rendered to avoid duplicates
-    if (container.hasChildNodes()) {
+    if (!container || container.hasChildNodes()) {
       return;
     }
 
@@ -115,11 +145,17 @@ export class RegisterComponent implements OnInit, AfterViewInit {
       (window as any).grecaptcha.enterprise.render('recaptcha-container', {
         'sitekey': this.recaptchaSiteKey,
         'callback': (token: string) => {
-          this.user.recaptchaToken = token;
+          this.recaptchaStatus = 'verified';
+          this.registerForm.patchValue({ recaptchaToken: token });
           this.cdr.detectChanges();
         },
         'expired-callback': () => {
-          this.user.recaptchaToken = '';
+          this.recaptchaStatus = 'expired';
+          this.registerForm.patchValue({ recaptchaToken: '' });
+          this.cdr.detectChanges();
+        },
+        'error-callback': () => {
+          this.recaptchaStatus = 'error';
           this.cdr.detectChanges();
         }
       });
@@ -128,9 +164,8 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     }
   }
 
-  onPasswordChange() {
-    const pwd = this.user.password || '';
-    if (pwd.length === 0) {
+  onPasswordChange(pwd: string) {
+    if (!pwd) {
       this.passwordStrength = '';
       return;
     }
@@ -153,70 +188,86 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit() {
+    if (this.registerForm.invalid || this.isSubmitting) {
+      return;
+    }
+
     this.error = '';
-    this.message = '';
-
-    if (this.user.password !== this.confirmPassword) {
-      this.error = 'ADMIN.ERROR_PASSWORD_MATCH';
-      return;
-    }
-
-    const passwordRegex = /^(?=.*[A-Za-z])(?=.*[^A-Za-z0-9]).{8,}$/;
-    if (this.user.password && !passwordRegex.test(this.user.password)) {
-      this.error = 'ADMIN.ERROR_PASSWORD_STRENGTH';
-      return;
-    }
 
     // Handle Score-based (Invisible) reCAPTCHA Enterprise
-    if (this.recaptchaSiteKey && this.recaptchaSiteKey !== 'disabled' && this.recaptchaSiteKey.startsWith('6Lfik') && !(window as any).BYPASS_RECAPTCHA) {
+    if (this.recaptchaMode === 'score' && !(window as any).BYPASS_RECAPTCHA) {
+      this.recaptchaStatus = 'verifying';
+      this.isSubmitting = true; // Show spinner during verification too
       (window as any).grecaptcha.enterprise.ready(async () => {
         try {
           const token = await (window as any).grecaptcha.enterprise.execute(this.recaptchaSiteKey, { action: 'REGISTER' });
-          this.user.recaptchaToken = token;
-          this.executeRegistration();
+          this.recaptchaStatus = 'verified';
+          this.executeRegistration(token);
         } catch (err) {
           console.error('reCAPTCHA execution failed', err);
-          this.error = 'ADMIN.ERROR_RECAPTCHA';
+          this.recaptchaStatus = 'error';
+          this.error = 'REGISTER.RECAPTCHA_FAILED';
+          this.isSubmitting = false;
           this.cdr.detectChanges();
         }
       });
       return;
     }
 
-    if (this.recaptchaSiteKey && this.recaptchaSiteKey !== 'disabled' && !this.user.recaptchaToken && !(window as any).BYPASS_RECAPTCHA) {
-      this.error = 'ADMIN.ERROR_RECAPTCHA';
-      return;
-    }
-
+    let token = '';
     if ((window as any).BYPASS_RECAPTCHA) {
-      this.user.recaptchaToken = 'bypass-token';
+      token = 'bypass-token';
+    } else if (this.recaptchaMode === 'visible') {
+      try {
+        token = (window as any).grecaptcha?.enterprise?.getResponse();
+      } catch (err) {
+        console.warn('Failed to get reCAPTCHA response', err);
+      }
+
+      if (!token) {
+        this.error = 'ADMIN.ERROR_RECAPTCHA';
+        return;
+      }
     }
 
-    this.executeRegistration();
+    this.executeRegistration(token);
   }
 
-  executeRegistration() {
-    const userToRegister = { ...this.user };
-    if (userToRegister.birthDate && (userToRegister.birthDate as any) instanceof Date) {
-      const date = userToRegister.birthDate as unknown as Date;
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      (userToRegister as any).birthDate = `${year}-${month}-${day}`;
+  executeRegistration(token: string) {
+    // CR-REG-06: loading state
+    this.isSubmitting = true;
+
+    // Parse fullName into firstName and lastName
+    const fullNameValue = (this.registerForm.value.fullName || '').trim();
+    const parts = fullNameValue.split(/\s+/);
+    let firstName = '';
+    let lastName = '';
+
+    if (parts.length > 1) {
+      lastName = parts.pop() || '';
+      firstName = parts.join(' ');
+    } else {
+      firstName = parts[0] || '';
+      lastName = '';
     }
+
+    const { fullName, ...otherValues } = this.registerForm.value;
+    const userToRegister = {
+      ...otherValues,
+      firstName,
+      lastName,
+      recaptchaToken: token
+    };
 
     this.authService.register(userToRegister).subscribe({
       next: () => {
-        this.user.recaptchaToken = '';
-        this.message = 'REGISTER.SUCCESS_MESSAGE';
-        this.error = '';
-        this.cdr.detectChanges();
-        setTimeout(() => this.router.navigate(['/login']), 8000);
+        this.isSubmitting = false;
+        // CR-REG-01: navigate to success
+        this.router.navigate(['/register/success'], { state: { email: this.registerForm.value.email } });
       },
       error: (err) => {
+        this.isSubmitting = false;
         console.error('Registration failed:', err);
-        // Clear token on failure as it's likely consumed
-        this.user.recaptchaToken = '';
 
         if (err.status === 400 && typeof err.error === 'string') {
           this.error = err.error;
@@ -230,7 +281,6 @@ export class RegisterComponent implements OnInit, AfterViewInit {
         } else {
           this.error = 'COMMON.ERROR';
         }
-        this.message = '';
         this.cdr.detectChanges();
       }
     });

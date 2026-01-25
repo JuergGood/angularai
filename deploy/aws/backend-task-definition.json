@@ -23,32 +23,32 @@
                                                              "value":  "PLACEHOLDER_IPSTACK_API_KEY"
                                                          }
                                                      ],
-                                     "secrets": [
-                                         {
-                                             "name": "ADMIN_PASSWORD",
-                                             "valueFrom": "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:ADMIN_PASSWORD::"
-                                         },
-                                         {
-                                             "name": "USER_PASSWORD",
-                                             "valueFrom": "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:USER_PASSWORD::"
-                                         },
-                                         {
-                                             "name": "ADMIN_READ_PASSWORD",
-                                             "valueFrom": "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:ADMIN_READ_PASSWORD::"
-                                         },
-                                         {
-                                             "name": "ADMIN_EMAIL",
-                                             "valueFrom": "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:ADMIN_EMAIL::"
-                                         },
-                                         {
-                                             "name": "USER_EMAIL",
-                                             "valueFrom": "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:USER_EMAIL::"
-                                         },
-                                         {
-                                             "name": "ADMIN_READ_EMAIL",
-                                             "valueFrom": "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:ADMIN_READ_EMAIL::"
-                                         }
-                                     ],
+                                     "secrets":  [
+                                                     {
+                                                         "name":  "ADMIN_PASSWORD",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:ADMIN_PASSWORD::"
+                                                     },
+                                                     {
+                                                         "name":  "USER_PASSWORD",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:USER_PASSWORD::"
+                                                     },
+                                                     {
+                                                         "name":  "ADMIN_READ_PASSWORD",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:ADMIN_READ_PASSWORD::"
+                                                     },
+                                                     {
+                                                         "name":  "ADMIN_EMAIL",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:ADMIN_EMAIL::"
+                                                     },
+                                                     {
+                                                         "name":  "USER_EMAIL",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:USER_EMAIL::"
+                                                     },
+                                                     {
+                                                         "name":  "ADMIN_READ_EMAIL",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:ADMIN_READ_EMAIL::"
+                                                     }
+                                                 ],
                                      "logConfiguration":  {
                                                               "logDriver":  "awslogs",
                                                               "options":  {

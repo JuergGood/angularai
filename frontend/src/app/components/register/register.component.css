@@ -1,3 +1,4 @@
+/* CR-REG-05: theming stabilization */
 .strength-weak { color: #f44336; }
 .strength-medium { color: #ff9800; }
 .strength-strong { color: #4caf50; }
@@ -10,22 +11,28 @@
   display: flex;
   justify-content: center;
   padding: 24px;
+  background: var(--bg);
+  min-height: calc(100vh - 64px);
 }
 .register-card {
   width: 100%;
   max-width: 650px;
+  background: var(--surface);
+  border-radius: var(--r);
+  box-shadow: var(--shadow-2);
 }
 .verification-hint {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background-color: rgba(63, 81, 181, 0.05);
+  background-color: var(--surface-2);
   border-radius: 8px;
   margin-bottom: 24px;
-  color: var(--brand);
+  color: var(--text);
   font-size: 14px;
   line-height: 1.4;
+  border-left: 4px solid var(--primary);
 }
 .verification-hint mat-icon {
   font-size: 20px;
@@ -35,12 +42,17 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--primary);
 }
 .form-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 16px;
   margin-bottom: 24px;
+}
+.full-width-name {
+  grid-template-columns: 1fr;
+  margin-bottom: 0;
 }
 mat-form-field {
   width: 100%;
@@ -54,14 +66,26 @@ mat-form-field {
   border-top: 1px solid var(--border);
 }
 .error { color: #f44336; margin-top: 16px; text-align: center; }
-.success { color: #4caf50; margin-top: 16px; text-align: center; }
+
 .recaptcha-wrapper {
   margin-bottom: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.recaptcha-wrapper mat-error {
-  font-size: 12px;
-  margin-top: 4px;
+
+.recaptcha-wrapper.hidden {
+  display: none;
+}
+
+.recaptcha-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text);
+  font-size: 14px;
+}
+
+#register-btn mat-spinner {
+  display: inline-block;
 }

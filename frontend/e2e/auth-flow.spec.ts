@@ -48,16 +48,15 @@ test.describe('Auth Flow (Login & Register)', () => {
 
     // Fill out the registration form
     console.log('Filling registration form...');
-    await page.fill('input[name="firstName"]', 'John');
-    await page.fill('input[name="lastName"]', 'Doe');
+    await page.fill('input[formControlName="fullName"]', 'John Doe');
     const uniqueId = Date.now();
-    await page.fill('input[name="login"]', 'johndoe' + uniqueId); // Unique login
-    await page.fill('input[name="email"]', 'john.doe' + uniqueId + '@example.com'); // Unique email
+    await page.fill('input[formControlName="login"]', 'johndoe' + uniqueId); // Unique login
+    await page.fill('input[formControlName="email"]', 'john.doe' + uniqueId + '@example.com'); // Unique email
 
     // Password must match pattern: ^(?=.*[A-Za-z])(?=.*[^A-Za-z0-9]).{8,}$
     const password = 'Password123!';
-    await page.fill('input[name="password"]', password);
-    await page.fill('input[name="confirmPassword"]', password);
+    await page.fill('input[formControlName="password"]', password);
+    await page.fill('input[formControlName="confirmPassword"]', password);
 
     // Take screenshot of the filled form
     console.log('Capturing filled registration screen...');
@@ -103,23 +102,21 @@ test.describe('Auth Flow (Login & Register)', () => {
         if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
       });
 
-      // Wait for success message or error message
+      // Wait for success screen or error message
       console.log('Waiting for result message...');
       try {
         await Promise.race([
-          page.waitForSelector('.success', { timeout: 10000 }),
+          page.waitForURL(/\/register\/success/, { timeout: 10000 }),
           page.waitForSelector('.error', { timeout: 10000 })
         ]);
       } catch (e) {
         console.log('Timeout waiting for result message. Taking screenshot of current state.');
       }
 
-      const successMsg = page.locator('.success');
       const errorMsg = page.locator('.error');
 
-      if (await successMsg.isVisible()) {
-        console.log('Capturing registration success message...');
-        await successMsg.scrollIntoViewIfNeeded();
+      if (page.url().includes('/register/success')) {
+        console.log('Capturing registration success screen...');
         await page.screenshot({ path: 'e2e-screenshots/register-success.png', fullPage: true });
 
         // Now attempt registration with the SAME login to get an error
@@ -146,20 +143,18 @@ test.describe('Auth Flow (Login & Register)', () => {
       console.log('Register button is enabled, attempting registration (Success Case)...');
       await registerBtn.click();
 
-      // Wait for success message
-      await page.waitForSelector('.success', { timeout: 10000 });
-      console.log('Capturing registration success message...');
-      await page.locator('.success').scrollIntoViewIfNeeded();
+      // Wait for success screen
+      await page.waitForURL(/\/register\/success/, { timeout: 10000 });
+      console.log('Capturing registration success screen...');
       await page.screenshot({ path: 'e2e-screenshots/register-success.png', fullPage: true });
 
       // Now attempt registration with the SAME login to get an error
       console.log('Attempting registration with duplicate login (Error Case)...');
-      await page.fill('input[name="firstName"]', 'Jane');
-      await page.fill('input[name="lastName"]', 'Doe');
-      // login is already filled with the same unique login from before
-      await page.fill('input[name="email"]', 'jane.doe@example.com');
-      await page.fill('input[name="password"]', password);
-      await page.fill('input[name="confirmPassword"]', password);
+    await page.fill('input[formControlName="fullName"]', 'Jane Doe');
+    // login is already filled with the same unique login from before
+    await page.fill('input[formControlName="email"]', 'jane.doe@example.com');
+    await page.fill('input[formControlName="password"]', password);
+    await page.fill('input[formControlName="confirmPassword"]', password);
 
       await registerBtn.click();
 

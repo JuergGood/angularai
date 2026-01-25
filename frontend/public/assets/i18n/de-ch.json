@@ -130,6 +130,7 @@
     "CLOSE": "Schliessen",
     "DELETE": "Löschen",
     "NO_USERS": "Keine Benutzer gefunden.",
+    "FULL_NAME": "Vollständiger Name",
     "FIRST_NAME": "Vorname",
     "LAST_NAME": "Nachname",
     "BIRTH_DATE": "Geburtsdatum",
@@ -184,6 +185,10 @@
   },
   "REGISTER": {
     "VERIFICATION_HINT": "Um Ihre Registrierung abzuschliessen, müssen Sie Ihre E-Mail-Adresse verifizieren. Ein Verifizierungslink wird Ihnen nach dem Absenden dieses Formulars zugesandt.",
-    "SUCCESS_MESSAGE": "Registrierung erfolgreich! Ein Verifizierungslink wurde an Ihre E-Mail gesendet. Bitte verifizieren Sie Ihr Konto, bevor Sie sich anmelden."
+    "SUCCESS_MESSAGE": "Registrierung erfolgreich! Ein Verifizierungslink wurde an Ihre E-Mail gesendet. Bitte verifizieren Sie Ihr Konto, bevor Sie sich anmelden.",
+    "SUCCESS_TITLE": "Konto erstellt",
+    "SUCCESS_SUBTITLE": "Prüfen Sie Ihre E-Mail, um Ihr Konto zu verifizieren. Danach können Sie sich anmelden.",
+    "VERIFYING_RECAPTCHA": "Verifizierung läuft...",
+    "RECAPTCHA_FAILED": "Verifizierung fehlgeschlagen, bitte versuchen Sie es erneut."
   }
 }

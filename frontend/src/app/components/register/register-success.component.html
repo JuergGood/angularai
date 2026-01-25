@@ -1,0 +1,20 @@
+<!-- CR-REG-01: success screen route + CTA -->
+<!-- CR-REG-05: theming stabilization -->
+<div class="register-success-page">
+  <mat-card class="main-card success-card">
+    <mat-card-content class="success-content">
+      <div class="icon-container">
+        <mat-icon color="primary" class="large-icon">check_circle</mat-icon>
+      </div>
+
+      <h1>{{ 'REGISTER.SUCCESS_TITLE' | translate }}</h1>
+      <p class="subtitle">{{ 'REGISTER.SUCCESS_SUBTITLE' | translate }}</p>
+
+      <div class="actions">
+        <button mat-flat-button color="primary" (click)="onGoToLogin()">
+          {{ 'NAV.LOGIN' | translate }}
+        </button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
