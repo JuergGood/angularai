@@ -1,7 +1,9 @@
 package ch.goodone.angularai.backend.controller;
 
-import ch.goodone.angularai.backend.dto.UserDTO;
 import ch.goodone.angularai.backend.service.CaptchaService;
+import org.springframework.context.annotation.Import;
+import ch.goodone.angularai.backend.config.SecurityConfig;
+import org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ActiveProfiles("test")
+@Import(SecurityConfig.class)
 public class PublicEndpointsTest {
 
     @Autowired
@@ -37,7 +40,10 @@ public class PublicEndpointsTest {
 
     @BeforeEach
     void setUp() {
-        mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+        mockMvc = MockMvcBuilders
+                .webAppContextSetup(context)
+                .apply(SecurityMockMvcConfigurers.springSecurity())
+                .build();
     }
 
     @Test

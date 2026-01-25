@@ -187,21 +187,15 @@ public class AuthController {
         return tokenRepository.findByToken(token)
                 .map(t -> {
                     if (t.isExpired()) {
-                        return ResponseEntity.status(org.springframework.http.HttpStatus.FOUND)
-                                .location(java.net.URI.create(baseUrl + "/verify/error?reason=expired&email=" + t.getUser().getEmail()))
-                                .build();
+                        return ResponseEntity.badRequest().<Object>body(java.util.Map.of("reason", "expired", "email", t.getUser().getEmail()));
                     }
                     User user = t.getUser();
                     user.setStatus(ch.goodone.angularai.backend.model.UserStatus.ACTIVE);
                     userRepository.save(user);
                     tokenRepository.delete(t);
-                    return ResponseEntity.status(org.springframework.http.HttpStatus.FOUND)
-                            .location(java.net.URI.create(baseUrl + "/verify/success"))
-                            .build();
+                    return ResponseEntity.ok().build();
                 })
-                .orElse(ResponseEntity.status(org.springframework.http.HttpStatus.FOUND)
-                        .location(java.net.URI.create(baseUrl + "/verify/error?reason=invalid"))
-                        .build());
+                .orElse(ResponseEntity.badRequest().body(java.util.Map.of("reason", "invalid")));
     }
 
     @PostMapping("/resend-verification")

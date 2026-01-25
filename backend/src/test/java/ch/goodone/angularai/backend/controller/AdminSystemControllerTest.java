@@ -23,6 +23,8 @@ import tools.jackson.databind.ObjectMapper;
 import java.util.Map;
 
 import static org.mockito.Mockito.*;
+import static org.hamcrest.Matchers.containsString;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -94,6 +96,28 @@ class AdminSystemControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.city").value("Zurich"))
                 .andExpect(jsonPath("$.country").value("Switzerland"));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
+    void shouldGetRecaptchaConfigIndex() throws Exception {
+        when(systemSettingService.getRecaptchaConfigIndex()).thenReturn(2);
+
+        mockMvc.perform(get("/api/admin/settings/recaptcha"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.index").value(2));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
+    void shouldSetRecaptchaConfigIndex() throws Exception {
+        mockMvc.perform(post("/api/admin/settings/recaptcha")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("index", 3))))
+                .andExpect(status().isOk());
+
+        verify(systemSettingService).setRecaptchaConfigIndex(3);
+        verify(actionLogService).log(eq("admin"), eq("SETTING_CHANGED"), contains("reCAPTCHA config index set to: 3"));
     }
 
     @Test

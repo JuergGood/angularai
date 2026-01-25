@@ -47,6 +47,28 @@ class SystemSettingServiceTest {
     }
 
     @Test
+    void getRecaptchaConfigIndex_ReturnsValueFromDatabase() {
+        SystemSetting setting = new SystemSetting(SystemSettingService.RECAPTCHA_CONFIG_INDEX, "3");
+        when(repository.findById(SystemSettingService.RECAPTCHA_CONFIG_INDEX)).thenReturn(Optional.of(setting));
+
+        assertEquals(3, systemSettingService.getRecaptchaConfigIndex());
+    }
+
+    @Test
+    void getRecaptchaConfigIndex_ReturnsFallback_WhenNotFoundAndDefaultIsNull() {
+        when(repository.findById(SystemSettingService.RECAPTCHA_CONFIG_INDEX)).thenReturn(Optional.empty());
+        // defaultRecaptchaConfig is null here
+        assertEquals(1, systemSettingService.getRecaptchaConfigIndex());
+    }
+
+    @Test
+    void getRecaptchaConfigIndex_ReturnsFallback_WhenDatabaseValueInvalid() {
+        SystemSetting setting = new SystemSetting(SystemSettingService.RECAPTCHA_CONFIG_INDEX, "invalid");
+        when(repository.findById(SystemSettingService.RECAPTCHA_CONFIG_INDEX)).thenReturn(Optional.of(setting));
+        assertEquals(1, systemSettingService.getRecaptchaConfigIndex());
+    }
+
+    @Test
     void setGeolocationEnabled_UpdatesExistingSetting() {
         SystemSetting setting = new SystemSetting(SystemSettingService.GEOLOCATION_ENABLED, "false");
         when(repository.findById(SystemSettingService.GEOLOCATION_ENABLED)).thenReturn(Optional.of(setting));

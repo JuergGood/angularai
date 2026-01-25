@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './components/login/login.component';
 import { RegisterComponent } from './components/register/register.component';
 import { RegisterSuccessComponent } from './components/register/register-success.component';
+import { VerifyComponent } from './components/verify/verify.component';
 import { VerifySuccessComponent } from './components/verify/verify-success.component';
 import { VerifyErrorComponent } from './components/verify/verify-error.component';
 import { ProfileComponent } from './components/profile/profile.component';
@@ -17,6 +18,7 @@ export const routes: Routes = [
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
     { path: 'register/success', component: RegisterSuccessComponent },
+    { path: 'verify', component: VerifyComponent },
     { path: 'verify/success', component: VerifySuccessComponent },
     { path: 'verify/error', component: VerifyErrorComponent },
     { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },

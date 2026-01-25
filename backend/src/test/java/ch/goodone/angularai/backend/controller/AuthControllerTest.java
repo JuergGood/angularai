@@ -338,7 +338,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void verify_shouldRedirectToSuccess_whenTokenValid() throws Exception {
+    void verify_shouldReturnOk_whenTokenValid() throws Exception {
         String tokenValue = "valid-token";
         User user = new User();
         user.setLogin("testuser");
@@ -348,8 +348,7 @@ class AuthControllerTest {
         when(tokenRepository.findByToken(tokenValue)).thenReturn(Optional.of(token));
 
         mockMvc.perform(get("/api/auth/verify").param("token", tokenValue))
-                .andExpect(status().isFound())
-                .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/verify/success")));
+                .andExpect(status().isOk());
 
         verify(userRepository).save(user);
         verify(tokenRepository).delete(token);
@@ -357,7 +356,7 @@ class AuthControllerTest {
     }
 
     @Test
-    void verify_shouldRedirectToError_whenTokenExpired() throws Exception {
+    void verify_shouldReturnBadRequest_whenTokenExpired() throws Exception {
         String tokenValue = "expired-token";
         User user = new User();
         user.setEmail("test@example.com");
@@ -368,17 +367,18 @@ class AuthControllerTest {
         when(tokenRepository.findByToken(tokenValue)).thenReturn(Optional.of(token));
 
         mockMvc.perform(get("/api/auth/verify").param("token", tokenValue))
-                .andExpect(status().isFound())
-                .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/verify/error?reason=expired&email=test@example.com")));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.reason").value("expired"))
+                .andExpect(jsonPath("$.email").value("test@example.com"));
     }
 
     @Test
-    void verify_shouldRedirectToError_whenTokenInvalid() throws Exception {
+    void verify_shouldReturnBadRequest_whenTokenInvalid() throws Exception {
         when(tokenRepository.findByToken("invalid")).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/auth/verify").param("token", "invalid"))
-                .andExpect(status().isFound())
-                .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/verify/error?reason=invalid")));
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.reason").value("invalid"));
     }
 
     @Test

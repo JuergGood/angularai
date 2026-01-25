@@ -34,6 +34,14 @@ If you want to verify the backend is responding, try an existing API endpoint:
     docker compose down
     ```
 
+Check the logs
+```bash
+docker compose logs -f backend
+```
+
+```bash
+docker compose logs -f  <container_id_or_name>
+```
 
 ```bash
 docker compose logs backend | Select-String "DataInitializer"

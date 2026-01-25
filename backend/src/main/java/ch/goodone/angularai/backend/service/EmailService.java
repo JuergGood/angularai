@@ -34,7 +34,7 @@ public class EmailService {
     }
 
     public void sendVerificationEmail(String toEmail, String token, Locale locale) {
-        String verificationUrl = baseUrl + "/api/auth/verify?token=" + token;
+        String verificationUrl = baseUrl + "/verify?token=" + token;
         boolean isGerman = locale != null && "de".equals(locale.getLanguage());
 
         try {

@@ -36,8 +36,22 @@ public class SystemSettingService {
 
     public int getRecaptchaConfigIndex() {
         return repository.findById(RECAPTCHA_CONFIG_INDEX)
-                .map(setting -> Integer.parseInt(setting.getValue()))
-                .orElse(Integer.parseInt(defaultRecaptchaConfig));
+                .map(setting -> {
+                    try {
+                        return Integer.parseInt(setting.getValue());
+                    } catch (NumberFormatException e) {
+                        return parseDefaultConfig();
+                    }
+                })
+                .orElseGet(this::parseDefaultConfig);
+    }
+
+    private int parseDefaultConfig() {
+        try {
+            return Integer.parseInt(defaultRecaptchaConfig);
+        } catch (NumberFormatException e) {
+            return 1; // absolute fallback
+        }
     }
 
     @Transactional

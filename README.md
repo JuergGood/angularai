@@ -51,7 +51,7 @@ Scripts are available in the `scripts/` folder for common deployment tasks (Powe
 To run the backend from IntelliJ, you must ensure that required environment variables (like `IPSTACK_API_KEY` and `APP_BASE_URL`) are available. 
 - You can manually add them to your Run Configurations.
 - Alternatively, use a plugin like **EnvFile** to automatically load the `.env` file into your Run Configurations.
-- **Note on `APP_BASE_URL`**: For local development, this is typically set to `http://localhost:4200` in `.env` so that email verification links point to the Angular development server.
+- **Note on `APP_BASE_URL`**: By default, the backend uses `http://localhost:4200` for `app.base-url`. This ensures that email verification links point to the Angular development server during local development. If you need to override this, set the `APP_BASE_URL` environment variable.
 
 ### Frontend (Web)
 Navigate to `frontend/` and run `npm install` and then `npm start`.
