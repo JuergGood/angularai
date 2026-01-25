@@ -49,6 +49,20 @@ test.describe('Registration Extensive E2E Tests', () => {
     await expect(page.locator('#register-btn')).toBeDisabled();
   });
 
+  test('should validate full name format', async ({ page }) => {
+    const fullNameInput = page.locator('input[formControlName="fullName"]');
+
+    await fullNameInput.fill('John');
+    await fullNameInput.blur();
+
+    await expect(page.locator('mat-error')).toContainText(/both first and last name|Vor- und Nachname/i);
+    await expect(page.locator('#register-btn')).toBeDisabled();
+
+    await fullNameInput.fill('John Doe');
+    await fullNameInput.blur();
+    await expect(page.locator('mat-error').filter({ hasText: /both first and last name|Vor- und Nachname/i })).not.toBeVisible();
+  });
+
   test('should validate email format', async ({ page }) => {
     const emailInput = page.locator('input[formControlName="email"]');
 
@@ -83,12 +97,19 @@ test.describe('Registration Extensive E2E Tests', () => {
     await page.locator('input[formControlName="password"]').fill('ValidPass123!');
     const confirmInput = page.locator('input[formControlName="confirmPassword"]');
 
+    // Fill something different
     await confirmInput.fill('DifferentPass123!');
+
+    // Blur to trigger validation. Angular Material often needs a blur to show errors.
     await confirmInput.blur();
 
-    // The error is a form-level error, but Angular Material displays it in a mat-error
-    // we should wait for it to be visible
-    await expect(page.locator('mat-error')).toContainText('match');
+    // Sometimes we need to click or focus elsewhere to ensure the 'touched' state is acknowledged by the UI
+    await page.locator('input[formControlName="fullName"]').focus();
+
+    // Check for the error message
+    // "Passwords do not match" in English, "Passwörter stimmen nicht überein" in German
+    const error = page.locator('mat-error').filter({ hasText: /match|stimmen/i });
+    await expect(error).toBeVisible();
     await expect(page.locator('#register-btn')).toBeDisabled();
   });
 
@@ -145,10 +166,13 @@ test.describe('Registration Extensive E2E Tests', () => {
 
     // Should navigate to success screen
     await expect(page).toHaveURL(/\/register\/success/);
-    await expect(page.locator('h1')).toContainText('Account created');
+    await expect(page.locator('h1')).toContainText(/Account created|Konto erstellt/i);
+
+    // Take screenshot of the success screen
+    await page.screenshot({ path: 'e2e-screenshots/register-success.png', fullPage: true });
 
     // Check "Go to login" CTA
-    const loginCta = page.locator('a[routerLink="/login"]');
+    const loginCta = page.locator('.success-card').getByRole('button', { name: /Login|Anmelden/i });
     await expect(loginCta).toBeVisible();
     await loginCta.click();
     await expect(page).toHaveURL(/\/login/);
@@ -176,6 +200,60 @@ test.describe('Registration Extensive E2E Tests', () => {
     const errorMsg = page.locator('.error');
     await expect(errorMsg).toBeVisible();
     await expect(errorMsg).toContainText('User already exists'); // Or the translated version if i18n is mocked or loaded
+  });
+
+  test('should allow re-registration with same email if user is pending', async ({ page }) => {
+    const uniqueId = Date.now();
+    const login = `retryuser_${uniqueId}`;
+    const email = `retry_${uniqueId}@example.com`;
+
+    // 1. Initial registration (Mock success)
+    await page.locator('input[formControlName="fullName"]').fill('First Attempt');
+    await page.locator('input[formControlName="login"]').fill(login);
+    await page.locator('input[formControlName="email"]').fill(email);
+    await page.locator('input[formControlName="password"]').fill('ValidPass123!');
+    await page.locator('input[formControlName="confirmPassword"]').fill('ValidPass123!');
+
+    await page.route('**/api/auth/register', async route => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify({ login, email, status: 'PENDING' })
+      });
+    }, { times: 1 });
+
+    await page.locator('#register-btn').click();
+    await expect(page).toHaveURL(/\/register\/success/);
+
+    // 2. Go back to register and try again with SAME email/login
+    await page.goto('/register');
+    await page.evaluate(() => {
+      (window as any).BYPASS_RECAPTCHA = true;
+    });
+
+    await page.locator('input[formControlName="fullName"]').fill('Second Attempt');
+    await page.locator('input[formControlName="login"]').fill(login);
+    await page.locator('input[formControlName="email"]').fill(email);
+    await page.locator('input[formControlName="password"]').fill('ValidPass123!');
+    await page.locator('input[formControlName="confirmPassword"]').fill('ValidPass123!');
+
+    // Mock backend allowing it (because it was PENDING)
+    await page.route('**/api/auth/register', async route => {
+        const request = route.request();
+        const postData = JSON.parse(request.postData() || '{}');
+        expect(postData.firstName).toBe('Second');
+        expect(postData.lastName).toBe('Attempt');
+
+        await route.fulfill({
+          status: 200,
+          contentType: 'application/json',
+          body: JSON.stringify({ login, email, status: 'PENDING' })
+        });
+      });
+
+    await page.locator('#register-btn').click();
+    await expect(page).toHaveURL(/\/register\/success/);
+    await expect(page.locator('h1')).toContainText(/Account created|Konto erstellt/i);
   });
 
 });

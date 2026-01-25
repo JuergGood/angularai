@@ -115,11 +115,36 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Invalid email format");
         }
         if (userRepository.findByLogin(userDTO.getLogin()).isPresent()) {
-            return ResponseEntity.badRequest().body("User already exists");
+            User existingUser = userRepository.findByLogin(userDTO.getLogin()).get();
+            if (existingUser.getStatus() != ch.goodone.angularai.backend.model.UserStatus.PENDING) {
+                return ResponseEntity.badRequest().body("User already exists");
+            }
+            // If pending, we will delete it later if email also matches or is available
         }
         if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
-            return ResponseEntity.badRequest().body("Email already exists");
+            User existingUser = userRepository.findByEmail(userDTO.getEmail()).get();
+            if (existingUser.getStatus() != ch.goodone.angularai.backend.model.UserStatus.PENDING) {
+                return ResponseEntity.badRequest().body("Email already exists");
+            }
         }
+
+        // Handle re-registration: clean up pending user with same login or email
+        userRepository.findByLogin(userDTO.getLogin()).ifPresent(u -> {
+            if (u.getStatus() == ch.goodone.angularai.backend.model.UserStatus.PENDING) {
+                actionLogService.log(u.getLogin(), "USER_REREGISTER_CLEANUP", "Cleaning up pending user for re-registration: " + u.getLogin());
+                tokenRepository.deleteByUser(u);
+                userRepository.delete(u);
+                userRepository.flush();
+            }
+        });
+        userRepository.findByEmail(userDTO.getEmail()).ifPresent(u -> {
+            if (u.getStatus() == ch.goodone.angularai.backend.model.UserStatus.PENDING) {
+                actionLogService.log(u.getLogin(), "USER_REREGISTER_CLEANUP", "Cleaning up pending user for re-registration: " + u.getEmail());
+                tokenRepository.deleteByUser(u);
+                userRepository.delete(u);
+                userRepository.flush();
+            }
+        });
 
         User user = new User(
                 userDTO.getFirstName(),

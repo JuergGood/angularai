@@ -85,6 +85,26 @@ describe('RegisterComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/register/success'], expect.anything());
   });
 
+  it('should validate full name format', () => {
+    const fullNameControl = component.registerForm.get('fullName');
+
+    // Single word
+    fullNameControl?.setValue('John');
+    expect(fullNameControl?.hasError('nameFormat')).toBe(true);
+
+    // Two words
+    fullNameControl?.setValue('John Doe');
+    expect(fullNameControl?.hasError('nameFormat')).toBe(false);
+
+    // Multiple words
+    fullNameControl?.setValue('Hans Peter Müller');
+    expect(fullNameControl?.hasError('nameFormat')).toBe(false);
+
+    // With extra spaces
+    fullNameControl?.setValue('  John   Doe  ');
+    expect(fullNameControl?.hasError('nameFormat')).toBe(false);
+  });
+
   it('should parse multiple first names and last name correctly', () => {
     component.registerForm.patchValue({
       fullName: 'Hans Peter   Müller',
@@ -102,7 +122,7 @@ describe('RegisterComponent', () => {
     }));
   });
 
-  it('should handle single name as firstName and empty lastName', () => {
+  it('should not register if name is only one word', () => {
     component.registerForm.patchValue({
       fullName: 'John',
       login: 'john',
@@ -113,10 +133,8 @@ describe('RegisterComponent', () => {
     component.recaptchaMode = 'disabled';
     component.onSubmit();
 
-    expect(authServiceSpy.register).toHaveBeenCalledWith(expect.objectContaining({
-      firstName: 'John',
-      lastName: ''
-    }));
+    expect(authServiceSpy.register).not.toHaveBeenCalled();
+    expect(component.registerForm.get('fullName')?.hasError('nameFormat')).toBe(true);
   });
 
   it('should not register if passwords do not match', () => {

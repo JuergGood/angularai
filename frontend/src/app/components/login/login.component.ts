@@ -68,7 +68,11 @@ export class LoginComponent {
       },
       error: (err) => {
         console.error('Login error:', err);
-        this.error = 'COMMON.ERROR';
+        if (err.status === 403) {
+          this.error = 'ADMIN.ERROR_USER_NOT_ACTIVE';
+        } else {
+          this.error = 'COMMON.ERROR';
+        }
         this.cdr.detectChanges();
       }
     });

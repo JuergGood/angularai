@@ -58,7 +58,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     private cdr: ChangeDetectorRef
   ) {
     this.registerForm = this.fb.group({
-      fullName: ['', Validators.required],
+      fullName: ['', [Validators.required, this.nameFormatValidator()]],
       login: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, this.passwordStrengthValidator()]],
@@ -76,11 +76,36 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     };
   }
 
+  nameFormatValidator() {
+    return (control: AbstractControl): ValidationErrors | null => {
+      if (!control.value) return null;
+      const name = control.value.trim();
+      const parts = name.split(/\s+/);
+      return parts.length >= 2 ? null : { nameFormat: true };
+    };
+  }
+
   passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
     // CR-REG-02: confirm match as form error
     const password = group.get('password')?.value;
     const confirmPassword = group.get('confirmPassword')?.value;
-    return password === confirmPassword ? null : { passwordMismatch: true };
+    if (!confirmPassword) return null; // Wait for user to type something
+
+    const mismatch = password === confirmPassword ? null : { passwordMismatch: true };
+
+    // Also set error on the confirmPassword control so mat-form-field marks it as invalid
+    const confirmControl = group.get('confirmPassword');
+    if (confirmControl) {
+      const currentErrors = confirmControl.errors;
+      if (mismatch) {
+        confirmControl.setErrors({ ...currentErrors, passwordMismatch: true });
+      } else if (currentErrors) {
+        delete currentErrors['passwordMismatch'];
+        confirmControl.setErrors(Object.keys(currentErrors).length > 0 ? currentErrors : null);
+      }
+    }
+
+    return mismatch;
   }
 
   ngOnInit() {

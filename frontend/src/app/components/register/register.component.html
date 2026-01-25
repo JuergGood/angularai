@@ -11,17 +11,21 @@
           <span>{{ 'REGISTER.VERIFICATION_HINT' | translate }}</span>
         </p>
         <div class="form-grid full-width-name">
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" subscriptSizing="fixed">
             <mat-label>{{ 'ADMIN.FULL_NAME' | translate }}</mat-label>
             <input matInput formControlName="fullName">
             @if (registerForm.get('fullName')?.invalid && (registerForm.get('fullName')?.dirty || registerForm.get('fullName')?.touched)) {
-              <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+              @if (registerForm.get('fullName')?.hasError('required')) {
+                <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+              } @else if (registerForm.get('fullName')?.hasError('nameFormat')) {
+                <mat-error>{{ 'ADMIN.ERROR_NAME_FORMAT' | translate }}</mat-error>
+              }
             }
           </mat-form-field>
         </div>
 
         <div class="form-grid">
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" subscriptSizing="fixed">
             <mat-label>{{ 'ADMIN.LOGIN' | translate }}</mat-label>
             <input matInput formControlName="login" autocomplete="off">
             @if (registerForm.get('login')?.invalid && (registerForm.get('login')?.dirty || registerForm.get('login')?.touched)) {
@@ -29,22 +33,23 @@
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" subscriptSizing="fixed">
             <mat-label>{{ 'ADMIN.EMAIL' | translate }}</mat-label>
             <input matInput type="email" formControlName="email">
             @if (registerForm.get('email')?.invalid && (registerForm.get('email')?.dirty || registerForm.get('email')?.touched)) {
-              @if (registerForm.get('email')?.errors?.['required']) {
+              @if (registerForm.get('email')?.hasError('required')) {
                 <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
-              } @else if (registerForm.get('email')?.errors?.['email']) {
+              } @else if (registerForm.get('email')?.hasError('email')) {
                 <mat-error>{{ 'ADMIN.ERROR_EMAIL' | translate }}</mat-error>
               }
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" subscriptSizing="fixed" class="password-field">
             <mat-label>{{ 'ADMIN.PASSWORD' | translate }}</mat-label>
             <!-- CR-REG-03: show/hide toggle -->
             <input matInput [type]="passwordVisible ? 'text' : 'password'" formControlName="password" autocomplete="new-password">
+
             <button mat-icon-button matSuffix (click)="passwordVisible = !passwordVisible" type="button" [attr.aria-label]="'Toggle password visibility'">
               <mat-icon>{{passwordVisible ? 'visibility' : 'visibility_off'}}</mat-icon>
             </button>
@@ -66,15 +71,15 @@
             }
 
             @if (registerForm.get('password')?.invalid && (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)) {
-              @if (registerForm.get('password')?.errors?.['required']) {
+              @if (registerForm.get('password')?.hasError('required')) {
                 <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
-              } @else if (registerForm.get('password')?.errors?.['passwordStrength']) {
+              } @else if (registerForm.get('password')?.hasError('passwordStrength')) {
                 <mat-error>{{ 'ADMIN.ERROR_PASSWORD_STRENGTH' | translate }}</mat-error>
               }
             }
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" subscriptSizing="fixed">
             <mat-label>{{ 'ADMIN.CONFIRM_PASSWORD' | translate }}</mat-label>
             <!-- CR-REG-03: show/hide toggle -->
             <input matInput [type]="confirmPasswordVisible ? 'text' : 'password'" formControlName="confirmPassword" autocomplete="new-password">
@@ -83,10 +88,12 @@
             </button>
 
             @if (registerForm.get('confirmPassword')?.invalid && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)) {
-              <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+              @if (registerForm.get('confirmPassword')?.hasError('required')) {
+                <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+              }
             }
             <!-- CR-REG-02: confirm match error -->
-            @if (registerForm.errors?.['passwordMismatch'] && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched)) {
+            @if ((registerForm.errors?.['passwordMismatch'] || registerForm.get('confirmPassword')?.errors?.['passwordMismatch']) && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched) && !registerForm.get('confirmPassword')?.hasError('required')) {
               <mat-error>{{ 'ADMIN.ERROR_PASSWORD_MATCH' | translate }}</mat-error>
             }
           </mat-form-field>

@@ -89,3 +89,8 @@ mat-form-field {
 #register-btn mat-spinner {
   display: inline-block;
 }
+
+/* Ensure password fields have consistent height even with hints */
+.password-field {
+  min-height: 94px;
+}

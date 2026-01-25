@@ -3,7 +3,7 @@ import { LoginComponent } from './login.component';
 import { AuthService } from '../../services/auth.service';
 import { Router, provideRouter } from '@angular/router';
 import { FormsModule } from '@angular/forms';
-import { of, throwError } from 'rxjs';
+import { of, throwError, Observable } from 'rxjs';
 import { User } from '../../models/user.model';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
@@ -25,14 +25,14 @@ describe('LoginComponent', () => {
   let router: Router;
 
   beforeEach(async () => {
-    // try {
-    //   TestBed.initTestEnvironment(
-    //     BrowserDynamicTestingModule,
-    //     platformBrowserDynamicTesting()
-    //   );
-    // } catch (e) {
-    //   // already initialized
-    // }
+    try {
+      TestBed.initTestEnvironment(
+        BrowserDynamicTestingModule,
+        platformBrowserDynamicTesting()
+      );
+    } catch (e) {
+      // already initialized
+    }
 
     authServiceSpy = {
       login: vi.fn(),
@@ -48,47 +48,59 @@ describe('LoginComponent', () => {
       onDefaultLangChange: of({}),
       instant: vi.fn().mockReturnValue('translated'),
       stream: vi.fn().mockReturnValue(of('translated')),
-      get currentLang() { return 'en'; }
+      get currentLang() { return 'en'; },
+      getCurrentLang: vi.fn().mockReturnValue('en'),
+      getFallbackLang: vi.fn().mockReturnValue('en'),
+      getTranslation: vi.fn().mockReturnValue(of({}))
     };
 
-    // await TestBed.configureTestingModule({
-    //   imports: [LoginComponent, FormsModule, TranslateModule.forRoot()],
-    //   providers: [
-    //     { provide: AuthService, useValue: authServiceSpy },
-    //     { provide: TranslateService, useValue: translateServiceSpy },
-    //     provideRouter([]),
-    //     provideNoopAnimations(),
-    //     provideHttpClient(),
-    //     provideHttpClientTesting()
-    //   ],
-    //   schemas: [NO_ERRORS_SCHEMA]
-    // }).compileComponents();
+    await TestBed.configureTestingModule({
+      imports: [LoginComponent, FormsModule, TranslateModule.forRoot()],
+      providers: [
+        { provide: AuthService, useValue: authServiceSpy },
+        provideRouter([]),
+        provideNoopAnimations(),
+        provideHttpClient(),
+        provideHttpClientTesting()
+      ],
+      schemas: [NO_ERRORS_SCHEMA]
+    }).compileComponents();
 
-    // fixture = TestBed.createComponent(LoginComponent);
-    // component = fixture.componentInstance;
-    // router = TestBed.inject(Router);
-    // vi.spyOn(router, 'navigate');
-    // fixture.detectChanges();
+    fixture = TestBed.createComponent(LoginComponent);
+    component = fixture.componentInstance;
+    router = TestBed.inject(Router);
+    vi.spyOn(router, 'navigate');
+    fixture.detectChanges();
   });
 
   it('should create', () => {
-    expect(true).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
-  it('should navigate to profile on successful login', () => {
-    // shallow test focus on create only
-    expect(true).toBeTruthy();
+  it('should navigate on successful login', () => {
+    const user = { role: 'ROLE_ADMIN' } as any;
+    authServiceSpy.login.mockReturnValue(of(user));
+    component.login = 'admin';
+    component.password = 'password';
+    component.onSubmit();
+    expect(router.navigate).toHaveBeenCalledWith(['/dashboard']);
   });
 
   it('should set error on failed login (401)', () => {
-    expect(true).toBeTruthy();
+    authServiceSpy.login.mockReturnValue(throwError(() => ({ status: 401 })));
+    component.onSubmit();
+    expect(component.error).toBe('COMMON.ERROR');
   });
 
-  it('should set generic error on server failure', () => {
-    expect(true).toBeTruthy();
+  it('should set specific error for non-active user (403)', () => {
+    authServiceSpy.login.mockReturnValue(throwError(() => ({ status: 403 })));
+    component.onSubmit();
+    expect(component.error).toBe('ADMIN.ERROR_USER_NOT_ACTIVE');
   });
 
   it('should toggle password visibility', () => {
-    expect(true).toBeTruthy();
+    expect(component.hidePassword).toBe(true);
+    component.hidePassword = false;
+    expect(component.hidePassword).toBe(false);
   });
 });

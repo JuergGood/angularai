@@ -148,9 +148,11 @@
     "ERROR_EMAIL": "Please enter a valid email address",
     "ERROR_PASSWORD_MATCH": "Passwords do not match",
     "ERROR_PASSWORD_STRENGTH": "Password does not meet requirements",
+    "ERROR_NAME_FORMAT": "Please enter both first and last name (separated by space)",
     "ERROR_REQUIRED": "This field is required",
     "ERROR_USER_EXISTS": "User already exists",
     "ERROR_EMAIL_EXISTS": "Email already exists",
+    "ERROR_USER_NOT_ACTIVE": "Please activate your account using the link sent to your email or register again.",
     "ERROR_RECAPTCHA": "Please complete the reCAPTCHA",
     "STRENGTH": {
       "WEAK": "Weak",

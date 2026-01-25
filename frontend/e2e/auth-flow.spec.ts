@@ -76,6 +76,12 @@ test.describe('Auth Flow (Login & Register)', () => {
     });
     console.log(`Diagnostic: Backend reCAPTCHA site key is "${siteKey}"`);
 
+    // Ensure reCAPTCHA is bypassed in the browser window
+    await page.evaluate(() => {
+      (window as any).BYPASS_RECAPTCHA = true;
+      console.log('reCAPTCHA bypass enabled in window state');
+    });
+
     const isDisabled = await registerBtn.isDisabled();
 
     if (isDisabled) {
@@ -121,7 +127,17 @@ test.describe('Auth Flow (Login & Register)', () => {
 
         // Now attempt registration with the SAME login to get an error
         console.log('Attempting registration with duplicate login (Error Case)...');
-        // Trigger submit again. Since it's the same component, 'BYPASS_RECAPTCHA' is still true in window.
+        // We need to be on the register page again or use the same form
+        await page.goto('/register');
+        await page.evaluate(() => {
+          (window as any).BYPASS_RECAPTCHA = true;
+        });
+        await page.fill('input[formControlName="fullName"]', 'John Doe');
+        await page.fill('input[formControlName="login"]', 'johndoe' + uniqueId);
+        await page.fill('input[formControlName="email"]', 'john.doe' + uniqueId + '@example.com');
+        await page.fill('input[formControlName="password"]', password);
+        await page.fill('input[formControlName="confirmPassword"]', password);
+
         await page.evaluate(() => {
            const form = document.querySelector('form');
            if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
@@ -150,11 +166,23 @@ test.describe('Auth Flow (Login & Register)', () => {
 
       // Now attempt registration with the SAME login to get an error
       console.log('Attempting registration with duplicate login (Error Case)...');
-    await page.fill('input[formControlName="fullName"]', 'Jane Doe');
-    // login is already filled with the same unique login from before
-    await page.fill('input[formControlName="email"]', 'jane.doe@example.com');
-    await page.fill('input[formControlName="password"]', password);
-    await page.fill('input[formControlName="confirmPassword"]', password);
+      await page.goto('/register');
+      await page.evaluate(() => {
+        (window as any).BYPASS_RECAPTCHA = true;
+      });
+      await page.fill('input[formControlName="fullName"]', 'Jane Doe');
+      // login is already filled with the same unique login from before
+      await page.fill('input[formControlName="login"]', 'johndoe' + uniqueId);
+      await page.fill('input[formControlName="email"]', 'jane.doe@example.com');
+      await page.fill('input[formControlName="password"]', password);
+      await page.fill('input[formControlName="confirmPassword"]', password);
+
+      // Diagnostic: Check if reCAPTCHA mode changed after navigation
+      const currentMode = await page.evaluate(() => {
+        const app = document.querySelector('app-register') as any;
+        return app?.recaptchaMode;
+      });
+      console.log(`Diagnostic: Current reCAPTCHA mode is "${currentMode}"`);
 
       await registerBtn.click();
 

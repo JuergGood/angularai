@@ -26,6 +26,11 @@ cd ../../../frontend
 npx playwright test e2e/registration-extensive.spec.ts
 ```
 
+**Registration Tests ** (Line reporter):
+```bash
+npx playwright test e2e/registration-extensive.spec.ts  --reporter=line
+```
+
 **Auth Flow** (Login & Registration):
 ```bash
 npx playwright test e2e/auth-flow.spec.ts
