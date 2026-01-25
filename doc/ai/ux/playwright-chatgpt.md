@@ -25,7 +25,10 @@ I have performed the following actions:
 To capture the screenshots, follow these steps:
 
 1.  **Start your Backend and Frontend** as you normally do (e.g., Spring Boot in IntelliJ and `npm start` in the `frontend` directory).
-2.  Open a terminal in the `frontend` directory.
+2.  Open a terminal and navigate to the `frontend` directory:
+    ```bash
+    cd frontend
+    ```
 3.  Run the Playwright test:
     ```bash
     npx playwright test e2e/tasks-ux.spec.ts

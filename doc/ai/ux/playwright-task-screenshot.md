@@ -11,11 +11,30 @@ The timeout occurred because the "Add Task" button was either not yet ready to b
 *   **Better Waiting**: Uses `networkidle` and slightly longer pauses to ensure Material animations have finished.
 
 #### 2. How to Run
-Please run the test again:
+Please run the tests from the `frontend` directory:
 
-```powershell
+```bash
 cd frontend
+```
+
+```bash
+cd ../../../frontend
+```
+
+**Auth Flow** (Login & Registration):
+```bash
+npx playwright test e2e/auth-flow.spec.ts
+```
+
+**Task Flow** (Tasks UX):
+```bash
 npx playwright test e2e/tasks-ux.spec.ts
+```
+
+**Report** 
+```bash
+npx playwright show-report
+
 ```
 
 #### 3. Expected Results

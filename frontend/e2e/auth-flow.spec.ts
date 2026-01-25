@@ -32,6 +32,10 @@ test.describe('Auth Flow (Login & Register)', () => {
   });
 
   test('capture registration screen and attempt registration', async ({ page }) => {
+    // Enable console logging from the browser
+    page.on('console', msg => console.log(`BROWSER: ${msg.text()}`));
+    page.on('pageerror', err => console.error(`BROWSER ERROR: ${err.message}`));
+
     console.log('Navigating to /register...');
     await page.goto('/register');
 
@@ -46,8 +50,9 @@ test.describe('Auth Flow (Login & Register)', () => {
     console.log('Filling registration form...');
     await page.fill('input[name="firstName"]', 'John');
     await page.fill('input[name="lastName"]', 'Doe');
-    await page.fill('input[name="login"]', 'johndoe' + Date.now()); // Unique login
-    await page.fill('input[name="email"]', 'john.doe@example.com');
+    const uniqueId = Date.now();
+    await page.fill('input[name="login"]', 'johndoe' + uniqueId); // Unique login
+    await page.fill('input[name="email"]', 'john.doe' + uniqueId + '@example.com'); // Unique email
 
     // Password must match pattern: ^(?=.*[A-Za-z])(?=.*[^A-Za-z0-9]).{8,}$
     const password = 'Password123!';
@@ -60,32 +65,109 @@ test.describe('Auth Flow (Login & Register)', () => {
 
     // The register button might be disabled due to CAPTCHA
     const registerBtn = page.locator('#register-btn');
+
+    // Diagnostic: Check site key from backend
+    const siteKey = await page.evaluate(async () => {
+      try {
+        const response = await fetch('/api/system/recaptcha-site-key');
+        return await response.text();
+      } catch (e) {
+        return 'error';
+      }
+    });
+    console.log(`Diagnostic: Backend reCAPTCHA site key is "${siteKey}"`);
+
     const isDisabled = await registerBtn.isDisabled();
 
     if (isDisabled) {
-      console.log('Register button is disabled (likely CAPTCHA required).');
-      // Capture the state with the disabled button
-      await page.screenshot({ path: 'e2e-screenshots/register-screen-captcha-required.png' });
-    } else {
-      console.log('Register button is enabled, attempting registration...');
-      await registerBtn.click();
+      console.log('Register button is disabled (likely CAPTCHA required). Attempting to force enable for screenshot...');
 
-      // Wait a bit for the response/message
-      await page.waitForTimeout(2000);
+      // Force enable button and inject dummy token
+      await page.evaluate(() => {
+        (window as any).BYPASS_RECAPTCHA = true;
+        const btn = document.querySelector('#register-btn') as HTMLButtonElement;
+        if (btn) btn.disabled = false;
 
-      // Capture the result
-      await page.screenshot({ path: 'e2e-screenshots/register-result.png' });
+        console.log('reCAPTCHA bypass enabled in window state');
+      });
 
-      // Check for success or error message
+      console.log('Register button force enabled, attempting registration (Success Case)...');
+      await registerBtn.click({ force: true });
+
+      // DIAGNOSTIC: Check if button is really clickable or if we should call onSubmit
+      await page.evaluate(() => {
+        const btn = document.querySelector('#register-btn') as HTMLButtonElement;
+        console.log('Button disabled state in DOM:', btn?.disabled);
+        const form = document.querySelector('form');
+        console.log('Manually submitting form...');
+        if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+      });
+
+      // Wait for success message or error message
+      console.log('Waiting for result message...');
+      try {
+        await Promise.race([
+          page.waitForSelector('.success', { timeout: 10000 }),
+          page.waitForSelector('.error', { timeout: 10000 })
+        ]);
+      } catch (e) {
+        console.log('Timeout waiting for result message. Taking screenshot of current state.');
+      }
+
       const successMsg = page.locator('.success');
       const errorMsg = page.locator('.error');
 
       if (await successMsg.isVisible()) {
-        console.log('Registration successful!');
+        console.log('Capturing registration success message...');
+        await successMsg.scrollIntoViewIfNeeded();
+        await page.screenshot({ path: 'e2e-screenshots/register-success.png', fullPage: true });
+
+        // Now attempt registration with the SAME login to get an error
+        console.log('Attempting registration with duplicate login (Error Case)...');
+        // Trigger submit again. Since it's the same component, 'BYPASS_RECAPTCHA' is still true in window.
+        await page.evaluate(() => {
+           const form = document.querySelector('form');
+           if (form) form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+        });
+
+        console.log('Waiting for error message...');
+        await page.waitForSelector('.error', { timeout: 10000 });
+        console.log('Capturing registration error message...');
+        await errorMsg.scrollIntoViewIfNeeded();
+        await page.screenshot({ path: 'e2e-screenshots/register-error.png', fullPage: true });
       } else if (await errorMsg.isVisible()) {
-        const errorText = await errorMsg.innerText();
-        console.log(`Registration failed: ${errorText}`);
+        console.log(`Registration result message found: ${await errorMsg.innerText()}`);
+        await errorMsg.scrollIntoViewIfNeeded();
+        await page.screenshot({ path: 'e2e-screenshots/register-error.png', fullPage: true });
+      } else {
+        await page.screenshot({ path: 'e2e-screenshots/register-result-fallback.png', fullPage: true });
       }
+    } else {
+      console.log('Register button is enabled, attempting registration (Success Case)...');
+      await registerBtn.click();
+
+      // Wait for success message
+      await page.waitForSelector('.success', { timeout: 10000 });
+      console.log('Capturing registration success message...');
+      await page.locator('.success').scrollIntoViewIfNeeded();
+      await page.screenshot({ path: 'e2e-screenshots/register-success.png', fullPage: true });
+
+      // Now attempt registration with the SAME login to get an error
+      console.log('Attempting registration with duplicate login (Error Case)...');
+      await page.fill('input[name="firstName"]', 'Jane');
+      await page.fill('input[name="lastName"]', 'Doe');
+      // login is already filled with the same unique login from before
+      await page.fill('input[name="email"]', 'jane.doe@example.com');
+      await page.fill('input[name="password"]', password);
+      await page.fill('input[name="confirmPassword"]', password);
+
+      await registerBtn.click();
+
+      // Wait for error message
+      await page.waitForSelector('.error', { timeout: 10000 });
+      console.log('Capturing registration error message...');
+      await page.locator('.error').scrollIntoViewIfNeeded();
+      await page.screenshot({ path: 'e2e-screenshots/register-error.png', fullPage: true });
     }
   });
 });
