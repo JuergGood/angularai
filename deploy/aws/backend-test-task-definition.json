@@ -19,11 +19,91 @@
                                                              "value":  "h2-mem"
                                                          },
                                                          {
-                                                             "name":  "IPSTACK_API_KEY",
-                                                             "value":  "PLACEHOLDER_IPSTACK_API_KEY"
+                                                             "name":  "IPSTACK_API_URL",
+                                                             "value":  "http://api.ipstack.com/"
+                                                         },
+                                                         {
+                                                             "name":  "RECAPTCHA_DEFAULT_CONFIG",
+                                                             "value":  "3"
+                                                         },
+                                                         {
+                                                             "name":  "APP_BASE_URL",
+                                                             "value":  "https://goodone.ch"
                                                          }
                                                      ],
                                      "secrets":  [
+                                                     {
+                                                         "name":  "IPSTACK_API_KEY",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:IPSTACK_API_KEY::"
+                                                     },
+                                                     {
+                                                         "name":  "RECAPTCHA_1_SITE_KEY",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:RECAPTCHA_1_SITE_KEY::"
+                                                     },
+                                                     {
+                                                         "name":  "RECAPTCHA_1_SECRET_KEY",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:RECAPTCHA_1_SECRET_KEY::"
+                                                     },
+                                                     {
+                                                         "name":  "RECAPTCHA_1_PROJECT_ID",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:RECAPTCHA_1_PROJECT_ID::"
+                                                     },
+                                                     {
+                                                         "name":  "RECAPTCHA_1_API_KEY",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:RECAPTCHA_1_API_KEY::"
+                                                     },
+                                                     {
+                                                         "name":  "RECAPTCHA_2_SITE_KEY",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:RECAPTCHA_2_SITE_KEY::"
+                                                     },
+                                                     {
+                                                         "name":  "RECAPTCHA_2_SECRET_KEY",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:RECAPTCHA_2_SECRET_KEY::"
+                                                     },
+                                                     {
+                                                         "name":  "RECAPTCHA_2_PROJECT_ID",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:RECAPTCHA_2_PROJECT_ID::"
+                                                     },
+                                                     {
+                                                         "name":  "RECAPTCHA_2_API_KEY",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:RECAPTCHA_2_API_KEY::"
+                                                     },
+                                                     {
+                                                         "name":  "RECAPTCHA_3_SITE_KEY",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:RECAPTCHA_3_SITE_KEY::"
+                                                     },
+                                                     {
+                                                         "name":  "RECAPTCHA_3_SECRET_KEY",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:RECAPTCHA_3_SECRET_KEY::"
+                                                     },
+                                                     {
+                                                         "name":  "RECAPTCHA_3_PROJECT_ID",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:RECAPTCHA_3_PROJECT_ID::"
+                                                     },
+                                                     {
+                                                         "name":  "RECAPTCHA_3_API_KEY",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:RECAPTCHA_3_API_KEY::"
+                                                     },
+                                                     {
+                                                         "name":  "SES_USERNAME",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:SES_USERNAME::"
+                                                     },
+                                                     {
+                                                         "name":  "SES_PASSWORD",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:SES_PASSWORD::"
+                                                     },
+                                                     {
+                                                         "name":  "SES_FROM",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:SES_FROM::"
+                                                     },
+                                                     {
+                                                         "name":  "LANDING_MESSAGE_EN",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:LANDING_MESSAGE_EN::"
+                                                     },
+                                                     {
+                                                         "name":  "LANDING_MESSAGE_DE_CH",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:LANDING_MESSAGE_DE_CH::"
+                                                     },
                                                      {
                                                          "name":  "ADMIN_PASSWORD",
                                                          "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:ADMIN_PASSWORD::"

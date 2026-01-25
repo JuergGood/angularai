@@ -6,8 +6,9 @@ The files are located in the new `deploy/aws/` directory:
 **File**: `deploy/aws/backend-task-definition.json`
 *   **CPU/Memory**: 256 CPU units, 512 MiB Memory.
 *   **Port**: 8080.
-*   **Configuration**: Includes environment variable placeholders for connecting to your AWS RDS PostgreSQL database (`SPRING-DATASOURCE-URL`, etc.).
-*   **Profile**: Automatically activates the `postgres` profile.
+*   **Configuration**: Includes environment variable placeholders for connecting to your AWS RDS PostgreSQL database (`SPRING-DATASOURCE-URL`, etc.). 
+    - **APP_BASE_URL**: Configured to `https://goodone.ch` in the task definition.
+*   **Profile**: Automatically activates the `postgres` profile (or `h2-mem` in the test definition).
 
 ### 2. Frontend Task Definition
 **File**: `deploy/aws/frontend-task-definition.json`

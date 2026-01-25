@@ -46,9 +46,10 @@ Scripts are available in the `scripts/` folder for common deployment tasks (Powe
 ## Development
 
 ### IntelliJ IDEA Setup
-To run the backend from IntelliJ, you must ensure that required environment variables (like `IPSTACK_API_KEY`) are available. 
+To run the backend from IntelliJ, you must ensure that required environment variables (like `IPSTACK_API_KEY` and `APP_BASE_URL`) are available. 
 - You can manually add them to your Run Configurations.
-- Alternatively, use a plugin like **EnvFile** to automatically load the `.env` file into your Run Configurations. **Do not commit these keys to Git.**
+- Alternatively, use a plugin like **EnvFile** to automatically load the `.env` file into your Run Configurations.
+- **Note on `APP_BASE_URL`**: For local development, this is typically set to `http://localhost:4200` in `.env` so that email verification links point to the Angular development server.
 
 ### Frontend (Web)
 Navigate to `frontend/` and run `npm install` and then `npm start`.
