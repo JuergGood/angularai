@@ -151,10 +151,15 @@ test.describe('Registration Extensive E2E Tests', () => {
     // or just assume it works if it reaches the success screen.
 
     await page.locator('input[formControlName="fullName"]').fill('   Hans Peter   Müller   ');
+    await page.locator('input[formControlName="fullName"]').blur();
     await page.locator('input[formControlName="login"]').fill(login);
+    await page.locator('input[formControlName="login"]').blur();
     await page.locator('input[formControlName="email"]').fill(email);
+    await page.locator('input[formControlName="email"]').blur();
     await page.locator('input[formControlName="password"]').fill('ValidPass123!');
+    await page.locator('input[formControlName="password"]').blur();
     await page.locator('input[formControlName="confirmPassword"]').fill('ValidPass123!');
+    await page.locator('input[formControlName="confirmPassword"]').blur();
 
     // The button should be enabled now
     const registerBtn = page.locator('#register-btn');
@@ -194,10 +199,15 @@ test.describe('Registration Extensive E2E Tests', () => {
 
   test('should handle registration errors from backend', async ({ page }) => {
     await page.locator('input[formControlName="fullName"]').fill('John Doe');
+    await page.locator('input[formControlName="fullName"]').blur();
     await page.locator('input[formControlName="login"]').fill('existinguser');
+    await page.locator('input[formControlName="login"]').blur();
     await page.locator('input[formControlName="email"]').fill('existing@example.com');
+    await page.locator('input[formControlName="email"]').blur();
     await page.locator('input[formControlName="password"]').fill('ValidPass123!');
+    await page.locator('input[formControlName="password"]').blur();
     await page.locator('input[formControlName="confirmPassword"]').fill('ValidPass123!');
+    await page.locator('input[formControlName="confirmPassword"]').blur();
 
     // Mock error response
     await page.route('**/api/auth/register', async route => {
@@ -223,10 +233,15 @@ test.describe('Registration Extensive E2E Tests', () => {
 
     // 1. Initial registration (Mock success)
     await page.locator('input[formControlName="fullName"]').fill('First Attempt');
+    await page.locator('input[formControlName="fullName"]').blur();
     await page.locator('input[formControlName="login"]').fill(login);
+    await page.locator('input[formControlName="login"]').blur();
     await page.locator('input[formControlName="email"]').fill(email);
+    await page.locator('input[formControlName="email"]').blur();
     await page.locator('input[formControlName="password"]').fill('ValidPass123!');
+    await page.locator('input[formControlName="password"]').blur();
     await page.locator('input[formControlName="confirmPassword"]').fill('ValidPass123!');
+    await page.locator('input[formControlName="confirmPassword"]').blur();
 
     await page.route('**/api/auth/register', async route => {
       await route.fulfill({
@@ -246,10 +261,15 @@ test.describe('Registration Extensive E2E Tests', () => {
     });
 
     await page.locator('input[formControlName="fullName"]').fill('Second Attempt');
+    await page.locator('input[formControlName="fullName"]').blur();
     await page.locator('input[formControlName="login"]').fill(login);
+    await page.locator('input[formControlName="login"]').blur();
     await page.locator('input[formControlName="email"]').fill(email);
+    await page.locator('input[formControlName="email"]').blur();
     await page.locator('input[formControlName="password"]').fill('ValidPass123!');
+    await page.locator('input[formControlName="password"]').blur();
     await page.locator('input[formControlName="confirmPassword"]').fill('ValidPass123!');
+    await page.locator('input[formControlName="confirmPassword"]').blur();
 
     // Mock backend allowing it (because it was PENDING)
     await page.route('**/api/auth/register', async route => {

@@ -133,10 +133,15 @@ test.describe('Auth Flow (Login & Register)', () => {
           (window as any).BYPASS_RECAPTCHA = true;
         });
         await page.fill('input[formControlName="fullName"]', 'John Doe');
+        await page.locator('input[formControlName="fullName"]').blur();
         await page.fill('input[formControlName="login"]', 'johndoe' + uniqueId);
+        await page.locator('input[formControlName="login"]').blur();
         await page.fill('input[formControlName="email"]', 'john.doe' + uniqueId + '@example.com');
+        await page.locator('input[formControlName="email"]').blur();
         await page.fill('input[formControlName="password"]', password);
+        await page.locator('input[formControlName="password"]').blur();
         await page.fill('input[formControlName="confirmPassword"]', password);
+        await page.locator('input[formControlName="confirmPassword"]').blur();
 
         await page.evaluate(() => {
            const form = document.querySelector('form');

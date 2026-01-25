@@ -54,7 +54,7 @@
           <mat-form-field appearance="outline" subscriptSizing="dynamic" class="password-field">
             <mat-label>{{ 'ADMIN.PASSWORD' | translate }}</mat-label>
             <!-- CR-REG-03: show/hide toggle -->
-            <input matInput [type]="passwordVisible ? 'text' : 'password'" formControlName="password" autocomplete="new-password">
+            <input matInput [type]="passwordVisible ? 'text' : 'password'" formControlName="password" autocomplete="new-password" (input)="onPasswordChange($any($event.target).value)">
 
             <button mat-icon-button matSuffix (click)="passwordVisible = !passwordVisible" type="button" [attr.aria-label]="'Toggle password visibility'">
               <mat-icon>{{passwordVisible ? 'visibility_off' : 'visibility'}}</mat-icon>

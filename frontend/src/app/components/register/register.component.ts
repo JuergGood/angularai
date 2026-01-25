@@ -44,6 +44,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
 
   // CR-REG-06: submit/loading state
   isSubmitting = false;
+  submitted = false;
 
   error = '';
   recaptchaSiteKey = '';
@@ -52,7 +53,10 @@ export class RegisterComponent implements OnInit, AfterViewInit {
 
   showError(controlName: string): boolean {
     const control = this.registerForm.get(controlName);
-    return !!(control && control.invalid && (control.touched || control.dirty));
+    const isMismatch = controlName === 'confirmPassword' &&
+      (this.registerForm.errors?.['passwordMismatch'] || control?.hasError('passwordMismatch'));
+
+    return !!(control && (control.invalid || isMismatch) && (control.touched || this.submitted));
   }
 
   constructor(
@@ -63,11 +67,11 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     private cdr: ChangeDetectorRef
   ) {
     this.registerForm = this.fb.group({
-      fullName: ['', [Validators.required, this.nameFormatValidator()]],
-      login: ['', [Validators.required, this.noSpacesValidator()]],
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, this.passwordStrengthValidator()]],
-      confirmPassword: ['', Validators.required],
+      fullName: ['', { validators: [Validators.required, this.nameFormatValidator()], updateOn: 'blur' }],
+      login: ['', { validators: [Validators.required, this.noSpacesValidator()], updateOn: 'blur' }],
+      email: ['', { validators: [Validators.required, Validators.email], updateOn: 'blur' }],
+      password: ['', { validators: [Validators.required, this.passwordStrengthValidator()], updateOn: 'blur' }],
+      confirmPassword: ['', { validators: [Validators.required], updateOn: 'blur' }],
       address: ['']
     }, { validators: this.passwordMatchValidator });
   }
@@ -83,9 +87,14 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   passwordStrengthValidator() {
     // CR-REG-02: centralize validators
     return (control: AbstractControl): ValidationErrors | null => {
-      if (!control.value) return null;
+      const value = control.value;
+      if (!value) return null;
       const passwordRegex = /^(?=.*[A-Za-z])(?=.*[^A-Za-z0-9]).{8,}$/;
-      return passwordRegex.test(control.value) ? null : { passwordStrength: true };
+      const isInvalid = !passwordRegex.test(value);
+
+      // Update strength immediately on typing via template (input) event
+      // This validator runs on blur due to updateOn: 'blur'
+      return isInvalid ? { passwordStrength: true } : null;
     };
   }
 
@@ -102,12 +111,24 @@ export class RegisterComponent implements OnInit, AfterViewInit {
     // CR-REG-02: confirm match as form error
     const password = group.get('password')?.value;
     const confirmPassword = group.get('confirmPassword')?.value;
-    if (!confirmPassword) return null; // Wait for user to type something
+    const confirmControl = group.get('confirmPassword');
+
+    // Logic: mismatch shows only after confirm has value + blur, or after submit
+    // updateOn: 'blur' on confirmControl handles the blur part.
+    if (!confirmPassword) {
+      if (confirmControl) {
+         const currentErrors = confirmControl.errors;
+         if (currentErrors) {
+           delete currentErrors['passwordMismatch'];
+           confirmControl.setErrors(Object.keys(currentErrors).length > 0 ? currentErrors : null);
+         }
+      }
+      return null;
+    }
 
     const mismatch = password === confirmPassword ? null : { passwordMismatch: true };
 
     // Also set error on the confirmPassword control so mat-form-field marks it as invalid
-    const confirmControl = group.get('confirmPassword');
     if (confirmControl) {
       const currentErrors = confirmControl.errors;
       if (mismatch) {
@@ -227,6 +248,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   }
 
   onSubmit() {
+    this.submitted = true;
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
       return;

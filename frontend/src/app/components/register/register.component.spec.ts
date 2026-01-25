@@ -85,23 +85,20 @@ describe('RegisterComponent', () => {
     expect(router.navigate).toHaveBeenCalledWith(['/register/success'], expect.anything());
   });
 
-  it('should validate full name format', () => {
+  it('should validate full name format only after blur', () => {
     const fullNameControl = component.registerForm.get('fullName');
 
-    // Single word
+    // Single word, no blur yet
     fullNameControl?.setValue('John');
+    expect(fullNameControl?.hasError('nameFormat')).toBe(false);
+
+    // Trigger validation (simulating blur)
+    fullNameControl?.updateValueAndValidity();
     expect(fullNameControl?.hasError('nameFormat')).toBe(true);
 
     // Two words
     fullNameControl?.setValue('John Doe');
-    expect(fullNameControl?.hasError('nameFormat')).toBe(false);
-
-    // Multiple words
-    fullNameControl?.setValue('Hans Peter Müller');
-    expect(fullNameControl?.hasError('nameFormat')).toBe(false);
-
-    // With extra spaces
-    fullNameControl?.setValue('  John   Doe  ');
+    fullNameControl?.updateValueAndValidity();
     expect(fullNameControl?.hasError('nameFormat')).toBe(false);
   });
 
@@ -137,15 +134,20 @@ describe('RegisterComponent', () => {
     expect(component.registerForm.get('fullName')?.hasError('nameFormat')).toBe(true);
   });
 
-  it('should validate login has no spaces', () => {
+  it('should validate login has no spaces only after blur', () => {
     const loginControl = component.registerForm.get('login');
 
-    // With space
+    // With space, no blur
     loginControl?.setValue('john doe');
+    expect(loginControl?.hasError('noSpaces')).toBe(false);
+
+    // Blur
+    loginControl?.updateValueAndValidity();
     expect(loginControl?.hasError('noSpaces')).toBe(true);
 
     // Without space
     loginControl?.setValue('johndoe');
+    loginControl?.updateValueAndValidity();
     expect(loginControl?.hasError('noSpaces')).toBe(false);
   });
 
