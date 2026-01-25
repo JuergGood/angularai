@@ -20,6 +20,8 @@
               } @else if (registerForm.get('fullName')?.hasError('nameFormat')) {
                 <mat-error>{{ 'ADMIN.ERROR_NAME_FORMAT' | translate }}</mat-error>
               }
+            } @else {
+              <mat-hint align="start">Vorname Nachname</mat-hint>
             }
           </mat-form-field>
         </div>
@@ -30,6 +32,8 @@
             <input matInput formControlName="login" autocomplete="off">
             @if (registerForm.get('login')?.invalid && (registerForm.get('login')?.dirty || registerForm.get('login')?.touched)) {
               <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
+            } @else {
+              <mat-hint align="start">{{ 'ADMIN.LOGIN' | translate }}</mat-hint>
             }
           </mat-form-field>
 
@@ -42,6 +46,8 @@
               } @else if (registerForm.get('email')?.hasError('email')) {
                 <mat-error>{{ 'ADMIN.ERROR_EMAIL' | translate }}</mat-error>
               }
+            } @else {
+              <mat-hint align="start">e.g. name&#64;example.com</mat-hint>
             }
           </mat-form-field>
 
@@ -54,28 +60,27 @@
               <mat-icon>{{passwordVisible ? 'visibility' : 'visibility_off'}}</mat-icon>
             </button>
 
-            <!-- CR-REG-03: strength indicator logic -->
-            @if (passwordStrength && registerForm.get('password')?.value) {
-              <mat-icon matSuffix [class]="'strength-' + passwordStrength" [title]="'ADMIN.STRENGTH.' + (passwordStrength | uppercase) | translate">
-                {{ passwordStrength === 'strong' ? 'verified_user' : (passwordStrength === 'medium' ? 'security' : 'error_outline') }}
-              </mat-icon>
-            }
-
-            <!-- CR-REG-03: clear rules helper text -->
-            <mat-hint align="start">{{ 'ADMIN.PASSWORD_HINT' | translate }}</mat-hint>
-
-            @if (passwordStrength && registerForm.get('password')?.value) {
-              <mat-hint align="end" [class]="'strength-text-' + passwordStrength">
-                {{ 'ADMIN.STRENGTH.' + (passwordStrength | uppercase) | translate }}
-              </mat-hint>
-            }
-
             @if (registerForm.get('password')?.invalid && (registerForm.get('password')?.dirty || registerForm.get('password')?.touched)) {
               @if (registerForm.get('password')?.hasError('required')) {
                 <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
               } @else if (registerForm.get('password')?.hasError('passwordStrength')) {
                 <mat-error>{{ 'ADMIN.ERROR_PASSWORD_STRENGTH' | translate }}</mat-error>
               }
+            } @else {
+              <ng-container>
+                <!-- CR-REG-03: clear rules helper text -->
+                <mat-hint align="start">{{ 'ADMIN.PASSWORD_HINT' | translate }}</mat-hint>
+
+                <!-- CR-REG-03: strength indicator logic moved below input per UX reference -->
+                @if (passwordStrength && registerForm.get('password')?.value) {
+                  <mat-hint align="end" [class]="'strength-text-' + passwordStrength">
+                    <mat-icon inline="true" [class]="'strength-' + passwordStrength">
+                      {{ passwordStrength === 'strong' ? 'verified_user' : (passwordStrength === 'medium' ? 'security' : 'error_outline') }}
+                    </mat-icon>
+                    {{ 'ADMIN.STRENGTH.' + (passwordStrength | uppercase) | translate }}
+                  </mat-hint>
+                }
+              </ng-container>
             }
           </mat-form-field>
 
@@ -91,6 +96,9 @@
               @if (registerForm.get('confirmPassword')?.hasError('required')) {
                 <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>
               }
+            } @else {
+               <!-- Cross-field mismatch explanation -->
+               <mat-hint align="start">{{ 'ADMIN.CONFIRM_PASSWORD' | translate }}</mat-hint>
             }
             <!-- CR-REG-02: confirm match error -->
             @if ((registerForm.errors?.['passwordMismatch'] || registerForm.get('confirmPassword')?.errors?.['passwordMismatch']) && (registerForm.get('confirmPassword')?.dirty || registerForm.get('confirmPassword')?.touched) && !registerForm.get('confirmPassword')?.hasError('required')) {
@@ -100,22 +108,26 @@
         </div>
 
         <!-- CR-REG-04: reCAPTCHA UX -->
-        <div class="recaptcha-wrapper" [class.hidden]="recaptchaMode === 'score'">
+        <div class="recaptcha-wrapper" [class.hidden]="recaptchaMode === 'score' && recaptchaStatus !== 'verifying'">
           <div id="recaptcha-container"></div>
 
           @if (recaptchaMode === 'score' && recaptchaStatus === 'verifying') {
-             <div class="recaptcha-status">
+             <div class="recaptcha-status feedback-hint">
                <mat-spinner diameter="20"></mat-spinner>
                <span>{{ 'REGISTER.VERIFYING_RECAPTCHA' | translate }}</span>
              </div>
           }
         </div>
 
+        @if (recaptchaStatus === 'error') {
+          <p class="error feedback-error">{{ 'REGISTER.RECAPTCHA_FAILED' | translate }}</p>
+        }
+
         <div class="form-actions register-actions">
           <a mat-button routerLink="/login">{{ 'NAV.LOGIN' | translate }}</a>
 
           <!-- CR-REG-06: loading state and spinner -->
-          <button mat-flat-button color="primary" type="submit" [disabled]="registerForm.invalid || isSubmitting || (recaptchaMode === 'visible' && recaptchaStatus !== 'verified')" id="register-btn">
+          <button mat-flat-button color="primary" type="submit" [disabled]="registerForm.invalid || isSubmitting || (recaptchaMode === 'visible' && recaptchaStatus !== 'verified')" id="register-btn" style="min-width: 140px;">
             @if (isSubmitting) {
               <mat-spinner diameter="24" color="accent"></mat-spinner>
             } @else {

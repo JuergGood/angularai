@@ -3,9 +3,9 @@
 .strength-medium { color: #ff9800; }
 .strength-strong { color: #4caf50; }
 
-.strength-text-weak { color: #f44336; font-weight: 500; }
-.strength-text-medium { color: #ff9800; font-weight: 500; }
-.strength-text-strong { color: #4caf50; font-weight: 500; }
+.strength-text-weak { color: #f44336; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+.strength-text-medium { color: #ff9800; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+.strength-text-strong { color: #4caf50; font-weight: 500; display: flex; align-items: center; gap: 4px; }
 
 .register-page {
   display: flex;
@@ -81,13 +81,36 @@ mat-form-field {
 .recaptcha-status {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 8px;
-  color: var(--text);
+  color: var(--text-muted);
   font-size: 14px;
+  margin-top: 12px;
+}
+
+.feedback-hint {
+  background: var(--surface-2);
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+.feedback-error {
+  font-size: 14px;
+  background: rgba(244, 67, 54, 0.1);
+  padding: 8px 16px;
+  border-radius: 8px;
 }
 
 #register-btn mat-spinner {
   display: inline-block;
+  margin: 0 auto;
+}
+
+#register-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Ensure password fields have consistent height even with hints */

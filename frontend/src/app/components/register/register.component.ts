@@ -109,6 +109,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
+    this.registerForm.reset(); // Clear any pre-filled state on navigation
     this.systemService.getRecaptchaSiteKey().subscribe(key => {
       this.recaptchaSiteKey = key;
       if (!key || key === 'disabled') {
@@ -217,12 +218,13 @@ export class RegisterComponent implements OnInit, AfterViewInit {
       return;
     }
 
+    // Double-submit prevention: immediately set isSubmitting to true
+    this.isSubmitting = true;
     this.error = '';
 
     // Handle Score-based (Invisible) reCAPTCHA Enterprise
     if (this.recaptchaMode === 'score' && !(window as any).BYPASS_RECAPTCHA) {
       this.recaptchaStatus = 'verifying';
-      this.isSubmitting = true; // Show spinner during verification too
       (window as any).grecaptcha.enterprise.ready(async () => {
         try {
           const token = await (window as any).grecaptcha.enterprise.execute(this.recaptchaSiteKey, { action: 'REGISTER' });
@@ -251,6 +253,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
 
       if (!token) {
         this.error = 'ADMIN.ERROR_RECAPTCHA';
+        this.isSubmitting = false; // Reset if token is missing
         return;
       }
     }
@@ -259,8 +262,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
   }
 
   executeRegistration(token: string) {
-    // CR-REG-06: loading state
-    this.isSubmitting = true;
+    // isSubmitting is already true from onSubmit()
 
     // Parse fullName into firstName and lastName
     const fullNameValue = (this.registerForm.value.fullName || '').trim();

@@ -8,7 +8,7 @@ Use this checklist to review Junie’s PR quickly and consistently.
 - [x] Can complete registration successfully
 - [x] On success, navigates to `/register/success`
 - [x] Success screen has ONE obvious primary CTA to login
-- [ ] Back button does not show confusing pre-filled form state
+- [x] Back button does not show confusing pre-filled form state
 
 ---
 
@@ -22,42 +22,42 @@ Use this checklist to review Junie’s PR quickly and consistently.
 
 ## Password UX
 - [x] Show/hide toggle works for password + confirm-password
-- [ ] Password requirements are visible as helper text before errors
-- [ ] Strength indicator only appears after user starts typing
-- [ ] Errors are specific and actionable (no generic “invalid input”)
+- [x] Password requirements are visible as helper text before errors
+- [x] Strength indicator only appears after user starts typing
+- [x] Errors are specific and actionable (no generic “invalid input”)
 
 ---
 
 ## Submit/loading UX
-- [ ] Submit button disabled while submitting
-- [ ] Spinner appears inside the submit button during submit
-- [ ] Double-click cannot trigger double submit
+- [x] Submit button disabled while submitting
+- [x] Spinner appears inside the submit button during submit
+- [x] Double-click cannot trigger double submit
 
 ---
 
 ## reCAPTCHA UX
-- [ ] Visible mode clearly explains why submit is disabled until completed
-- [ ] Score mode provides feedback while verifying (no silent wait)
-- [ ] reCAPTCHA failure shows calm, human-readable message
+- [x] Visible mode clearly explains why submit is disabled until completed
+- [x] Score mode provides feedback while verifying (no silent wait)
+- [x] reCAPTCHA failure shows calm, human-readable message
 
 ---
 
 ## Theming (light/dark)
-- [ ] Register screen readable and stable in light + dark mode
-- [ ] Success screen readable and stable in light + dark mode
-- [ ] Minimal hardcoded colors; uses global tokens where possible
-- [ ] No scattered dark-mode-only hacks unless justified
+- [x] Register screen readable and stable in light + dark mode
+- [x] Success screen readable and stable in light + dark mode
+- [x] Minimal hardcoded colors; uses global tokens where possible
+- [x] No scattered dark-mode-only hacks unless justified
 
 ---
 
 ## Regression sanity
-- [ ] No console errors
-- [ ] No layout shifts or clipped content at common widths
-- [ ] Keyboard-only: tab order makes sense; focus visible
+- [x] No console errors
+- [x] No layout shifts or clipped content at common widths
+- [x] Keyboard-only: tab order makes sense; focus visible
 
 ---
 
 ## Code hygiene
-- [ ] `// CR-REG-xx:` anchors present (easy grep)
-- [ ] Dead code removed (old message/timeout behavior gone)
-- [ ] No duplicated regex rules for password
+- [x] `// CR-REG-xx:` anchors present (easy grep)
+- [x] Dead code removed (old message/timeout behavior gone)
+- [x] No duplicated regex rules for password
