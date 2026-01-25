@@ -22,9 +22,9 @@ import tools.jackson.databind.ObjectMapper;
 import java.time.LocalDate;
 import java.util.Optional;
 
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -335,5 +335,76 @@ class AuthControllerTest {
     void login_shouldReturnUnauthorized_whenNotAuthenticated() throws Exception {
         mockMvc.perform(post("/api/auth/login"))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void verify_shouldRedirectToSuccess_whenTokenValid() throws Exception {
+        String tokenValue = "valid-token";
+        User user = new User();
+        user.setLogin("testuser");
+        ch.goodone.angularai.backend.model.VerificationToken token = new ch.goodone.angularai.backend.model.VerificationToken(user);
+        token.setToken(tokenValue);
+
+        when(tokenRepository.findByToken(tokenValue)).thenReturn(Optional.of(token));
+
+        mockMvc.perform(get("/api/auth/verify").param("token", tokenValue))
+                .andExpect(status().isFound())
+                .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/verify/success")));
+
+        verify(userRepository).save(user);
+        verify(tokenRepository).delete(token);
+        assert user.getStatus() == ch.goodone.angularai.backend.model.UserStatus.ACTIVE;
+    }
+
+    @Test
+    void verify_shouldRedirectToError_whenTokenExpired() throws Exception {
+        String tokenValue = "expired-token";
+        User user = new User();
+        user.setEmail("test@example.com");
+        ch.goodone.angularai.backend.model.VerificationToken token = new ch.goodone.angularai.backend.model.VerificationToken(user);
+        token.setToken(tokenValue);
+        token.setExpiryDate(java.time.LocalDateTime.now().minusHours(1));
+
+        when(tokenRepository.findByToken(tokenValue)).thenReturn(Optional.of(token));
+
+        mockMvc.perform(get("/api/auth/verify").param("token", tokenValue))
+                .andExpect(status().isFound())
+                .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/verify/error?reason=expired&email=test@example.com")));
+    }
+
+    @Test
+    void verify_shouldRedirectToError_whenTokenInvalid() throws Exception {
+        when(tokenRepository.findByToken("invalid")).thenReturn(Optional.empty());
+
+        mockMvc.perform(get("/api/auth/verify").param("token", "invalid"))
+                .andExpect(status().isFound())
+                .andExpect(header().string("Location", org.hamcrest.Matchers.containsString("/verify/error?reason=invalid")));
+    }
+
+    @Test
+    void resendVerification_shouldSendEmail_whenEmailExists() throws Exception {
+        String email = "test@example.com";
+        User user = new User();
+        user.setEmail(email);
+        user.setLogin("testuser");
+        user.setStatus(ch.goodone.angularai.backend.model.UserStatus.PENDING);
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+
+        mockMvc.perform(post("/api/auth/resend-verification").param("email", email))
+                .andExpect(status().isOk());
+
+        verify(tokenRepository).deleteByUser(user);
+        verify(tokenRepository).save(any());
+        verify(emailService).sendVerificationEmail(eq(email), anyString());
+    }
+
+    @Test
+    void resendVerification_shouldReturnBadRequest_whenEmailNotFound() throws Exception {
+        when(userRepository.findByEmail("missing@example.com")).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/api/auth/resend-verification").param("email", "missing@example.com"))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Email not found"));
     }
 }

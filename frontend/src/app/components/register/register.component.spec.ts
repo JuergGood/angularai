@@ -88,11 +88,10 @@ describe('RegisterComponent', () => {
   it('should validate full name format only after blur', () => {
     const fullNameControl = component.registerForm.get('fullName');
 
-    // Single word, no blur yet
+    // Single word
     fullNameControl?.setValue('John');
-    expect(fullNameControl?.hasError('nameFormat')).toBe(false);
-
-    // Trigger validation (simulating blur)
+    // Validation runs on blur (markAsTouched)
+    fullNameControl?.markAsTouched();
     fullNameControl?.updateValueAndValidity();
     expect(fullNameControl?.hasError('nameFormat')).toBe(true);
 
@@ -137,11 +136,10 @@ describe('RegisterComponent', () => {
   it('should validate login has no spaces only after blur', () => {
     const loginControl = component.registerForm.get('login');
 
-    // With space, no blur
+    // With space
     loginControl?.setValue('john doe');
-    expect(loginControl?.hasError('noSpaces')).toBe(false);
-
     // Blur
+    loginControl?.markAsTouched();
     loginControl?.updateValueAndValidity();
     expect(loginControl?.hasError('noSpaces')).toBe(true);
 

@@ -41,7 +41,7 @@
           <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>{{ 'ADMIN.EMAIL' | translate }}</mat-label>
             <input matInput type="email" formControlName="email">
-            <mat-hint align="start">e.g. name&#64;example.com</mat-hint>
+            <mat-hint align="start">{{ 'ADMIN.EMAIL_HINT' | translate }}</mat-hint>
             @if (showError('email')) {
               @if (registerForm.get('email')?.hasError('required')) {
                 <mat-error>{{ 'ADMIN.ERROR_REQUIRED' | translate }}</mat-error>

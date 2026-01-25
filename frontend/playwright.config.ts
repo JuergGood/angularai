@@ -15,8 +15,24 @@ export default defineConfig({
     navigationTimeout: 30000,
   },
   timeout: 60000,
+  webServer: {
+    command: 'npm start',
+    url: 'http://localhost:4200',
+    reuseExistingServer: !process.env.CI,
+    stdout: 'pipe',
+    stderr: 'pipe',
+    timeout: 120000,
+  },
   projects: [
     { name: 'setup', testMatch: /auth\.setup\.ts/ },
+    {
+      name: 'no-auth',
+      testMatch: /verification-flow\.spec\.ts|registration-extensive\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: { cookies: [], origins: [] },
+      },
+    },
     {
       name: 'chromium',
       use: {

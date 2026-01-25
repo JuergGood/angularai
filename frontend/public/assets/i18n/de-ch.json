@@ -155,6 +155,7 @@
     "ERROR_LOGIN_SPACES": "Login darf keine Leerzeichen enthalten",
     "ERROR_USER_NOT_ACTIVE": "Bitte aktivieren Sie Ihren Benutzer mit dem Email-Link oder registieren Sie sich neu.",
     "ERROR_RECAPTCHA": "Bitte bestätigen Sie, dass Sie kein Roboter sind (reCAPTCHA)",
+    "EMAIL_HINT": "z.B. name@example.com",
     "STRENGTH": {
       "WEAK": "Schwach",
       "MEDIUM": "Mittel",
@@ -192,6 +193,14 @@
     "SUCCESS_TITLE": "Konto erstellt",
     "SUCCESS_SUBTITLE": "Prüfen Sie Ihre E-Mail, um Ihr Konto zu verifizieren. Danach können Sie sich anmelden.",
     "VERIFYING_RECAPTCHA": "Verifizierung läuft...",
-    "RECAPTCHA_FAILED": "Verifizierung fehlgeschlagen, bitte versuchen Sie es erneut."
+    "RECAPTCHA_FAILED": "Verifizierung fehlgeschlagen, bitte versuchen Sie es erneut.",
+    "VERIFY_SUCCESS_TITLE": "E-Mail-Adresse bestätigt 🎉",
+    "VERIFY_SUCCESS_TEXT": "Ihr Konto wurde erfolgreich verifiziert. Sie können sich jetzt anmelden und GoodOne nutzen.",
+    "VERIFY_ERROR_TITLE": "Verifizierung fehlgeschlagen",
+    "VERIFY_ERROR_TEXT_INVALID": "Dieser Bestätigungslink ist ungültig.",
+    "VERIFY_ERROR_TEXT_EXPIRED": "Dieser Bestätigungslink ist abgelaufen.",
+    "RESEND_VERIFICATION": "Bestätigungs-E-Mail erneut senden",
+    "RESEND_SUCCESS": "Bestätigungs-E-Mail wurde erneut gesendet. Bitte prüfen Sie Ihr Postfach.",
+    "RESEND_ERROR": "Bestätigungs-E-Mail konnte nicht gesendet werden. Bitte versuchen Sie es später erneut."
   }
 }

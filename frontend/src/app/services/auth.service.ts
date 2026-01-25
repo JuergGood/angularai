@@ -53,6 +53,13 @@ export class AuthService {
     return this.http.post<User>(`${this.apiUrl}/register`, user);
   }
 
+  resendVerification(email: string): Observable<string> {
+    return this.http.post(`${this.apiUrl}/resend-verification`, null, {
+      params: { email },
+      responseType: 'text'
+    });
+  }
+
   logout() {
     const auth = localStorage.getItem('auth');
     const headers = auth ? new HttpHeaders({ 'Authorization': 'Basic ' + auth }) : new HttpHeaders();

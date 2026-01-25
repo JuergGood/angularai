@@ -11,15 +11,15 @@ The timeout occurred because the "Add Task" button was either not yet ready to b
 *   **Better Waiting**: Uses `networkidle` and slightly longer pauses to ensure Material animations have finished.
 
 #### 2. How to Run
-Please run the tests from the `frontend` directory:
+Please run the tests from the `frontend` directory. 
 
-```bash
-cd frontend
-```
+**Prerequisites**: 
+1. The **Backend** should be running (e.g., in IntelliJ or via `java -jar ...`) on `localhost:8080`.
+2. The **Frontend** should NOT be manually started if you want Playwright to manage it (via `webServer`), OR it can be running on `localhost:4200`.
 
-```bash
-cd ../../../frontend
-```
+**Commands**:
+1. Open a terminal in `frontend/`.
+2. Run the desired test suite.
 
 **Registration Tests ** (Login & Registration):
 ```bash
@@ -30,6 +30,12 @@ npx playwright test e2e/registration-extensive.spec.ts
 ```bash
 npx playwright test e2e/registration-extensive.spec.ts  --reporter=line
 ```
+
+**Email Validation Tests ** (Line reporter):
+```bash
+npx playwright test e2e/verification-flow.spec.ts  --reporter=line
+```
+
 
 **Auth Flow** (Login & Registration):
 ```bash

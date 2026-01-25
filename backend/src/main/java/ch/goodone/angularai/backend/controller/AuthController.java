@@ -30,6 +30,9 @@ public class AuthController {
     private final EmailService emailService;
     private final ch.goodone.angularai.backend.repository.VerificationTokenRepository tokenRepository;
 
+    @org.springframework.beans.factory.annotation.Value("${app.base-url}")
+    private String baseUrl;
+
     public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, ActionLogService actionLogService, CaptchaService captchaService, EmailService emailService, ch.goodone.angularai.backend.repository.VerificationTokenRepository tokenRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
@@ -119,7 +122,6 @@ public class AuthController {
             if (existingUser.getStatus() != ch.goodone.angularai.backend.model.UserStatus.PENDING) {
                 return ResponseEntity.badRequest().body("User already exists");
             }
-            // If pending, we will delete it later if email also matches or is available
         }
         if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
             User existingUser = userRepository.findByEmail(userDTO.getEmail()).get();
@@ -131,7 +133,7 @@ public class AuthController {
         // Handle re-registration: clean up pending user with same login or email
         userRepository.findByLogin(userDTO.getLogin()).ifPresent(u -> {
             if (u.getStatus() == ch.goodone.angularai.backend.model.UserStatus.PENDING) {
-                actionLogService.log(u.getLogin(), "USER_REREGISTER_CLEANUP", "Cleaning up pending user for re-registration: " + u.getLogin());
+                actionLogService.log(u.getLogin(), "USER_REREGISTER_CLEANUP", "Cleaning up pending user for re-registration by login: " + u.getLogin());
                 tokenRepository.deleteByUser(u);
                 userRepository.delete(u);
                 userRepository.flush();
@@ -139,7 +141,7 @@ public class AuthController {
         });
         userRepository.findByEmail(userDTO.getEmail()).ifPresent(u -> {
             if (u.getStatus() == ch.goodone.angularai.backend.model.UserStatus.PENDING) {
-                actionLogService.log(u.getLogin(), "USER_REREGISTER_CLEANUP", "Cleaning up pending user for re-registration: " + u.getEmail());
+                actionLogService.log(u.getLogin(), "USER_REREGISTER_CLEANUP", "Cleaning up pending user for re-registration by email: " + u.getEmail());
                 tokenRepository.deleteByUser(u);
                 userRepository.delete(u);
                 userRepository.flush();
@@ -171,19 +173,46 @@ public class AuthController {
     }
 
     @GetMapping("/verify")
-    public ResponseEntity<String> verify(@RequestParam String token) {
+    public ResponseEntity<Object> verify(@RequestParam String token) {
         return tokenRepository.findByToken(token)
                 .map(t -> {
                     if (t.isExpired()) {
-                        return ResponseEntity.badRequest().body("Token expired");
+                        return ResponseEntity.status(org.springframework.http.HttpStatus.FOUND)
+                                .location(java.net.URI.create(baseUrl + "/verify/error?reason=expired&email=" + t.getUser().getEmail()))
+                                .build();
                     }
                     User user = t.getUser();
                     user.setStatus(ch.goodone.angularai.backend.model.UserStatus.ACTIVE);
                     userRepository.save(user);
                     tokenRepository.delete(t);
-                    return ResponseEntity.ok("Account verified successfully. You can now login.");
+                    return ResponseEntity.status(org.springframework.http.HttpStatus.FOUND)
+                            .location(java.net.URI.create(baseUrl + "/verify/success"))
+                            .build();
                 })
-                .orElse(ResponseEntity.badRequest().body("Invalid token"));
+                .orElse(ResponseEntity.status(org.springframework.http.HttpStatus.FOUND)
+                        .location(java.net.URI.create(baseUrl + "/verify/error?reason=invalid"))
+                        .build());
+    }
+
+    @PostMapping("/resend-verification")
+    public ResponseEntity<String> resendVerification(@RequestParam String email) {
+        return userRepository.findByEmail(email)
+                .map(user -> {
+                    if (user.getStatus() != ch.goodone.angularai.backend.model.UserStatus.PENDING) {
+                        return ResponseEntity.badRequest().body("User is already active or invalid status");
+                    }
+                    // Clean up old tokens
+                    tokenRepository.deleteByUser(user);
+                    
+                    VerificationToken newToken = new VerificationToken(user);
+                    tokenRepository.save(newToken);
+                    
+                    emailService.sendVerificationEmail(user.getEmail(), newToken.getToken());
+                    actionLogService.log(user.getLogin(), "USER_VERIFICATION_RESENT", "Verification email resent to " + email);
+                    
+                    return ResponseEntity.ok("Verification email sent");
+                })
+                .orElse(ResponseEntity.badRequest().body("Email not found"));
     }
 
     @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
