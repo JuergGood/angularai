@@ -43,12 +43,21 @@ public class DataInitializer {
     CommandLineRunner initData(UserRepository userRepository, TaskRepository taskRepository, PasswordEncoder passwordEncoder) {
         return args -> {
             if (userRepository.count() == 0) {
+                // Ensure unique emails even if configuration is identical (fallback)
+                String adminMail = (adminEmail != null && !adminEmail.isBlank()) ? adminEmail : "admin@system.local";
+                String userMail = (userEmail != null && !userEmail.isBlank()) ? userEmail : "user@system.local";
+                String adminReadMail = (adminReadEmail != null && !adminReadEmail.isBlank()) ? adminReadEmail : "admin-read@system.local";
+
+                // Secondary safety check: ensure they are not identical if coming from empty environment variables
+                if (userMail.equals(adminMail)) userMail = "user-" + userMail;
+                if (adminReadMail.equals(adminMail) || adminReadMail.equals(userMail)) adminReadMail = "read-" + adminReadMail;
+
                 User admin = new User(
                         "Admin",
                         "User",
                         "admin",
                         passwordEncoder.encode(adminPassword),
-                        adminEmail,
+                        adminMail,
                         "+41791234567",
                         LocalDate.of(1990, 1, 1),
                         "123 Main St",
@@ -62,7 +71,7 @@ public class DataInitializer {
                         "User",
                         "user",
                         passwordEncoder.encode(userPassword),
-                        userEmail,
+                        userMail,
                         "+41797654321",
                         LocalDate.of(1995, 5, 5),
                         "456 User Ave",
@@ -76,7 +85,7 @@ public class DataInitializer {
                         "Admin",
                         "admin-read",
                         passwordEncoder.encode(adminReadPassword),
-                        adminReadEmail,
+                        adminReadMail,
                         "+41790000000",
                         LocalDate.of(1992, 2, 2),
                         "789 Read St",

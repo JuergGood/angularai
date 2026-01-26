@@ -178,24 +178,31 @@ public class AuthController {
         
         emailService.sendVerificationEmail(user.getEmail(), token.getToken());
 
-        actionLogService.log(user.getLogin(), "USER_REGISTERED", "User registered, pending verification");
+        actionLogService.log(user.getLogin(), "USER_REGISTERED", "User registered, pending verification. Token: " + token.getToken());
         return ResponseEntity.ok(UserDTO.fromEntity(user));
     }
 
     @GetMapping("/verify")
     public ResponseEntity<Object> verify(@RequestParam String token) {
+        logger.info("Received verification request for token: {}", token);
         return tokenRepository.findByToken(token)
                 .map(t -> {
+                    logger.info("Token found for user: {}", t.getUser().getLogin());
                     if (t.isExpired()) {
+                        logger.warn("Token expired for user: {}", t.getUser().getLogin());
                         return ResponseEntity.badRequest().<Object>body(java.util.Map.of("reason", "expired", "email", t.getUser().getEmail()));
                     }
                     User user = t.getUser();
                     user.setStatus(ch.goodone.angularai.backend.model.UserStatus.ACTIVE);
                     userRepository.save(user);
                     tokenRepository.delete(t);
+                    logger.info("User {} successfully verified and token deleted", user.getLogin());
                     return ResponseEntity.ok().build();
                 })
-                .orElse(ResponseEntity.badRequest().body(java.util.Map.of("reason", "invalid")));
+                .orElseGet(() -> {
+                    logger.error("Token NOT found in database: {}", token);
+                    return ResponseEntity.badRequest().body(java.util.Map.of("reason", "invalid"));
+                });
     }
 
     @PostMapping("/resend-verification")

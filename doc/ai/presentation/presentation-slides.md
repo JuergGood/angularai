@@ -12,7 +12,23 @@
   - **Verantwortung bleibt beim Entwickler**
 
 ::: notes
-Kurz die Erwartung setzen: nicht „AI ersetzt Entwickler“, sondern „AI verstärkt Entwickler“.
+Lächeln, freuen, Willkommen
+Top aktuelles und interessantes Thema
+Web App entwickelt mit aktuellsten KIs
+Wie ist es dazu gekommen
+Einführung KI für alle Entwickler im Herbst. Zur Kenntnis genommen. Reaktion eher verhalten
+Nach Weihnachten: technische Neugierde gepackt, wegen Schneemangel Zeit. Seither mein privates Feierabend Projekt
+Bin absolut fasziniert:
+Entwicklung nach 30 Jahren Berufserfahrung auf Kopf gestellt innerhalb 6 Monate. Das Tool, welches ich verwende ist so alt.
+Entwicklung rasant
+Sämtliche händische Arbeit unnötig und Konzentration auf Wesentliche
+Mein Knowhow 3.5 Wochen alt,
+Sehr viel gelernt. Immer noch KI Neuling
+Bei Fragen gleich melden. Viele Fenster offen. Melden falls ich beim falschen Fenster bin
+Rückmeldung während des Meetings dankbar. Nicht dass ich in Offline Mikro plaudere
+Disclaimer:
+Normalerweise nicht do dominant platzieren
+ alles KI generiert: keine Zeile Code geschrieben, Präsentation, Einladung, Nur ich kein Avatar
 :::
 
 # Agenda
@@ -23,7 +39,12 @@ Kurz die Erwartung setzen: nicht „AI ersetzt Entwickler“, sondern „AI vers
 - **Einordnung** (Grenzen im Firmenumfeld, Fazit)
 
 ::: notes
-Übersicht über den Ablauf. Fokus: reale Umsetzung inkl. Tests/QA, nicht nur Prototyp.
+Präsentation ca 45 Min
+Grosser Demo Teil
+Danach Diskussion
+Input und Erfahrungen austauschen
+Bereits kurzer Austausch mit Luciano
+Follow up
 :::
 
 # Frontends
@@ -39,6 +60,10 @@ Kurz die Erwartung setzen: nicht „AI ersetzt Entwickler“, sondern „AI vers
 
 ::: notes
 Wichtig: zwei Clients, ein Backend. Das zeigt AI-Einsatz über mehrere Ebenen.
+Applikation zun Selbstzweck. User kann einloggen und etwas klicken
+Work in Progress
+Admin View
+Ihr dürft euch gerne registireren und einoggen
 :::
 
 # Erwartungen übertroffen
@@ -53,7 +78,11 @@ Wichtig: zwei Clients, ein Backend. Das zeigt AI-Einsatz über mehrere Ebenen.
 :::
 
 ::: notes
-Key Message: Android kam „on top“ dazu, ohne klassischen Mehraufwand wie früher.
+„AI verstärkt Entwickler“.
+Analogie Autofahren
+Ursprünglich gelernt mit Kupplung, Schaltung. Auf Reise anhalten um Karte nachzuschauen
+High Tech Mietauto. Nahezu autonom: Zieleingabe und los. Eingreifen nur falls Autosteuerung nicht OK, oder Parkassistent zu langsam
+Nicht nur einfacher, sondern auch schneller am ziel
 :::
 
 # Initiale Aufgabe an die AI
@@ -70,6 +99,7 @@ Key Message: Android kam „on top“ dazu, ohne klassischen Mehraufwand wie fr�
 
 ::: notes
 Wichtig: Der Start ist „ein sauberer Plan“. Danach iterativ: Review → Implement → Tests → Refactor.
+Fokus: Nicht nur „Happy Path“, sondern Robustheit (Validierung, Security).
 :::
 
 # Demo: Was ich live zeige
@@ -86,6 +116,7 @@ Wichtig: Der Start ist „ein sauberer Plan“. Danach iterativ: Review → Impl
 - UI E2E Tests
 - Refactoring
 - Dokumentation
+Live Demo. Fehler zeigen. 
 Wenn Zeit knapp: Demo priorisieren: Feature-Change → Tests → QA → Merge-ready.
 :::
 
@@ -129,6 +160,7 @@ Botschaft: Kombination statt „one tool to rule them all“.
 
 ::: notes
 Explizit sagen: AI ist Teil des Prozesses, aber Qualitätssicherung bleibt menschlich.
+Keine Magie. Sauberes Engineering.
 :::
 
 # Prompting-Beispiele
@@ -171,6 +203,7 @@ Constraints und Definition of Done.
 
 ::: notes
 Hier die Stärke erklären: AI „sieht“ das Projekt direkt.
+Live-Demo (IDE zeigen)
 :::
 
 # ChatGPT (extern & beratend)
@@ -232,7 +265,7 @@ Zahlen nur nennen, wenn du sie kurz begründen kannst („Vergleich Projekt 2020
   - Prompting-Kompetenz + Code Review bleibt Pflicht
 
 ::: notes
-Prompting-Kompetenz = klare Ziele, Constraints, Definition of Done, Tests.
+Prompting-Kompetenz = klare Ziele, Constraints, Definition of Done, Tests. 
 AI verstärkt Know-how, ersetzt es nicht.
 :::
 
@@ -245,6 +278,7 @@ AI verstärkt Know-how, ersetzt es nicht.
 
 ::: notes
 Schlussbotschaft: schneller bauen, besser verstehen, Qualität sichern.
+Ein Satz, den man mitnimmt.
 :::
 
 ## Schneller bauen. Besser verstehen. Qualität sichern.
@@ -351,7 +385,6 @@ Hinweis: Abdeckung ist kein Selbstzweck – entscheidend sind kritische Pfade + 
 
 ::: notes
 Kurzfassung für Management / Non-Dev (≈30–45s):
-
 – AI ersetzt keine Entwickler
 – AI reduziert Routinearbeit massiv
 – Qualität steigt, weil Tests & Reviews günstiger werden
