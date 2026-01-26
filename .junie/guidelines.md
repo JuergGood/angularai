@@ -30,6 +30,7 @@ This document outlines the best practices and standards for the AngularAI projec
     - **No Hardcoded Keys**: Never include sensitive API keys, tokens, or credentials in the source code, configuration files (e.g., `application.properties`), or IDE settings committed to Git (e.g., `.idea/workspace.xml`). Use environment variables and placeholders (e.g., `${MY_API_KEY}`) instead.
 - **Validation**: Use `@Column` annotations for explicit database mapping. Use unique constraints where appropriate (e.g., login, email).
 - **JSON Handling**: Use `tools.jackson.databind.ObjectMapper` for JSON processing in tests.
+- **Auditing**: All major user interactions (login, registration, password changes, etc.) and significant system events must be logged to the `ActionLogService` to ensure a robust audit trail.
 - **Date/Time**: Use `LocalDate` for dates. Use `@JsonFormat(pattern = "yyyy-MM-dd")` for DTO date fields.
 - **Role-Based Access Control**: Enforce security in `SecurityConfig` and use the `Role` enum.
 

@@ -116,7 +116,7 @@
   },
   "ADMIN": {
     "TITLE": "User Administration",
-    "ADD_USER": "Add User",
+    "ADD_USER": "Sign Up",
     "CREATE_USER": "Create New User",
     "EDIT_USER": "Edit User",
     "VIEW_USER": "View User",
@@ -157,10 +157,18 @@
     "ERROR_RECAPTCHA": "Please complete the reCAPTCHA",
     "EMAIL_HINT": "e.g. name@example.com",
     "STRENGTH": {
+      "TITLE": "Strength",
       "WEAK": "Weak",
       "MEDIUM": "Medium",
       "STRONG": "Strong"
-    }
+    },
+    "FORGOT_PASSWORD": "Forgot your password?",
+    "RECOVERY_CONFIRMATION": "If an account exists for this email, you will receive a password recovery link shortly.",
+    "FORGOT_PASSWORD_HINT": "Enter your email address and we will send you a link to reset your password.",
+    "RESET_PASSWORD": "Reset Password",
+    "NEW_PASSWORD": "New Password",
+    "SAVE_PASSWORD": "Save Password",
+    "PASSWORD_RESET_SUCCESS": "Password has been successfully reset."
   },
   "LOGS": {
     "TITLE": "System Logs",
@@ -183,6 +191,7 @@
     "LOADING": "Loading...",
     "SUCCESS": "Success",
     "ERROR": "Error",
+    "ERROR_LOGIN_FAILED": "Login failed",
     "CONFIRM": "Confirm Action",
     "ON": "On",
     "OFF": "Off"

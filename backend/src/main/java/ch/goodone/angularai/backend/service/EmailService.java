@@ -47,7 +47,7 @@ public class EmailService {
             String subject = isGerman ? "Verifizieren Sie Ihr GoodOne-Konto" : "Verify your GoodOne account";
             helper.setSubject(subject);
 
-            String htmlContent = getVerificationEmailHtml(verificationUrl, isGerman);
+            String htmlContent = getEmailHtml(verificationUrl, isGerman, true);
             
             String textContent;
             if (isGerman) {
@@ -65,16 +65,60 @@ public class EmailService {
         }
     }
 
-    private String getVerificationEmailHtml(String verificationUrl, boolean isGerman) {
-        String title = isGerman ? "E-Mail-Adresse bestätigen" : "Confirm your email";
+    public void sendPasswordRecoveryEmail(String toEmail, String token, Locale locale) {
+        String recoveryUrl = baseUrl + "/reset-password?token=" + token;
+        boolean isGerman = locale != null && "de".equals(locale.getLanguage());
+
+        try {
+            MimeMessage message = mailSender.createMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
+
+            helper.setFrom(fromEmail);
+            helper.setTo(toEmail);
+            
+            String subject = isGerman ? "Passwort-Wiederherstellung - GoodOne" : "Password Recovery - GoodOne";
+            helper.setSubject(subject);
+
+            String htmlContent = getEmailHtml(recoveryUrl, isGerman, false);
+            
+            String textContent;
+            if (isGerman) {
+                textContent = "Sie haben eine Passwort-Wiederherstellung angefordert. Bitte klicken Sie auf den untenstehenden Link, um Ihr Passwort zurückzusetzen:\n\n" + recoveryUrl;
+            } else {
+                textContent = "You have requested a password recovery. Please click the link below to reset your password:\n\n" + recoveryUrl;
+            }
+
+            helper.setText(textContent, htmlContent);
+
+            mailSender.send(message);
+            logger.info("Password recovery email sent to {} (Locale: {})", toEmail, isGerman ? "de" : "en");
+        } catch (Exception e) {
+            logger.error("Failed to send password recovery email to {}", toEmail, e);
+        }
+    }
+
+    private String getEmailHtml(String url, boolean isGerman, boolean isVerification) {
+        String title;
         String welcome = isGerman ? "Willkommen bei GoodOne" : "Welcome to GoodOne";
-        String thanks = isGerman ? "Vielen Dank für die Erstellung eines GoodOne-Kontos." : "Thanks for creating a GoodOne account.";
-        String instruction = isGerman ? "Um Ihre Registrierung abzuschliessen, bestätigen Sie bitte Ihre E-Mail-Adresse, indem Sie auf die Schaltfläche unten klicken:" : "To complete your registration, please confirm your email address by clicking the button below:";
-        String buttonText = isGerman ? "E-Mail-Adresse bestätigen" : "Confirm email address";
+        String thanks;
+        String instruction;
+        String buttonText;
         String fallbackText = isGerman ? "Wenn die Schaltfläche nicht funktioniert, kopieren Sie diesen Link und fügen Sie ihn in Ihren Browser ein:" : "If the button doesn’t work, copy and paste this link into your browser:";
-        String ignoreText = isGerman ? "Wenn Sie kein Konto erstellt haben, können Sie diese E-Mail ignorieren." : "If you did not create an account, you can safely ignore this email.";
+        String ignoreText = isGerman ? "Wenn Sie diese E-Mail nicht angefordert haben, können Sie sie ignorieren." : "If you did not request this email, you can safely ignore it.";
         String bestRegards = isGerman ? "Freundliche Grüsse," : "Best regards,";
         String team = isGerman ? "Das GoodOne Team" : "The GoodOne Team";
+
+        if (isVerification) {
+            title = isGerman ? "E-Mail-Adresse bestätigen" : "Confirm your email";
+            thanks = isGerman ? "Vielen Dank für die Erstellung eines GoodOne-Kontos." : "Thanks for creating a GoodOne account.";
+            instruction = isGerman ? "Um Ihre Registrierung abzuschliessen, bestätigen Sie bitte Ihre E-Mail-Adresse, indem Sie auf die Schaltfläche unten klicken:" : "To complete your registration, please confirm your email address by clicking the button below:";
+            buttonText = isGerman ? "E-Mail-Adresse bestätigen" : "Confirm email address";
+        } else {
+            title = isGerman ? "Passwort zurücksetzen" : "Reset your password";
+            thanks = isGerman ? "Sie haben eine Passwort-Wiederherstellung für Ihr GoodOne-Konto angefordert." : "You requested a password recovery for your GoodOne account.";
+            instruction = isGerman ? "Um Ihr Passwort zurückzusetzen, klicken Sie bitte auf die Schaltfläche unten:" : "To reset your password, please click the button below:";
+            buttonText = isGerman ? "Passwort zurücksetzen" : "Reset password";
+        }
 
         return "<!DOCTYPE html>\n" +
                 "<html lang=\"" + (isGerman ? "de" : "en") + "\">\n" +
@@ -92,7 +136,7 @@ public class EmailService {
                 "            <tr>\n" +
                 "              <td style=\"padding:24px 24px 16px; text-align:center;\">\n" +
                 "                <h1 style=\"margin:0; font-size:22px; color:#1f2937;\">\n" +
-                "                  " + welcome + "\n" +
+                "                  " + (isVerification ? welcome : title) + "\n" +
                 "                </h1>\n" +
                 "              </td>\n" +
                 "            </tr>\n" +
@@ -111,7 +155,7 @@ public class EmailService {
                 "                <!-- Button -->\n" +
                 "                <p style=\"text-align:center; margin:32px 0;\">\n" +
                 "                  <a\n" +
-                "                    href=\"" + verificationUrl + "\"\n" +
+                "                    href=\"" + url + "\"\n" +
                 "                    style=\"\n" +
                 "                      display:inline-block;\n" +
                 "                      padding:12px 24px;\n" +
@@ -131,7 +175,7 @@ public class EmailService {
                 "                </p>\n" +
                 "\n" +
                 "                <p style=\"font-size:12px; word-break:break-all; color:#2563eb;\">\n" +
-                "                  " + verificationUrl + "\n" +
+                "                  " + url + "\n" +
                 "                </p>\n" +
                 "\n" +
                 "                <p style=\"font-size:13px; color:#6b7280; margin-top:24px;\">\n" +

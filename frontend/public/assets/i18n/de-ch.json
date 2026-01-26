@@ -116,7 +116,7 @@
   },
   "ADMIN": {
     "TITLE": "Benutzerverwaltung",
-    "ADD_USER": "Benutzer hinzufügen",
+    "ADD_USER": "Registrieren",
     "CREATE_USER": "Neuen Benutzer erstellen",
     "EDIT_USER": "Benutzer bearbeiten",
     "VIEW_USER": "Benutzer anzeigen",
@@ -157,10 +157,18 @@
     "ERROR_RECAPTCHA": "Bitte bestätigen Sie, dass Sie kein Roboter sind (reCAPTCHA)",
     "EMAIL_HINT": "z.B. name@example.com",
     "STRENGTH": {
+      "TITLE": "Stärke",
       "WEAK": "Schwach",
       "MEDIUM": "Mittel",
       "STRONG": "Stark"
-    }
+    },
+    "FORGOT_PASSWORD": "Passwort vergessen?",
+    "RECOVERY_CONFIRMATION": "Falls ein Konto für diese E-Mail existiert, erhalten Sie in Kürze einen Link zur Passwort-Wiederherstellung.",
+    "FORGOT_PASSWORD_HINT": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen Ihres Passworts.",
+    "RESET_PASSWORD": "Passwort zurücksetzen",
+    "NEW_PASSWORD": "Neues Passwort",
+    "SAVE_PASSWORD": "Passwort speichern",
+    "PASSWORD_RESET_SUCCESS": "Passwort wurde erfolgreich zurückgesetzt."
   },
   "LOGS": {
     "TITLE": "Logs",
@@ -183,6 +191,7 @@
     "LOADING": "Wird geladen...",
     "SUCCESS": "Erfolgreich",
     "ERROR": "Fehler",
+    "ERROR_LOGIN_FAILED": "Anmeldung fehlgeschlagen",
     "CONFIRM": "Aktion bestätigen",
     "ON": "An",
     "OFF": "Aus"

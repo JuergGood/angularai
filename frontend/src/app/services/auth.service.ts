@@ -60,6 +60,14 @@ export class AuthService {
     });
   }
 
+  forgotPassword(email: string): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(payload: any): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/reset-password`, payload);
+  }
+
   logout() {
     const auth = localStorage.getItem('auth');
     const headers = auth ? new HttpHeaders({ 'Authorization': 'Basic ' + auth }) : new HttpHeaders();

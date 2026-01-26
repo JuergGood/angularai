@@ -11,11 +11,15 @@ import { UserAdminComponent } from './components/user-admin/user-admin.component
 import { LogComponent } from './components/log/log.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { HelpContentComponent } from './components/help/help-content.component';
+import { ForgotPasswordComponent } from './components/login/forgot-password.component';
+import { ResetPasswordComponent } from './components/login/reset-password.component';
 import { authGuard } from './guards/auth.guard';
 import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
     { path: 'login', component: LoginComponent },
+    { path: 'forgot-password', component: ForgotPasswordComponent },
+    { path: 'reset-password', component: ResetPasswordComponent },
     { path: 'register', component: RegisterComponent },
     { path: 'register/success', component: RegisterSuccessComponent },
     { path: 'verify', component: VerifyComponent },

@@ -2,9 +2,13 @@ package ch.goodone.angularai.backend.controller;
 
 import ch.goodone.angularai.backend.config.SecurityConfig;
 import ch.goodone.angularai.backend.dto.UserDTO;
+import ch.goodone.angularai.backend.model.PasswordRecoveryToken;
 import ch.goodone.angularai.backend.model.Role;
 import ch.goodone.angularai.backend.model.User;
+import ch.goodone.angularai.backend.model.VerificationToken;
+import ch.goodone.angularai.backend.repository.PasswordRecoveryTokenRepository;
 import ch.goodone.angularai.backend.repository.UserRepository;
+import ch.goodone.angularai.backend.repository.VerificationTokenRepository;
 import ch.goodone.angularai.backend.service.ActionLogService;
 import ch.goodone.angularai.backend.service.CaptchaService;
 import ch.goodone.angularai.backend.service.EmailService;
@@ -20,6 +24,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import tools.jackson.databind.ObjectMapper;
 
 import java.time.LocalDate;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -48,10 +53,16 @@ class AuthControllerTest {
     private EmailService emailService;
 
     @MockitoBean
-    private ch.goodone.angularai.backend.repository.VerificationTokenRepository tokenRepository;
+    private VerificationTokenRepository verificationTokenRepository;
+
+    @MockitoBean
+    private PasswordRecoveryTokenRepository passwordRecoveryTokenRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
@@ -345,13 +356,13 @@ class AuthControllerTest {
         ch.goodone.angularai.backend.model.VerificationToken token = new ch.goodone.angularai.backend.model.VerificationToken(user);
         token.setToken(tokenValue);
 
-        when(tokenRepository.findByToken(tokenValue)).thenReturn(Optional.of(token));
+        when(verificationTokenRepository.findByToken(tokenValue)).thenReturn(Optional.of(token));
 
         mockMvc.perform(get("/api/auth/verify").param("token", tokenValue))
                 .andExpect(status().isOk());
 
         verify(userRepository).save(user);
-        verify(tokenRepository).delete(token);
+        verify(verificationTokenRepository).delete(token);
         assert user.getStatus() == ch.goodone.angularai.backend.model.UserStatus.ACTIVE;
     }
 
@@ -364,7 +375,7 @@ class AuthControllerTest {
         token.setToken(tokenValue);
         token.setExpiryDate(java.time.LocalDateTime.now().minusHours(1));
 
-        when(tokenRepository.findByToken(tokenValue)).thenReturn(Optional.of(token));
+        when(verificationTokenRepository.findByToken(tokenValue)).thenReturn(Optional.of(token));
 
         mockMvc.perform(get("/api/auth/verify").param("token", tokenValue))
                 .andExpect(status().isBadRequest())
@@ -374,7 +385,7 @@ class AuthControllerTest {
 
     @Test
     void verify_shouldReturnBadRequest_whenTokenInvalid() throws Exception {
-        when(tokenRepository.findByToken("invalid")).thenReturn(Optional.empty());
+        when(verificationTokenRepository.findByToken("invalid")).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/auth/verify").param("token", "invalid"))
                 .andExpect(status().isBadRequest())
@@ -394,8 +405,8 @@ class AuthControllerTest {
         mockMvc.perform(post("/api/auth/resend-verification").param("email", email))
                 .andExpect(status().isOk());
 
-        verify(tokenRepository).deleteByUser(user);
-        verify(tokenRepository).save(any());
+        verify(verificationTokenRepository).deleteByUser(user);
+        verify(verificationTokenRepository).save(any());
         verify(emailService).sendVerificationEmail(eq(email), anyString());
     }
 
@@ -406,5 +417,87 @@ class AuthControllerTest {
         mockMvc.perform(post("/api/auth/resend-verification").param("email", "missing@example.com"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Email not found"));
+    }
+
+    @Test
+    void forgotPassword_shouldSendEmail_whenUserExists() throws Exception {
+        String email = "test@example.com";
+        User user = new User();
+        user.setEmail(email);
+        user.setLogin("testuser");
+
+        when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
+
+        mockMvc.perform(post("/api/auth/forgot-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("email", email))))
+                .andExpect(status().isOk());
+
+        verify(passwordRecoveryTokenRepository).deleteByUser(user);
+        verify(passwordRecoveryTokenRepository).save(any(PasswordRecoveryToken.class));
+        verify(emailService).sendPasswordRecoveryEmail(eq(email), anyString(), any());
+    }
+
+    @Test
+    void forgotPassword_shouldReturnOk_whenUserNotFound() throws Exception {
+        String email = "missing@example.com";
+        when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/api/auth/forgot-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("email", email))))
+                .andExpect(status().isOk());
+
+        verify(passwordRecoveryTokenRepository, never()).save(any());
+        verify(emailService, never()).sendPasswordRecoveryEmail(anyString(), anyString(), any());
+    }
+
+    @Test
+    void resetPassword_shouldUpdatePassword_whenTokenValid() throws Exception {
+        String tokenValue = "valid-reset-token";
+        String newPassword = "NewPassword123!";
+        User user = new User();
+        user.setLogin("testuser");
+        PasswordRecoveryToken token = new PasswordRecoveryToken(user);
+        token.setToken(tokenValue);
+
+        when(passwordRecoveryTokenRepository.findByToken(tokenValue)).thenReturn(Optional.of(token));
+
+        mockMvc.perform(post("/api/auth/reset-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("token", tokenValue, "password", newPassword))))
+                .andExpect(status().isOk());
+
+        verify(userRepository).save(user);
+        verify(passwordRecoveryTokenRepository).delete(token);
+    }
+
+    @Test
+    void resetPassword_shouldReturnBadRequest_whenTokenExpired() throws Exception {
+        String tokenValue = "expired-token";
+        User user = new User();
+        user.setLogin("testuser");
+        PasswordRecoveryToken token = new PasswordRecoveryToken(user);
+        token.setToken(tokenValue);
+        token.setExpiryDate(java.time.LocalDateTime.now().minusHours(1));
+
+        when(passwordRecoveryTokenRepository.findByToken(tokenValue)).thenReturn(Optional.of(token));
+
+        mockMvc.perform(post("/api/auth/reset-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("token", tokenValue, "password", "NewPass123!"))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("expired"));
+    }
+
+    @Test
+    void resetPassword_shouldReturnBadRequest_whenTokenInvalid() throws Exception {
+        when(passwordRecoveryTokenRepository.findByToken("invalid")).thenReturn(Optional.empty());
+
+        mockMvc.perform(post("/api/auth/reset-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("token", "invalid", "password", "NewPass123!"))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("invalid"));
     }
 }

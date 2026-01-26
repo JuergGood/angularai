@@ -38,6 +38,15 @@ import { MatIconModule } from '@angular/material/icon';
       padding-top: 16px;
       border-top: 1px solid var(--border);
     }
+    .links-container {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .forgot-link {
+      font-size: 0.85em;
+      margin-top: -8px;
+    }
     .error {
       color: #f44336;
       margin-top: 16px;
@@ -68,7 +77,9 @@ export class LoginComponent {
       },
       error: (err) => {
         console.error('Login error:', err);
-        if (err.status === 403) {
+        if (err.status === 401) {
+          this.error = 'COMMON.ERROR_LOGIN_FAILED';
+        } else if (err.status === 403) {
           this.error = 'ADMIN.ERROR_USER_NOT_ACTIVE';
         } else {
           this.error = 'COMMON.ERROR';

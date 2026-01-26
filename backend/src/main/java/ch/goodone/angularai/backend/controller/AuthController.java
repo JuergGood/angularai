@@ -1,20 +1,32 @@
 package ch.goodone.angularai.backend.controller;
 
 import ch.goodone.angularai.backend.dto.UserDTO;
+import ch.goodone.angularai.backend.model.PasswordRecoveryToken;
 import ch.goodone.angularai.backend.model.User;
+import ch.goodone.angularai.backend.model.UserStatus;
+import ch.goodone.angularai.backend.model.VerificationToken;
+import ch.goodone.angularai.backend.repository.PasswordRecoveryTokenRepository;
 import ch.goodone.angularai.backend.repository.UserRepository;
+import ch.goodone.angularai.backend.repository.VerificationTokenRepository;
 import ch.goodone.angularai.backend.service.ActionLogService;
 import ch.goodone.angularai.backend.service.CaptchaService;
 import ch.goodone.angularai.backend.service.EmailService;
-import ch.goodone.angularai.backend.model.VerificationToken;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.LocalDateTime;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -28,18 +40,20 @@ public class AuthController {
     private final ActionLogService actionLogService;
     private final CaptchaService captchaService;
     private final EmailService emailService;
-    private final ch.goodone.angularai.backend.repository.VerificationTokenRepository tokenRepository;
+    private final VerificationTokenRepository verificationTokenRepository;
+    private final PasswordRecoveryTokenRepository passwordRecoveryTokenRepository;
 
     @org.springframework.beans.factory.annotation.Value("${app.base-url}")
     private String baseUrl;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, ActionLogService actionLogService, CaptchaService captchaService, EmailService emailService, ch.goodone.angularai.backend.repository.VerificationTokenRepository tokenRepository) {
+    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, ActionLogService actionLogService, CaptchaService captchaService, EmailService emailService, VerificationTokenRepository verificationTokenRepository, PasswordRecoveryTokenRepository passwordRecoveryTokenRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.actionLogService = actionLogService;
         this.captchaService = captchaService;
         this.emailService = emailService;
-        this.tokenRepository = tokenRepository;
+        this.verificationTokenRepository = verificationTokenRepository;
+        this.passwordRecoveryTokenRepository = passwordRecoveryTokenRepository;
     }
 
     @PostMapping("/login")
@@ -144,7 +158,7 @@ public class AuthController {
         userRepository.findByLogin(userDTO.getLogin()).ifPresent(u -> {
             if (u.getStatus() == ch.goodone.angularai.backend.model.UserStatus.PENDING) {
                 actionLogService.log(u.getLogin(), "USER_REREGISTER_CLEANUP", "Cleaning up pending user for re-registration by login: " + u.getLogin());
-                tokenRepository.deleteByUser(u);
+                verificationTokenRepository.deleteByUser(u);
                 userRepository.delete(u);
                 userRepository.flush();
             }
@@ -152,7 +166,7 @@ public class AuthController {
         userRepository.findByEmail(userDTO.getEmail()).ifPresent(u -> {
             if (u.getStatus() == ch.goodone.angularai.backend.model.UserStatus.PENDING) {
                 actionLogService.log(u.getLogin(), "USER_REREGISTER_CLEANUP", "Cleaning up pending user for re-registration by email: " + u.getEmail());
-                tokenRepository.deleteByUser(u);
+                verificationTokenRepository.deleteByUser(u);
                 userRepository.delete(u);
                 userRepository.flush();
             }
@@ -173,19 +187,19 @@ public class AuthController {
 
         userRepository.save(user);
         
-        VerificationToken token = new VerificationToken(user);
-        tokenRepository.save(token);
+        VerificationToken verificationToken = new VerificationToken(user);
+        verificationTokenRepository.save(verificationToken);
         
-        emailService.sendVerificationEmail(user.getEmail(), token.getToken());
+        emailService.sendVerificationEmail(user.getEmail(), verificationToken.getToken());
 
-        actionLogService.log(user.getLogin(), "USER_REGISTERED", "User registered, pending verification. Token: " + token.getToken());
+        actionLogService.log(user.getLogin(), "USER_REGISTERED", "User registered, pending verification. Token: " + verificationToken.getToken());
         return ResponseEntity.ok(UserDTO.fromEntity(user));
     }
 
     @GetMapping("/verify")
     public ResponseEntity<Object> verify(@RequestParam String token) {
         logger.info("Received verification request for token: {}", token);
-        return tokenRepository.findByToken(token)
+        return verificationTokenRepository.findByToken(token)
                 .map(t -> {
                     logger.info("Token found for user: {}", t.getUser().getLogin());
                     if (t.isExpired()) {
@@ -195,7 +209,7 @@ public class AuthController {
                     User user = t.getUser();
                     user.setStatus(ch.goodone.angularai.backend.model.UserStatus.ACTIVE);
                     userRepository.save(user);
-                    tokenRepository.delete(t);
+                    verificationTokenRepository.delete(t);
                     logger.info("User {} successfully verified and token deleted", user.getLogin());
                     return ResponseEntity.ok().build();
                 })
@@ -213,10 +227,10 @@ public class AuthController {
                         return ResponseEntity.badRequest().body("User is already active or invalid status");
                     }
                     // Clean up old tokens
-                    tokenRepository.deleteByUser(user);
+                    verificationTokenRepository.deleteByUser(user);
                     
                     VerificationToken newToken = new VerificationToken(user);
-                    tokenRepository.save(newToken);
+                    verificationTokenRepository.save(newToken);
                     
                     emailService.sendVerificationEmail(user.getEmail(), newToken.getToken());
                     actionLogService.log(user.getLogin(), "USER_VERIFICATION_RESENT", "Verification email resent to " + email);
@@ -224,6 +238,59 @@ public class AuthController {
                     return ResponseEntity.ok("Verification email sent");
                 })
                 .orElse(ResponseEntity.badRequest().body("Email not found"));
+    }
+
+    @PostMapping("/forgot-password")
+    @Transactional
+    public ResponseEntity<Void> forgotPassword(@RequestBody Map<String, String> payload, Locale locale) {
+        String email = payload.get("email");
+        logger.info("Password recovery requested for email: {}", email);
+        
+        userRepository.findByEmail(email).ifPresent(user -> {
+            // Clean up old tokens
+            passwordRecoveryTokenRepository.deleteByUser(user);
+            
+            PasswordRecoveryToken token = new PasswordRecoveryToken(user);
+            passwordRecoveryTokenRepository.save(token);
+            
+            emailService.sendPasswordRecoveryEmail(user.getEmail(), token.getToken(), locale);
+            actionLogService.log(user.getLogin(), "USER_PASSWORD_RECOVERY_REQUESTED", "Password recovery token generated");
+        });
+        
+        // Always return OK to prevent user enumeration
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/reset-password")
+    @Transactional
+    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> payload) {
+        String token = payload.get("token");
+        String newPassword = payload.get("password");
+        
+        logger.info("Password reset attempt with token");
+        
+        return passwordRecoveryTokenRepository.findByToken(token)
+                .map(t -> {
+                    if (t.isExpired()) {
+                        logger.warn("Password recovery token expired for user: {}", t.getUser().getLogin());
+                        return ResponseEntity.badRequest().body(Map.of("error", "expired"));
+                    }
+                    
+                    User user = t.getUser();
+                    user.setPassword(passwordEncoder.encode(newPassword));
+                    userRepository.save(user);
+                    
+                    passwordRecoveryTokenRepository.delete(t);
+                    
+                    actionLogService.log(user.getLogin(), "USER_PASSWORD_RESET", "Password successfully reset via recovery token");
+                    logger.info("Password successfully reset for user: {}", user.getLogin());
+                    
+                    return ResponseEntity.ok().build();
+                })
+                .orElseGet(() -> {
+                    logger.error("Invalid password recovery token: {}", token);
+                    return ResponseEntity.badRequest().body(Map.of("error", "invalid"));
+                });
     }
 
     @ExceptionHandler(org.springframework.http.converter.HttpMessageNotReadableException.class)
