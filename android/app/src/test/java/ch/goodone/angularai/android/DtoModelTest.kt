@@ -42,9 +42,11 @@ class DtoModelTest {
 
     @Test
     fun systemInfoDTO_shouldStoreData() {
-        val dto = SystemInfoDTO("1.0", "Dev")
-        assertEquals("1.0", dto.version)
+        val dto = SystemInfoDTO("1.0", "1.0", "Dev", "Message")
+        assertEquals("1.0", dto.backendVersion)
+        assertEquals("1.0", dto.frontendVersion)
         assertEquals("Dev", dto.mode)
+        assertEquals("Message", dto.landingMessage)
     }
 
     @Test

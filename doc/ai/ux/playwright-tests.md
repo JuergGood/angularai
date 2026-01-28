@@ -56,6 +56,12 @@ npx playwright test e2e/auth-flow.spec.ts
 npx playwright test e2e/tasks-ux.spec.ts
 ```
 
+** Landing Message ** (Line reporter):
+```bash
+npx playwright test e2e/landing-message.spec.ts  --reporter=line
+```
+
+
 **Report** 
 ```bash
 npx playwright show-report

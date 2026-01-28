@@ -33,6 +33,7 @@ class SystemControllerTest {
 
     @Test
     void shouldReturnSystemInfo() throws Exception {
+        when(systemSettingService.isLandingMessageEnabled()).thenReturn(true);
         mockMvc.perform(get("/api/system/info"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.backendVersion").exists())
@@ -43,9 +44,18 @@ class SystemControllerTest {
 
     @Test
     void shouldReturnSystemInfoInGerman() throws Exception {
+        when(systemSettingService.isLandingMessageEnabled()).thenReturn(true);
         mockMvc.perform(get("/api/system/info").header("Accept-Language", "de-CH"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.landingMessage").value("German Message"));
+    }
+
+    @Test
+    void shouldNotReturnLandingMessageWhenDisabled() throws Exception {
+        when(systemSettingService.isLandingMessageEnabled()).thenReturn(false);
+        mockMvc.perform(get("/api/system/info"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.landingMessage").isEmpty());
     }
 
     @Test

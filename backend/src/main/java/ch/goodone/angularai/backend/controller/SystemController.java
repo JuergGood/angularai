@@ -27,10 +27,10 @@ public class SystemController {
     @Value("${frontend.version:unknown}")
     private String frontendVersion;
 
-    @Value("${app.landing.message.en:}")
+    @Value("${app.landing.message.en:Welcome to GoodOne!}")
     private String landingMessageEn;
 
-    @Value("${app.landing.message.de-ch:}")
+    @Value("${app.landing.message.de-ch:Willkommen bei GoodOne!}")
     private String landingMessageDeCh;
 
     @Value("${google.recaptcha.1.site.key}")
@@ -61,9 +61,20 @@ public class SystemController {
         }
 
         Locale locale = LocaleContextHolder.getLocale();
-        String landingMessage = "de".equals(locale.getLanguage()) ? landingMessageDeCh : landingMessageEn;
-        if (landingMessage == null || landingMessage.isBlank()) {
-            landingMessage = landingMessageEn;
+        String landingMessage = null;
+        
+        boolean enabled = systemSettingService.isLandingMessageEnabled();
+        
+        if (enabled) {
+            if ("de".equals(locale.getLanguage())) {
+                landingMessage = landingMessageDeCh;
+            } else {
+                landingMessage = landingMessageEn;
+            }
+
+            if (landingMessage == null || landingMessage.isBlank()) {
+                landingMessage = landingMessageEn;
+            }
         }
 
         return ResponseEntity.ok(new SystemInfoDTO(backendVersion, frontendVersion, mode, landingMessage));

@@ -312,6 +312,7 @@ export class SidenavComponent implements OnDestroy {
   isHandheld = signal(false);
   systemInfo = signal<SystemInfo | null>(null);
   geolocationEnabled = signal(false);
+  landingMessageEnabled = signal(true);
   recaptchaConfigIndex = signal(1);
   showBanner = signal(true);
   isHiding = signal(false);
@@ -331,11 +332,12 @@ export class SidenavComponent implements OnDestroy {
     private dialog: MatDialog,
     private breakpointObserver: BreakpointObserver
   ) {
-    this.systemService.getSystemInfo().subscribe(info => {
-      this.systemInfo.set(info);
-      if (info.landingMessage) {
-        this.startBannerTimers();
-      }
+    this.loadSystemInfo();
+
+    // Re-load system info when language changes to update landing message
+    effect(() => {
+      this.i18nService.currentLang(); // Register dependency
+      this.loadSystemInfo();
     });
 
     // Reactively fetch geolocation and recaptcha settings when admin status changes
@@ -348,6 +350,10 @@ export class SidenavComponent implements OnDestroy {
         this.systemService.getRecaptchaConfigIndex().subscribe({
           next: res => this.recaptchaConfigIndex.set(res.index),
           error: err => console.error('Failed to fetch reCAPTCHA config index', err)
+        });
+        this.systemService.getLandingMessageEnabled().subscribe({
+          next: res => this.landingMessageEnabled.set(res.enabled),
+          error: err => console.error('Failed to fetch landing message status', err)
         });
       }
     });
@@ -368,6 +374,22 @@ export class SidenavComponent implements OnDestroy {
           this.hideBanner();
         }
       }
+    });
+  }
+
+  private loadSystemInfo() {
+    this.systemService.getSystemInfo().subscribe({
+      next: info => {
+        this.systemInfo.set(info);
+        if (info.landingMessage) {
+          this.showBanner.set(true);
+          this.isHiding.set(false);
+          this.startBannerTimers();
+        } else {
+          this.showBanner.set(false);
+        }
+      },
+      error: err => console.error('Failed to load system info', err)
     });
   }
 
@@ -429,6 +451,21 @@ export class SidenavComponent implements OnDestroy {
       error: (err) => {
         this.snackBar.open('Failed to update reCAPTCHA setting', 'Close', { duration: 3000 });
         console.error('Error setting reCAPTCHA config', err);
+      }
+    });
+  }
+
+  toggleLandingMessage() {
+    const newState = !this.landingMessageEnabled();
+    this.systemService.setLandingMessageEnabled(newState).subscribe({
+      next: () => {
+        this.landingMessageEnabled.set(newState);
+        this.snackBar.open(`Landing message ${newState ? 'enabled' : 'disabled'}`, 'Close', { duration: 3000 });
+        this.loadSystemInfo(); // Refresh system info to update banner immediately
+      },
+      error: (err) => {
+        this.snackBar.open('Failed to update landing message setting', 'Close', { duration: 3000 });
+        console.error('Error toggling landing message', err);
       }
     });
   }

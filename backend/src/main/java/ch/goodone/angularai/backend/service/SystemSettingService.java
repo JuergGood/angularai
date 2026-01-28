@@ -10,6 +10,7 @@ public class SystemSettingService {
 
     public static final String GEOLOCATION_ENABLED = "geolocation_enabled";
     public static final String RECAPTCHA_CONFIG_INDEX = "recaptcha_config_index";
+    public static final String LANDING_MESSAGE_ENABLED = "landing_message_enabled";
 
     private final SystemSettingRepository repository;
 
@@ -59,6 +60,25 @@ public class SystemSettingService {
         SystemSetting setting = repository.findById(RECAPTCHA_CONFIG_INDEX)
                 .orElse(new SystemSetting(RECAPTCHA_CONFIG_INDEX, defaultRecaptchaConfig));
         setting.setValue(String.valueOf(index));
+        repository.save(setting);
+    }
+
+    @Transactional
+    public boolean isLandingMessageEnabled() {
+        return repository.findById(LANDING_MESSAGE_ENABLED)
+                .map(setting -> Boolean.parseBoolean(setting.getValue()))
+                .orElseGet(() -> {
+                    SystemSetting setting = new SystemSetting(LANDING_MESSAGE_ENABLED, "true");
+                    repository.save(setting);
+                    return true;
+                });
+    }
+
+    @Transactional
+    public void setLandingMessageEnabled(boolean enabled) {
+        SystemSetting setting = repository.findById(LANDING_MESSAGE_ENABLED)
+                .orElse(new SystemSetting(LANDING_MESSAGE_ENABLED, "true"));
+        setting.setValue(String.valueOf(enabled));
         repository.save(setting);
     }
 }

@@ -89,4 +89,28 @@ class SystemSettingServiceTest {
             s.getKey().equals(SystemSettingService.GEOLOCATION_ENABLED) && s.getValue().equals("true")
         ));
     }
+
+    @Test
+    void isLandingMessageEnabled_ReturnsTrue_ByDefault() {
+        when(repository.findById(SystemSettingService.LANDING_MESSAGE_ENABLED)).thenReturn(Optional.empty());
+        assertTrue(systemSettingService.isLandingMessageEnabled());
+    }
+
+    @Test
+    void isLandingMessageEnabled_ReturnsFalse_WhenDisabled() {
+        SystemSetting setting = new SystemSetting(SystemSettingService.LANDING_MESSAGE_ENABLED, "false");
+        when(repository.findById(SystemSettingService.LANDING_MESSAGE_ENABLED)).thenReturn(Optional.of(setting));
+        assertFalse(systemSettingService.isLandingMessageEnabled());
+    }
+
+    @Test
+    void setLandingMessageEnabled_UpdatesExistingSetting() {
+        SystemSetting setting = new SystemSetting(SystemSettingService.LANDING_MESSAGE_ENABLED, "true");
+        when(repository.findById(SystemSettingService.LANDING_MESSAGE_ENABLED)).thenReturn(Optional.of(setting));
+
+        systemSettingService.setLandingMessageEnabled(false);
+
+        assertEquals("false", setting.getValue());
+        verify(repository).save(setting);
+    }
 }

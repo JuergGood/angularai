@@ -26,7 +26,8 @@
     "RELEASE_NOTES": "Release Notes",
     "DASHBOARD_SHORT": "Dashboard",
     "GEOLOCATION": "Geolokalisierung",
-    "RECAPTCHA": "reCAPTCHA Konfiguration"
+    "RECAPTCHA": "reCAPTCHA Konfiguration",
+    "LANDING_MESSAGE": "Landing Message"
   },
   "DASHBOARD": {
     "TITLE": "Dashboard",

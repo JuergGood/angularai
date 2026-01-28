@@ -51,6 +51,19 @@ public class AdminSystemController {
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/landing-message")
+    public ResponseEntity<Map<String, Boolean>> getLandingMessageEnabled() {
+        return ResponseEntity.ok(Map.of("enabled", systemSettingService.isLandingMessageEnabled()));
+    }
+
+    @PostMapping("/landing-message")
+    public ResponseEntity<Void> setLandingMessageEnabled(@RequestBody Map<String, Boolean> body, Authentication authentication) {
+        boolean enabled = body.getOrDefault("enabled", true);
+        systemSettingService.setLandingMessageEnabled(enabled);
+        actionLogService.log(authentication.getName(), "SETTING_CHANGED", "Landing message enabled set to: " + enabled);
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/geolocation/test")
     public ResponseEntity<IpLocationService.GeoLocation> testGeolocation(@RequestParam String ip) {
         return ResponseEntity.ok(ipLocationService.lookup(ip));

@@ -121,6 +121,28 @@ class AdminSystemControllerTest {
     }
 
     @Test
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
+    void shouldGetLandingMessageEnabled() throws Exception {
+        when(systemSettingService.isLandingMessageEnabled()).thenReturn(true);
+
+        mockMvc.perform(get("/api/admin/settings/landing-message"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.enabled").value(true));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
+    void shouldSetLandingMessageEnabled() throws Exception {
+        mockMvc.perform(post("/api/admin/settings/landing-message")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("enabled", false))))
+                .andExpect(status().isOk());
+
+        verify(systemSettingService).setLandingMessageEnabled(false);
+        verify(actionLogService).log(eq("admin"), eq("SETTING_CHANGED"), contains("Landing message enabled set to: false"));
+    }
+
+    @Test
     @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     void shouldDenyAccessToNonAdmin() throws Exception {
         mockMvc.perform(get("/api/admin/settings/geolocation"))
