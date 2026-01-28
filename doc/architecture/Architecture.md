@@ -18,7 +18,7 @@ AngularAI is designed as a modular, scalable application with a clear separation
 - `android/`: Native Android application built with Jetpack Compose.
 - `docker-compose.yml`: Configuration for running the entire stack locally.
 - `doc/`: Detailed project documentation and design artifacts. Organized as follows:
-    - `doc/architecture/`: High-level design and hub.
+    - `doc/architecture/`: High-level design, core workflows, and hub.
     - `doc/user-guide/`: End-user documentation.
     - `doc/admin-guide/`: Administrative documentation.
     - `doc/development/`: Developer guides (frontend, backend, android, devops).

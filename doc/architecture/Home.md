@@ -5,7 +5,10 @@ AngularAI is a modern, full-stack application featuring an Angular frontend, a S
 ## 🚀 Getting Started
 
 - **[Quick Start & Installation](Home#running-the-application)**: How to get the project up and running locally using Docker.
+## 🏗 Architecture & Design
+
 - **[Architecture Overview](Architecture)**: High-level design, tech stack, and project structure.
+- **[Core Workflows & Use Cases](workflows/use-cases.md)**: Detailed visualization of system behavior and user interactions.
 
 ## 📖 Guides
 
@@ -29,7 +32,7 @@ AngularAI is a modern, full-stack application featuring an Angular frontend, a S
 
 ## 📜 History & Archive
 
-- **[Project History](../history/)**: Archive of old feature plans, proposals, and development logs.
+- **[Project History](../history/)**: Archive of historical feature plans, proposals, and development logs.
 
 ---
 
