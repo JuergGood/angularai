@@ -4,25 +4,27 @@ AngularAI is a modern, full-stack application featuring an Angular frontend, a S
 
 ## 🚀 Getting Started
 
-- **[Quick Start & Installation](Home#running-the-application)**: How to get the project up and running locally using Docker.
+- **[Quick Start & Installation](Home.md#running-the-application)**: How to get the project up and running locally using Docker.
 ## 🏗 Architecture & Design
 
-- **[Architecture Overview](Architecture)**: High-level design, tech stack, and project structure.
+- **[Architecture Overview](Architecture.md)**: High-level design, tech stack, and project structure.
 - **[Core Workflows & Use Cases](workflows/use-cases.md)**: Detailed visualization of system behavior and user interactions.
+- **[Component Interaction](workflows/registration-workflows.md)**: Sequence diagrams and technical flow descriptions.
+
+## 🛠 Development & Standards
+
+- **[Development Standards](../development/common/Development-Standards.md)**: Core principles, naming conventions, and best practices.
+- **[Frontend Development](../development/frontend/Frontend-Development.md)**: Angular signals, standalone components, and modern patterns.
+- **[Backend Development](../development/backend/Backend-Development.md)**: Spring Boot, JPA, and API details.
+- **[Android Development](../development/android/Android-Development.md)**: Details about the mobile companion application.
+- **[DevOps & Quality](../development/devops/sonar-integration.md)**: Static analysis, SonarCloud, and CI/CD.
+- **[MCP Server](../development/common/mcp-server.md)**: Information about the Model Context Protocol server.
 
 ## 📖 Guides
 
 - **[User Guide](../user-guide/user-guide.md)**: Instructions for end-users on how to use the web application.
 - **[Admin Guide](../admin-guide/admin-guide.md)**: Documentation for administrators regarding user management and system monitoring.
 - **[FAQ](../user-guide/faq.md)**: Frequently Asked Questions.
-
-## 🛠 Development
-
-- **[Frontend Development](../development/frontend/Frontend-Development.md)**: Angular signals, standalone components, and modern patterns.
-- **[Backend Development](../development/backend/Backend-Development.md)**: Spring Boot, JPA, and API details.
-- **[Android Development](../development/android/Android-Development.md)**: Details about the mobile companion application.
-- **[DevOps & Quality](../development/devops/sonar-integration.md)**: Static analysis, SonarCloud, and CI/CD.
-- **[MCP Server](../development/common/mcp-server.md)**: Information about the Model Context Protocol server.
 
 ## ☁️ Infrastructure & Deployment
 
@@ -32,7 +34,7 @@ AngularAI is a modern, full-stack application featuring an Angular frontend, a S
 
 ## 📜 History & Archive
 
-- **[Project History](../history/)**: Archive of historical feature plans, proposals, and development logs.
+- **[Project History](../history/todo.md)**: Archive of historical feature plans, proposals, and development logs.
 
 ---
 
