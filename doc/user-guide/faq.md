@@ -9,10 +9,13 @@ A: Register for an account, log in, and start creating tasks on the Task Managem
 
 ## Accounts and Security
 ### Q: I forgot my password. How can I reset it?
-A: Currently, password reset must be handled by an administrator. Please contact your system administrator.
+A: You can use the "Forgot Password" link on the login page. Enter your email address, and you will receive a link to reset your password. If you encounter any issues, please contact your system administrator.
 
 ### Q: Can I change my role?
-A: User roles can only be changed by an administrator via the User Administration panel.
+A: User roles (ROLE_USER, ROLE_ADMIN, ROLE_ADMIN_READ) can only be changed by an administrator via the User Administration panel.
+
+### Q: What is the ROLE_ADMIN_READ role?
+A: This role allows a user to view administrative data like user lists and system logs without the ability to modify or delete any information.
 
 ## Task Management
 ### Q: Can I reorder my tasks?
@@ -28,5 +31,5 @@ A:
 ### Q: The application is not loading. What should I do?
 A: Ensure that both the backend and frontend services are running. If you are using Docker, run `docker compose up` to start all services.
 
-### Q: I am getting an "Access Denied" error.
-A: This error occurs if you try to access a page for which you do not have the required permissions (e.g., trying to access User Administration as a regular user).
+### Q: Why can't I access the User Administration?
+A: User Administration and System Logs are only accessible to users with the `ROLE_ADMIN` or `ROLE_ADMIN_READ` roles.

@@ -11,6 +11,9 @@ This document outlines the best practices and standards for the AngularAI projec
     - All modules (Backend, Frontend, Android, Test Client) must share the same version.
     - Use `.\scripts\sync-version.ps1` to propagate version changes from the root `pom.xml` to other files (package.json, build.gradle, deployment scripts, and documentation).
 - **Build Integrity**: Ensure the project builds successfully (`mvn clean install`) before submitting changes.
+- **Automation & Scripts**:
+    - Always execute scripts and commands in a non-interactive mode. 
+    - When deleting directories in PowerShell, always use the `-Recurse` and `-Force` parameters (e.g., `Remove-Item -Path "path/to/dir" -Recurse -Force`) to avoid user interaction prompts.
 - **Testing**: Maintain high test coverage (>80%) for both frontend and backend at all times.
 - **Docker First**: Ensure all changes are compatible with the Docker-based deployment.
 - **Language**: Always communicate in English for all interactions, thoughts, and documentation, unless explicitly requested otherwise by the user.
