@@ -29,6 +29,10 @@ test.describe('Landing Message Feature', () => {
   test('should display landing message in English and German', async ({ page }) => {
     // 1. Check English (Default)
     await page.goto('/login');
+
+    // Wait for everything to be stable
+    await page.waitForLoadState('networkidle');
+
     const banner = page.locator('.landing-info-banner');
 
     // In our test environment, we'll try to wait for it, but if backend is down we can't do much.
@@ -42,17 +46,32 @@ test.describe('Landing Message Feature', () => {
 
     // 2. Switch to German
     // Click settings menu
-    await page.waitForSelector('.settings-button');
-    await page.click('.settings-button');
-    // Click Language menu item
-    await page.waitForSelector('button:has-text("Language"), button:has-text("Sprache")');
-    await page.click('button:has-text("Language"), button:has-text("Sprache")');
+    // Wait for everything to be stable and the button to be ready
+    await page.waitForLoadState('networkidle');
+    const settingsBtn = page.locator('button.settings-button').filter({ hasText: /Settings|Einstellungen|login/i }).last();
+    await settingsBtn.scrollIntoViewIfNeeded();
+    await settingsBtn.click({ force: true });
+
+    // Debug: take screenshot of open menu
+    await page.waitForTimeout(2000);
+    await page.screenshot({ path: 'e2e-screenshots/debug-menu-open.png' });
+
+    // Try to find ANY menu item first to see if menu is open
+    await expect(page.locator('.mat-mdc-menu-item').first()).toBeVisible({ timeout: 15000 });
+
+    // Click Language menu item - try more generic selector
+    const languageMenu = page.locator('.mat-mdc-menu-item').filter({ hasText: /Language|Sprache/ });
+    await languageMenu.click();
+
     // Click German
-    await page.waitForSelector('button:has-text("German"), button:has-text("Deutsch")');
-    await page.click('button:has-text("German"), button:has-text("Deutsch")');
+    const germanOption = page.locator('.mat-mdc-menu-item').filter({ hasText: /German|Deutsch/ });
+    await expect(germanOption).toBeVisible({ timeout: 10000 });
+    await germanOption.click();
 
     // Wait for the banner to update (the message should change)
-    await expect(banner).toBeVisible();
+    // The previous message was in English, now it should be in German
+    await expect(banner.locator('span').first()).not.toHaveText(englishMessage || '', { timeout: 10000 });
+
     const germanMessage = await banner.locator('span').first().textContent();
     console.log(`German Message: ${germanMessage}`);
     expect(germanMessage?.length).toBeGreaterThan(0);
@@ -64,6 +83,10 @@ test.describe('Landing Message Feature', () => {
   test('admin should be able to enable/disable landing message', async ({ page }) => {
     // 1. Login as Admin
     await page.goto('/login');
+
+    // Wait for everything to be stable
+    await page.waitForLoadState('networkidle');
+
     // Ensure the page is loaded
     await page.waitForSelector('.login-card');
 
@@ -80,10 +103,19 @@ test.describe('Landing Message Feature', () => {
     await expect(banner).toBeVisible({ timeout: 15000 });
 
     // 2. Disable landing message
-    await page.waitForSelector('.settings-button');
-    await page.click('.settings-button', { force: true });
+    await page.waitForLoadState('networkidle');
+    const adminSettingsBtn = page.locator('button.settings-button').filter({ has: page.locator('mat-icon:text("settings")') }).first();
+    await adminSettingsBtn.scrollIntoViewIfNeeded();
+    await adminSettingsBtn.click({ force: true });
+
+    // Wait for animation
+    await page.waitForTimeout(1000);
+
+    // Try to find ANY menu item first to see if menu is open
+    await expect(page.locator('.mat-mdc-menu-item').first()).toBeVisible({ timeout: 15000 });
+
     // Use a regex to be more flexible with the text and language
-    const toggleButton = page.locator('.mat-mdc-menu-item:has-text("Landing Message"), .mat-mdc-menu-item:has-text("Landing-Nachricht")');
+    const toggleButton = page.locator('.mat-mdc-menu-item').filter({ hasText: /Landing Message|Landing-Nachricht/ });
     await expect(toggleButton).toBeVisible({ timeout: 15000 });
 
     // Check if it's currently ON and toggle it
@@ -97,7 +129,8 @@ test.describe('Landing Message Feature', () => {
     await page.screenshot({ path: 'e2e-screenshots/landing-message-disabled.png' });
 
     // 3. Enable it back
-    await page.click('.settings-button');
+    await adminSettingsBtn.click({ force: true });
+    await page.waitForTimeout(1000);
     await toggleButton.click();
 
     // Wait for the banner to reappear
