@@ -47,6 +47,11 @@
           </div>
 
           <div class="form-actions">
+            @if (isDeletable()) {
+              <button mat-stroked-button color="warn" type="button" (click)="onDeleteAccount()" id="delete-btn">
+                {{ 'NAV.PROFILE_DELETE' | translate }}
+              </button>
+            }
             <button mat-flat-button color="primary" type="submit" id="save-btn" [disabled]="!profileForm.form.valid">
               {{ 'ADMIN.SAVE' | translate }}
             </button>

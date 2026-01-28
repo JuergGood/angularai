@@ -5,13 +5,16 @@ import { Router } from '@angular/router';
 import { User } from '../../models/user.model';
 import { UserService } from '../../services/user.service';
 import { AuthService } from '../../services/auth.service';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatDialog, MatDialogModule } from '@angular/material/dialog';
+import { ConfirmDialogComponent } from '../tasks/confirm-dialog.component';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-profile',
@@ -24,6 +27,8 @@ import { provideNativeDateAdapter } from '@angular/material/core';
     MatInputModule,
     MatButtonModule,
     MatDatepickerModule,
+    MatDialogModule,
+    MatSnackBarModule,
     TranslateModule
   ],
   providers: [provideNativeDateAdapter()],
@@ -73,7 +78,10 @@ export class ProfileComponent implements OnInit {
     private userService: UserService,
     private authService: AuthService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private dialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private translate: TranslateService
   ) {}
 
   ngOnInit() {
@@ -119,5 +127,33 @@ export class ProfileComponent implements OnInit {
   onLogout() {
     this.authService.logout();
     this.router.navigate(['/login']);
+  }
+
+  onDeleteAccount() {
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: { message: 'NAV.PROFILE_DELETE_CONFIRM' }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.userService.deleteCurrentUser().subscribe({
+          next: () => {
+            const successMsg = this.translate.instant('NAV.PROFILE_DELETED_SUCCESS');
+            this.snackBar.open(successMsg, 'OK', { duration: 5000 });
+            this.authService.logout();
+            this.router.navigate(['/login']);
+          },
+          error: (err) => {
+            console.error('Error deleting account:', err);
+            this.message = 'COMMON.ERROR';
+            this.cdr.detectChanges();
+          }
+        });
+      }
+    });
+  }
+
+  isDeletable(): boolean {
+    return this.user !== undefined && !['admin', 'admin-read', 'user'].includes(this.user.login);
   }
 }

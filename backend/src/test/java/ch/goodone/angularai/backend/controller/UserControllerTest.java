@@ -22,8 +22,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -81,5 +80,31 @@ class UserControllerTest {
                 .andExpect(jsonPath("$.firstName").value("Updated"))
                 .andExpect(jsonPath("$.email").value("updated@example.com"))
                 .andExpect(jsonPath("$.address").value("New Address"));
+    }
+
+    @Test
+    void deleteCurrentUser_shouldDelete_whenUserIsDeletable() throws Exception {
+        String login = "deletableuser";
+        String password = "password";
+        User user = new User("Deletable", "User", login, passwordEncoder.encode(password), "delete@example.com", LocalDate.of(1990, 1, 1), "Address", Role.ROLE_USER);
+
+        when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
+
+        mockMvc.perform(delete("/api/users/me")
+                        .with(httpBasic(login, password)))
+                .andExpect(status().isNoContent());
+    }
+
+    @Test
+    void deleteCurrentUser_shouldReturnForbidden_whenUserIsAdmin() throws Exception {
+        String login = "admin";
+        String password = "password";
+        User user = new User("Admin", "User", login, passwordEncoder.encode(password), "admin@example.com", LocalDate.of(1990, 1, 1), "Address", Role.ROLE_ADMIN);
+
+        when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
+
+        mockMvc.perform(delete("/api/users/me")
+                        .with(httpBasic(login, password)))
+                .andExpect(status().isForbidden());
     }
 }
