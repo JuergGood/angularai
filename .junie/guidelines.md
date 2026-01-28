@@ -5,6 +5,7 @@ This document outlines the best practices and standards for the AngularAI projec
 ## General Principles
 - **Modern Standards**: Use the latest stable versions of frameworks (Angular 21+, Spring Boot 4+). NEVER use deprecated methods, features, or syntax in any language (e.g., avoid `*ngIf` and `*ngFor` in Angular, use modern control flow instead).
 - **Consistency**: Follow existing naming conventions and project structure.
+- **Communication**: If there are doubts about the implementation or if better ways are identified, stop the implementation and ask the user before continuing.
 - **Centralized Versioning**: 
     - The **Root `pom.xml`** is the single source of truth for the project version.
     - All modules (Backend, Frontend, Android, Test Client) must share the same version.

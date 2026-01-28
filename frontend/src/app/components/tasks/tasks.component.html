@@ -29,11 +29,13 @@
 
   @if (filteredTasks.length > 0) {
     <div class="selection-toolbar">
-      <mat-checkbox (change)="toggleSelectAll($event.checked)"
-                    [checked]="isAllSelected()"
-                    [indeterminate]="isPartiallySelected()">
-        {{ 'TASKS.SELECT_ALL' | translate }}
-      </mat-checkbox>
+      <div class="selection-box-header">
+        <mat-checkbox (change)="toggleSelectAll($event.checked)"
+                      [checked]="isAllSelected()"
+                      [indeterminate]="isPartiallySelected()">
+        </mat-checkbox>
+      </div>
+      <span class="selection-label">{{ 'TASKS.SELECT_ALL' | translate }}</span>
     </div>
   }
 
@@ -130,12 +132,23 @@
   <div class="tasks-list" cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListDisabled]="activeFilter !== 'ALL'">
     @for (task of filteredTasks; track task.id) {
       <mat-card class="task-card" cdkDrag>
-        <div class="task-row" [class.compact]="viewMode === 'COMPACT'">
-          <mat-checkbox [checked]="isTaskSelected(task.id)" (change)="toggleTaskSelection(task.id)"></mat-checkbox>
+        <div class="task-row" [class.compact]="viewMode === 'COMPACT'" (click)="toggleActions($event, task)" [class.has-actions]="activeActionsTaskId === task.id">
+          <div class="selection-box">
+            <mat-checkbox [checked]="isTaskSelected(task.id)" (change)="toggleTaskSelection(task.id)"></mat-checkbox>
+          </div>
 
           <button mat-icon-button (click)="toggleTaskDone(task)" class="task-status-btn" [class.done]="task.status === 'DONE'">
-            <mat-icon>{{ task.status === 'DONE' ? 'check_box' : 'check_box_outline_blank' }}</mat-icon>
+            <mat-icon>{{ task.status === 'DONE' ? 'task_alt' : 'radio_button_unchecked' }}</mat-icon>
           </button>
+
+          <div class="task-actions">
+            <button mat-icon-button (click)="editTask(task)" [title]="'TASKS.EDIT_TASK' | translate">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button mat-icon-button color="warn" (click)="deleteTask(task)" [title]="'ADMIN.DELETE' | translate">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
 
           <div class="task-title-container" (dblclick)="startEditTitle(task)">
             @if (editingTitleId === task.id) {
@@ -162,15 +175,6 @@
             <span class="status-pill" [class]="'status-' + task.status.toLowerCase()" (click)="cycleStatus(task, $event)">
               {{ 'TASKS.STATUS.' + task.status | translate }}
             </span>
-          </div>
-
-          <div class="task-actions">
-            <button mat-icon-button (click)="editTask(task)" [title]="'TASKS.EDIT_TASK' | translate">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" (click)="deleteTask(task)" [title]="'ADMIN.DELETE' | translate">
-              <mat-icon>delete</mat-icon>
-            </button>
           </div>
         </div>
       </mat-card>

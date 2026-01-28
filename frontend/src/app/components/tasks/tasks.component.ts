@@ -82,6 +82,26 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
     .quick-add-container {
       width: 100%;
     }
+    .selection-toolbar {
+      margin-bottom: 12px;
+      padding: 0 16px;
+      display: flex;
+      align-items: center;
+    }
+
+    .selection-box-header {
+      width: 40px;
+      display: flex;
+      justify-content: center;
+      margin-right: 16px;
+    }
+
+    .selection-label {
+      font-size: 14px;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
     .bulk-actions-bar {
       display: flex;
       align-items: center;
@@ -117,6 +137,15 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
       padding: 12px 16px;
       gap: 12px;
     }
+
+    .selection-box {
+      width: 40px;
+      display: flex;
+      justify-content: center;
+      border-right: 1px solid #e5e7eb;
+      margin-right: 4px;
+    }
+
     .task-row.compact {
       padding: 4px 16px;
     }
@@ -128,9 +157,20 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
     }
     .task-status-btn {
       color: #9ca3af;
+      margin-right: -4px;
+      width: 40px;
+      height: 40px;
+    }
+    .task-status-btn mat-icon {
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
     }
     .task-status-btn.done {
       color: #10b981;
+    }
+    .task-status-btn:hover {
+      background-color: rgba(16, 185, 129, 0.1);
     }
     .task-title-container {
       flex: 1;
@@ -172,10 +212,10 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
       font-weight: 500;
       text-transform: uppercase;
     }
-    .priority-critical { background: #7f1d1d; color: #ffffff; }
-    .priority-high { background: var(--brand-weak); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); }
-    .priority-medium { background: rgba(245, 158, 11, 0.1); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.2); }
-    .priority-low { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); }
+    body.theme-dark .priority-low { background: #81c784 !important; color: #0b1220 !important; border: none !important; }
+    body.theme-dark .priority-medium { background: var(--brand) !important; color: #0b1220 !important; border: none !important; }
+    body.theme-dark .priority-high { background: #ffb74d !important; color: #0b1220 !important; border: none !important; }
+    body.theme-dark .priority-critical { background: #e57373 !important; color: #0b1220 !important; border: none !important; }
 
     .status-pill {
       font-size: 12px;
@@ -189,6 +229,11 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
     .status-in_progress { background: rgba(202, 138, 4, 0.1); color: #ca8a04; border: 1px solid rgba(202, 138, 4, 0.2); }
     .status-done { background: rgba(22, 163, 74, 0.1); color: #16a34a; border: 1px solid rgba(22, 163, 74, 0.2); }
     .status-archived { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); }
+
+    body.theme-dark .status-open { background: var(--surface-2) !important; color: var(--text-muted) !important; border-color: var(--border) !important; }
+    body.theme-dark .status-in_progress { background: var(--brand) !important; color: #0b1220 !important; border: none !important; }
+    body.theme-dark .status-done { background: #81c784 !important; color: #0b1220 !important; border: none !important; }
+    body.theme-dark .status-archived { background: #4db6ac !important; color: #0b1220 !important; border: none !important; }
 
     .add-task-btn {
       border-radius: 10px;
@@ -327,30 +372,38 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
       white-space: pre-wrap;
     }
     .task-actions {
-      position: absolute;
-      top: 16px;
-      right: 16px;
       display: flex;
-      gap: 4px;
+      gap: 0;
       opacity: 0;
       transition: opacity 0.2s ease;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 2px;
+      align-items: center;
     }
-    .task-card:hover .task-actions {
+    .task-row:hover .task-actions,
+    .task-row:focus-within .task-actions,
+    .task-row.has-actions .task-actions {
       opacity: 1;
     }
+    @media (hover: none) {
+      .task-actions {
+        opacity: 0.4;
+      }
+    }
     .task-actions button {
-      width: 36px;
-      height: 36px;
-      line-height: 36px;
+      width: 40px;
+      height: 40px;
+      line-height: 40px;
     }
     .task-actions mat-icon {
-      font-size: 18px;
-      width: 18px;
-      height: 18px;
+      font-size: 24px;
+      width: 24px;
+      height: 24px;
+      color: var(--text-muted);
+    }
+    .task-actions button:hover mat-icon {
+      color: var(--primary);
+    }
+    .task-actions button[color="warn"]:hover mat-icon {
+      color: #ef4444;
     }
 
     /* Chips */
@@ -367,6 +420,11 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
     .priority-medium { background: rgba(63, 81, 181, 0.14); color: var(--brand); }
     .priority-high { background: rgba(255, 152, 0, 0.16); color: #e65100; }
     .priority-critical { background: rgba(211, 47, 47, 0.12); color: #c62828; }
+
+    body.theme-dark .priority-low { background: #81c784 !important; color: #0b1220 !important; }
+    body.theme-dark .priority-medium { background: var(--brand) !important; color: #0b1220 !important; }
+    body.theme-dark .priority-high { background: #ffb74d !important; color: #0b1220 !important; }
+    body.theme-dark .priority-critical { background: #e57373 !important; color: #0b1220 !important; }
 
     .status-chip {
       padding: 4px 12px;
@@ -391,6 +449,11 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
       background: rgba(0, 150, 136, 0.1);
       color: #00796b;
     }
+
+    body.theme-dark .status-open { background: var(--surface-2) !important; color: var(--text-muted) !important; }
+    body.theme-dark .status-in_progress { background: var(--brand) !important; color: #0b1220 !important; }
+    body.theme-dark .status-completed { background: #81c784 !important; color: #0b1220 !important; }
+    body.theme-dark .status-archived { background: #4db6ac !important; color: #0b1220 !important; }
 
     .empty-message {
       text-align: center;
@@ -431,6 +494,8 @@ export class TasksComponent implements OnInit {
   activeFilter: SmartFilter = 'ALL';
   isOverdue = isOverdue;
   viewMode: 'COMFORTABLE' | 'COMPACT' = 'COMFORTABLE';
+
+  activeActionsTaskId: number | null = null;
 
   selectedTaskIds = signal<Set<number>>(new Set<number>());
 
@@ -487,6 +552,20 @@ export class TasksComponent implements OnInit {
 
   toggleViewMode(): void {
     this.viewMode = this.viewMode === 'COMFORTABLE' ? 'COMPACT' : 'COMFORTABLE';
+  }
+
+  toggleActions(event: MouseEvent, task: Task): void {
+    // If clicking a button or checkbox, don't toggle row actions
+    const target = event.target as HTMLElement;
+    if (target.closest('button') || target.closest('mat-checkbox') || target.closest('input')) {
+      return;
+    }
+
+    if (this.activeActionsTaskId === task.id) {
+      this.activeActionsTaskId = null;
+    } else {
+      this.activeActionsTaskId = task.id || null;
+    }
   }
 
   isTaskSelected(taskId: number | undefined): boolean {
@@ -569,7 +648,19 @@ export class TasksComponent implements OnInit {
   toggleTaskDone(task: Task): void {
     if (task.id) {
       const newStatus = task.status === TaskStatus.DONE ? TaskStatus.OPEN : TaskStatus.DONE;
-      this.taskService.patchTask(task.id, { status: newStatus }).subscribe();
+
+      // Optimistic UI update
+      const oldStatus = task.status;
+      task.status = newStatus;
+      this.cdr.detectChanges();
+
+      this.taskService.patchTask(task.id, { status: newStatus }).subscribe({
+        error: () => {
+          // Revert on error
+          task.status = oldStatus;
+          this.cdr.detectChanges();
+        }
+      });
     }
   }
 
@@ -579,7 +670,20 @@ export class TasksComponent implements OnInit {
       const statusCycle = [TaskStatus.OPEN, TaskStatus.IN_PROGRESS, TaskStatus.DONE, TaskStatus.ARCHIVED];
       const currentIndex = statusCycle.indexOf(task.status);
       const nextIndex = (currentIndex + 1) % statusCycle.length;
-      this.taskService.patchTask(task.id, { status: statusCycle[nextIndex] }).subscribe();
+      const newStatus = statusCycle[nextIndex];
+
+      // Optimistic UI update
+      const oldStatus = task.status;
+      task.status = newStatus;
+      this.cdr.detectChanges();
+
+      this.taskService.patchTask(task.id, { status: newStatus }).subscribe({
+        error: () => {
+          // Revert on error
+          task.status = oldStatus;
+          this.cdr.detectChanges();
+        }
+      });
     }
   }
 
