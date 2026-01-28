@@ -59,18 +59,24 @@ The Angular development server is configured to proxy `/api` requests to `http:/
 
 ## Documentation
 
-- [User Guide](doc/userguide/user-guide.md)
-- [Release Notes](doc/userguide/release-notes.md)
-- [Admin Guide](doc/userguide/admin-guide.md)
-- [FAQ](doc/userguide/faq.md)
+The project documentation is organized in the `doc/` directory. For a comprehensive overview, start with the **[Documentation Hub](doc/architecture/Home.md)**.
+
+### Core Guides
+- [User Guide](doc/user-guide/user-guide.md)
+- [Admin Guide](doc/admin-guide/admin-guide.md)
+- [Release Notes](doc/user-guide/release-notes.md)
+- [FAQ](doc/user-guide/faq.md)
+
+### Technical Details
+- [Architecture Overview](doc/architecture/Architecture.md)
+- [Frontend Development](doc/development/frontend/Frontend-Development.md)
+- [Backend Development](doc/development/backend/Backend-Development.md)
+- [Deployment & Infrastructure](doc/infrastructure/Deployment.md)
+
+### Deployment & Tools
 - [Confluence Export Script](scripts/md_to_confluence.py)
-- [Android Build Instructions](doc/ai/android/android-build-instructions.md)
-- [AWS Setup and Infrastructure](doc/ai/aws/aws_setup.md)
-- [PostgreSQL Setup](doc/ai/backend/postgres_setup.md)
-- [ECS Fargate Configuration](doc/ai/aws/aws_fargate_config.md)
-- [Creating a Backend Target Group](doc/ai/aws/aws_create_target_group.md)
-- [ALB and Connectivity Troubleshooting](doc/ai/aws/aws_alb_troubleshooting.md)
-- [Pushing Images to Amazon ECR](doc/ai/aws/aws_ecs_push_instructions.md)
+- [Android Development](doc/development/android/Android-Development.md)
+- [PostgreSQL Setup](doc/development/backend/postgres_setup.md)
 
 ## Release Process
 

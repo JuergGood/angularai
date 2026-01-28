@@ -1,29 +1,35 @@
-# Welcome to the AngularAI Wiki
+# Welcome to the AngularAI Documentation Hub
 
-AngularAI is a modern, full-stack application featuring an Angular frontend, a Spring Boot backend, and an Android client. This wiki serves as the central hub for all technical and user documentation.
+AngularAI is a modern, full-stack application featuring an Angular frontend, a Spring Boot backend, and an Android client. This hub serves as the central point for all technical and user documentation.
 
-## Getting Started
+## 🚀 Getting Started
 
-- **[Installation & Run](Home#running-the-application)**: How to get the project up and running locally using Docker.
-- **[User Guide](User-Guide)**: Instructions for end-users on how to use the web application.
-- **[Admin Guide](Admin-Guide)**: Documentation for administrators regarding user management and system monitoring.
-- **[Android App](Android-App)**: Details about the mobile companion application.
+- **[Quick Start & Installation](Home#running-the-application)**: How to get the project up and running locally using Docker.
+- **[Architecture Overview](Architecture)**: High-level design, tech stack, and project structure.
 
-## Development & Architecture
+## 📖 Guides
 
-- **[Project Structure](Architecture#project-structure)**: Overview of the codebase and its components.
-- **[Tech Stack](Architecture#tech-stack)**: The technologies behind AngularAI.
-- **[Backend Development](Backend-Development)**: Spring Boot, JPA, and API details.
-- **[Frontend Development](Frontend-Development)**: Angular signals, standalone components, and modern patterns.
+- **[User Guide](../user-guide/user-guide.md)**: Instructions for end-users on how to use the web application.
+- **[Admin Guide](../admin-guide/admin-guide.md)**: Documentation for administrators regarding user management and system monitoring.
+- **[FAQ](../user-guide/faq.md)**: Frequently Asked Questions.
 
-## Deployment & Infrastructure
+## 🛠 Development
 
-- **[AWS Deployment](Deployment#aws-deployment)**: Detailed instructions on deploying to AWS ECS Fargate.
-- **[Docker Configuration](Deployment#docker)**: Information about the containerized environment.
+- **[Frontend Development](../development/frontend/Frontend-Development.md)**: Angular signals, standalone components, and modern patterns.
+- **[Backend Development](../development/backend/Backend-Development.md)**: Spring Boot, JPA, and API details.
+- **[Android Development](../development/android/Android-Development.md)**: Details about the mobile companion application.
+- **[DevOps & Quality](../development/devops/sonar-integration.md)**: Static analysis, SonarCloud, and CI/CD.
+- **[MCP Server](../development/common/mcp-server.md)**: Information about the Model Context Protocol server.
 
-## Support
+## ☁️ Infrastructure & Deployment
 
-- **[FAQ](FAQ)**: Frequently Asked Questions.
+- **[Docker Configuration](../infrastructure/Deployment.md#docker)**: Information about the containerized environment.
+- **[AWS Deployment](../infrastructure/Deployment.md#aws-deployment)**: Detailed instructions on deploying to AWS ECS Fargate.
+- **[Kubernetes Setup](../infrastructure/k8s/k8s-setup.md)**: Documentation for K8s deployments.
+
+## 📜 History & Archive
+
+- **[Project History](../history/)**: Archive of old feature plans, proposals, and development logs.
 
 ---
 
