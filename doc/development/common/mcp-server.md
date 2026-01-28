@@ -33,6 +33,8 @@ The MCP server will be a small, lightweight service that exposes a set of tools 
 4. **Configuration**: Create an `mcp-config.json` for easy client setup.
 5. **Testing**: Verify tools using an MCP inspector or compatible IDE.
 
+For an evaluation of whether this MCP server is needed for your specific setup, see [MCP vs. Junie Analysis](./mcp-analysis.md).
+
 ## 5. Overhead Analysis
 
 ### Development Overhead

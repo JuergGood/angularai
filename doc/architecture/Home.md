@@ -34,7 +34,7 @@ AngularAI is a modern, full-stack application featuring an Angular frontend, a S
 
 ## 📜 History & Archive
 
-- **[Project History](../history/todo.md)**: Archive of historical feature plans, proposals, and development logs.
+- **[Project History](../history/README.md)**: Structured archive of historical feature plans, architectural proposals, and development milestones.
 
 ---
 

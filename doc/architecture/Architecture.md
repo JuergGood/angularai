@@ -23,7 +23,7 @@ AngularAI is designed as a modular, scalable application with a clear separation
     - `doc/admin-guide/`: Administrative documentation.
     - `doc/development/`: Developer guides and technical standards.
     - `doc/infrastructure/`: Deployment and infrastructure setup.
-    - `doc/history/`: Project archive and historical plans.
+    - `doc/history/`: Structured project archive, including feature plans, architectural proposals, and milestones.
 - `scripts/`: Utility scripts for deployment and maintenance.
 
 ## Quality Assurance

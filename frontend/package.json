@@ -9,7 +9,9 @@
                     "test":  "vitest run --coverage",
                     "cypress:open":  "cypress open",
                     "cypress:run":  "cypress run",
-                    "coverage:report":  "nyc report --reporter=lcov --reporter=text-summary"
+                    "coverage:report":  "nyc report --reporter=lcov --reporter=text-summary",
+                    "lint": "eslint .",
+                    "prepare": "husky install"
                 },
     "prettier":  {
                      "printWidth":  100,
@@ -43,6 +45,10 @@
                          "zone.js":  "^0.15.1"
                      },
     "devDependencies":  {
+                            "eslint": "^9.19.0",
+                            "husky": "^9.1.7",
+                            "lint-staged": "^15.4.3",
+                            "typescript-eslint": "^8.21.0",
                             "@analogjs/vite-plugin-angular":  "^1.9.0",
                             "@analogjs/vitest-angular":  "^1.9.0",
                             "@angular-builders/custom-webpack":  "^21.0.3",
@@ -69,5 +75,9 @@
                             "typescript":  "~5.9.2",
                             "vite":  "^6.1.1",
                             "vitest":  "^4.0.16"
-                        }
+                        },
+    "lint-staged": {
+        "*.{js,ts}": "eslint --fix",
+        "*.{html,css,json,md}": "prettier --write"
+    }
 }
