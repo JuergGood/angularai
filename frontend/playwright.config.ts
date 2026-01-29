@@ -27,7 +27,7 @@ export default defineConfig({
     { name: 'setup', testMatch: /auth\.setup\.ts/ },
     {
       name: 'no-auth',
-      testMatch: /verification-flow\.spec\.ts|registration-extensive\.spec\.ts|password-recovery\.spec\.ts|landing-message\.spec\.ts/,
+      testMatch: /verification-flow\.spec\.ts|registration-extensive\.spec\.ts|password-recovery\.spec\.ts|landing-message\.spec\.ts|registration-docs\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
         storageState: { cookies: [], origins: [] },

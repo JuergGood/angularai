@@ -36,12 +36,12 @@ class EmailServiceTest {
         String baseUrl = "http://localhost:4200/api/auth/verify?token=test-token";
         
         // English
-        String enHtml = (String) ReflectionTestUtils.invokeMethod(emailService, "getVerificationEmailHtml", baseUrl, false);
+        String enHtml = (String) ReflectionTestUtils.invokeMethod(emailService, "getEmailHtml", baseUrl, false, true);
         saveEmailToFile("verification-en.html", enHtml);
         assertTrue(enHtml.contains("Welcome to GoodOne"));
         
         // German
-        String deHtml = (String) ReflectionTestUtils.invokeMethod(emailService, "getVerificationEmailHtml", baseUrl, true);
+        String deHtml = (String) ReflectionTestUtils.invokeMethod(emailService, "getEmailHtml", baseUrl, true, true);
         saveEmailToFile("verification-de-ch.html", deHtml);
         assertTrue(deHtml.contains("Willkommen bei GoodOne"));
     }

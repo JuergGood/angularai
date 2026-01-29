@@ -120,7 +120,7 @@
   },
   "ADMIN": {
     "TITLE": "User Administration",
-    "ADD_USER": "Sign Up",
+    "SIGN_UP": "Sign Up",
     "CREATE_USER": "Create New User",
     "EDIT_USER": "Edit User",
     "VIEW_USER": "View User",

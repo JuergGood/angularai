@@ -38,6 +38,9 @@ public class AuthController {
     private final VerificationTokenRepository verificationTokenRepository;
     private final PasswordRecoveryTokenRepository passwordRecoveryTokenRepository;
 
+    private static final String INVALID_VALUE = "invalid";
+    private static final String ERROR_VALUE = "error";
+
     @org.springframework.beans.factory.annotation.Value("${app.base-url}")
     private String baseUrl;
 
@@ -112,6 +115,38 @@ public class AuthController {
         if (userDTO == null) {
             return ResponseEntity.badRequest().body("Invalid request data");
         }
+        
+        ResponseEntity<Object> validationResponse = validateRegistration(userDTO);
+        if (validationResponse != null) {
+            return validationResponse;
+        }
+
+        cleanupPendingUser(userDTO.getLogin(), userDTO.getEmail());
+
+        User user = new User();
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setLogin(userDTO.getLogin());
+        user.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        user.setEmail(userDTO.getEmail());
+        user.setPhone(userDTO.getPhone() != null && !userDTO.getPhone().isBlank() ? userDTO.getPhone() : null);
+        user.setBirthDate(userDTO.getBirthDate());
+        user.setAddress(userDTO.getAddress());
+        user.setRole(ch.goodone.angularai.backend.model.Role.ROLE_ADMIN_READ);
+        user.setStatus(ch.goodone.angularai.backend.model.UserStatus.PENDING);
+
+        userRepository.save(user);
+        
+        VerificationToken verificationToken = new VerificationToken(user);
+        verificationTokenRepository.save(verificationToken);
+        
+        emailService.sendVerificationEmail(user.getEmail(), verificationToken.getToken());
+
+        actionLogService.log(user.getLogin(), "USER_REGISTERED", "User registered, pending verification. Token: " + verificationToken.getToken());
+        return ResponseEntity.ok(UserDTO.fromEntity(user));
+    }
+
+    private ResponseEntity<Object> validateRegistration(UserDTO userDTO) {
         if (!captchaService.verify(userDTO.getRecaptchaToken())) {
             return ResponseEntity.badRequest().body("reCAPTCHA verification failed");
         }
@@ -136,21 +171,25 @@ public class AuthController {
         if (!userDTO.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             return ResponseEntity.badRequest().body("Invalid email format");
         }
-        if (userRepository.findByLogin(userDTO.getLogin()).isPresent()) {
-            User existingUser = userRepository.findByLogin(userDTO.getLogin()).get();
-            if (existingUser.getStatus() != ch.goodone.angularai.backend.model.UserStatus.PENDING) {
-                return ResponseEntity.badRequest().body("User already exists");
-            }
-        }
-        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
-            User existingUser = userRepository.findByEmail(userDTO.getEmail()).get();
-            if (existingUser.getStatus() != ch.goodone.angularai.backend.model.UserStatus.PENDING) {
-                return ResponseEntity.badRequest().body("Email already exists");
-            }
-        }
+        
+        return validateUserExists(userDTO.getLogin(), userDTO.getEmail());
+    }
 
+    private ResponseEntity<Object> validateUserExists(String login, String email) {
+        java.util.Optional<User> byLogin = userRepository.findByLogin(login);
+        if (byLogin.isPresent() && byLogin.get().getStatus() != ch.goodone.angularai.backend.model.UserStatus.PENDING) {
+            return ResponseEntity.badRequest().body("User already exists");
+        }
+        java.util.Optional<User> byEmail = userRepository.findByEmail(email);
+        if (byEmail.isPresent() && byEmail.get().getStatus() != ch.goodone.angularai.backend.model.UserStatus.PENDING) {
+            return ResponseEntity.badRequest().body("Email already exists");
+        }
+        return null;
+    }
+
+    private void cleanupPendingUser(String login, String email) {
         // Handle re-registration: clean up pending user with same login or email
-        userRepository.findByLogin(userDTO.getLogin()).ifPresent(u -> {
+        userRepository.findByLogin(login).ifPresent(u -> {
             if (u.getStatus() == ch.goodone.angularai.backend.model.UserStatus.PENDING) {
                 actionLogService.log(u.getLogin(), "USER_REREGISTER_CLEANUP", "Cleaning up pending user for re-registration by login: " + u.getLogin());
                 verificationTokenRepository.deleteByUser(u);
@@ -158,7 +197,7 @@ public class AuthController {
                 userRepository.flush();
             }
         });
-        userRepository.findByEmail(userDTO.getEmail()).ifPresent(u -> {
+        userRepository.findByEmail(email).ifPresent(u -> {
             if (u.getStatus() == ch.goodone.angularai.backend.model.UserStatus.PENDING) {
                 actionLogService.log(u.getLogin(), "USER_REREGISTER_CLEANUP", "Cleaning up pending user for re-registration by email: " + u.getEmail());
                 verificationTokenRepository.deleteByUser(u);
@@ -166,29 +205,6 @@ public class AuthController {
                 userRepository.flush();
             }
         });
-
-        User user = new User(
-                userDTO.getFirstName(),
-                userDTO.getLastName(),
-                userDTO.getLogin(),
-                passwordEncoder.encode(userDTO.getPassword()),
-                userDTO.getEmail(),
-                userDTO.getPhone() != null && !userDTO.getPhone().isBlank() ? userDTO.getPhone() : null,
-                userDTO.getBirthDate(),
-                userDTO.getAddress(),
-                ch.goodone.angularai.backend.model.Role.ROLE_ADMIN_READ,
-                ch.goodone.angularai.backend.model.UserStatus.PENDING
-        );
-
-        userRepository.save(user);
-        
-        VerificationToken verificationToken = new VerificationToken(user);
-        verificationTokenRepository.save(verificationToken);
-        
-        emailService.sendVerificationEmail(user.getEmail(), verificationToken.getToken());
-
-        actionLogService.log(user.getLogin(), "USER_REGISTERED", "User registered, pending verification. Token: " + verificationToken.getToken());
-        return ResponseEntity.ok(UserDTO.fromEntity(user));
     }
 
     @GetMapping("/verify")
@@ -210,7 +226,7 @@ public class AuthController {
                 })
                 .orElseGet(() -> {
                     logger.error("Token NOT found in database");
-                    return ResponseEntity.badRequest().body(java.util.Map.of("reason", "invalid"));
+                    return ResponseEntity.badRequest().body(java.util.Map.of("reason", INVALID_VALUE));
                 });
     }
 
@@ -260,21 +276,21 @@ public class AuthController {
 
     @PostMapping("/reset-password")
     @Transactional
-    public ResponseEntity<?> resetPassword(@RequestBody Map<String, String> payload) {
+    public ResponseEntity<Object> resetPassword(@RequestBody Map<String, String> payload) {
         String token = payload.get("token");
         String newPassword = payload.get("password");
         
         logger.info("Password reset attempt with token");
         
         if (token == null) {
-            return ResponseEntity.badRequest().body(Map.of("error", "invalid"));
+            return ResponseEntity.badRequest().body(Map.of(ERROR_VALUE, INVALID_VALUE));
         }
 
         return passwordRecoveryTokenRepository.findByToken(token)
-                .map(t -> {
+                .<ResponseEntity<Object>>map(t -> {
                     if (t.isExpired()) {
                         logger.warn("Password recovery token expired");
-                        return ResponseEntity.badRequest().body(Map.of("error", "expired"));
+                        return ResponseEntity.badRequest().body(Map.of(ERROR_VALUE, "expired"));
                     }
                     
                     User user = t.getUser();
@@ -290,7 +306,7 @@ public class AuthController {
                 })
                 .orElseGet(() -> {
                     logger.error("Invalid password recovery token");
-                    return ResponseEntity.badRequest().body(Map.of("error", "invalid"));
+                    return ResponseEntity.badRequest().body(Map.of(ERROR_VALUE, INVALID_VALUE));
                 });
     }
 

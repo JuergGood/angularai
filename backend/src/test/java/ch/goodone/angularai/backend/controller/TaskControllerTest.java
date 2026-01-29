@@ -68,7 +68,13 @@ class TaskControllerTest {
                 .apply(SecurityMockMvcConfigurers.springSecurity())
                 .build();
 
-        testUser = new User("Test", "User", "testuser", "password", "test@example.com", LocalDate.now(), "Address", Role.ROLE_USER);
+        testUser = new User("testuser", "test@example.com");
+        testUser.setFirstName("Test");
+        testUser.setLastName("User");
+        testUser.setPassword("password");
+        testUser.setBirthDate(LocalDate.now());
+        testUser.setAddress("Address");
+        testUser.setRole(Role.ROLE_USER);
         testUser.setId(1L);
 
         testTaskDTO = new TaskDTO(1L, "Test Task", "Description", LocalDate.now(), Priority.MEDIUM, "OPEN", 0);
@@ -79,7 +85,7 @@ class TaskControllerTest {
     @Test
     @WithMockUser(username = "testuser")
     void shouldGetTasks() throws Exception {
-        when(taskService.getTasks(eq(testUser), any(), any(), any())).thenReturn(Collections.singletonList(testTaskDTO));
+        when(taskService.getTasks(testUser, null, null, null)).thenReturn(Collections.singletonList(testTaskDTO));
 
         mockMvc.perform(get("/api/tasks"))
                 .andExpect(status().isOk())
@@ -89,7 +95,7 @@ class TaskControllerTest {
     @Test
     @WithMockUser(username = "testuser")
     void shouldGetTasksWithSmartFilter() throws Exception {
-        when(taskService.getTasks(eq(testUser), any(), eq("TODAY"), any())).thenReturn(Collections.singletonList(testTaskDTO));
+        when(taskService.getTasks(testUser, null, "TODAY", null)).thenReturn(Collections.singletonList(testTaskDTO));
 
         mockMvc.perform(get("/api/tasks?smartFilter=TODAY"))
                 .andExpect(status().isOk());
@@ -104,7 +110,7 @@ class TaskControllerTest {
 
         TaskDTO resultDTO = new TaskDTO(1L, "New Title", "Description", LocalDate.now(), Priority.MEDIUM, "DONE", 0);
         
-        when(taskService.patchTask(eq(testUser), eq(1L), any())).thenReturn(Optional.of(resultDTO));
+        when(taskService.patchTask(any(), eq(1L), any())).thenReturn(Optional.of(resultDTO));
 
         mockMvc.perform(patch("/api/tasks/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -117,7 +123,7 @@ class TaskControllerTest {
     @Test
     @WithMockUser(username = "testuser")
     void shouldReturnNotFoundWhenPatchingNonExistentTask() throws Exception {
-        when(taskService.patchTask(eq(testUser), eq(1L), any())).thenReturn(Optional.empty());
+        when(taskService.patchTask(any(), any(), any())).thenReturn(Optional.empty());
         mockMvc.perform(patch("/api/tasks/1")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}"))
@@ -128,7 +134,7 @@ class TaskControllerTest {
     @WithMockUser(username = "testuser")
     void shouldCreateTask() throws Exception {
         TaskDTO inputDTO = new TaskDTO(null, "New Task", "Desc", LocalDate.now(), Priority.HIGH, "OPEN", 0);
-        when(taskService.createTask(eq(testUser), any())).thenReturn(testTaskDTO);
+        when(taskService.createTask(any(), any())).thenReturn(testTaskDTO);
 
         mockMvc.perform(post("/api/tasks")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -140,7 +146,7 @@ class TaskControllerTest {
     @Test
     @WithMockUser(username = "testuser")
     void shouldDeleteTask() throws Exception {
-        when(taskService.deleteTask(eq(testUser), eq(1L))).thenReturn(true);
+        when(taskService.deleteTask(testUser, 1L)).thenReturn(true);
 
         mockMvc.perform(delete("/api/tasks/1"))
                 .andExpect(status().isNoContent());
@@ -190,7 +196,7 @@ class TaskControllerTest {
 
         TaskDTO resultDTO = new TaskDTO(1L, "Updated Title", "Description", LocalDate.now(), Priority.MEDIUM, "OPEN", 0);
 
-        when(taskService.updateTask(eq(testUser), eq(1L), any())).thenReturn(Optional.of(resultDTO));
+        when(taskService.updateTask(any(), any(), any())).thenReturn(Optional.of(resultDTO));
 
         mockMvc.perform(put("/api/tasks/1")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -205,7 +211,7 @@ class TaskControllerTest {
         TaskDTO patch = new TaskDTO();
         patch.setStatus("ARCHIVED");
 
-        when(taskService.bulkPatchTasks(eq(testUser), any(), any())).thenReturn(Collections.singletonList(testTaskDTO));
+        when(taskService.bulkPatchTasks(any(), any(), any())).thenReturn(Collections.singletonList(testTaskDTO));
 
         mockMvc.perform(patch("/api/tasks/bulk")
                 .contentType(MediaType.APPLICATION_JSON)

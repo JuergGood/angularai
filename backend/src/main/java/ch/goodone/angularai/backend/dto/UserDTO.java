@@ -26,15 +26,7 @@ public class UserDTO {
 
     public UserDTO() {}
 
-    public UserDTO(Long id, String firstName, String lastName, String login, String email, LocalDate birthDate, String address, String role) {
-        this(id, firstName, lastName, login, email, "", "ACTIVE", birthDate, address, role, null);
-    }
-
     public UserDTO(Long id, String firstName, String lastName, String login, String email, String phone, String status, LocalDate birthDate, String address, String role) {
-        this(id, firstName, lastName, login, email, phone, status, birthDate, address, role, null);
-    }
-
-    public UserDTO(Long id, String firstName, String lastName, String login, String email, String phone, String status, LocalDate birthDate, String address, String role, java.time.LocalDateTime createdAt) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -45,23 +37,26 @@ public class UserDTO {
         this.birthDate = birthDate;
         this.address = address;
         this.role = role;
-        this.createdAt = createdAt;
+    }
+
+    public UserDTO(Long id, String firstName, String lastName, String login, String email, LocalDate birthDate, String address, String role) {
+        this(id, firstName, lastName, login, email, null, "ACTIVE", birthDate, address, role);
     }
 
     public static UserDTO fromEntity(User user) {
-        return new UserDTO(
-                user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getLogin(),
-                user.getEmail(),
-                user.getPhone(),
-                user.getStatus() != null ? user.getStatus().name() : null,
-                user.getBirthDate(),
-                user.getAddress(),
-                user.getRole() != null ? user.getRole().name() : null,
-                user.getCreatedAt()
-        );
+        UserDTO dto = new UserDTO();
+        dto.setId(user.getId());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setLogin(user.getLogin());
+        dto.setEmail(user.getEmail());
+        dto.setPhone(user.getPhone());
+        dto.setStatus(user.getStatus() != null ? user.getStatus().name() : null);
+        dto.setBirthDate(user.getBirthDate());
+        dto.setAddress(user.getAddress());
+        dto.setRole(user.getRole() != null ? user.getRole().name() : null);
+        dto.setCreatedAt(user.getCreatedAt());
+        return dto;
     }
 
     // Getters and Setters

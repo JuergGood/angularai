@@ -6,6 +6,8 @@ This document describes the technical workflows for user management in the Angul
 
 The user registration process ensures that new users are verified via email and that the system is protected against automated registrations.
 
+For a step-by-step visual guide with screenshots, see the [User Registration UI Guide](../../user-guide/workflows/registration-ui-guide.md).
+
 ### 1.1. Registration Sequence Diagram
 
 ```mermaid

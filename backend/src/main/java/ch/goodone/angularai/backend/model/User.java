@@ -50,8 +50,11 @@ public class User {
 
     public User() {}
 
-    public User(String firstName, String lastName, String login, String password, String email, LocalDate birthDate, String address, Role role) {
-        this(firstName, lastName, login, password, email, null, birthDate, address, role, UserStatus.ACTIVE);
+    public User(String login, String email) {
+        this.login = login;
+        this.email = email;
+        this.status = UserStatus.ACTIVE;
+        this.createdAt = java.time.LocalDateTime.now();
     }
 
     public User(String firstName, String lastName, String login, String password, String email, String phone, LocalDate birthDate, String address, Role role, UserStatus status) {
@@ -66,6 +69,10 @@ public class User {
         this.role = role;
         this.status = status;
         this.createdAt = java.time.LocalDateTime.now();
+    }
+
+    public User(String firstName, String lastName, String login, String password, String email, LocalDate birthDate, String address, Role role) {
+        this(firstName, lastName, login, password, email, null, birthDate, address, role, UserStatus.ACTIVE);
     }
 
     @PrePersist

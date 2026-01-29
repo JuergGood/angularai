@@ -55,60 +55,44 @@ public class DataInitializer {
                 if (userMail.equals(adminMail)) userMail = "user-" + userMail;
                 if (adminReadMail.equals(adminMail) || adminReadMail.equals(userMail)) adminReadMail = "read-" + adminReadMail;
 
-                User admin = new User(
-                        "Admin",
-                        "User",
-                        "admin",
-                        passwordEncoder.encode(adminPassword),
-                        adminMail,
-                        "+41791234567",
-                        LocalDate.of(1990, 1, 1),
-                        "123 Main St",
-                        ch.goodone.angularai.backend.model.Role.ROLE_ADMIN,
-                        ch.goodone.angularai.backend.model.UserStatus.ACTIVE
-                );
+                User admin = new User("admin", adminMail);
+                admin.setFirstName("Admin");
+                admin.setLastName("User");
+                admin.setPassword(passwordEncoder.encode(adminPassword));
+                admin.setPhone("+41791234567");
+                admin.setBirthDate(LocalDate.of(1990, 1, 1));
+                admin.setAddress("123 Main St");
+                admin.setRole(ch.goodone.angularai.backend.model.Role.ROLE_ADMIN);
                 admin = userRepository.save(admin);
 
-                User user = new User(
-                        "Normal",
-                        "User",
-                        "user",
-                        passwordEncoder.encode(userPassword),
-                        userMail,
-                        "+41797654321",
-                        LocalDate.of(1995, 5, 5),
-                        "456 User Ave",
-                        ch.goodone.angularai.backend.model.Role.ROLE_USER,
-                        ch.goodone.angularai.backend.model.UserStatus.ACTIVE
-                );
+                User user = new User("user", userMail);
+                user.setFirstName("Normal");
+                user.setLastName("User");
+                user.setPassword(passwordEncoder.encode(userPassword));
+                user.setPhone("+41797654321");
+                user.setBirthDate(LocalDate.of(1995, 5, 5));
+                user.setAddress("456 User Ave");
+                user.setRole(ch.goodone.angularai.backend.model.Role.ROLE_USER);
                 userRepository.save(user);
                 
-                User adminRead = new User(
-                        "Read-Only",
-                        "Admin",
-                        "admin-read",
-                        passwordEncoder.encode(adminReadPassword),
-                        adminReadMail,
-                        "+41790000000",
-                        LocalDate.of(1992, 2, 2),
-                        "789 Read St",
-                        ch.goodone.angularai.backend.model.Role.ROLE_ADMIN_READ,
-                        ch.goodone.angularai.backend.model.UserStatus.ACTIVE
-                );
+                User adminRead = new User("admin-read", adminReadMail);
+                adminRead.setFirstName("Read-Only");
+                adminRead.setLastName("Admin");
+                adminRead.setPassword(passwordEncoder.encode(adminReadPassword));
+                adminRead.setPhone("+41790000000");
+                adminRead.setBirthDate(LocalDate.of(1992, 2, 2));
+                adminRead.setAddress("789 Read St");
+                adminRead.setRole(ch.goodone.angularai.backend.model.Role.ROLE_ADMIN_READ);
                 userRepository.save(adminRead);
                 
-                User user2 = new User(
-                        "Test",
-                        "User 2",
-                        "user2",
-                        passwordEncoder.encode(user2Password),
-                        "user2@system.local",
-                        "+41792222222",
-                        LocalDate.of(1998, 8, 8),
-                        "222 Test St",
-                        ch.goodone.angularai.backend.model.Role.ROLE_USER,
-                        ch.goodone.angularai.backend.model.UserStatus.ACTIVE
-                );
+                User user2 = new User("user2", "user2@system.local");
+                user2.setFirstName("Test");
+                user2.setLastName("User 2");
+                user2.setPassword(passwordEncoder.encode(user2Password));
+                user2.setPhone("+41792222222");
+                user2.setBirthDate(LocalDate.of(1998, 8, 8));
+                user2.setAddress("222 Test St");
+                user2.setRole(ch.goodone.angularai.backend.model.Role.ROLE_USER);
                 userRepository.save(user2);
 
                 Task task1 = new Task("Setup Project", "Initial project setup with Spring Boot", LocalDate.now().plusDays(1), Priority.HIGH, admin);

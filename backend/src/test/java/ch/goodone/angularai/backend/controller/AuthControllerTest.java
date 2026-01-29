@@ -74,7 +74,15 @@ class AuthControllerTest {
     void login_shouldReturnUser_whenAuthenticated() throws Exception {
         String login = "admin";
         String password = "password";
-        User user = new User("Admin", "User", login, passwordEncoder.encode(password), "admin@example.com", "+41791234567", LocalDate.of(1980, 1, 1), "Admin Home", Role.ROLE_ADMIN, ch.goodone.angularai.backend.model.UserStatus.ACTIVE);
+        User user = new User(login, "admin@example.com");
+        user.setFirstName("Admin");
+        user.setLastName("User");
+        user.setPassword(passwordEncoder.encode(password));
+        user.setPhone("+41791234567");
+        user.setBirthDate(LocalDate.of(1980, 1, 1));
+        user.setAddress("Admin Home");
+        user.setRole(Role.ROLE_ADMIN);
+        user.setStatus(ch.goodone.angularai.backend.model.UserStatus.ACTIVE);
         
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
 

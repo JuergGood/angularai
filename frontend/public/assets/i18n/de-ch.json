@@ -120,7 +120,7 @@
   },
   "ADMIN": {
     "TITLE": "Benutzerverwaltung",
-    "ADD_USER": "Registrieren",
+    "SIGN_UP": "Registrieren",
     "CREATE_USER": "Neuen Benutzer erstellen",
     "EDIT_USER": "Benutzer bearbeiten",
     "VIEW_USER": "Benutzer anzeigen",

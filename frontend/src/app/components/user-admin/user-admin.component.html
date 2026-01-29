@@ -6,7 +6,7 @@
         @if (!editingUser && authService.hasAdminWriteAccess()) {
           <button mat-flat-button color="primary" class="add-user-btn" (click)="createNewUser()">
             <mat-icon>person_add</mat-icon>
-            {{ 'ADMIN.ADD_USER' | translate }}
+            {{ 'ADMIN.CREATE_USER' | translate }}
           </button>
         }
       </div>
@@ -139,7 +139,7 @@
             <div class="form-actions">
               @if (authService.hasAdminWriteAccess()) {
                 <button mat-flat-button color="primary" type="submit" [disabled]="!adminUserForm.form.valid" class="submit-btn">
-                  {{ (isCreating ? 'ADMIN.ADD_USER' : 'ADMIN.SAVE') | translate }}
+                  {{ (isCreating ? 'ADMIN.CREATE_USER' : 'ADMIN.SAVE') | translate }}
                 </button>
               }
               <button mat-button type="button" (click)="cancelEdit()">{{ (authService.hasAdminWriteAccess() ? 'ADMIN.CANCEL' : 'ADMIN.CLOSE') | translate }}</button>
