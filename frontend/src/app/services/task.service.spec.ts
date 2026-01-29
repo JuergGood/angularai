@@ -2,7 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { TaskService } from './task.service';
-import { AuthService } from './auth.service';
 import { Task, Priority, TaskStatus } from '../models/task.model';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
@@ -13,7 +12,6 @@ import {
 describe('TaskService', () => {
   let service: TaskService;
   let httpMock: HttpTestingController;
-  let authServiceSpy: any;
 
   beforeEach(() => {
     try {
@@ -25,16 +23,11 @@ describe('TaskService', () => {
       // already initialized
     }
 
-    authServiceSpy = {
-      getAuthHeader: vi.fn().mockReturnValue('mock-token')
-    };
-
     TestBed.configureTestingModule({
       providers: [
         TaskService,
         provideHttpClient(),
-        provideHttpClientTesting(),
-        { provide: AuthService, useValue: authServiceSpy }
+        provideHttpClientTesting()
       ]
     });
     service = TestBed.inject(TaskService);
@@ -165,14 +158,6 @@ describe('TaskService', () => {
     const req = httpMock.expectOne(req => req.url === '/api/tasks' && req.params.get('status') === TaskStatus.IN_PROGRESS);
     expect(req.request.params.get('smartFilter')).toBe('TODAY');
     expect(req.request.params.get('sort')).toBe('title,asc');
-    req.flush([]);
-  });
-
-  it('should handle getHeaders without auth', () => {
-    authServiceSpy.getAuthHeader.mockReturnValue(null);
-    service.getTasks().subscribe();
-    const req = httpMock.expectOne('/api/tasks');
-    expect(req.request.headers.has('Authorization')).toBe(false);
     req.flush([]);
   });
 });

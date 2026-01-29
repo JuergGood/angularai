@@ -31,6 +31,7 @@ import java.util.Optional;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -113,6 +114,7 @@ class TaskControllerTest {
         when(taskService.patchTask(any(), eq(1L), any())).thenReturn(Optional.of(resultDTO));
 
         mockMvc.perform(patch("/api/tasks/1")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(patchDTO)))
                 .andExpect(status().isOk())
@@ -125,6 +127,7 @@ class TaskControllerTest {
     void shouldReturnNotFoundWhenPatchingNonExistentTask() throws Exception {
         when(taskService.patchTask(any(), any(), any())).thenReturn(Optional.empty());
         mockMvc.perform(patch("/api/tasks/1")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{}"))
                 .andExpect(status().isNotFound());
@@ -137,6 +140,7 @@ class TaskControllerTest {
         when(taskService.createTask(any(), any())).thenReturn(testTaskDTO);
 
         mockMvc.perform(post("/api/tasks")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(inputDTO)))
                 .andExpect(status().isOk())
@@ -148,7 +152,8 @@ class TaskControllerTest {
     void shouldDeleteTask() throws Exception {
         when(taskService.deleteTask(testUser, 1L)).thenReturn(true);
 
-        mockMvc.perform(delete("/api/tasks/1"))
+        mockMvc.perform(delete("/api/tasks/1")
+                        .with(csrf()))
                 .andExpect(status().isNoContent());
     }
 
@@ -158,6 +163,7 @@ class TaskControllerTest {
         java.util.List<Long> taskIds = java.util.Arrays.asList(1L, 2L);
 
         mockMvc.perform(put("/api/tasks/reorder")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(taskIds)))
                 .andExpect(status().isOk());
@@ -172,6 +178,7 @@ class TaskControllerTest {
         when(taskParserService.parse(any())).thenReturn(parsed);
 
         mockMvc.perform(post("/api/tasks/analyze")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("some input"))
                 .andExpect(status().isOk())
@@ -183,6 +190,7 @@ class TaskControllerTest {
     @WithMockUser(username = "testuser")
     void shouldBulkDeleteTasks() throws Exception {
         mockMvc.perform(delete("/api/tasks/bulk")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(Collections.singletonList(1L))))
                 .andExpect(status().isNoContent());
@@ -199,6 +207,7 @@ class TaskControllerTest {
         when(taskService.updateTask(any(), any(), any())).thenReturn(Optional.of(resultDTO));
 
         mockMvc.perform(put("/api/tasks/1")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isOk())
@@ -214,6 +223,7 @@ class TaskControllerTest {
         when(taskService.bulkPatchTasks(any(), any(), any())).thenReturn(Collections.singletonList(testTaskDTO));
 
         mockMvc.perform(patch("/api/tasks/bulk")
+                .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(new TaskController.BulkPatchRequest(java.util.List.of(1L), patch))))
                 .andExpect(status().isOk());

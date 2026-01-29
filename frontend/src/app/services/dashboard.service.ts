@@ -13,9 +13,14 @@ export class DashboardService {
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   private getHeaders(): HttpHeaders {
-    return new HttpHeaders({
+    const auth = this.authService.getAuthHeader();
+    const headers: { [key: string]: string } = {
       'Content-Type': 'application/json'
-    });
+    };
+    if (auth) {
+      headers['Authorization'] = 'Basic ' + auth;
+    }
+    return new HttpHeaders(headers);
   }
 
   getDashboardData(): Observable<DashboardData> {

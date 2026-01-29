@@ -61,7 +61,6 @@ describe('AuthService', () => {
     service.login('test', 'password').subscribe(user => {
       expect(user).toEqual(mockUser);
       expect(service.currentUser()).toEqual(mockUser);
-      expect(localStorage.getItem('auth')).toBeTruthy();
     });
 
     const req = httpMock.expectOne('/api/auth/login');
@@ -71,7 +70,6 @@ describe('AuthService', () => {
 
   it('should logout and clear current user', () => {
     service.currentUser.set({ login: 'test' } as User);
-    localStorage.setItem('auth', 'some-token');
 
     service.logout();
 
@@ -80,38 +78,29 @@ describe('AuthService', () => {
     req.flush({});
 
     expect(service.currentUser()).toBeNull();
-    expect(localStorage.getItem('auth')).toBeNull();
   });
 
-  it('should initialize and restore session from localStorage', () => {
-    localStorage.setItem('auth', 'encoded-auth');
+  it('should initialize and restore session', () => {
     const mockUser: User = { login: 'test', firstName: 'Test', role: 'ROLE_USER' } as User;
 
     service.init();
     expect(service.isInitializing()).toBe(true);
 
-    const req = httpMock.expectOne('/api/auth/login');
-    expect(req.request.headers.get('Authorization')).toBe('Basic encoded-auth');
+    const req = httpMock.expectOne('/api/auth/info');
+    expect(req.request.method).toBe('GET');
     req.flush(mockUser);
 
     expect(service.currentUser()).toEqual(mockUser);
     expect(service.isInitializing()).toBe(false);
   });
 
-  it('should clear session on init error', () => {
-    localStorage.setItem('auth', 'invalid-auth');
-
+  it('should handle init error', () => {
     service.init();
 
-    const req = httpMock.expectOne('/api/auth/login');
+    const req = httpMock.expectOne('/api/auth/info');
     req.error(new ProgressEvent('error'));
 
-    // logout is called, which triggers another post to /logout
-    const logoutReq = httpMock.expectOne('/api/auth/logout');
-    logoutReq.flush({});
-
     expect(service.currentUser()).toBeNull();
-    expect(localStorage.getItem('auth')).toBeNull();
     expect(service.isInitializing()).toBe(false);
   });
 

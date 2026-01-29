@@ -14,10 +14,13 @@ export class UserService {
 
   private getHeaders(): HttpHeaders {
     const auth = this.authService.getAuthHeader();
-    return new HttpHeaders({
-      'Authorization': 'Basic ' + auth,
+    const headers: { [key: string]: string } = {
       'Content-Type': 'application/json'
-    });
+    };
+    if (auth) {
+      headers['Authorization'] = 'Basic ' + auth;
+    }
+    return new HttpHeaders(headers);
   }
 
   getCurrentUser(): Observable<User> {

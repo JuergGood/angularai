@@ -21,6 +21,7 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -73,6 +74,7 @@ class UserControllerTest {
         UserDTO updateDTO = new UserDTO(null, "Updated", "Name", login, "updated@example.com", LocalDate.of(1995, 5, 5), "New Address", "ROLE_USER");
 
         mockMvc.perform(put("/api/users/me")
+                        .with(csrf())
                         .with(httpBasic(login, password))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDTO)))
@@ -91,6 +93,7 @@ class UserControllerTest {
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
 
         mockMvc.perform(delete("/api/users/me")
+                        .with(csrf())
                         .with(httpBasic(login, password)))
                 .andExpect(status().isNoContent());
     }
@@ -104,6 +107,7 @@ class UserControllerTest {
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
 
         mockMvc.perform(delete("/api/users/me")
+                        .with(csrf())
                         .with(httpBasic(login, password)))
                 .andExpect(status().isForbidden());
     }

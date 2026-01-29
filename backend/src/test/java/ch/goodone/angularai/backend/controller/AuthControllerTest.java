@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -87,6 +88,7 @@ class AuthControllerTest {
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
 
         mockMvc.perform(post("/api/auth/login")
+                        .with(csrf())
                         .with(httpBasic(login, password))
                         .header("X-Forwarded-For", "1.2.3.4")
                         .header("User-Agent", "Mozilla/5.0"))
@@ -106,6 +108,7 @@ class AuthControllerTest {
         when(userRepository.findByLogin("newuser")).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"phone\":\"123456\",\"password\":\"Password@123\",\"birthDate\":\"2000-01-01\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}"))
                 .andExpect(status().isOk())
@@ -122,6 +125,7 @@ class AuthControllerTest {
         when(captchaService.verify("test-token")).thenReturn(true);
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
@@ -137,6 +141,7 @@ class AuthControllerTest {
         when(userRepository.findByLogin("admin")).thenReturn(Optional.of(new User("Admin", "User", "admin", "encoded", "admin@example.com", "123", LocalDate.now(), "Addr", Role.ROLE_ADMIN, ch.goodone.angularai.backend.model.UserStatus.ACTIVE)));
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\":\"Existing\",\"lastName\":\"User\",\"login\":\"admin\",\"email\":\"admin@example.com\",\"phone\":\"123456\",\"password\":\"Password@123\",\"birthDate\":\"1990-01-01\",\"address\":\"Address\",\"role\":\"ROLE_USER\"}"))
                 .andExpect(status().isBadRequest())
@@ -152,6 +157,7 @@ class AuthControllerTest {
         when(userRepository.findByEmail("admin@example.com")).thenReturn(Optional.of(new User("Admin", "User", "admin", "encoded", "admin@example.com", "123", LocalDate.now(), "Addr", Role.ROLE_ADMIN, ch.goodone.angularai.backend.model.UserStatus.ACTIVE)));
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"admin@example.com\",\"phone\":\"123456\",\"password\":\"Password@123\",\"birthDate\":\"1990-01-01\",\"address\":\"Address\",\"role\":\"ROLE_USER\"}"))
                 .andExpect(status().isBadRequest())
@@ -164,6 +170,7 @@ class AuthControllerTest {
         userDTO.setPassword("Password@123");
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"invalid-email\",\"phone\":\"123456\",\"password\":\"Password@123\",\"birthDate\":\"2000-01-01\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}"))
                 .andExpect(status().isBadRequest())
@@ -176,6 +183,7 @@ class AuthControllerTest {
         userDTO.setPassword("Password@123");
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(userDTO)))
                 .andExpect(status().isBadRequest())
@@ -188,6 +196,7 @@ class AuthControllerTest {
         userDTO.setPassword("Password@123");
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(userDTO)))
                 .andExpect(status().isBadRequest())
@@ -200,6 +209,7 @@ class AuthControllerTest {
         userDTO.setPassword("Password@123");
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(userDTO)))
                 .andExpect(status().isBadRequest())
@@ -212,6 +222,7 @@ class AuthControllerTest {
         // No password set
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(new ObjectMapper().writeValueAsString(userDTO)))
                 .andExpect(status().isBadRequest())
@@ -224,6 +235,7 @@ class AuthControllerTest {
         userDTO.setPassword("Password@123");
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"\",\"phone\":\"123456\",\"password\":\"Password@123\",\"birthDate\":\"2000-01-01\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}"))
                 .andExpect(status().isBadRequest())
@@ -236,6 +248,7 @@ class AuthControllerTest {
         userDTO.setPassword("weak");
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"phone\":\"123456\",\"password\":\"weak\",\"birthDate\":\"2000-01-01\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}"))
                 .andExpect(status().isBadRequest())
@@ -250,6 +263,7 @@ class AuthControllerTest {
         when(captchaService.verify("test-token")).thenReturn(true);
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk())
@@ -269,6 +283,7 @@ class AuthControllerTest {
         when(captchaService.verify("test-token")).thenReturn(true);
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isOk());
@@ -290,6 +305,7 @@ class AuthControllerTest {
         String json = "{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"phone\":\"123456\",\"password\":\"password123\",\"birthDate\":\"invalid-date\"}";
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(json))
                 .andExpect(status().isBadRequest());
@@ -297,13 +313,15 @@ class AuthControllerTest {
 
     @Test
     void logout_shouldReturnOk() throws Exception {
-        mockMvc.perform(post("/api/auth/logout"))
+        mockMvc.perform(post("/api/auth/logout")
+                        .with(csrf()))
                 .andExpect(status().isOk());
     }
 
     @Test
     void register_shouldReturnBadRequest_whenUserDTOIsNull() throws Exception {
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(""))
                 .andExpect(status().isBadRequest());
@@ -315,6 +333,7 @@ class AuthControllerTest {
         when(captchaService.verify(null)).thenReturn(false);
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"password\":\"password123\",\"birthDate\":\"2000-01-01\",\"address\":\"New Address\",\"role\":\"ROLE_USER\"}"))
                 .andExpect(status().isBadRequest())
@@ -328,6 +347,7 @@ class AuthControllerTest {
         when(userRepository.findByLogin(login)).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/auth/login")
+                        .with(csrf())
                         .with(httpBasic(login, password)))
                 .andExpect(status().isUnauthorized());
     }
@@ -335,6 +355,7 @@ class AuthControllerTest {
     @Test
     void handleJsonError_shouldReturnBadRequest_whenDateInvalid() throws Exception {
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\":\"New\",\"lastName\":\"User\",\"login\":\"newuser\",\"email\":\"new@example.com\",\"password\":\"password123\",\"birthDate\":\"invalid-date\"}"))
                 .andExpect(status().isBadRequest())
@@ -344,6 +365,7 @@ class AuthControllerTest {
     @Test
     void handleJsonError_shouldReturnBadRequest_whenJsonMalformed() throws Exception {
         mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"firstName\":\"New\", malformed}"))
                 .andExpect(status().isBadRequest())
@@ -352,7 +374,8 @@ class AuthControllerTest {
 
     @Test
     void login_shouldReturnUnauthorized_whenNotAuthenticated() throws Exception {
-        mockMvc.perform(post("/api/auth/login"))
+        mockMvc.perform(post("/api/auth/login")
+                        .with(csrf()))
                 .andExpect(status().isUnauthorized());
     }
 
@@ -410,7 +433,9 @@ class AuthControllerTest {
 
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
-        mockMvc.perform(post("/api/auth/resend-verification").param("email", email))
+        mockMvc.perform(post("/api/auth/resend-verification")
+                        .with(csrf())
+                        .param("email", email))
                 .andExpect(status().isOk());
 
         verify(verificationTokenRepository).deleteByUser(user);
@@ -422,7 +447,9 @@ class AuthControllerTest {
     void resendVerification_shouldReturnBadRequest_whenEmailNotFound() throws Exception {
         when(userRepository.findByEmail("missing@example.com")).thenReturn(Optional.empty());
 
-        mockMvc.perform(post("/api/auth/resend-verification").param("email", "missing@example.com"))
+        mockMvc.perform(post("/api/auth/resend-verification")
+                        .with(csrf())
+                        .param("email", "missing@example.com"))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Email not found"));
     }
@@ -437,6 +464,7 @@ class AuthControllerTest {
         when(userRepository.findByEmail(email)).thenReturn(Optional.of(user));
 
         mockMvc.perform(post("/api/auth/forgot-password")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of("email", email))))
                 .andExpect(status().isOk());
@@ -452,6 +480,7 @@ class AuthControllerTest {
         when(userRepository.findByEmail(email)).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/auth/forgot-password")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of("email", email))))
                 .andExpect(status().isOk());
@@ -472,6 +501,7 @@ class AuthControllerTest {
         when(passwordRecoveryTokenRepository.findByToken(tokenValue)).thenReturn(Optional.of(token));
 
         mockMvc.perform(post("/api/auth/reset-password")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of("token", tokenValue, "password", newPassword))))
                 .andExpect(status().isOk());
@@ -492,6 +522,7 @@ class AuthControllerTest {
         when(passwordRecoveryTokenRepository.findByToken(tokenValue)).thenReturn(Optional.of(token));
 
         mockMvc.perform(post("/api/auth/reset-password")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of("token", tokenValue, "password", "NewPass123!"))))
                 .andExpect(status().isBadRequest())
@@ -503,6 +534,7 @@ class AuthControllerTest {
         when(passwordRecoveryTokenRepository.findByToken("invalid")).thenReturn(Optional.empty());
 
         mockMvc.perform(post("/api/auth/reset-password")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of("token", "invalid", "password", "NewPass123!"))))
                 .andExpect(status().isBadRequest())
@@ -512,6 +544,7 @@ class AuthControllerTest {
     @Test
     void resetPassword_shouldReturnBadRequest_whenPasswordWeak() throws Exception {
         mockMvc.perform(post("/api/auth/reset-password")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of("token", "some-token", "password", "weak"))))
                 .andExpect(status().isBadRequest())

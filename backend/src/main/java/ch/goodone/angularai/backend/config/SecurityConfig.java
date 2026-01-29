@@ -30,7 +30,10 @@ public class SecurityConfig {
         try {
             http
                 .cors(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable)
+                .csrf(csrf -> csrf
+                    .csrfTokenRepository(org.springframework.security.web.csrf.CookieCsrfTokenRepository.withHttpOnlyFalse())
+                    .csrfTokenRequestHandler(new org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler())
+                )
                 .securityContext(context -> context
                     .securityContextRepository(new org.springframework.security.web.context.HttpSessionSecurityContextRepository())
                 )

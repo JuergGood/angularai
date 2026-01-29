@@ -67,10 +67,6 @@ export class AuthService {
     this.currentUser.set(null);
   }
 
-  getAuthHeader(): string | null {
-    return null;
-  }
-
   isLoggedIn(): boolean {
     return this.currentUser() !== null;
   }

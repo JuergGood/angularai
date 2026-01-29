@@ -15,9 +15,9 @@ Based on the [Security Assessment](security-assessment.md), the following improv
 - **Impact**: Requires Angular to handle CSRF tokens (usually via `HttpClientXsrfModule`).
 
 ### 1.3 Secure Storage in Frontend
-- **Task**: Move away from storing Base64 credentials in `localStorage`.
+- **Task**: Move away from storing Base64 credentials in `localStorage`. [DONE]
 - **Benefit**: Reduces impact of XSS attacks.
-- **Impact**: If using JWT, store in a `HttpOnly` cookie if possible, or at least use shorter-lived tokens.
+- **Impact**: Switched to session-based authentication with HTTP-only cookies. Removed `localStorage` usage from `AuthService`.
 
 ## Phase 2: Medium Priority (Medium Term)
 

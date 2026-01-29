@@ -13,9 +13,7 @@ export class LogService {
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   private getHeaders(): HttpHeaders {
-    const auth = this.authService.getAuthHeader();
     return new HttpHeaders({
-      'Authorization': 'Basic ' + auth,
       'Content-Type': 'application/json'
     });
   }

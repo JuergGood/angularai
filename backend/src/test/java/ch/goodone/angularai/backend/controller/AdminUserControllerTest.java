@@ -28,6 +28,7 @@ import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -98,6 +99,7 @@ class AdminUserControllerTest {
         when(userRepository.findAll()).thenReturn(Collections.singletonList(normalUser));
 
         mockMvc.perform(put("/api/admin/users/2")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isOk())
@@ -111,7 +113,8 @@ class AdminUserControllerTest {
     void shouldDeleteUser() throws Exception {
         when(userRepository.findById(2L)).thenReturn(Optional.of(normalUser));
 
-        mockMvc.perform(delete("/api/admin/users/2"))
+        mockMvc.perform(delete("/api/admin/users/2")
+                        .with(csrf()))
                 .andExpect(status().isNoContent());
 
         verify(userRepository).delete(normalUser);
@@ -122,7 +125,8 @@ class AdminUserControllerTest {
     void shouldNotDeleteSelf() throws Exception {
         when(userRepository.findById(1L)).thenReturn(Optional.of(adminUser));
 
-        mockMvc.perform(delete("/api/admin/users/1"))
+        mockMvc.perform(delete("/api/admin/users/1")
+                        .with(csrf()))
                 .andExpect(status().isBadRequest())
                 .andExpect(content().string("Cannot delete your own account"));
     }
@@ -144,6 +148,7 @@ class AdminUserControllerTest {
         UserDTO updateDTO = new UserDTO(2L, "Normal", "User", "user", "user@example.com", LocalDate.now(), "User Address", "ROLE_ADMIN");
 
         mockMvc.perform(put("/api/admin/users/2")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isForbidden());
@@ -152,7 +157,8 @@ class AdminUserControllerTest {
     @Test
     @WithMockUser(username = "adminread", authorities = {"ROLE_ADMIN_READ"})
     void adminReadShouldNotDeleteUser() throws Exception {
-        mockMvc.perform(delete("/api/admin/users/2"))
+        mockMvc.perform(delete("/api/admin/users/2")
+                        .with(csrf()))
                 .andExpect(status().isForbidden());
     }
 
@@ -164,6 +170,7 @@ class AdminUserControllerTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(adminUser));
 
         mockMvc.perform(put("/api/admin/users/1")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isBadRequest())
@@ -177,6 +184,7 @@ class AdminUserControllerTest {
         when(userRepository.findByLogin("admin")).thenReturn(Optional.of(adminUser));
 
         mockMvc.perform(post("/api/admin/users")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userDTO)))
                 .andExpect(status().isBadRequest())
@@ -191,6 +199,7 @@ class AdminUserControllerTest {
         when(userRepository.findByEmail("admin@example.com")).thenReturn(Optional.of(adminUser));
 
         mockMvc.perform(post("/api/admin/users")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userDTO)))
                 .andExpect(status().isBadRequest())

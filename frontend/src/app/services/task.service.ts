@@ -15,7 +15,7 @@ export class TaskService {
   private tasksSignal = signal<Task[]>([]);
   readonly tasks = this.tasksSignal.asReadonly();
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
+  constructor(private http: HttpClient) {}
 
   private getHeaders(): HttpHeaders {
     return new HttpHeaders({
