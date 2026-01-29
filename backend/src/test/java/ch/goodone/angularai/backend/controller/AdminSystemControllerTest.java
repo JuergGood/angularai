@@ -69,6 +69,8 @@ class AdminSystemControllerTest {
         mockMvc.perform(get("/api/admin/settings/geolocation"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.enabled").value(true));
+        
+        verify(systemSettingService).isGeolocationEnabled();
     }
 
     @Test
@@ -80,7 +82,7 @@ class AdminSystemControllerTest {
                 .andExpect(status().isOk());
 
         verify(systemSettingService).setGeolocationEnabled(true);
-        verify(actionLogService).log(eq("admin"), eq("SETTING_CHANGED"), anyString());
+        verify(actionLogService).log(eq("admin"), eq("SETTING_CHANGED"), contains("Geolocation enabled set to: true"));
     }
 
     @Test
@@ -131,6 +133,16 @@ class AdminSystemControllerTest {
 
     @Test
     @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
+    void shouldGetLandingMessageDisabled() throws Exception {
+        when(systemSettingService.isLandingMessageEnabled()).thenReturn(false);
+
+        mockMvc.perform(get("/api/admin/settings/landing-message"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.enabled").value(false));
+    }
+
+    @Test
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     void shouldSetLandingMessageEnabled() throws Exception {
         mockMvc.perform(post("/api/admin/settings/landing-message")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -150,12 +162,26 @@ class AdminSystemControllerTest {
 
     @Test
     @WithMockUser(username = "adminread", authorities = {"ROLE_ADMIN_READ"})
-    void adminReadShouldSeeSettings() throws Exception {
+    void adminReadShouldSeeGeolocationEnabled() throws Exception {
         when(systemSettingService.isGeolocationEnabled()).thenReturn(true);
 
         mockMvc.perform(get("/api/admin/settings/geolocation"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.enabled").value(true));
+        
+        verify(systemSettingService, times(1)).isGeolocationEnabled();
+    }
+
+    @Test
+    @WithMockUser(username = "adminread", authorities = {"ROLE_ADMIN_READ"})
+    void adminReadShouldSeeLandingMessageEnabled() throws Exception {
+        when(systemSettingService.isLandingMessageEnabled()).thenReturn(true);
+
+        mockMvc.perform(get("/api/admin/settings/landing-message"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.enabled").value(true));
+        
+        verify(systemSettingService, times(1)).isLandingMessageEnabled();
     }
 
     @Test

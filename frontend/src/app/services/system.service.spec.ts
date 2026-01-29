@@ -91,4 +91,29 @@ describe('SystemService', () => {
     expect(req.request.headers.get('Authorization')).toBe('Basic mock-token');
     req.flush(null);
   });
+
+  it('should get recaptcha config index', () => {
+    service.getRecaptchaConfigIndex().subscribe(res => expect(res.index).toBe(1));
+    httpMock.expectOne('/api/admin/settings/recaptcha').flush({ index: 1 });
+  });
+
+  it('should set recaptcha config index', () => {
+    service.setRecaptchaConfigIndex(2).subscribe();
+    httpMock.expectOne('/api/admin/settings/recaptcha').flush(null);
+  });
+
+  it('should get landing message enabled', () => {
+    service.getLandingMessageEnabled().subscribe(res => expect(res.enabled).toBe(true));
+    httpMock.expectOne('/api/admin/settings/landing-message').flush({ enabled: true });
+  });
+
+  it('should set landing message enabled', () => {
+    service.setLandingMessageEnabled(false).subscribe();
+    httpMock.expectOne('/api/admin/settings/landing-message').flush(null);
+  });
+
+  it('should get recaptcha site key', () => {
+    service.getRecaptchaSiteKey().subscribe(key => expect(key).toBe('key'));
+    httpMock.expectOne('/api/system/recaptcha-site-key').flush('key');
+  });
 });

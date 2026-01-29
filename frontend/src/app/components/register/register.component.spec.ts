@@ -224,7 +224,79 @@ describe('RegisterComponent', () => {
     expect(component.error).toBe('ADMIN.ERROR_EMAIL_EXISTS');
   });
 
-    describe('password strength', () => {
+  it('should toggle password visibility', () => {
+    expect(component.passwordVisible).toBe(false);
+    component.passwordVisible = true;
+    expect(component.passwordVisible).toBe(true);
+  });
+
+  it('should toggle confirm password visibility', () => {
+    expect(component.confirmPasswordVisible).toBe(false);
+    component.confirmPasswordVisible = true;
+    expect(component.confirmPasswordVisible).toBe(true);
+  });
+
+  it('should show error when full name is missing', () => {
+    const fullNameControl = component.registerForm.get('fullName');
+    fullNameControl?.setValue('');
+    fullNameControl?.markAsTouched();
+    expect(fullNameControl?.hasError('required')).toBe(true);
+  });
+
+  it('should validate login format (no spaces)', () => {
+    const loginControl = component.registerForm.get('login');
+    loginControl?.setValue('john doe');
+    loginControl?.markAsTouched();
+    expect(loginControl?.hasError('noSpaces')).toBe(true);
+
+    loginControl?.setValue('johndoe');
+    expect(loginControl?.hasError('noSpaces')).toBe(false);
+  });
+
+  it('should validate email format', () => {
+    const emailControl = component.registerForm.get('email');
+    emailControl?.setValue('invalid-email');
+    emailControl?.markAsTouched();
+    expect(emailControl?.hasError('email')).toBe(true);
+
+    emailControl?.setValue('john@example.com');
+    expect(emailControl?.hasError('email')).toBe(false);
+  });
+
+  it('should validate password match', () => {
+    component.registerForm.patchValue({
+      password: 'Password@123',
+      confirmPassword: 'Different@123'
+    });
+    // Form level validator
+    expect(component.registerForm.hasError('passwordMismatch')).toBe(true);
+    // Control level error set by validator
+    expect(component.registerForm.get('confirmPassword')?.hasError('passwordMismatch')).toBe(true);
+
+    component.registerForm.patchValue({
+      confirmPassword: 'Password@123'
+    });
+    expect(component.registerForm.hasError('passwordMismatch')).toBe(false);
+    expect(component.registerForm.get('confirmPassword')?.hasError('passwordMismatch')).toBe(false);
+  });
+
+  it('should show error if reCAPTCHA fails', () => {
+    authServiceSpy.register.mockReturnValue(throwError(() => ({ status: 400, error: 'reCAPTCHA verification failed' })));
+    component.registerForm.patchValue({
+      fullName: 'John Doe',
+      login: 'johndoe',
+      password: 'Password@123',
+      confirmPassword: 'Password@123',
+      email: 'john@example.com'
+    });
+    component.recaptchaMode = 'disabled';
+
+    component.onSubmit();
+
+    expect(component.error).toBe('ADMIN.ERROR_RECAPTCHA');
+  });
+
+  describe('password strength', () => {
     it('should be empty for empty password', () => {
       component.onPasswordChange('');
       expect(component.passwordStrength).toBe('');

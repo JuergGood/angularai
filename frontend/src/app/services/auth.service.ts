@@ -14,23 +14,18 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   init() {
-    const auth = localStorage.getItem('auth');
-    if (auth) {
-      this.isInitializing.set(true);
-      // Basic validation/restore session
-      this.http.post<User>(`${this.apiUrl}/login`, {}, {
-        headers: new HttpHeaders({ 'Authorization': 'Basic ' + auth })
-      }).subscribe({
-        next: (user) => {
-          this.currentUser.set(user);
-          this.isInitializing.set(false);
-        },
-        error: () => {
-          this.logout();
-          this.isInitializing.set(false);
-        }
-      });
-    }
+    this.isInitializing.set(true);
+    // Check if user is already logged in via session cookie
+    this.http.get<User>(`${this.apiUrl}/info`).subscribe({
+      next: (user) => {
+        this.currentUser.set(user);
+        this.isInitializing.set(false);
+      },
+      error: () => {
+        this.currentUser.set(null);
+        this.isInitializing.set(false);
+      }
+    });
   }
 
   login(login: string, password: string): Observable<User> {
@@ -44,7 +39,6 @@ export class AuthService {
     return this.http.post<User>(`${this.apiUrl}/login`, {}, { headers }).pipe(
       tap(user => {
         this.currentUser.set(user);
-        localStorage.setItem('auth', encodedAuth);
       })
     );
   }
@@ -69,16 +63,12 @@ export class AuthService {
   }
 
   logout() {
-    const auth = localStorage.getItem('auth');
-    const headers = auth ? new HttpHeaders({ 'Authorization': 'Basic ' + auth }) : new HttpHeaders();
-
-    this.http.post(`${this.apiUrl}/logout`, {}, { headers }).subscribe();
+    this.http.post(`${this.apiUrl}/logout`, {}).subscribe();
     this.currentUser.set(null);
-    localStorage.removeItem('auth');
   }
 
   getAuthHeader(): string | null {
-    return localStorage.getItem('auth');
+    return null;
   }
 
   isLoggedIn(): boolean {

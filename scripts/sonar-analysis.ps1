@@ -50,10 +50,8 @@ Write-Host "Step 2: Running Maven Verify and Sonar Scan..." -ForegroundColor Yel
 $mvnArgs = @(
     "-B",
     "verify",
-    "org.sonarsource.scanner.maven:sonar-maven-plugin:sonar",
+    "sonar:sonar",
     "-Dsonar.token=$Token",
-    "-Dsonar.projectKey=JuergGood_angularai",
-    "-Dsonar.organization=juerggood",
     "-Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info",
     "-Dsonar.coverage.jacoco.xmlReportPaths=backend/target/site/jacoco/jacoco.xml,test-client/target/site/jacoco/jacoco.xml,android/app/build/reports/jacoco/testDebugUnitTest/testDebugUnitTest.xml"
 )

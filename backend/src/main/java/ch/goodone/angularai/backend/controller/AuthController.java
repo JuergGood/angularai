@@ -162,7 +162,7 @@ public class AuthController {
         if (userDTO.getPassword() == null || userDTO.getPassword().isBlank()) {
             return ResponseEntity.badRequest().body("Password is required");
         }
-        if (userDTO.getPassword().length() < 8 || !userDTO.getPassword().matches(".*[A-Za-z].*") || !userDTO.getPassword().matches(".*[^A-Za-z0-9].*")) {
+        if (userDTO.getPassword().length() < 8 || !containsLetter(userDTO.getPassword()) || !containsSpecialChar(userDTO.getPassword())) {
             return ResponseEntity.badRequest().body("Password does not meet requirements");
         }
         if (userDTO.getEmail() == null || userDTO.getEmail().isBlank()) {
@@ -286,6 +286,13 @@ public class AuthController {
             return ResponseEntity.badRequest().body(Map.of(ERROR_VALUE, INVALID_VALUE));
         }
 
+        if (newPassword == null || newPassword.isBlank()) {
+            return ResponseEntity.badRequest().body(Map.of(ERROR_VALUE, "Password is required"));
+        }
+        if (newPassword.length() < 8 || !containsLetter(newPassword) || !containsSpecialChar(newPassword)) {
+            return ResponseEntity.badRequest().body(Map.of(ERROR_VALUE, "Password does not meet requirements"));
+        }
+
         return passwordRecoveryTokenRepository.findByToken(token)
                 .<ResponseEntity<Object>>map(t -> {
                     if (t.isExpired()) {
@@ -318,5 +325,23 @@ public class AuthController {
             msg = "Invalid date format. Please use yyyy-MM-dd";
         }
         return ResponseEntity.badRequest().body(msg);
+    }
+
+    private boolean containsLetter(String s) {
+        for (char c : s.toCharArray()) {
+            if (Character.isLetter(c)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean containsSpecialChar(String s) {
+        for (char c : s.toCharArray()) {
+            if (!Character.isLetterOrDigit(c)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

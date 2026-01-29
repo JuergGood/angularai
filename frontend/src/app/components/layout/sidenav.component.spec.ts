@@ -39,7 +39,13 @@ describe('SidenavComponent', () => {
         frontendVersion: '1.0.5',
         mode: 'test',
         landingMessage: 'Test Message'
-      }))
+      })),
+      getGeolocationEnabled: vi.fn().mockReturnValue(of({ enabled: true })),
+      setGeolocationEnabled: vi.fn().mockReturnValue(of(null)),
+      getRecaptchaConfigIndex: vi.fn().mockReturnValue(of({ index: 1 })),
+      setRecaptchaConfigIndex: vi.fn().mockReturnValue(of(null)),
+      getLandingMessageEnabled: vi.fn().mockReturnValue(of({ enabled: true })),
+      setLandingMessageEnabled: vi.fn().mockReturnValue(of(null))
     };
 
     i18nServiceSpy = {
@@ -113,5 +119,62 @@ describe('SidenavComponent', () => {
     vi.advanceTimersByTime(500);
     expect(component.showBanner()).toBe(false);
     vi.useRealTimers();
+  });
+
+  it('should logout', () => {
+    const fixture = TestBed.createComponent(SidenavComponent);
+    const component = fixture.componentInstance;
+    component.onLogout();
+    expect(authServiceSpy.logout).toHaveBeenCalled();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
+  });
+
+  it('should set language', () => {
+    const fixture = TestBed.createComponent(SidenavComponent);
+    const component = fixture.componentInstance;
+
+    component.setLanguage('de-ch');
+    expect(i18nServiceSpy.setLanguage).toHaveBeenCalledWith('de-ch');
+  });
+
+  it('should toggle geolocation', () => {
+    const fixture = TestBed.createComponent(SidenavComponent);
+    const component = fixture.componentInstance;
+
+    component.geolocationEnabled.set(false);
+    component.toggleGeolocation();
+
+    expect(systemServiceSpy.setGeolocationEnabled).toHaveBeenCalledWith(true);
+    expect(component.geolocationEnabled()).toBe(true);
+  });
+
+  it('should toggle landing message', () => {
+    const fixture = TestBed.createComponent(SidenavComponent);
+    const component = fixture.componentInstance;
+
+    component.landingMessageEnabled.set(true);
+    component.toggleLandingMessage();
+
+    expect(systemServiceSpy.setLandingMessageEnabled).toHaveBeenCalledWith(false);
+    expect(component.landingMessageEnabled()).toBe(false);
+  });
+
+  it('should set recaptcha config', () => {
+    const fixture = TestBed.createComponent(SidenavComponent);
+    const component = fixture.componentInstance;
+
+    component.setRecaptchaConfig(2);
+
+    expect(systemServiceSpy.setRecaptchaConfigIndex).toHaveBeenCalledWith(2);
+    expect(component.recaptchaConfigIndex()).toBe(2);
+  });
+
+  it('should show help dialog', () => {
+    const fixture = TestBed.createComponent(SidenavComponent);
+    const component = fixture.componentInstance;
+    const dialogOpenSpy = vi.spyOn(component['dialog'], 'open');
+
+    component.showHelp();
+    expect(dialogOpenSpy).toHaveBeenCalled();
   });
 });

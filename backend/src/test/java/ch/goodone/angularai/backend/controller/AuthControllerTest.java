@@ -508,4 +508,13 @@ class AuthControllerTest {
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.error").value("invalid"));
     }
+
+    @Test
+    void resetPassword_shouldReturnBadRequest_whenPasswordWeak() throws Exception {
+        mockMvc.perform(post("/api/auth/reset-password")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("token", "some-token", "password", "weak"))))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.error").value("Password does not meet requirements"));
+    }
 }

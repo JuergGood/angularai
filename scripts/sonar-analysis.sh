@@ -26,10 +26,13 @@ cd ..
 
 # 2. Root: Run Maven verify and Sonar scan
 echo "Step 2: Running Maven Verify and Sonar Scan..."
-mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
+# Ensure JDK 21 is used if available on Windows dev machine
+if [ -d "C:/programs/java/jdk-21.0.10" ]; then
+  export JAVA_HOME="C:/programs/java/jdk-21.0.10"
+  export PATH="$JAVA_HOME/bin:$PATH"
+fi
+mvn verify sonar:sonar \
   -Dsonar.token="$TOKEN" \
-  -Dsonar.projectKey=JuergGood_angularai \
-  -Dsonar.organization=juerggood \
   -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info \
   -Dsonar.coverage.jacoco.xmlReportPaths=backend/target/site/jacoco/jacoco.xml,test-client/target/site/jacoco/jacoco.xml,android/app/build/reports/jacoco/testDebugUnitTest/testDebugUnitTest.xml
 

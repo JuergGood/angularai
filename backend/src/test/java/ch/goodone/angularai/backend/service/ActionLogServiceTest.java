@@ -53,7 +53,7 @@ class ActionLogServiceTest {
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"login", "task", "user admin"})
+    @ValueSource(strings = {"login", "task", "user admin", "all"})
     void getLogs_shouldFilterByTypes(String type) {
         Pageable pageable = PageRequest.of(0, 10);
         when(actionLogRepository.findAll(any(Specification.class), eq(pageable)))
@@ -61,6 +61,19 @@ class ActionLogServiceTest {
 
         actionLogService.getLogs(pageable, type, null, null);
         verify(actionLogRepository).findAll(any(Specification.class), eq(pageable));
+    }
+
+    @Test
+    void getLogs_withSpecificTypes() {
+        Pageable pageable = PageRequest.of(0, 10);
+        when(actionLogRepository.findAll(any(Specification.class), eq(pageable)))
+                .thenReturn(new PageImpl<>(Collections.emptyList()));
+
+        actionLogService.getLogs(pageable, "login", null, null);
+        actionLogService.getLogs(pageable, "task", null, null);
+        actionLogService.getLogs(pageable, "user admin", null, null);
+        
+        verify(actionLogRepository, times(3)).findAll(any(Specification.class), eq(pageable));
     }
 
     @Test

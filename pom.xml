@@ -18,6 +18,11 @@
         <java.version>21</java.version>
         <maven.compiler.release>21</maven.compiler.release>
         <argLine></argLine>
+        <sonar.organization>juerggood</sonar.organization>
+        <sonar.projectKey>JuergGood_angularai</sonar.projectKey>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.javascript.lcov.reportPaths>frontend/coverage/lcov.info</sonar.javascript.lcov.reportPaths>
+        <sonar.coverage.jacoco.xmlReportPaths>backend/target/site/jacoco/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
     </properties>
 
     <modules>
@@ -59,6 +64,11 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>5.0.0.4389</version>
             </plugin>
         </plugins>
     </build>

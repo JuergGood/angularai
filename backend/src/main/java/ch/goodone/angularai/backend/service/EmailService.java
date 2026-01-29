@@ -185,92 +185,94 @@ public class EmailService {
 
     private String buildHtml(HtmlEmailContext ctx) {
         String welcomeText = ctx.isVerification() ? ctx.getWelcome() : ctx.getTitle();
-        return String.format("<!DOCTYPE html>\n" +
-                "<html lang=\"%s\">\n" +
-                "  <head>\n" +
-                "    <meta charset=\"UTF-8\" />\n" +
-                "    <title>%s</title>\n" +
-                "  </head>\n" +
-                "  <body style=\"margin:0; padding:0; background-color:#f5f7fa; font-family:Arial, Helvetica, sans-serif;\">\n" +
-                "    <table width=\"100%%\" cellpadding=\"0\" cellspacing=\"0\">\n" +
-                "      <tr>\n" +
-                "        <td align=\"center\" style=\"padding:40px 16px;\">\n" +
-                "          <table width=\"100%%\" cellpadding=\"0\" cellspacing=\"0\" style=\"max-width:520px; background:#ffffff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08);\">\n" +
-                "\n" +
-                "            <!-- Header -->\n" +
-                "            <tr>\n" +
-                "              <td style=\"padding:24px 24px 16px; text-align:center;\">\n" +
-                "                <h1 style=\"margin:0; font-size:22px; color:#1f2937;\">\n" +
-                "                  %s\n" +
-                "                </h1>\n" +
-                "              </td>\n" +
-                "            </tr>\n" +
-                "\n" +
-                "            <!-- Content -->\n" +
-                "            <tr>\n" +
-                "              <td style=\"padding:0 24px 24px; color:#374151; font-size:14px; line-height:1.6;\">\n" +
-                "                <p>\n" +
-                "                  %s\n" +
-                "                </p>\n" +
-                "\n" +
-                "                <p>\n" +
-                "                  %s\n" +
-                "                </p>\n" +
-                "\n" +
-                "                <!-- Button -->\n" +
-                "                <p style=\"text-align:center; margin:32px 0;\">\n" +
-                "                  <a\n" +
-                "                    href=\"%s\"\n" +
-                "                    style=\"\n" +
-                "                      display:inline-block;\n" +
-                "                      padding:12px 24px;\n" +
-                "                      background:#3b82f6;\n" +
-                "                      color:#ffffff;\n" +
-                "                      text-decoration:none;\n" +
-                "                      border-radius:6px;\n" +
-                "                      font-weight:bold;\n" +
-                "                    \"\n" +
-                "                  >\n" +
-                "                    %s\n" +
-                "                  </a>\n" +
-                "                </p>\n" +
-                "\n" +
-                "                <p style=\"font-size:13px; color:#6b7280;\">\n" +
-                "                  %s\n" +
-                "                </p>\n" +
-                "\n" +
-                "                <p style=\"font-size:12px; word-break:break-all; color:#2563eb;\">\n" +
-                "                  %s\n" +
-                "                </p>\n" +
-                "\n" +
-                "                <p style=\"font-size:13px; color:#6b7280; margin-top:24px;\">\n" +
-                "                  %s\n" +
-                "                </p>\n" +
-                "\n" +
-                "                <p style=\"margin-top:32px;\">\n" +
-                "                  %s<br />\n" +
-                "                  <strong>%s</strong>\n" +
-                "                </p>\n" +
-                "              </td>\n" +
-                "            </tr>\n" +
-                "\n" +
-                "          </table>\n" +
-                "        </td>\n" +
-                "      </tr>\n" +
-                "    </table>\n" +
-                "  </body>\n" +
-                "</html>",
-                ctx.isGerman() ? "de" : "en",
-                ctx.getTitle(),
-                welcomeText,
-                ctx.getThanks(),
-                ctx.getInstruction(),
-                ctx.getUrl(),
-                ctx.getButtonText(),
-                ctx.getFallbackText(),
-                ctx.getUrl(),
-                ctx.getIgnoreText(),
-                ctx.getBestRegards(),
-                ctx.getTeam());
+        return """
+                <!DOCTYPE html>
+                <html lang="%s">
+                  <head>
+                    <meta charset="UTF-8" />
+                    <title>%s</title>
+                  </head>
+                  <body style="margin:0; padding:0; background-color:#f5f7fa; font-family:Arial, Helvetica, sans-serif;">
+                    <table width="100%%" cellpadding="0" cellspacing="0">
+                      <tr>
+                        <td align="center" style="padding:40px 16px;">
+                          <table width="100%%" cellpadding="0" cellspacing="0" style="max-width:520px; background:#ffffff; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+
+                            <!-- Header -->
+                            <tr>
+                              <td style="padding:24px 24px 16px; text-align:center;">
+                                <h1 style="margin:0; font-size:22px; color:#1f2937;">
+                                  %s
+                                </h1>
+                              </td>
+                            </tr>
+
+                            <!-- Content -->
+                            <tr>
+                              <td style="padding:0 24px 24px; color:#374151; font-size:14px; line-height:1.6;">
+                                <p>
+                                  %s
+                                </p>
+
+                                <p>
+                                  %s
+                                </p>
+
+                                <!-- Button -->
+                                <p style="text-align:center; margin:32px 0;">
+                                  <a
+                                    href="%s"
+                                    style="
+                                      display:inline-block;
+                                      padding:12px 24px;
+                                      background:#3b82f6;
+                                      color:#ffffff;
+                                      text-decoration:none;
+                                      border-radius:6px;
+                                      font-weight:bold;
+                                    "
+                                  >
+                                    %s
+                                  </a>
+                                </p>
+
+                                <p style="font-size:13px; color:#6b7280;">
+                                  %s
+                                </p>
+
+                                <p style="font-size:12px; word-break:break-all; color:#2563eb;">
+                                  %s
+                                </p>
+
+                                <p style="font-size:13px; color:#6b7280; margin-top:24px;">
+                                  %s
+                                </p>
+
+                                <p style="margin-top:32px;">
+                                  %s<br />
+                                  <strong>%s</strong>
+                                </p>
+                              </td>
+                            </tr>
+
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                  </body>
+                </html>"""
+                .formatted(
+                        ctx.isGerman() ? "de" : "en",
+                        ctx.getTitle(),
+                        welcomeText,
+                        ctx.getThanks(),
+                        ctx.getInstruction(),
+                        ctx.getUrl(),
+                        ctx.getButtonText(),
+                        ctx.getFallbackText(),
+                        ctx.getUrl(),
+                        ctx.getIgnoreText(),
+                        ctx.getBestRegards(),
+                        ctx.getTeam());
     }
 }

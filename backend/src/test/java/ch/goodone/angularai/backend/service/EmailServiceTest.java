@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Locale;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
@@ -44,6 +45,22 @@ class EmailServiceTest {
         String deHtml = (String) ReflectionTestUtils.invokeMethod(emailService, "getEmailHtml", baseUrl, true, true);
         saveEmailToFile("verification-de-ch.html", deHtml);
         assertTrue(deHtml.contains("Willkommen bei GoodOne"));
+
+        // Password Recovery
+        String recoveryHtml = (String) ReflectionTestUtils.invokeMethod(emailService, "getEmailHtml", baseUrl, false, false);
+        assertTrue(recoveryHtml.contains("Reset your password"));
+    }
+
+    @Test
+    void sendVerificationEmail_shouldNotThrow() {
+        emailService.sendVerificationEmail("test@example.com", "token");
+        verify(mailSender).send(any(MimeMessage.class));
+    }
+
+    @Test
+    void sendPasswordRecoveryEmail_shouldNotThrow() {
+        emailService.sendPasswordRecoveryEmail("test@example.com", "token", Locale.ENGLISH);
+        verify(mailSender).send(any(MimeMessage.class));
     }
 
     private void saveEmailToFile(String filename, String content) throws IOException {

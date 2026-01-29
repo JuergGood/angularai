@@ -68,7 +68,8 @@ class IpLocationServiceTest {
         response.put("latitude", 37.4223);
         response.put("longitude", -122.0847);
 
-        when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(response);
+        when(restTemplate.exchange(anyString(), eq(org.springframework.http.HttpMethod.GET), isNull(), any(org.springframework.core.ParameterizedTypeReference.class)))
+                .thenReturn(org.springframework.http.ResponseEntity.ok(response));
 
         IpLocationService.GeoLocation result = ipLocationService.lookup(ip);
 
@@ -85,7 +86,8 @@ class IpLocationServiceTest {
         Map<String, Object> response = new HashMap<>();
         response.put("error", "some error");
 
-        when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(response);
+        when(restTemplate.exchange(anyString(), eq(org.springframework.http.HttpMethod.GET), isNull(), any(org.springframework.core.ParameterizedTypeReference.class)))
+                .thenReturn(org.springframework.http.ResponseEntity.ok(response));
 
         IpLocationService.GeoLocation result = ipLocationService.lookup("8.8.8.8");
 
@@ -96,7 +98,8 @@ class IpLocationServiceTest {
     @Test
     void lookup_ReturnsEmpty_WhenApiReturnsNull() {
         when(systemSettingService.isGeolocationEnabled()).thenReturn(true);
-        when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(null);
+        when(restTemplate.exchange(anyString(), eq(org.springframework.http.HttpMethod.GET), isNull(), any(org.springframework.core.ParameterizedTypeReference.class)))
+                .thenReturn(org.springframework.http.ResponseEntity.ok(null));
 
         IpLocationService.GeoLocation result = ipLocationService.lookup("8.8.8.8");
 
@@ -107,7 +110,8 @@ class IpLocationServiceTest {
     @Test
     void lookup_ReturnsEmpty_WhenApiThrowsException() {
         when(systemSettingService.isGeolocationEnabled()).thenReturn(true);
-        when(restTemplate.getForObject(anyString(), eq(Map.class))).thenThrow(new RuntimeException("API down"));
+        when(restTemplate.exchange(anyString(), eq(org.springframework.http.HttpMethod.GET), isNull(), any(org.springframework.core.ParameterizedTypeReference.class)))
+                .thenThrow(new RuntimeException("API down"));
 
         IpLocationService.GeoLocation result = ipLocationService.lookup("8.8.8.8");
 
@@ -122,7 +126,8 @@ class IpLocationServiceTest {
         response.put("latitude", "not-a-number");
         response.put("longitude", null);
 
-        when(restTemplate.getForObject(anyString(), eq(Map.class))).thenReturn(response);
+        when(restTemplate.exchange(anyString(), eq(org.springframework.http.HttpMethod.GET), isNull(), any(org.springframework.core.ParameterizedTypeReference.class)))
+                .thenReturn(org.springframework.http.ResponseEntity.ok(response));
 
         IpLocationService.GeoLocation result = ipLocationService.lookup("8.8.8.8");
 

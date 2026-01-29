@@ -193,4 +193,29 @@ describe('DashboardComponent', () => {
     expect(component.getDueChip({ dueDate: futureStr } as any).label).toBe(futureStr);
     expect(component.getDueChip({ dueDate: futureStr } as any).tone).toBe('neutral');
   });
+
+  it('should return relative time strings', () => {
+    const now = new Date();
+    const oneHourAgo = new Date(now.getTime() - 3600 * 1000);
+    const iso = oneHourAgo.toISOString();
+
+    expect(component.toRelativeTime(iso)).toBe('1h ago');
+  });
+
+  it('should filter recent activity', () => {
+    component.dashboardData.set({
+      ...mockDashboardData,
+      recentActivity: [
+        { id: 1, timestamp: '2026-01-01 10:00:00', login: 'admin', action: 'USER_LOGIN', details: 'test' },
+        { id: 2, timestamp: '2026-01-01 11:00:00', login: 'user', action: 'TASK_CREATED', details: 'test' }
+      ]
+    });
+    fixture.detectChanges();
+
+    component.activityFilter.set('admin');
+    fixture.detectChanges();
+
+    expect(component.vm()?.recentActivityFiltered.length).toBe(1);
+    expect(component.vm()?.recentActivityFiltered[0].login).toBe('admin');
+  });
 });

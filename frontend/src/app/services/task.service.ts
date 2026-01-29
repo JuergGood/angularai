@@ -18,14 +18,9 @@ export class TaskService {
   constructor(private http: HttpClient, private authService: AuthService) {}
 
   private getHeaders(): HttpHeaders {
-    const auth = this.authService.getAuthHeader();
-    const headers: { [key: string]: string } = {
+    return new HttpHeaders({
       'Content-Type': 'application/json'
-    };
-    if (auth) {
-      headers['Authorization'] = 'Basic ' + auth;
-    }
-    return new HttpHeaders(headers);
+    });
   }
 
   getTasks(params?: { status?: TaskStatus; smartFilter?: SmartFilter; sort?: string }): Observable<Task[]> {

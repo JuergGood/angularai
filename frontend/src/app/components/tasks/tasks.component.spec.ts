@@ -160,4 +160,130 @@ describe('TasksComponent', () => {
     component.toggleViewMode();
     expect(component.viewMode).not.toBe(initialMode);
   });
+
+  it('should handle filter change', () => {
+    component.onFilterChange('TODAY');
+    expect(component.activeFilter).toBe('TODAY');
+    expect(taskServiceSpy.getTasks).toHaveBeenCalled();
+  });
+
+  it('should handle reordering (drop)', () => {
+    component.filterStatus = 'ALL';
+    component.tasks = [...mockTasks, { id: 2, title: 'Task 2', priority: Priority.MEDIUM, status: TaskStatus.OPEN }];
+    const event = { previousIndex: 0, currentIndex: 1 };
+    component.drop(event as any);
+    expect(taskServiceSpy.reorderTasks).toHaveBeenCalled();
+  });
+
+  it('should reset sorting', () => {
+    component.tasks = [
+      { id: 2, title: 'Task 2', priority: Priority.LOW, status: TaskStatus.OPEN },
+      { id: 1, title: 'Task 1', priority: Priority.HIGH, status: TaskStatus.OPEN }
+    ];
+    component.resetSorting();
+    expect(component.tasks[0].id).toBe(1);
+    expect(taskServiceSpy.reorderTasks).toHaveBeenCalled();
+  });
+
+  it('should show add task form', () => {
+    component.showAddTaskForm();
+    expect(component.showForm).toBe(true);
+    expect(component.editingTask).toBe(false);
+  });
+
+  it('should handle edit task', () => {
+    component.editTask(mockTasks[0]);
+    expect(component.currentTask.id).toBe(mockTasks[0].id);
+    expect(component.editingTask).toBe(true);
+    expect(component.showForm).toBe(true);
+  });
+
+  it('should handle cancel edit', () => {
+    component.cancelEdit();
+    expect(component.showForm).toBe(false);
+    expect(component.editingTask).toBe(false);
+  });
+
+  it('should submit new task', () => {
+    component.editingTask = false;
+    component.currentTask = { title: 'New', priority: Priority.MEDIUM, status: TaskStatus.OPEN };
+    component.onSubmit();
+    expect(taskServiceSpy.createTask).toHaveBeenCalled();
+  });
+
+  it('should delete task with confirmation', async () => {
+    const dialogRefSpy = {
+      afterClosed: vi.fn().mockReturnValue(of(true))
+    };
+    vi.spyOn(component['dialog'], 'open').mockReturnValue(dialogRefSpy as any);
+
+    const task = { id: 1, title: 'Task 1' };
+    component.deleteTask(task as any);
+
+    expect(component['dialog'].open).toHaveBeenCalled();
+    expect(taskServiceSpy.deleteTask).toHaveBeenCalledWith(1);
+  });
+
+  it('should format date', () => {
+    const today = new Date().toISOString().split('T')[0];
+    const formatted = component.formatDate(today);
+    expect(formatted).toBeTruthy();
+  });
+
+  it('should cycle status', () => {
+    const task = { id: 1, status: TaskStatus.OPEN };
+    const event = new MouseEvent('click');
+    component.cycleStatus(task as any, event);
+    expect(task.status).toBe(TaskStatus.IN_PROGRESS);
+    expect(taskServiceSpy.patchTask).toHaveBeenCalledWith(1, { status: TaskStatus.IN_PROGRESS });
+  });
+
+  it('should toggle task done', () => {
+    const task = { id: 1, status: TaskStatus.OPEN };
+    component.toggleTaskDone(task as any);
+    expect(task.status).toBe(TaskStatus.DONE);
+    expect(taskServiceSpy.patchTask).toHaveBeenCalledWith(1, { status: TaskStatus.DONE });
+  });
+
+  it('should handle toggleActions', () => {
+    const event = { target: document.createElement('div') } as any;
+    const task = { id: 1 };
+    component.toggleActions(event, task as any);
+    expect(component.activeActionsTaskId).toBe(1);
+    component.toggleActions(event, task as any);
+    expect(component.activeActionsTaskId).toBeNull();
+  });
+
+  it('should toggle task selection', () => {
+    component.toggleTaskSelection(1);
+    expect(component.selectedTaskIds().has(1)).toBe(true);
+    component.toggleTaskSelection(1);
+    expect(component.selectedTaskIds().has(1)).toBe(false);
+  });
+
+  it('should handle toggleSelectAll', () => {
+    component.filteredTasks = [{ id: 1 }, { id: 2 }] as any;
+    component.toggleSelectAll(true);
+    expect(component.selectedTaskIds().size).toBe(2);
+    component.toggleSelectAll(false);
+    expect(component.selectedTaskIds().size).toBe(0);
+  });
+
+  it('should bulk update status', () => {
+    component.selectedTaskIds.set(new Set([1, 2]));
+    component.bulkUpdateStatus(TaskStatus.DONE);
+    expect(taskServiceSpy.bulkPatchTasks).toHaveBeenCalled();
+    expect(component.selectedTaskIds().size).toBe(0);
+  });
+
+  it('should bulk delete with confirmation', () => {
+    component.selectedTaskIds.set(new Set([1, 2]));
+    const dialogRefSpy = {
+      afterClosed: vi.fn().mockReturnValue(of(true))
+    };
+    vi.spyOn(component['dialog'], 'open').mockReturnValue(dialogRefSpy as any);
+
+    component.bulkDelete();
+    expect(taskServiceSpy.bulkDeleteTasks).toHaveBeenCalled();
+  });
 });

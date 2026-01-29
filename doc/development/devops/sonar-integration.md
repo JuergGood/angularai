@@ -48,13 +48,13 @@ export SONAR_TOKEN="your_actual_token_here"
 ### Windows (PowerShell - Load from .env)
 ```bash
 # Load from .env
-Get-Content .env | Foreach-Object { if ($_ -match "SONAR_TOKEN=(.*)") { $env:SONAR_TOKEN = $matches[1] } }
+Get-Content .env | Foreach-Object { if ($_ -match "SONAR_TOKEN=(.*)") { $env:SONAR_TOKEN = $matches[1].Trim() } }
 ```
 
 ### Windows (PowerShell - Manual)
 ```bash
 # Set manually
-$env:SONAR_TOKEN="your_actual_token_here"
+$env:SONAR_TOKEN = "your_actual_token_here"
 ```
 
 
@@ -75,7 +75,8 @@ curl -k -u "$SONAR_TOKEN:" "https://sonarcloud.io/api/issues/search?componentKey
 
 #### Windows (PowerShell)
 ```bash
-curl.exe -k -u "${env:SONAR_TOKEN}:" "https://sonarcloud.io/api/issues/search?componentKeys=JuergGood_angularai&statuses=OPEN,CONFIRMED&ps=500" -o sonar-issues.json
+# Ensure you are in the project root
+curl.exe -k -u "${env:SONAR_TOKEN}:" https://sonarcloud.io/api/issues/search?componentKeys=JuergGood_angularai&statuses=OPEN,CONFIRMED&ps=500 -o sonar-issues.json
 ```
 
 ---
@@ -108,18 +109,18 @@ export $(grep -v '^#' .env | xargs)
 
 #### Windows (PowerShell)
 ```bash
-# Load all variables from .env (ignoring comments)
+# Load all variables from .env
 Get-Content .env | Where-Object { $_ -and -not $_.StartsWith("#") } | ForEach-Object {
-    $name, $value = $_.Split('=', 2)
-    if ($name -and $value) {
-        [System.Environment]::SetEnvironmentVariable($name.Trim(), $value.Trim(), "Process")
+    if ($_ -match "(.+?)=(.*)") {
+        $name = $matches[1].Trim()
+        $value = $matches[2].Trim()
+        [System.Environment]::SetEnvironmentVariable($name, $value, "Process")
     }
 }
 ```
 
 ```bash
 # Run the analysis (requires bash environment like Git Bash or WSL if running .sh)
-# or run the maven command directly as shown in Option B.
 ./scripts/sonar-analysis.sh
 ```
 
@@ -128,22 +129,23 @@ Get-Content .env | Where-Object { $_ -and -not $_.StartsWith("#") } | ForEach-Ob
 ### Option B: Manual Maven Command
 
 ```bash
-mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
-  -Dsonar.token="$SONAR_TOKEN" \
-  -Dsonar.projectKey=JuergGood_angularai \
-  -Dsonar.organization=juerggood \
-  -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info \
-  -Dsonar.coverage.jacoco.xmlReportPaths=backend/target/site/jacoco/jacoco.xml
+# Ensure SONAR_TOKEN is in your environment
+mvn verify sonar:sonar -Dsonar.token="$SONAR_TOKEN"
 ```
 
 **Windows (PowerShell) equivalent:**
+
 ```bash
-mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar `
-  "-Dsonar.token=$env:SONAR_TOKEN" `
-  "-Dsonar.projectKey=JuergGood_angularai" `
-  "-Dsonar.organization=juerggood" `
-  "-Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info" `
-  "-Dsonar.coverage.jacoco.xmlReportPaths=backend/target/site/jacoco/jacoco.xml"
+# 1. Ensure JDK 21 is used (required for JaCoCo compatibility)
+$env:JAVA_HOME = "C:\programs\java\jdk-21.0.10"
+$env:Path = "$($env:JAVA_HOME)\bin;" + $env:Path
+```
+
+```bash
+# 2. Run the analysis (Ensure you are in the project root)
+# Using -D"key=value" is the most robust way for PowerShell + IDE runners
+cd C:\doc\sw\ai\angularai\angularai
+mvn verify sonar:sonar -DskipTests -D"sonar.token=$env:SONAR_TOKEN"
 ```
 
 > **Note**: Ensure you run `npm test` in the `frontend` folder first to generate the `lcov.info` file if you want frontend coverage in the report.
