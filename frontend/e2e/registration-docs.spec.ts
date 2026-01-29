@@ -6,15 +6,18 @@ test.describe('Registration Documentation Screenshots', () => {
 
   test.use({ storageState: { cookies: [], origins: [] } });
 
-  const screenshotDir = 'e2e-screenshots/registration-guide';
+  const screenshotDir = 'doc/user-guide/workflows/assets';
 
   test.beforeAll(async () => {
-    if (!fs.existsSync(screenshotDir)) {
-      fs.mkdirSync(screenshotDir, { recursive: true });
+    // Navigate from frontend/e2e/ to root
+    const absolutePath = path.resolve(process.cwd(), '../', screenshotDir);
+    if (!fs.existsSync(absolutePath)) {
+      fs.mkdirSync(absolutePath, { recursive: true });
     }
   });
 
   test('capture registration workflow screenshots', async ({ page }) => {
+    const absolutePath = path.resolve(process.cwd(), '../', screenshotDir);
     // Intercept recaptcha site key request and return "disabled" for initial load
     // We do this to ensure we don't get errors or delays on first load
     await page.route('**/api/system/recaptcha-site-key', async route => {
@@ -27,7 +30,7 @@ test.describe('Registration Documentation Screenshots', () => {
 
     // 1. Landing / Login Page (to show where to start)
     await page.goto('/login');
-    await page.screenshot({ path: `${screenshotDir}/01-login-page.png`, fullPage: true });
+    await page.screenshot({ path: `${absolutePath}/01-login-page.png`, fullPage: true });
 
     // 2. Click Register
     await page.locator('a[routerLink="/register"]').click();
@@ -45,7 +48,7 @@ test.describe('Registration Documentation Screenshots', () => {
     // Reload to pick up the new key and render recaptcha
     await page.reload();
     await page.waitForTimeout(2000);
-    await page.screenshot({ path: `${screenshotDir}/02-registration-form-empty.png`, fullPage: true });
+    await page.screenshot({ path: `${absolutePath}/02-registration-form-empty.png`, fullPage: true });
 
     // 3. Fill Form
     await page.locator('input[formControlName="fullName"]').fill('John Doe');
@@ -60,7 +63,7 @@ test.describe('Registration Documentation Screenshots', () => {
     });
 
     await page.waitForTimeout(1000);
-    await page.screenshot({ path: `${screenshotDir}/03-registration-form-filled.png`, fullPage: true });
+    await page.screenshot({ path: `${absolutePath}/03-registration-form-filled.png`, fullPage: true });
 
     // 4. Submit and see Success Page
     // Mock the registration request to ensure success
@@ -81,14 +84,14 @@ test.describe('Registration Documentation Screenshots', () => {
     });
 
     await expect(page).toHaveURL(/\/register\/success/);
-    await page.screenshot({ path: `${screenshotDir}/04-registration-success.png`, fullPage: true });
+    await page.screenshot({ path: `${absolutePath}/04-registration-success.png`, fullPage: true });
 
     // 5. Verification Success (simulated)
     await page.goto('/verify/success');
-    await page.screenshot({ path: `${screenshotDir}/05-verification-success.png`, fullPage: true });
+    await page.screenshot({ path: `${absolutePath}/05-verification-success.png`, fullPage: true });
 
     // 6. Verification Error - Expired (simulated)
     await page.goto('/verify/error?reason=expired&email=john.doe@example.com');
-    await page.screenshot({ path: `${screenshotDir}/06-verification-expired.png`, fullPage: true });
+    await page.screenshot({ path: `${absolutePath}/06-verification-expired.png`, fullPage: true });
   });
 });

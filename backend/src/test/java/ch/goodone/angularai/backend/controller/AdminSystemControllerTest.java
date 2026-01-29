@@ -147,4 +147,23 @@ class AdminSystemControllerTest {
         mockMvc.perform(get("/api/admin/settings/geolocation"))
                 .andExpect(status().isForbidden());
     }
+
+    @Test
+    @WithMockUser(username = "adminread", authorities = {"ROLE_ADMIN_READ"})
+    void adminReadShouldSeeSettings() throws Exception {
+        when(systemSettingService.isGeolocationEnabled()).thenReturn(true);
+
+        mockMvc.perform(get("/api/admin/settings/geolocation"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.enabled").value(true));
+    }
+
+    @Test
+    @WithMockUser(username = "adminread", authorities = {"ROLE_ADMIN_READ"})
+    void adminReadShouldNotModifySettings() throws Exception {
+        mockMvc.perform(post("/api/admin/settings/geolocation")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("enabled", true))))
+                .andExpect(status().isForbidden());
+    }
 }

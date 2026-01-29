@@ -97,6 +97,8 @@ stateDiagram-v2
 
 The forgot password workflow allows users to regain access to their account by resetting their password via a secure email link.
 
+For a step-by-step visual guide with screenshots, see the [Forgot Password UI Guide](../../user-guide/workflows/forgot-password-ui-guide.md).
+
 ### 2.1. Forgot Password Sequence Diagram
 
 ```mermaid

@@ -36,6 +36,8 @@ Scripts are available in the `scripts/` folder for common deployment tasks (Powe
   - Runs `docker compose up --build -d` to start the application locally in the background.
 - **AWS Deployment**: `.\scripts\deploy-aws.ps1` or `.\scripts\deploy-aws.bat`
   - Authenticates with AWS ECR, builds, tags, and pushes frontend and backend images, and forces a new deployment on ECS services.
+- **Update Documentation Screenshots**: `.\scripts\update-docs-screenshots.ps1`
+  - Runs Playwright tests to regenerate UI screenshots for user guides.
 - **Environment Loading**: The `load-env.ps1` script is used by other PowerShell scripts to ensure sensitive keys (like `IPSTACK_API_KEY`) are available in the session.
 
 ## Project Structure

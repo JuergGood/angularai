@@ -20,17 +20,30 @@ To run the frontend locally:
 ## Testing
 
 - **Unit Tests**: Vitest for component and service testing.
-- **E2E Tests**: Cypress for comprehensive end-to-end testing.
+- **E2E Tests**: Playwright for comprehensive end-to-end testing and documentation screenshot automation.
 
 Run unit tests:
 ```bash
 npm test
 ```
 
-Run Cypress tests:
+Run Playwright tests:
 ```bash
-npm run cypress:open
+npx playwright test
 ```
+
+## Documentation Screenshots
+
+The documentation screenshots in `doc/user-guide/workflows/assets` are automatically generated using Playwright. This ensures they stay up-to-date with the latest UI.
+
+To regenerate the screenshots:
+1. Ensure the application is running (or the Playwright webServer is configured).
+2. Run the following command in the `frontend/` directory:
+```bash
+npx playwright test registration-docs forgot-password-docs --project=no-auth
+```
+
+For more details, see [Updating Documentation Screenshots](Updating-Documentation-Screenshots.md).
 
 Run lint:
 ```bash
