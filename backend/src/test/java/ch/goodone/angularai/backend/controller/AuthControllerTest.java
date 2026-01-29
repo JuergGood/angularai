@@ -5,7 +5,6 @@ import ch.goodone.angularai.backend.dto.UserDTO;
 import ch.goodone.angularai.backend.model.PasswordRecoveryToken;
 import ch.goodone.angularai.backend.model.Role;
 import ch.goodone.angularai.backend.model.User;
-import ch.goodone.angularai.backend.model.VerificationToken;
 import ch.goodone.angularai.backend.repository.PasswordRecoveryTokenRepository;
 import ch.goodone.angularai.backend.repository.UserRepository;
 import ch.goodone.angularai.backend.repository.VerificationTokenRepository;
@@ -27,6 +26,7 @@ import java.time.LocalDate;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -66,7 +66,7 @@ class AuthControllerTest {
 
     @BeforeEach
     void setUp() {
-        when(captchaService.verify(org.mockito.ArgumentMatchers.anyString())).thenReturn(true);
+        when(captchaService.verify(anyString())).thenReturn(true);
         when(captchaService.verify(null)).thenReturn(true);
     }
 

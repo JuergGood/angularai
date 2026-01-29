@@ -143,8 +143,6 @@ public class CaptchaService {
             Map<String, Object> event = new HashMap<>();
             event.put("token", token);
             event.put("siteKey", getActiveSiteKey());
-            // Optionally add expectedAction if needed
-            // event.put("expectedAction", "REGISTER");
 
             Map<String, Object> body = new HashMap<>();
             body.put("event", event);

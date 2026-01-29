@@ -24,11 +24,7 @@ public class TaskParserService {
             return new ParsedTask("", "", null, Priority.MEDIUM, TaskStatus.OPEN, List.of());
         }
 
-        String value = input.trim();
-        // Handle JSON-quoted strings from frontend
-        if (value.startsWith("\"") && value.endsWith("\"") && value.length() >= 2) {
-            value = value.substring(1, value.length() - 1).trim();
-        }
+        String value = sanitizeInput(input);
         
         if (value.contains("|") || value.contains(";")) {
             return parseDelimited(value, "[|;]");
@@ -36,12 +32,18 @@ public class TaskParserService {
             String[] parts = value.split(",");
             if (isLikelyCsv(parts)) {
                 return parseCsv(parts);
-            } else {
-                return parseSpaceHeuristic(value);
             }
-        } else {
-            return parseSpaceHeuristic(value);
         }
+        return parseSpaceHeuristic(value);
+    }
+
+    private String sanitizeInput(String input) {
+        String value = input.trim();
+        // Handle JSON-quoted strings from frontend
+        if (value.startsWith("\"") && value.endsWith("\"") && value.length() >= 2) {
+            value = value.substring(1, value.length() - 1).trim();
+        }
+        return value;
     }
 
     private ParsedTask parseDelimited(String value, String delimiter) {
@@ -101,31 +103,65 @@ public class TaskParserService {
 
     private int findPriorityIndex(String[] tokens, int excludeIdx1, int excludeIdx2, int excludeEnd2) {
         for (int i = tokens.length - 1; i >= 0; i--) {
-            if (i == excludeIdx1 || (excludeIdx2 != -1 && i >= excludeIdx2 && i <= excludeEnd2)) continue;
-            if (parsePriority(tokens[i], null) != null) return i;
+            if (shouldSkipToken(i, excludeIdx1, excludeIdx2, excludeEnd2)) {
+                continue;
+            }
+            if (parsePriority(tokens[i], null) != null) {
+                return i;
+            }
         }
         return -1;
     }
 
+    private boolean shouldSkipToken(int i, int excludeIdx1, int excludeIdx2, int excludeEnd2) {
+        if (i == excludeIdx1) {
+            return true;
+        }
+        return excludeIdx2 != -1 && i >= excludeIdx2 && i <= excludeEnd2;
+    }
+
     private int[] findDateIndices(String[] tokens, int statusIdx, int priorityIdx) {
         for (int i = tokens.length - 1; i >= 0; i--) {
-            if (i == statusIdx || i == priorityIdx) continue;
+            if (i == statusIdx || i == priorityIdx) {
+                continue;
+            }
             
             int[] relativeIndices = checkRelativeDateIndices(tokens, i, statusIdx, priorityIdx);
-            if (relativeIndices.length > 0) return relativeIndices;
+            if (relativeIndices.length > 0) {
+                return relativeIndices;
+            }
 
-            if (parseRelativeDate(tokens[i]) != null || parseDate(tokens[i]) != null) return new int[]{i, i};
+            if (isSingleTokenDate(tokens[i])) {
+                return new int[]{i, i};
+            }
         }
         return new int[]{-1, -1};
     }
 
+    private boolean isSingleTokenDate(String token) {
+        return parseRelativeDate(token) != null || parseDate(token) != null;
+    }
+
     private int[] checkRelativeDateIndices(String[] tokens, int i, int statusIdx, int priorityIdx) {
         // Check for "in X days" (three tokens)
+        int[] result = checkThreeTokenRelativeDate(tokens, i, statusIdx, priorityIdx);
+        if (result.length > 0) {
+            return result;
+        }
+
+        // Check for "X days" (two tokens)
+        return checkTwoTokenRelativeDate(tokens, i, statusIdx, priorityIdx);
+    }
+
+    private int[] checkThreeTokenRelativeDate(String[] tokens, int i, int statusIdx, int priorityIdx) {
         if (i > 1 && isNotExcluded(i, statusIdx, priorityIdx) && isNotExcluded(i - 1, statusIdx, priorityIdx) && isNotExcluded(i - 2, statusIdx, priorityIdx)
                 && parseRelativeDate(tokens[i - 2] + " " + tokens[i - 1] + " " + tokens[i]) != null) {
             return new int[]{i - 2, i};
         }
-        // Check for "X days" (two tokens)
+        return new int[0];
+    }
+
+    private int[] checkTwoTokenRelativeDate(String[] tokens, int i, int statusIdx, int priorityIdx) {
         if (i > 0 && isNotExcluded(i, statusIdx, priorityIdx) && isNotExcluded(i - 1, statusIdx, priorityIdx)
                 && parseRelativeDate(tokens[i - 1] + " " + tokens[i]) != null) {
             return new int[]{i - 1, i};
@@ -276,27 +312,44 @@ public class TaskParserService {
 
     private LocalDate parseXDays(String text, LocalDate today) {
         String[] parts = text.split("\\s+");
-        if (parts.length >= 2 && parts.length <= 3) {
-            String daysStr = null;
-            String unit = null;
-            if (parts.length == 2) {
-                daysStr = parts[0];
-                unit = parts[1];
-            } else if (parts[0].equals("in")) {
-                daysStr = parts[1];
-                unit = parts[2];
-            }
-            
-            if (daysStr != null && (unit.startsWith("day") || unit.startsWith("tag"))) {
-                try {
-                    int days = Integer.parseInt(daysStr);
-                    return today.plusDays(days);
-                } catch (NumberFormatException e) {
-                    // Not a number
-                }
+        if (parts.length < 2 || parts.length > 3) {
+            return null;
+        }
+
+        String daysStr = extractDaysString(parts);
+        String unit = extractUnitString(parts);
+
+        if (daysStr != null && isDayUnit(unit)) {
+            try {
+                int days = Integer.parseInt(daysStr);
+                return today.plusDays(days);
+            } catch (NumberFormatException e) {
+                // Not a number
             }
         }
         return null;
+    }
+
+    private String extractDaysString(String[] parts) {
+        if (parts.length == 2) {
+            return parts[0];
+        } else if (parts[0].equals("in")) {
+            return parts[1];
+        }
+        return null;
+    }
+
+    private String extractUnitString(String[] parts) {
+        if (parts.length == 2) {
+            return parts[1];
+        } else if (parts[0].equals("in")) {
+            return parts[2];
+        }
+        return null;
+    }
+
+    private boolean isDayUnit(String unit) {
+        return unit != null && (unit.startsWith("day") || unit.startsWith("tag"));
     }
 
     private Priority parsePriority(String input, Priority defaultVal) {

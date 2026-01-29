@@ -29,6 +29,9 @@ public class DataInitializer {
     @Value("${admin.read.password}")
     private String adminReadPassword;
 
+    @Value("${user2.password:user123}")
+    private String user2Password;
+
     @Value("${admin.email}")
     private String adminEmail;
 
@@ -98,7 +101,7 @@ public class DataInitializer {
                         "Test",
                         "User 2",
                         "user2",
-                        passwordEncoder.encode("user123"),
+                        passwordEncoder.encode(user2Password),
                         "user2@system.local",
                         "+41792222222",
                         LocalDate.of(1998, 8, 8),

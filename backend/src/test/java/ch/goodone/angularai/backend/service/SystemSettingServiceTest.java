@@ -4,7 +4,6 @@ import ch.goodone.angularai.backend.model.SystemSetting;
 import ch.goodone.angularai.backend.repository.SystemSettingRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;

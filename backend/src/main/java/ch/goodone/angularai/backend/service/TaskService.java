@@ -22,6 +22,7 @@ public class TaskService {
     private static final String DUE_DATE = "dueDate";
     private static final String PRIORITY = "priority";
     private static final String POSITION = "position";
+    private static final String TASKS_LOG_SUFFIX = " tasks";
 
     private final TaskRepository taskRepository;
     private final ActionLogService actionLogService;
@@ -73,6 +74,7 @@ public class TaskService {
                             cb.notEqual(root.get(STATUS), TaskStatus.ARCHIVED)
                     ));
                     break;
+                case "ALL":
                 default:
                     break;
             }
@@ -195,7 +197,7 @@ public class TaskService {
         }
         
         List<Task> saved = taskRepository.saveAll(tasks);
-        actionLogService.log(user.getLogin(), "TASK_BULK_PATCH", "Updated " + saved.size() + " tasks");
+        actionLogService.log(user.getLogin(), "TASK_BULK_PATCH", "Updated " + saved.size() + TASKS_LOG_SUFFIX);
         return saved.stream().map(TaskDTO::fromEntity).toList();
     }
 
@@ -211,7 +213,7 @@ public class TaskService {
                     .ifPresent(t -> t.setPosition(finalI));
         }
         taskRepository.saveAll(userTasks);
-        actionLogService.log(user.getLogin(), "TASKS_REORDERED", "Reordered " + taskIds.size() + " tasks");
+        actionLogService.log(user.getLogin(), "TASKS_REORDERED", "Reordered " + taskIds.size() + TASKS_LOG_SUFFIX);
     }
 
     @Transactional
@@ -231,6 +233,6 @@ public class TaskService {
                 .filter(t -> t.getUser().equals(user))
                 .toList();
         taskRepository.deleteAll(tasks);
-        actionLogService.log(user.getLogin(), "TASK_BULK_DELETE", "Deleted " + tasks.size() + " tasks");
+        actionLogService.log(user.getLogin(), "TASK_BULK_DELETE", "Deleted " + tasks.size() + TASKS_LOG_SUFFIX);
     }
 }

@@ -17,6 +17,8 @@ import java.util.Set;
 @RequestMapping("/api/users")
 @Tag(name = "User Profile", description = "Endpoints for managing the logged-in user's profile")
 public class UserController {
+    
+    private static final String USER_NOT_FOUND = "User not found";
 
     private final UserRepository userRepository;
     private final ActionLogService actionLogService;
@@ -29,14 +31,14 @@ public class UserController {
     @GetMapping("/me")
     public ResponseEntity<UserDTO> getCurrentUser(Authentication authentication) {
         User user = userRepository.findByLogin(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND));
         return ResponseEntity.ok(UserDTO.fromEntity(user));
     }
 
     @PutMapping("/me")
     public ResponseEntity<Object> updateCurrentUser(Authentication authentication, @RequestBody UserDTO userDTO) {
         User user = userRepository.findByLogin(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND));
         
         if (userDTO.getEmail() != null && !userDTO.getEmail().matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
             return ResponseEntity.badRequest().body("Invalid email format");
@@ -62,7 +64,7 @@ public class UserController {
         }
 
         User user = userRepository.findByLogin(login)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new RuntimeException(USER_NOT_FOUND));
 
         userRepository.delete(user);
         actionLogService.log(login, "USER_DELETED", "User deleted own account");

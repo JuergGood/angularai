@@ -3,7 +3,6 @@ package ch.goodone.angularai.backend.controller;
 import ch.goodone.angularai.backend.dto.UserDTO;
 import ch.goodone.angularai.backend.model.PasswordRecoveryToken;
 import ch.goodone.angularai.backend.model.User;
-import ch.goodone.angularai.backend.model.UserStatus;
 import ch.goodone.angularai.backend.model.VerificationToken;
 import ch.goodone.angularai.backend.repository.PasswordRecoveryTokenRepository;
 import ch.goodone.angularai.backend.repository.UserRepository;
@@ -15,18 +14,14 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -198,23 +193,23 @@ public class AuthController {
 
     @GetMapping("/verify")
     public ResponseEntity<Object> verify(@RequestParam String token) {
-        logger.info("Received verification request for token: {}", token);
+        logger.info("Received verification request");
         return verificationTokenRepository.findByToken(token)
                 .map(t -> {
-                    logger.info("Token found for user: {}", t.getUser().getLogin());
+                    logger.info("Token found for user");
                     if (t.isExpired()) {
-                        logger.warn("Token expired for user: {}", t.getUser().getLogin());
+                        logger.warn("Token expired for user");
                         return ResponseEntity.badRequest().<Object>body(java.util.Map.of("reason", "expired", "email", t.getUser().getEmail()));
                     }
                     User user = t.getUser();
                     user.setStatus(ch.goodone.angularai.backend.model.UserStatus.ACTIVE);
                     userRepository.save(user);
                     verificationTokenRepository.delete(t);
-                    logger.info("User {} successfully verified and token deleted", user.getLogin());
+                    logger.info("User successfully verified and token deleted");
                     return ResponseEntity.ok().build();
                 })
                 .orElseGet(() -> {
-                    logger.error("Token NOT found in database: {}", token);
+                    logger.error("Token NOT found in database");
                     return ResponseEntity.badRequest().body(java.util.Map.of("reason", "invalid"));
                 });
     }
@@ -244,18 +239,20 @@ public class AuthController {
     @Transactional
     public ResponseEntity<Void> forgotPassword(@RequestBody Map<String, String> payload, Locale locale) {
         String email = payload.get("email");
-        logger.info("Password recovery requested for email: {}", email);
+        logger.info("Password recovery requested");
         
-        userRepository.findByEmail(email).ifPresent(user -> {
-            // Clean up old tokens
-            passwordRecoveryTokenRepository.deleteByUser(user);
-            
-            PasswordRecoveryToken token = new PasswordRecoveryToken(user);
-            passwordRecoveryTokenRepository.save(token);
-            
-            emailService.sendPasswordRecoveryEmail(user.getEmail(), token.getToken(), locale);
-            actionLogService.log(user.getLogin(), "USER_PASSWORD_RECOVERY_REQUESTED", "Password recovery token generated");
-        });
+        if (email != null) {
+            userRepository.findByEmail(email).ifPresent(user -> {
+                // Clean up old tokens
+                passwordRecoveryTokenRepository.deleteByUser(user);
+                
+                PasswordRecoveryToken token = new PasswordRecoveryToken(user);
+                passwordRecoveryTokenRepository.save(token);
+                
+                emailService.sendPasswordRecoveryEmail(user.getEmail(), token.getToken(), locale);
+                actionLogService.log(user.getLogin(), "USER_PASSWORD_RECOVERY_REQUESTED", "Password recovery token generated");
+            });
+        }
         
         // Always return OK to prevent user enumeration
         return ResponseEntity.ok().build();
@@ -269,10 +266,14 @@ public class AuthController {
         
         logger.info("Password reset attempt with token");
         
+        if (token == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "invalid"));
+        }
+
         return passwordRecoveryTokenRepository.findByToken(token)
                 .map(t -> {
                     if (t.isExpired()) {
-                        logger.warn("Password recovery token expired for user: {}", t.getUser().getLogin());
+                        logger.warn("Password recovery token expired");
                         return ResponseEntity.badRequest().body(Map.of("error", "expired"));
                     }
                     
@@ -283,12 +284,12 @@ public class AuthController {
                     passwordRecoveryTokenRepository.delete(t);
                     
                     actionLogService.log(user.getLogin(), "USER_PASSWORD_RESET", "Password successfully reset via recovery token");
-                    logger.info("Password successfully reset for user: {}", user.getLogin());
+                    logger.info("Password successfully reset for user");
                     
                     return ResponseEntity.ok().build();
                 })
                 .orElseGet(() -> {
-                    logger.error("Invalid password recovery token: {}", token);
+                    logger.error("Invalid password recovery token");
                     return ResponseEntity.badRequest().body(Map.of("error", "invalid"));
                 });
     }

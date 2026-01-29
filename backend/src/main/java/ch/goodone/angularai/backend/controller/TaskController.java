@@ -3,6 +3,7 @@ package ch.goodone.angularai.backend.controller;
 import ch.goodone.angularai.backend.dto.TaskDTO;
 import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.UserRepository;
+import ch.goodone.angularai.backend.service.ActionLogService;
 import ch.goodone.angularai.backend.service.TaskParserService;
 import ch.goodone.angularai.backend.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,8 +13,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
+import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/tasks")
@@ -23,11 +26,13 @@ public class TaskController {
     private final TaskService taskService;
     private final UserRepository userRepository;
     private final TaskParserService taskParserService;
+    private final ActionLogService actionLogService;
 
-    public TaskController(TaskService taskService, UserRepository userRepository, TaskParserService taskParserService) {
+    public TaskController(TaskService taskService, UserRepository userRepository, TaskParserService taskParserService, ActionLogService actionLogService) {
         this.taskService = taskService;
         this.userRepository = userRepository;
         this.taskParserService = taskParserService;
+        this.actionLogService = actionLogService;
     }
 
     @PostMapping("/analyze")
@@ -104,8 +109,29 @@ public class TaskController {
         return ResponseEntity.noContent().build();
     }
 
+    @GetMapping("/metrics")
+    public ResponseEntity<Map<String, Object>> getTaskMetrics(Authentication authentication) {
+        List<TaskDTO> tasks = taskService.getTasks(getCurrentUser(authentication), null, null, null);
+        Map<String, Object> metrics = new HashMap<>();
+        metrics.put("total", tasks.size());
+        
+        long completed = tasks.stream().filter(t -> "DONE".equals(t.getStatus())).count();
+        metrics.put("completed", completed);
+        
+        long overdue = tasks.stream().filter(t -> {
+            if (t.getDueDate() == null) return false;
+            return t.getDueDate().isBefore(LocalDate.now()) && !"DONE".equals(t.getStatus());
+        }).count();
+        metrics.put("overdue", overdue);
+
+        return ResponseEntity.ok(metrics);
+    }
+
     private User getCurrentUser(Authentication authentication) {
         return userRepository.findByLogin(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> {
+                    actionLogService.log("unknown", "USER_ERROR", "User not found: " + authentication.getName());
+                    return new RuntimeException("User not found");
+                });
     }
 }

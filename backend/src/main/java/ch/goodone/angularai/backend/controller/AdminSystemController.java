@@ -14,6 +14,9 @@ import java.util.Map;
 @RequestMapping("/api/admin/settings")
 @Tag(name = "Admin System Settings", description = "Endpoints for administrators to manage system settings")
 public class AdminSystemController {
+    
+    private static final String ENABLED = "enabled";
+    private static final String SETTING_CHANGED = "SETTING_CHANGED";
 
     private final SystemSettingService systemSettingService;
     private final ActionLogService actionLogService;
@@ -27,14 +30,14 @@ public class AdminSystemController {
 
     @GetMapping("/geolocation")
     public ResponseEntity<Map<String, Boolean>> getGeolocationEnabled() {
-        return ResponseEntity.ok(Map.of("enabled", systemSettingService.isGeolocationEnabled()));
+        return ResponseEntity.ok(Map.of(ENABLED, systemSettingService.isGeolocationEnabled()));
     }
 
     @PostMapping("/geolocation")
     public ResponseEntity<Void> setGeolocationEnabled(@RequestBody Map<String, Boolean> body, Authentication authentication) {
-        boolean enabled = body.getOrDefault("enabled", false);
+        boolean enabled = body.getOrDefault(ENABLED, false);
         systemSettingService.setGeolocationEnabled(enabled);
-        actionLogService.log(authentication.getName(), "SETTING_CHANGED", "Geolocation enabled set to: " + enabled);
+        actionLogService.log(authentication.getName(), SETTING_CHANGED, "Geolocation enabled set to: " + enabled);
         return ResponseEntity.ok().build();
     }
 
@@ -47,20 +50,20 @@ public class AdminSystemController {
     public ResponseEntity<Void> setRecaptchaConfigIndex(@RequestBody Map<String, Integer> body, Authentication authentication) {
         int index = body.getOrDefault("index", 1);
         systemSettingService.setRecaptchaConfigIndex(index);
-        actionLogService.log(authentication.getName(), "SETTING_CHANGED", "reCAPTCHA config index set to: " + index);
+        actionLogService.log(authentication.getName(), SETTING_CHANGED, "reCAPTCHA config index set to: " + index);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping("/landing-message")
     public ResponseEntity<Map<String, Boolean>> getLandingMessageEnabled() {
-        return ResponseEntity.ok(Map.of("enabled", systemSettingService.isLandingMessageEnabled()));
+        return ResponseEntity.ok(Map.of(ENABLED, systemSettingService.isLandingMessageEnabled()));
     }
 
     @PostMapping("/landing-message")
     public ResponseEntity<Void> setLandingMessageEnabled(@RequestBody Map<String, Boolean> body, Authentication authentication) {
-        boolean enabled = body.getOrDefault("enabled", true);
+        boolean enabled = body.getOrDefault(ENABLED, true);
         systemSettingService.setLandingMessageEnabled(enabled);
-        actionLogService.log(authentication.getName(), "SETTING_CHANGED", "Landing message enabled set to: " + enabled);
+        actionLogService.log(authentication.getName(), SETTING_CHANGED, "Landing message enabled set to: " + enabled);
         return ResponseEntity.ok().build();
     }
 

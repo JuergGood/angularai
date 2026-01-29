@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class VerificationIntegrationTest {
+class VerificationIntegrationTest {
 
     @Autowired
     private WebApplicationContext context;

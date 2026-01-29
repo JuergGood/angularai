@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ActiveProfiles("test")
 @Import(SecurityConfig.class)
-public class PublicEndpointsTest {
+class PublicEndpointsTest {
 
     @Autowired
     private WebApplicationContext context;
