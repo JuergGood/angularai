@@ -23,6 +23,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { QuickAddTaskComponent } from './quick-add-task.component';
 import { TaskFilterChipsComponent } from './task-filter-chips.component';
 import { CompletedTasksSectionComponent } from './completed-tasks-section.component';
+import { TaskItemComponent } from './task-item.component';
+import { TaskFormComponent } from './task-form.component';
 import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
 
 @Component({
@@ -49,7 +51,9 @@ import { formatRelativeDue, isOverdue } from '../../utils/date-utils';
     TranslateModule,
     QuickAddTaskComponent,
     TaskFilterChipsComponent,
-    CompletedTasksSectionComponent
+    CompletedTasksSectionComponent,
+    TaskItemComponent,
+    TaskFormComponent
   ],
   providers: [provideNativeDateAdapter()],
   templateUrl: './tasks.component.html',

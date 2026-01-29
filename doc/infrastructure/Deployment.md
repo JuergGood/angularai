@@ -4,9 +4,8 @@ AngularAI is designed to be easily deployable using containerization and cloud s
 
 ## Docker
 
-The application is fully containerized using Docker. The `docker-compose.yml` file in the root directory orchestrates the following services:
-- **frontend**: The Angular web application served via Nginx.
-- **backend**: The Spring Boot API.
+The application is containerized using a single multi-stage Dockerfile. The `docker-compose.yml` file in the root directory orchestrates the services:
+- **app**: The unified Spring Boot + Angular application.
 - **db**: (Optional/Prod) PostgreSQL database.
 
 ### Local Deployment
@@ -14,6 +13,7 @@ To start the stack locally:
 ```bash
 docker compose up --build
 ```
+The application will be available at `http://localhost:8080` (and also mapped to `http://localhost:80` for convenience).
 
 ## AWS Deployment
 
@@ -22,7 +22,7 @@ The project includes scripts and documentation for deploying to AWS using ECS Fa
 ### Prerequisites
 - AWS CLI configured with appropriate permissions.
 - Docker installed and running.
-- An ECR repository created for both frontend and backend.
+- An ECR repository created for the application image.
 
 ### Deployment Process
 1. **Build and Push**: Use the provided scripts in `scripts/` to build and push images to ECR.

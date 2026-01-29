@@ -4,7 +4,7 @@ import { SidenavComponent } from './components/layout/sidenav.component';
 import { AuthService } from './services/auth.service';
 import { filter } from 'rxjs';
 
-declare var gtag: Function;
+declare const gtag: (command: string, ...args: unknown[]) => void;
 
 @Component({
   selector: 'app-root',

@@ -154,12 +154,24 @@ public class TaskService {
         return taskRepository.findById(id)
                 .filter(t -> t.getUser().equals(user))
                 .map(task -> {
-                    if (taskDTO.getTitle() != null) task.setTitle(taskDTO.getTitle());
-                    if (taskDTO.getDescription() != null) task.setDescription(taskDTO.getDescription());
-                    if (taskDTO.getDueDate() != null) task.setDueDate(taskDTO.getDueDate());
-                    if (taskDTO.getPriority() != null) task.setPriority(taskDTO.getPriority());
-                    if (taskDTO.getStatus() != null) task.setStatus(TaskStatus.valueOf(taskDTO.getStatus()));
-                    if (taskDTO.getTags() != null) task.setTags(new java.util.ArrayList<>(taskDTO.getTags()));
+                    if (taskDTO.getTitle() != null) {
+                        task.setTitle(taskDTO.getTitle());
+                    }
+                    if (taskDTO.getDescription() != null) {
+                        task.setDescription(taskDTO.getDescription());
+                    }
+                    if (taskDTO.getDueDate() != null) {
+                        task.setDueDate(taskDTO.getDueDate());
+                    }
+                    if (taskDTO.getPriority() != null) {
+                        task.setPriority(taskDTO.getPriority());
+                    }
+                    if (taskDTO.getStatus() != null) {
+                        task.setStatus(TaskStatus.valueOf(taskDTO.getStatus()));
+                    }
+                    if (taskDTO.getTags() != null) {
+                        task.setTags(new java.util.ArrayList<>(taskDTO.getTags()));
+                    }
                     
                     Task savedTask = taskRepository.save(task);
                     actionLogService.log(user.getLogin(), "TASK_PATCHED", "Task patched: " + savedTask.getTitle());
@@ -174,8 +186,12 @@ public class TaskService {
                 .toList();
         
         for (Task task : tasks) {
-            if (patch.getStatus() != null) task.setStatus(TaskStatus.valueOf(patch.getStatus()));
-            if (patch.getPriority() != null) task.setPriority(patch.getPriority());
+            if (patch.getStatus() != null) {
+                task.setStatus(TaskStatus.valueOf(patch.getStatus()));
+            }
+            if (patch.getPriority() != null) {
+                task.setPriority(patch.getPriority());
+            }
         }
         
         List<Task> saved = taskRepository.saveAll(tasks);

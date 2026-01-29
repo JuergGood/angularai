@@ -3,6 +3,7 @@ import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { provideHttpClientTesting, HttpTestingController } from '@angular/common/http/testing';
 import { SystemService, SystemInfo } from './system.service';
 import { AuthService } from './auth.service';
+import { I18nService } from './i18n.service';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
   BrowserDynamicTestingModule,
@@ -13,6 +14,7 @@ describe('SystemService', () => {
   let service: SystemService;
   let httpMock: HttpTestingController;
   let authServiceSpy: any;
+  let i18nServiceSpy: any;
 
   beforeEach(() => {
     try {
@@ -26,12 +28,17 @@ describe('SystemService', () => {
       getAuthHeader: vi.fn().mockReturnValue('mock-token')
     };
 
+    i18nServiceSpy = {
+      currentLang: vi.fn().mockReturnValue('en')
+    };
+
     TestBed.configureTestingModule({
       providers: [
         SystemService,
         provideHttpClient(),
         provideHttpClientTesting(),
-        { provide: AuthService, useValue: authServiceSpy }
+        { provide: AuthService, useValue: authServiceSpy },
+        { provide: I18nService, useValue: i18nServiceSpy }
       ]
     });
     service = TestBed.inject(SystemService);

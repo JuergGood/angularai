@@ -95,7 +95,7 @@ export class DashboardComponent implements OnInit {
     if (!action) return 'action-neutral';
     if (action === 'USER_LOGIN') return 'action-login';
     if (action === 'USER_LOGOUT') return 'action-logout';
-    return this.actionClassMap[action] as any ?? 'action-neutral';
+    return (this.actionClassMap[action] as 'action-login' | 'action-logout' | 'action-neutral') ?? 'action-neutral';
   }
 
 
@@ -133,8 +133,8 @@ export class DashboardComponent implements OnInit {
       recentActivityFiltered,
       recentUsers: (data.recentUsers ?? []).map(u => ({
         ...u,
-        roleLabel: this.humanizeRole((u as any).role),
-        roleClass: this.roleClass((u as any).role)
+        roleLabel: this.humanizeRole(u.role),
+        roleClass: this.roleClass(u.role)
       })),
       priorityTasks: (data.priorityTasks ?? []).map(t => ({
         ...t,

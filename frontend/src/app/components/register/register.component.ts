@@ -318,7 +318,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
       lastName = '';
     }
 
-    const { fullName, ...otherValues } = this.registerForm.value;
+    const { fullName: _, ...otherValues } = this.registerForm.value;
     const userToRegister = {
       ...otherValues,
       firstName,

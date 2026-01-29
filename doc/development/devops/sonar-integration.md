@@ -33,11 +33,28 @@ SONAR_TOKEN=your_actual_token_here
 
 If you want to use it in your current terminal session:
 
+### Linux / macOS (Bash/Zsh)
 ```bash
 # Load from .env
 export $(grep SONAR_TOKEN .env | xargs)
-# Or set manually
+```
+
+### Linux / macOS (Manual)
+```bash
+# Set manually
 export SONAR_TOKEN="your_actual_token_here"
+```
+
+### Windows (PowerShell - Load from .env)
+```bash
+# Load from .env
+Get-Content .env | Foreach-Object { if ($_ -match "SONAR_TOKEN=(.*)") { $env:SONAR_TOKEN = $matches[1] } }
+```
+
+### Windows (PowerShell - Manual)
+```bash
+# Set manually
+$env:SONAR_TOKEN="your_actual_token_here"
 ```
 
 
@@ -51,8 +68,14 @@ SonarCloud does not provide a UI download button, but all issues are accessible 
 
 ### API Endpoint
 
+#### Linux / macOS
 ```bash
 curl -k -u "$SONAR_TOKEN:" "https://sonarcloud.io/api/issues/search?componentKeys=JuergGood_angularai&statuses=OPEN,CONFIRMED&ps=500" -o sonar-issues.json
+```
+
+#### Windows (PowerShell)
+```bash
+curl.exe -k -u "${env:SONAR_TOKEN}:" "https://sonarcloud.io/api/issues/search?componentKeys=JuergGood_angularai&statuses=OPEN,CONFIRMED&ps=500" -o sonar-issues.json
 ```
 
 ---
@@ -71,15 +94,32 @@ To run a full SonarCloud analysis locally and see the results on the dashboard b
 ### Option A: Using the Helper Script (Recommended)
 We have provided scripts that handle the build, tests, and analysis. They automatically use the `SONAR_TOKEN` from the environment.
 
+#### Linux / macOS
 ```bash
 # Ensure the script is executable
 chmod +x ./scripts/sonar-analysis.sh
 
 # If you haven't loaded .env yet, you can do it for the current session:
-# Note: This is a simple way that doesn't handle spaces or special characters in values perfectly
 export $(grep -v '^#' .env | xargs)
 
 # Run the script
+./scripts/sonar-analysis.sh
+```
+
+#### Windows (PowerShell)
+```bash
+# Load all variables from .env (ignoring comments)
+Get-Content .env | Where-Object { $_ -and -not $_.StartsWith("#") } | ForEach-Object {
+    $name, $value = $_.Split('=', 2)
+    if ($name -and $value) {
+        [System.Environment]::SetEnvironmentVariable($name.Trim(), $value.Trim(), "Process")
+    }
+}
+```
+
+```bash
+# Run the analysis (requires bash environment like Git Bash or WSL if running .sh)
+# or run the maven command directly as shown in Option B.
 ./scripts/sonar-analysis.sh
 ```
 
@@ -94,6 +134,16 @@ mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar \
   -Dsonar.organization=juerggood \
   -Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info \
   -Dsonar.coverage.jacoco.xmlReportPaths=backend/target/site/jacoco/jacoco.xml
+```
+
+**Windows (PowerShell) equivalent:**
+```bash
+mvn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar `
+  "-Dsonar.token=$env:SONAR_TOKEN" `
+  "-Dsonar.projectKey=JuergGood_angularai" `
+  "-Dsonar.organization=juerggood" `
+  "-Dsonar.javascript.lcov.reportPaths=frontend/coverage/lcov.info" `
+  "-Dsonar.coverage.jacoco.xmlReportPaths=backend/target/site/jacoco/jacoco.xml"
 ```
 
 > **Note**: Ensure you run `npm test` in the `frontend` folder first to generate the `lcov.info` file if you want frontend coverage in the report.

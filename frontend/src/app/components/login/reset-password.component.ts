@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormGroup, Validators, ReactiveFormsModule, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslateModule } from '@ngx-translate/core';
 import { MatCardModule } from '@angular/material/card';
@@ -64,7 +64,7 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   passwordStrengthValidator() {
-    return (control: any) => {
+    return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
       if (!value) return null;
       const hasLetter = /[a-zA-Z]/.test(value);
@@ -75,7 +75,7 @@ export class ResetPasswordComponent implements OnInit {
     };
   }
 
-  passwordMatchValidator(group: FormGroup) {
+  passwordMatchValidator(group: AbstractControl): ValidationErrors | null {
     const password = group.get('password')?.value;
     const confirmPassword = group.get('confirmPassword')?.value;
     return password === confirmPassword ? null : { mismatch: true };

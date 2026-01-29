@@ -75,7 +75,7 @@ Um ein neues Release zu erstellen (z. B. Version 1.0.3):
 
 1.  **Vorbereitung**: Stellen Sie sicher, dass alle Änderungen committet und getestet wurden.
 2.  **Release-Skript ausführen**: Führen Sie den folgenden Befehl in PowerShell aus:
-    ```powershell
+    ```bash
     .\scripts\release.ps1 -NewVersion "1.0.3"
     ```
     Dieses Skript wird:
@@ -86,7 +86,7 @@ Um ein neues Release zu erstellen (z. B. Version 1.0.3):
     - Einen Git-Commit und ein Git-Tag erstellen (z. B. `v1.0.3`).
 3.  **Manueller Schritt**: Bearbeiten Sie `doc/userguide/release-notes.md`, um aussagekräftige Details für das Release hinzuzufügen.
 4.  **Push**: Pushen Sie die Änderungen und Tags in das Repository:
-    ```powershell
+    ```bash
     git push origin main --tags
     ```
 5.  **Nächste Version**: Um mit der Entwicklung der nächsten Version (z. B. 1.0.4) zu beginnen, führen Sie das Skript einfach erneut mit der neuen Versionsnummer aus, wenn Sie bereit sind, diese zu veröffentlichen. Während der Entwicklung können Sie die Version in der `pom.xml` bei Bedarf manuell aktualisieren und `.\scripts\sync-version.ps1` ausführen.

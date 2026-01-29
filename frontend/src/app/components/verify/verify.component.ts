@@ -63,7 +63,7 @@ export class VerifyComponent implements OnInit {
     }
 
     this.http.get(`/api/auth/verify?token=${token}`, { observe: 'response' }).subscribe({
-      next: (response) => {
+      next: () => {
         this.router.navigate(['/verify/success']);
       },
       error: (err) => {

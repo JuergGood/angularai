@@ -97,7 +97,7 @@ To create a new release (e.g., version 1.0.3):
     - Create a git commit and a git tag (e.g., `v1.0.3`).
 3.  **Manual Step**: Edit `doc/userguide/release-notes.md` to provide meaningful details for the release.
 4.  **Push**: Push the changes and tags to the repository:
-    ```powershell
+    ```bash
     git push origin main --tags
     ```
 5.  **Next Version**: To start development on the next version (e.g., 1.0.4), simply run the script again with the new version number when you are ready to release it. During development, you can manually update the version in `pom.xml` if needed and run `.\scripts\sync-version.ps1`.

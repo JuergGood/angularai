@@ -75,109 +75,34 @@
   }
 
   @if (showForm) {
-    <mat-card class="add-task-card">
-      <mat-card-header>
-        <mat-card-title>{{ (editingTask ? 'TASKS.EDIT_TASK' : 'TASKS.ADD_TASK') | translate }}</mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <form (ngSubmit)="onSubmit()" #taskForm="ngForm">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>{{ 'TASKS.FORM.TITLE' | translate }}</mat-label>
-            <input matInput name="title" [(ngModel)]="currentTask.title" required placeholder="{{ 'TASKS.FORM.TITLE_PH' | translate }}">
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>{{ 'TASKS.FORM.DESCRIPTION' | translate }}</mat-label>
-            <textarea matInput name="description" [(ngModel)]="currentTask.description" required rows="3"></textarea>
-          </mat-form-field>
-
-          <div class="form-grid">
-            <mat-form-field appearance="outline">
-              <mat-label>{{ 'TASKS.FORM.DUE_DATE' | translate }}</mat-label>
-              <input matInput [matDatepicker]="picker" name="dueDate" [(ngModel)]="currentTask.dueDate">
-              <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-              <mat-datepicker #picker></mat-datepicker>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>{{ 'TASKS.FORM.PRIORITY' | translate }}</mat-label>
-              <mat-select name="priority" [(ngModel)]="currentTask.priority" required>
-                @for (p of priorities; track p) {
-                  <mat-option [value]="p">{{ 'TASKS.PRIORITY.' + p | translate }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-
-            <mat-form-field appearance="outline">
-              <mat-label>{{ 'TASKS.FORM.STATUS' | translate }}</mat-label>
-              <mat-select name="status" [(ngModel)]="currentTask.status" required>
-                @for (s of statuses; track s) {
-                  <mat-option [value]="s">{{ 'TASKS.STATUS.' + s | translate }}</mat-option>
-                }
-              </mat-select>
-            </mat-form-field>
-          </div>
-
-          <div class="form-actions">
-            <button mat-flat-button color="primary" type="submit" [disabled]="!taskForm.form.valid" class="submit-btn">
-              {{ (editingTask ? 'TASKS.UPDATE_TASK' : 'TASKS.ADD_TASK') | translate }}
-            </button>
-            <button mat-button type="button" (click)="cancelEdit()">{{ 'TASKS.CANCEL' | translate }}</button>
-          </div>
-        </form>
-      </mat-card-content>
-    </mat-card>
+    <app-task-form
+      [task]="currentTask"
+      [isEditing]="!!editingTask"
+      (save)="onSubmit()"
+      (cancel)="cancelEdit()"
+    ></app-task-form>
   }
 
   <div class="tasks-list" cdkDropList (cdkDropListDropped)="drop($event)" [cdkDropListDisabled]="activeFilter !== 'ALL'">
     @for (task of filteredTasks; track task.id) {
-      <mat-card class="task-card" cdkDrag>
-        <div class="task-row" [class.compact]="viewMode === 'COMPACT'" (click)="toggleActions($event, task)" [class.has-actions]="activeActionsTaskId === task.id">
-          <div class="selection-box">
-            <mat-checkbox [checked]="isTaskSelected(task.id)" (change)="toggleTaskSelection(task.id)"></mat-checkbox>
-          </div>
-
-          <button mat-icon-button (click)="toggleTaskDone(task)" class="task-status-btn" [class.done]="task.status === 'DONE'">
-            <mat-icon>{{ task.status === 'DONE' ? 'task_alt' : 'radio_button_unchecked' }}</mat-icon>
-          </button>
-
-          <div class="task-actions">
-            <button mat-icon-button (click)="editTask(task)" [title]="'TASKS.EDIT_TASK' | translate">
-              <mat-icon>edit</mat-icon>
-            </button>
-            <button mat-icon-button color="warn" (click)="deleteTask(task)" [title]="'ADMIN.DELETE' | translate">
-              <mat-icon>delete</mat-icon>
-            </button>
-          </div>
-
-          <div class="task-title-container" (dblclick)="startEditTitle(task)">
-            @if (editingTitleId === task.id) {
-              <input class="task-title-input" [value]="task.title" #titleInput (keydown.enter)="saveTitle(task, titleInput.value)" (blur)="saveTitle(task, titleInput.value)" autoFocus>
-            } @else {
-              <span class="task-title-text" [class.done]="task.status === 'DONE'">{{ task.title }}</span>
-            }
-          </div>
-
-          <div class="task-meta-info">
-            <span class="due-date-info" [class.overdue]="isOverdue(task.dueDate)">
-              {{ formatDate(task.dueDate) }}
-            </span>
-
-            <span class="priority-badge" [class]="'priority-' + task.priority.toLowerCase()" [matMenuTriggerFor]="prioMenu">
-              {{ 'TASKS.PRIORITY.' + task.priority | translate }}
-            </span>
-            <mat-menu #prioMenu="matMenu">
-              @for (p of priorities; track p) {
-                <button mat-menu-item (click)="setPriority(task, p)">{{ 'TASKS.PRIORITY.' + p | translate }}</button>
-              }
-            </mat-menu>
-
-            <span class="status-pill" [class]="'status-' + task.status.toLowerCase()" (click)="cycleStatus(task, $event)">
-              {{ 'TASKS.STATUS.' + task.status | translate }}
-            </span>
-          </div>
-        </div>
-      </mat-card>
+      <app-task-item
+        cdkDrag
+        [task]="task"
+        [viewMode]="viewMode"
+        [isSelected]="isTaskSelected(task.id)"
+        [isActiveActions]="activeActionsTaskId === task.id"
+        [isEditingTitle]="editingTitleId === task.id"
+        [formattedDate]="formatDate(task.dueDate)"
+        (toggleSelection)="toggleTaskSelection(task.id)"
+        (toggleDone)="toggleTaskDone(task)"
+        (edit)="editTask(task)"
+        (delete)="deleteTask(task)"
+        (startEditTitle)="startEditTitle(task)"
+        (saveTitle)="saveTitle(task, $event)"
+        (setPriority)="setPriority(task, $event)"
+        (cycleStatus)="cycleStatus(task, $event)"
+        (toggleActions)="toggleActions($event, task)"
+      ></app-task-item>
     } @empty {
       <p class="empty-message">{{ 'TASKS.EMPTY' | translate }}</p>
     }

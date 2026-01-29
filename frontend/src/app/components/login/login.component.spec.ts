@@ -89,7 +89,7 @@ describe('LoginComponent', () => {
   it('should set error on failed login (401)', () => {
     authServiceSpy.login.mockReturnValue(throwError(() => ({ status: 401 })));
     component.onSubmit();
-    expect(component.error).toBe('COMMON.ERROR');
+    expect(component.error).toBe('COMMON.ERROR_LOGIN_FAILED');
   });
 
   it('should set specific error for non-active user (403)', () => {

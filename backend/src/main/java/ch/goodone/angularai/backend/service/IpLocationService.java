@@ -1,5 +1,7 @@
 package ch.goodone.angularai.backend.service;
 
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.HttpMethod;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -38,7 +40,12 @@ public class IpLocationService {
         try {
             String url = String.format("%s%s?access_key=%s", apiUrl, ip, apiKey);
             logger.info("Requesting geolocation for IP from provider");
-            Map<String, Object> response = restTemplate.getForObject(url, Map.class);
+            Map<String, Object> response = restTemplate.exchange(
+                    url,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<Map<String, Object>>() {}
+            ).getBody();
             
             if (response != null) {
                 if (response.containsKey("error")) {

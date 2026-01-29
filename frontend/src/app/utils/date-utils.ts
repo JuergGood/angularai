@@ -6,7 +6,7 @@ export function isOverdue(dueDate: string | null | undefined): boolean {
   return due < today;
 }
 
-export function formatRelativeDue(dueDate: string | null | undefined, translate: any): string {
+export function formatRelativeDue(dueDate: string | null | undefined, translate: { instant: (key: string, interpolate?: object) => string }): string {
   if (!dueDate) return translate.instant('TASKS.NO_DUE_DATE');
 
   const today = new Date();
@@ -58,9 +58,6 @@ export function parseRelativeDate(input: string): string | null {
   }
 
   // Handle "X days" or "in X days" or "X tage"
-  const daysMatch = text.match(/^(\d+)\s*(days?|tage?)$/) || text.match(/^in\s*(\d+)\s*(days?|tage?)$/) || text.match(/^(\d+)\s*(days?|tage?)$/);
-
-  // More robust regex for tokens that might be part of a larger string
   const standaloneDaysMatch = text.match(/^(\d+)\s*(days?|tage?)$/) || text.match(/^in\s*(\d+)\s*(days?|tage?)$/);
 
   if (standaloneDaysMatch) {

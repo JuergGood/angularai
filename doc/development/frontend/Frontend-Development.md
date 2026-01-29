@@ -31,3 +31,8 @@ Run Cypress tests:
 ```bash
 npm run cypress:open
 ```
+
+Run lint:
+```bash
+npm run lint
+```
