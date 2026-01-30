@@ -72,6 +72,63 @@ class AuthControllerTest {
     }
 
     @Test
+    void register_shouldReturnBadRequest_whenUserAlreadyExists() throws Exception {
+        UserDTO userDTO = new UserDTO(null, "Existing", "User", "admin", "admin@example.com", "123456", "ACTIVE", LocalDate.of(1990, 1, 1), "Address", "ROLE_USER");
+        userDTO.setPassword("Password@123");
+        userDTO.setRecaptchaToken("token");
+
+        when(userRepository.findByLogin("admin")).thenReturn(Optional.of(new User("admin", "admin@example.com")));
+
+        mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(userDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void info_shouldReturnUnauthorized_whenNotAuthenticated() throws Exception {
+        mockMvc.perform(get("/api/auth/info"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void forgotPassword_shouldAlwaysReturnOk() throws Exception {
+        mockMvc.perform(post("/api/auth/forgot-password")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"email\":\"nonexistent@example.com\"}"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void resetPassword_shouldReturnBadRequest_whenTokenMissing() throws Exception {
+        mockMvc.perform(post("/api/auth/reset-password")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"password\":\"NewPassword!123\"}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void cleanupPendingUser_shouldBeCalledOnRegistration() throws Exception {
+        UserDTO userDTO = new UserDTO(null, "FirstName", "LastName", "pendinguser", "pending@example.com", "123456", "PENDING", LocalDate.of(2000, 1, 1), "Address", "ROLE_USER");
+        userDTO.setPassword("Password@123");
+        userDTO.setRecaptchaToken("token");
+
+        // Set up specific mocks for the validation helper methods
+        when(userRepository.findByLogin("pendinguser")).thenReturn(Optional.empty());
+        when(userRepository.findByEmail("pending@example.com")).thenReturn(Optional.empty());
+        when(captchaService.verify("token")).thenReturn(true);
+
+        mockMvc.perform(post("/api/auth/register")
+                        .with(csrf())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"firstName\":\"FirstName\",\"lastName\":\"LastName\",\"login\":\"pendinguser\",\"email\":\"pending@example.com\",\"password\":\"Password@123\",\"recaptchaToken\":\"token\"}"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     void login_shouldReturnUser_whenAuthenticated() throws Exception {
         String login = "admin";
         String password = "password";

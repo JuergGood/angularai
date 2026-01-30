@@ -243,6 +243,197 @@ describe('RegisterComponent', () => {
     expect(fullNameControl?.hasError('required')).toBe(true);
   });
 
+  it('should handle reCAPTCHA score mode correctly', async () => {
+    component.recaptchaSiteKey = '6Lfik-dummy';
+    component.recaptchaMode = 'score';
+    component.registerForm.patchValue({
+      fullName: 'John Doe',
+      login: 'johndoe',
+      password: 'Password@123',
+      confirmPassword: 'Password@123',
+      email: 'john@example.com'
+    });
+
+    const executeSpy = vi.fn().mockResolvedValue('score-token');
+    (window as any).grecaptcha = {
+      enterprise: {
+        ready: (cb: any) => cb(),
+        execute: executeSpy
+      }
+    };
+
+    component.onSubmit();
+
+    // Wait for the async reCAPTCHA ready block
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    expect(component.recaptchaStatus).toBe('verified');
+    expect(authServiceSpy.register).toHaveBeenCalledWith(expect.objectContaining({
+      recaptchaToken: 'score-token'
+    }));
+  });
+
+  it('should handle reCAPTCHA score mode error', async () => {
+    component.recaptchaSiteKey = '6Lfik-dummy';
+    component.recaptchaMode = 'score';
+    component.registerForm.patchValue({
+      fullName: 'John Doe',
+      login: 'johndoe',
+      password: 'Password@123',
+      confirmPassword: 'Password@123',
+      email: 'john@example.com'
+    });
+
+    (window as any).grecaptcha = {
+      enterprise: {
+        ready: (cb: any) => cb(),
+        execute: vi.fn().mockRejectedValue('error')
+      }
+    };
+
+    component.onSubmit();
+
+    // Wait for the async reCAPTCHA ready block
+    await new Promise(resolve => setTimeout(resolve, 0));
+
+    expect(component.recaptchaStatus).toBe('error');
+    expect(component.error).toBe('REGISTER.RECAPTCHA_FAILED');
+    expect(component.isSubmitting).toBe(false);
+  });
+
+  it('should handle reCAPTCHA visible mode missing token', () => {
+    component.recaptchaMode = 'visible';
+    component.registerForm.patchValue({
+      fullName: 'John Doe',
+      login: 'johndoe',
+      password: 'Password@123',
+      confirmPassword: 'Password@123',
+      email: 'john@example.com'
+    });
+
+    (window as any).grecaptcha = {
+      enterprise: {
+        getResponse: () => ''
+      }
+    };
+
+    component.onSubmit();
+
+    expect(component.error).toBe('ADMIN.ERROR_RECAPTCHA');
+    expect(component.isSubmitting).toBe(false);
+  });
+
+  it('should handle reCAPTCHA expired callback', () => {
+    component.recaptchaMode = 'visible';
+    component.scriptLoaded = true;
+    const container = document.createElement('div');
+    container.id = 'recaptcha-container';
+    document.body.appendChild(container);
+
+    let expiredCallback: any;
+    (window as any).grecaptcha = {
+      enterprise: {
+        render: (id: string, options: any) => {
+          expiredCallback = options['expired-callback'];
+        }
+      }
+    };
+
+    component.renderRecaptcha();
+    expiredCallback();
+
+    expect(component.recaptchaStatus).toBe('expired');
+    expect(component.registerForm.get('recaptchaToken')?.value).toBe('');
+
+    document.body.removeChild(container);
+  });
+
+  it('should handle reCAPTCHA error callback', () => {
+    component.recaptchaMode = 'visible';
+    component.scriptLoaded = true;
+    const container = document.createElement('div');
+    container.id = 'recaptcha-container';
+    document.body.appendChild(container);
+
+    let errorCallback: any;
+    (window as any).grecaptcha = {
+      enterprise: {
+        render: (id: string, options: any) => {
+          errorCallback = options['error-callback'];
+        }
+      }
+    };
+
+    component.renderRecaptcha();
+    errorCallback();
+
+    expect(component.recaptchaStatus).toBe('error');
+
+    document.body.removeChild(container);
+  });
+
+  it('should handle bypass recaptcha window flag', () => {
+    (window as any).BYPASS_RECAPTCHA = true;
+    component.registerForm.patchValue({
+      fullName: 'John Doe',
+      login: 'johndoe',
+      password: 'Password@123',
+      confirmPassword: 'Password@123',
+      email: 'john@example.com'
+    });
+
+    component.onSubmit();
+
+    expect(authServiceSpy.register).toHaveBeenCalledWith(expect.objectContaining({
+      recaptchaToken: 'bypass-token'
+    }));
+    delete (window as any).BYPASS_RECAPTCHA;
+  });
+
+  it('should show generic error on registration failure', () => {
+    authServiceSpy.register.mockReturnValue(throwError(() => ({ status: 500 })));
+    component.registerForm.patchValue({
+      fullName: 'John Doe',
+      login: 'johndoe',
+      password: 'Password@123',
+      confirmPassword: 'Password@123',
+      email: 'john@example.com'
+    });
+    component.recaptchaMode = 'disabled';
+
+    component.onSubmit();
+
+    expect(component.error).toBe('COMMON.ERROR');
+  });
+
+  it('should validate password mismatch', () => {
+    component.registerForm.patchValue({
+      password: 'Password@123',
+      confirmPassword: 'DifferentPassword@123'
+    });
+    component.registerForm.get('confirmPassword')?.markAsTouched();
+    component.registerForm.updateValueAndValidity();
+
+    expect(component.registerForm.hasError('passwordMismatch')).toBe(true);
+    expect(component.registerForm.get('confirmPassword')?.hasError('passwordMismatch')).toBe(true);
+  });
+
+  it('should handle register form reset on init', () => {
+    const resetSpy = vi.spyOn(component.registerForm, 'reset');
+    component.ngOnInit();
+    expect(resetSpy).toHaveBeenCalled();
+  });
+
+  it('should setup recaptcha script if not present', () => {
+    const existingScript = document.getElementById('recaptcha-script');
+    if (existingScript) existingScript.remove();
+
+    component.setupRecaptcha();
+    const script = document.getElementById('recaptcha-script') as HTMLScriptElement;
+    expect(script).toBeTruthy();
+    expect(script.src).toContain('recaptcha/enterprise.js');
+  });
+
   it('should validate login format (no spaces)', () => {
     const loginControl = component.registerForm.get('login');
     loginControl?.setValue('john doe');

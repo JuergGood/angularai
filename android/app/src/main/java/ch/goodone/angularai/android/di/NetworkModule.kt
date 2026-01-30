@@ -47,21 +47,33 @@ object NetworkModule {
             level = HttpLoggingInterceptor.Level.BODY
         }
         
+        val cookieManager = java.net.CookieManager().apply {
+            setCookiePolicy(java.net.CookiePolicy.ACCEPT_ALL)
+        }
+        
         val authInterceptor = Interceptor { chain ->
             val token = runBlocking {
                 dataStore.data.first()[ch.goodone.angularai.android.di.NetworkModule.AUTH_KEY]
             }
-            val request = chain.request().newBuilder().apply {
-                if (token != null) {
-                    addHeader("Authorization", "Basic $token")
-                }
-            }.build()
-            chain.proceed(request)
+            val requestBuilder = chain.request().newBuilder()
+            
+            if (token != null) {
+                requestBuilder.addHeader("Authorization", "Basic $token")
+            }
+            
+            // Add CSRF token header if cookie is present
+            val cookies = cookieManager.cookieStore.cookies
+            cookies.find { it.name == "XSRF-TOKEN" }?.let {
+                requestBuilder.addHeader("X-XSRF-TOKEN", it.value)
+            }
+            
+            chain.proceed(requestBuilder.build())
         }
 
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .addInterceptor(authInterceptor)
+            .cookieJar(okhttp3.JavaNetCookieJar(cookieManager))
             .build()
     }
 

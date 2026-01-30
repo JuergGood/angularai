@@ -111,7 +111,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Object> register(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<Object> register(@jakarta.validation.Valid @RequestBody UserDTO userDTO) {
         if (userDTO == null) {
             return ResponseEntity.badRequest().body("Invalid request data");
         }
@@ -162,8 +162,8 @@ public class AuthController {
         if (userDTO.getPassword() == null || userDTO.getPassword().isBlank()) {
             return ResponseEntity.badRequest().body("Password is required");
         }
-        if (userDTO.getPassword().length() < 8 || !containsLetter(userDTO.getPassword()) || !containsSpecialChar(userDTO.getPassword())) {
-            return ResponseEntity.badRequest().body("Password does not meet requirements");
+        if (userDTO.getPassword().length() < 8) {
+             return ResponseEntity.badRequest().body("Password does not meet requirements");
         }
         if (userDTO.getEmail() == null || userDTO.getEmail().isBlank()) {
             return ResponseEntity.badRequest().body("Email is required");

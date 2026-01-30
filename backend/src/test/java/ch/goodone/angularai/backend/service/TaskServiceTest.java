@@ -67,11 +67,69 @@ class TaskServiceTest {
         when(taskRepository.findAll(any(Specification.class), any(Sort.class))).thenReturn(List.of(testTask));
 
         taskService.getTasks(testUser, "OPEN", "TODAY", "DUE_ASC");
-        taskService.getTasks(testUser, null, "UPCOMING", "PRIO_DESC");
-        taskService.getTasks(testUser, null, "OVERDUE", "UPDATED_DESC");
-        taskService.getTasks(testUser, null, "HIGH", null);
+        taskService.getTasks(testUser, "DONE", "UPCOMING", "PRIO_DESC");
+        taskService.getTasks(testUser, "ARCHIVED", "OVERDUE", "UPDATED_DESC");
+        taskService.getTasks(testUser, "IN_PROGRESS", "HIGH", "INVALID_SORT");
+        taskService.getTasks(testUser, null, "ALL", null);
+        taskService.getTasks(testUser, null, "INVALID_FILTER", null);
 
-        verify(taskRepository, times(4)).findAll(any(Specification.class), any(Sort.class));
+        verify(taskRepository, times(6)).findAll(any(Specification.class), any(Sort.class));
+    }
+
+    @Test
+    void updateTask_ShouldReturnEmpty_WhenNotFound() {
+        when(taskRepository.findById(999L)).thenReturn(Optional.empty());
+        Optional<TaskDTO> result = taskService.updateTask(testUser, 999L, new TaskDTO());
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    void updateTask_ShouldReturnEmpty_WhenUserMismatch() {
+        User otherUser = new User("other", "other@example.com");
+        otherUser.setId(2L);
+        when(taskRepository.findById(100L)).thenReturn(Optional.of(testTask));
+        
+        Optional<TaskDTO> result = taskService.updateTask(otherUser, 100L, new TaskDTO());
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    void patchTask_ShouldReturnEmpty_WhenNotFound() {
+        when(taskRepository.findById(999L)).thenReturn(Optional.empty());
+        Optional<TaskDTO> result = taskService.patchTask(testUser, 999L, new TaskDTO());
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    void deleteTask_ShouldReturnFalse_WhenNotFound() {
+        when(taskRepository.findById(999L)).thenReturn(Optional.empty());
+        boolean result = taskService.deleteTask(testUser, 999L);
+        assertFalse(result);
+    }
+
+    @Test
+    void bulkPatchTasks_ShouldHandleUserMismatch() {
+        User otherUser = new User("other", "other@example.com");
+        otherUser.setId(2L);
+        when(taskRepository.findAllById(any())).thenReturn(List.of(testTask));
+        when(taskRepository.saveAll(anyList())).thenReturn(List.of());
+
+        List<TaskDTO> results = taskService.bulkPatchTasks(otherUser, List.of(100L), new TaskDTO());
+        assertTrue(results.isEmpty());
+    }
+
+    @Test
+    void createTask_WithNullStatusAndTags() {
+        when(taskRepository.findByUserOrderByPositionAsc(testUser)).thenReturn(List.of());
+        when(taskRepository.save(any(Task.class))).thenReturn(testTask);
+
+        TaskDTO dto = new TaskDTO();
+        dto.setTitle("No status task");
+        dto.setStatus(null);
+        dto.setTags(List.of("tag1", "tag2"));
+
+        taskService.createTask(testUser, dto);
+        verify(taskRepository).save(argThat(t -> t.getTags().size() == 2));
     }
 
     @Test

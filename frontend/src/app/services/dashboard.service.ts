@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AuthService } from './auth.service';
 import { DashboardData } from '../models/dashboard.model';
 
 @Injectable({
@@ -10,20 +9,9 @@ import { DashboardData } from '../models/dashboard.model';
 export class DashboardService {
   private apiUrl = '/api/dashboard';
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
-
-  private getHeaders(): HttpHeaders {
-    const auth = this.authService.getAuthHeader();
-    const headers: { [key: string]: string } = {
-      'Content-Type': 'application/json'
-    };
-    if (auth) {
-      headers['Authorization'] = 'Basic ' + auth;
-    }
-    return new HttpHeaders(headers);
-  }
+  constructor(private http: HttpClient) {}
 
   getDashboardData(): Observable<DashboardData> {
-    return this.http.get<DashboardData>(this.apiUrl, { headers: this.getHeaders() });
+    return this.http.get<DashboardData>(this.apiUrl);
   }
 }

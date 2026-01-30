@@ -72,6 +72,7 @@ export class RegisterComponent implements OnInit, AfterViewInit {
       email: ['', { validators: [Validators.required, Validators.email], updateOn: 'blur' }],
       password: ['', { validators: [Validators.required, this.passwordStrengthValidator()], updateOn: 'blur' }],
       confirmPassword: ['', { validators: [Validators.required], updateOn: 'blur' }],
+      recaptchaToken: [''],
       address: ['']
     }, { validators: this.passwordMatchValidator });
   }

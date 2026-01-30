@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { User } from '../models/user.model';
-import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,28 +9,17 @@ import { AuthService } from './auth.service';
 export class UserService {
   private apiUrl = '/api/users';
 
-  constructor(private http: HttpClient, private authService: AuthService) {}
-
-  private getHeaders(): HttpHeaders {
-    const auth = this.authService.getAuthHeader();
-    const headers: { [key: string]: string } = {
-      'Content-Type': 'application/json'
-    };
-    if (auth) {
-      headers['Authorization'] = 'Basic ' + auth;
-    }
-    return new HttpHeaders(headers);
-  }
+  constructor(private http: HttpClient) {}
 
   getCurrentUser(): Observable<User> {
-    return this.http.get<User>(`${this.apiUrl}/me`, { headers: this.getHeaders() });
+    return this.http.get<User>(`${this.apiUrl}/me`);
   }
 
   updateCurrentUser(user: User): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/me`, user, { headers: this.getHeaders() });
+    return this.http.put<User>(`${this.apiUrl}/me`, user);
   }
 
   deleteCurrentUser(): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/me`, { headers: this.getHeaders() });
+    return this.http.delete<void>(`${this.apiUrl}/me`);
   }
 }

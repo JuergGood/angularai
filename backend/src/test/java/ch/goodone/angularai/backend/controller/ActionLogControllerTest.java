@@ -56,7 +56,7 @@ class ActionLogControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     void shouldGetLogs() throws Exception {
         ActionLogDTO logDTO = new ActionLogDTO(1L, LocalDateTime.now(), "admin", "LOGIN", "Admin logged in");
         when(actionLogService.getLogs(any(), any(), any(), any()))
@@ -72,14 +72,14 @@ class ActionLogControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "user", roles = {"USER"})
+    @WithMockUser(username = "user", authorities = {"ROLE_USER"})
     void shouldDenyAccessToNonAdmin() throws Exception {
         mockMvc.perform(get("/api/admin/logs"))
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     void shouldGetLogsWithLoginFilter() throws Exception {
         mockMvc.perform(get("/api/admin/logs")
                         .param("type", "login"))
@@ -89,16 +89,17 @@ class ActionLogControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     void shouldClearLogs() throws Exception {
-        mockMvc.perform(delete("/api/admin/logs"))
+        mockMvc.perform(delete("/api/admin/logs")
+                        .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isNoContent());
 
         verify(actionLogService).clearLogs();
     }
 
     @Test
-    @WithMockUser(username = "adminread", roles = {"ADMIN_READ"})
+    @WithMockUser(username = "adminread", authorities = {"ROLE_ADMIN_READ"})
     void adminReadShouldSeeLogs() throws Exception {
         ActionLogDTO logDTO = new ActionLogDTO(1L, LocalDateTime.now(), "admin", "LOGIN", "Admin logged in");
         when(actionLogService.getLogs(any(), any(), any(), any()))
@@ -109,14 +110,15 @@ class ActionLogControllerTest {
     }
 
     @Test
-    @WithMockUser(username = "adminread", roles = {"ADMIN_READ"})
+    @WithMockUser(username = "adminread", authorities = {"ROLE_ADMIN_READ"})
     void adminReadShouldNotClearLogs() throws Exception {
-        mockMvc.perform(delete("/api/admin/logs"))
+        mockMvc.perform(delete("/api/admin/logs")
+                        .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isForbidden());
     }
 
     @Test
-    @WithMockUser(username = "admin", roles = {"ADMIN"})
+    @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     void shouldCreateLog() throws Exception {
         ActionLogDTO logDTO = new ActionLogDTO();
         logDTO.setDetails("Manual Log");
@@ -124,6 +126,7 @@ class ActionLogControllerTest {
         when(actionLogService.createLog(any())).thenReturn(logDTO);
 
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post("/api/admin/logs")
+                .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"details\":\"Manual Log\"}"))
                 .andExpect(status().isOk())

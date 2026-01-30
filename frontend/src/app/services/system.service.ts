@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { AuthService } from './auth.service';
 import { I18nService } from './i18n.service';
 
 export interface SystemInfo {
@@ -20,20 +19,8 @@ export class SystemService {
 
   constructor(
     private http: HttpClient,
-    private authService: AuthService,
     private i18nService: I18nService
   ) {}
-
-  private getHeaders(): HttpHeaders {
-    const auth = this.authService.getAuthHeader();
-    const headers: { [key: string]: string } = {
-      'Content-Type': 'application/json'
-    };
-    if (auth) {
-      headers['Authorization'] = 'Basic ' + auth;
-    }
-    return new HttpHeaders(headers);
-  }
 
   getSystemInfo(): Observable<SystemInfo> {
     const headers = new HttpHeaders({
@@ -47,26 +34,26 @@ export class SystemService {
   }
 
   getGeolocationEnabled(): Observable<{enabled: boolean}> {
-    return this.http.get<{enabled: boolean}>(`${this.adminUrl}/geolocation`, { headers: this.getHeaders() });
+    return this.http.get<{enabled: boolean}>(`${this.adminUrl}/geolocation`);
   }
 
   setGeolocationEnabled(enabled: boolean): Observable<void> {
-    return this.http.post<void>(`${this.adminUrl}/geolocation`, { enabled }, { headers: this.getHeaders() });
+    return this.http.post<void>(`${this.adminUrl}/geolocation`, { enabled });
   }
 
   getRecaptchaConfigIndex(): Observable<{index: number}> {
-    return this.http.get<{index: number}>(`${this.adminUrl}/recaptcha`, { headers: this.getHeaders() });
+    return this.http.get<{index: number}>(`${this.adminUrl}/recaptcha`);
   }
 
   setRecaptchaConfigIndex(index: number): Observable<void> {
-    return this.http.post<void>(`${this.adminUrl}/recaptcha`, { index }, { headers: this.getHeaders() });
+    return this.http.post<void>(`${this.adminUrl}/recaptcha`, { index });
   }
 
   getLandingMessageEnabled(): Observable<{enabled: boolean}> {
-    return this.http.get<{enabled: boolean}>(`${this.adminUrl}/landing-message`, { headers: this.getHeaders() });
+    return this.http.get<{enabled: boolean}>(`${this.adminUrl}/landing-message`);
   }
 
   setLandingMessageEnabled(enabled: boolean): Observable<void> {
-    return this.http.post<void>(`${this.adminUrl}/landing-message`, { enabled }, { headers: this.getHeaders() });
+    return this.http.post<void>(`${this.adminUrl}/landing-message`, { enabled });
   }
 }

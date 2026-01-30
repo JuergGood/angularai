@@ -66,6 +66,7 @@ class PublicEndpointsTest {
         when(captchaService.verify(anyString())).thenReturn(true);
 
         mockMvc.perform(post("/api/auth/register")
+                        .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userMap)))
                 .andExpect(status().isOk());

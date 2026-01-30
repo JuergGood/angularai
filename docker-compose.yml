@@ -3,6 +3,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - NVD_API_KEY=${NVD_API_KEY}
     ports:
       - "8080:8080"
       - "80:8080"
@@ -35,5 +37,7 @@ services:
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - USER_EMAIL=${USER_EMAIL}
       - ADMIN_READ_EMAIL=${ADMIN_READ_EMAIL}
+      - NVD_API_KEY=${NVD_API_KEY}
     volumes:
       - ./data:/app/data
+      - ./data/dependency-check:/app/data/dependency-check

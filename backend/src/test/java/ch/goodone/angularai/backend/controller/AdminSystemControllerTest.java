@@ -24,6 +24,7 @@ import java.util.Map;
 
 import static org.mockito.Mockito.*;
 import static org.mockito.ArgumentMatchers.contains;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -77,6 +78,7 @@ class AdminSystemControllerTest {
     @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     void shouldSetGeolocationEnabled() throws Exception {
         mockMvc.perform(post("/api/admin/settings/geolocation")
+                        .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of("enabled", true))))
                 .andExpect(status().isOk());
@@ -113,6 +115,7 @@ class AdminSystemControllerTest {
     @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     void shouldSetRecaptchaConfigIndex() throws Exception {
         mockMvc.perform(post("/api/admin/settings/recaptcha")
+                        .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of("index", 3))))
                 .andExpect(status().isOk());
@@ -145,6 +148,7 @@ class AdminSystemControllerTest {
     @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     void shouldSetLandingMessageEnabled() throws Exception {
         mockMvc.perform(post("/api/admin/settings/landing-message")
+                        .with(org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of("enabled", false))))
                 .andExpect(status().isOk());
@@ -188,6 +192,7 @@ class AdminSystemControllerTest {
     @WithMockUser(username = "adminread", authorities = {"ROLE_ADMIN_READ"})
     void adminReadShouldNotModifySettings() throws Exception {
         mockMvc.perform(post("/api/admin/settings/geolocation")
+                        .with(csrf())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(Map.of("enabled", true))))
                 .andExpect(status().isForbidden());

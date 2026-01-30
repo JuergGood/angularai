@@ -28,6 +28,9 @@
     "private":  true,
     "type": "module",
     "packageManager":  "npm@11.6.2",
+    "overrides": {
+        "js-yaml": "4.1.1"
+    },
     "dependencies":  {
                          "@angular/animations":  "^21.1.0",
                          "@angular/cdk":  "^21.1.0",

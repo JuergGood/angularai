@@ -5,14 +5,14 @@ Based on the [Security Assessment](security-assessment.md), the following improv
 ## Phase 1: High Priority (Short Term)
 
 ### 1.1 Secure Authentication Mechanism
-- **Task**: Replace HTTP Basic Authentication with JWT (JSON Web Tokens) or Statefull Sessions.
+- **Task**: Replace HTTP Basic Authentication with JWT (JSON Web Tokens) or Statefull Sessions. [DONE]
 - **Benefit**: Decouples credentials from every request. Allows for better token management (expiry, revocation).
-- **Impact**: Backend (`SecurityConfig`, `AuthController`) and Frontend (`AuthService`, Interceptor needed).
+- **Impact**: Backend (`SecurityConfig`, `AuthController`) and Frontend (`AuthService`). Switched to stateful sessions with HTTP-only cookies.
 
 ### 1.2 Enable CSRF Protection
-- **Task**: Enable CSRF protection in Spring Security.
+- **Task**: Enable CSRF protection in Spring Security. [DONE]
 - **Benefit**: Protects against Cross-Site Request Forgery attacks.
-- **Impact**: Requires Angular to handle CSRF tokens (usually via `HttpClientXsrfModule`).
+- **Impact**: Backend configured with `CookieCsrfTokenRepository.withHttpOnlyFalse()`. Frontend configured with `withXsrfConfiguration` in `app.config.ts`.
 
 ### 1.3 Secure Storage in Frontend
 - **Task**: Move away from storing Base64 credentials in `localStorage`. [DONE]
@@ -22,11 +22,11 @@ Based on the [Security Assessment](security-assessment.md), the following improv
 ## Phase 2: Medium Priority (Medium Term)
 
 ### 2.1 Tighten CORS Configuration
-- **Task**: Replace wildcard origin patterns in `SecurityConfig` with a whitelist of allowed production domains.
+- **Task**: Replace wildcard origin patterns in `SecurityConfig` with a whitelist of allowed production domains. [DONE]
 - **Benefit**: Prevents unauthorized domains from making requests to the API.
 
 ### 2.2 Security Headers
-- **Task**: Configure standard security headers in the backend and the Nginx frontend proxy.
+- **Task**: Configure standard security headers in the backend and the Nginx frontend proxy. [DONE]
     - `Content-Security-Policy` (CSP)
     - `Strict-Transport-Security` (HSTS)
     - `X-Content-Type-Options: nosniff`
@@ -34,7 +34,7 @@ Based on the [Security Assessment](security-assessment.md), the following improv
 - **Benefit**: Hardens the application against various browser-based attacks.
 
 ### 2.3 Automated Security Scanning
-- **Task**: Integrate `OWASP Dependency-Check` into the Maven build and `npm audit` into the CI/CD pipeline.
+- **Task**: Integrate `OWASP Dependency-Check` into the Maven build and `npm audit` into the CI/CD pipeline. [DONE]
 - **Benefit**: Early detection of known vulnerabilities in third-party libraries.
 
 ## Phase 3: Best Practices (Ongoing)
@@ -42,10 +42,12 @@ Based on the [Security Assessment](security-assessment.md), the following improv
 ### 3.1 Rate Limiting
 - **Task**: Implement rate limiting on sensitive endpoints (Login, Registration, Forgot Password).
 - **Benefit**: Mitigates brute-force and Denial of Service (DoS) attacks.
+- **Note**: Recommended to be implemented via a gateway (like Nginx) or a library like Bucket4j.
 
 ### 3.2 Enhanced Input Validation
-- **Task**: Use Bean Validation (`jakarta.validation`) across all DTOs to ensure strict data types and constraints.
+- **Task**: Use Bean Validation (`jakarta.validation`) across all DTOs to ensure strict data types and constraints. [DONE]
 - **Benefit**: Prevents malformed data from reaching the service layer.
+- **Impact**: Added validation to `UserDTO` and enabled `@Valid` in `AuthController`.
 
 ### 3.3 Penetration Testing
 - **Task**: Conduct regular manual security reviews or use DAST (Dynamic Application Security Testing) tools like OWASP ZAP.
