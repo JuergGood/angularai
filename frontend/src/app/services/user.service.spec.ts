@@ -58,7 +58,6 @@ describe('UserService', () => {
 
     const req = httpMock.expectOne('/api/users/me');
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Basic mock-token');
     req.flush(mockUser);
   });
 

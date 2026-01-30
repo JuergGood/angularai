@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 @Component
+@org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(name = "app.rate-limiting.enabled", havingValue = "true", matchIfMissing = true)
 public class RateLimitingFilter implements Filter {
 
     private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();

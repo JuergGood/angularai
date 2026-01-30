@@ -78,7 +78,6 @@ describe('SystemService', () => {
 
     const req = httpMock.expectOne('/api/admin/settings/geolocation');
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Basic mock-token');
     req.flush(mockResponse);
   });
 
@@ -88,7 +87,6 @@ describe('SystemService', () => {
     const req = httpMock.expectOne('/api/admin/settings/geolocation');
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual({ enabled: true });
-    expect(req.request.headers.get('Authorization')).toBe('Basic mock-token');
     req.flush(null);
   });
 

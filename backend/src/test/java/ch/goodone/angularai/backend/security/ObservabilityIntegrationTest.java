@@ -37,39 +37,8 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(properties = {
-    "spring.datasource.url=jdbc:h2:mem:observability_test;DB_CLOSE_DELAY=-1",
-    "spring.flyway.enabled=false",
-    "spring.jpa.hibernate.ddl-auto=create-drop",
-    "spring.jpa.properties.hibernate.envers.autoRegisterListeners=true",
-    "ipstack.api.key=dummy",
-    "ipstack.api.url=http://api.ipstack.com/",
-    "google.recaptcha.1.site.key=dummy",
-    "google.recaptcha.1.secret.key=disabled",
-    "google.recaptcha.1.project.id=dummy",
-    "google.recaptcha.1.api.key=dummy",
-    "google.recaptcha.2.site.key=dummy",
-    "google.recaptcha.2.secret.key=disabled",
-    "google.recaptcha.2.project.id=dummy",
-    "google.recaptcha.2.api.key=dummy",
-    "google.recaptcha.3.site.key=dummy",
-    "google.recaptcha.3.secret.key=disabled",
-    "google.recaptcha.3.project.id=dummy",
-    "google.recaptcha.3.api.key=dummy",
-    "google.recaptcha.default.config=2",
-    "spring.mail.host=localhost",
-    "spring.mail.port=587",
-    "spring.mail.username=dummy",
-    "spring.mail.password=dummy",
-    "spring.mail.from=noreply@goodone.ch",
-    "app.base-url=http://localhost:4200",
-    "admin.password=admin123",
-    "user.password=user123",
-    "admin.read.password=admin123",
-    "admin.email=admin@goodone.ch",
-    "user.email=user@goodone.ch",
-    "admin.read.email=admin-read@goodone.ch"
-})
+@SpringBootTest
+@org.springframework.test.context.TestPropertySource(locations = "classpath:test-common.properties")
 @ActiveProfiles("test")
 @Transactional
 class ObservabilityIntegrationTest {

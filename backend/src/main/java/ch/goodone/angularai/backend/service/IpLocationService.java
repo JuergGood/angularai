@@ -29,6 +29,7 @@ public class IpLocationService {
         this.systemSettingService = systemSettingService;
     }
 
+    @SuppressWarnings("PMD.AvoidUsingHardCodedIP")
     public GeoLocation lookup(String ip) {
         if (!systemSettingService.isGeolocationEnabled()) {
             return new GeoLocation();

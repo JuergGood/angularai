@@ -15,13 +15,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
+@org.springframework.test.context.TestPropertySource(locations = "classpath:test-common.properties")
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@TestPropertySource(properties = {
-        "app.landing.message.en=English Message",
-        "app.landing.message.de-ch=German Message"
-})
 class SystemControllerTest {
+
+    @MockitoBean
+    private org.springframework.mail.javamail.JavaMailSender javaMailSender;
 
     @Autowired
     private MockMvc mockMvc;

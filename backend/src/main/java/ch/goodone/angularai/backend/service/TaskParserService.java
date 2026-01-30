@@ -218,7 +218,7 @@ public class TaskParserService {
         }
         List<String> titleTokens = new java.util.ArrayList<>();
         for (int i = 0; i < tokens.length; i++) {
-            boolean isDateToken = (dateIdx != -1 && i >= dateIdx && i <= dateEndIdx);
+            boolean isDateToken = dateIdx != -1 && i >= dateIdx && i <= dateEndIdx;
             if (i != statusIdx && i != priorityIdx && !isDateToken) {
                 titleTokens.add(tokens[i]);
             }
@@ -324,7 +324,7 @@ public class TaskParserService {
                 int days = Integer.parseInt(daysStr);
                 return today.plusDays(days);
             } catch (NumberFormatException e) {
-                // Not a number
+                return null;
             }
         }
         return null;

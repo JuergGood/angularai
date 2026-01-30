@@ -36,10 +36,14 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
+@org.springframework.test.context.TestPropertySource(locations = "classpath:test-common.properties")
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Import(SecurityConfig.class)
 class TaskControllerTest {
+
+    @MockitoBean
+    private org.springframework.mail.javamail.JavaMailSender javaMailSender;
 
     @Autowired
     private MockMvc mockMvc;

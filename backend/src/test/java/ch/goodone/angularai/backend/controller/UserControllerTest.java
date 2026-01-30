@@ -27,9 +27,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@WebMvcTest(UserController.class)
+@WebMvcTest(controllers = UserController.class)
+@org.springframework.test.context.TestPropertySource(locations = "classpath:test-common.properties")
 @Import(SecurityConfig.class)
 class UserControllerTest {
+
+    @MockitoBean
+    private org.springframework.mail.javamail.JavaMailSender javaMailSender;
 
     @Autowired
     private MockMvc mockMvc;

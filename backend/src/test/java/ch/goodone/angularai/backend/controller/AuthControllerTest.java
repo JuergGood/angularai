@@ -34,7 +34,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@WebMvcTest(AuthController.class)
+@WebMvcTest(controllers = AuthController.class)
+@org.springframework.test.context.TestPropertySource(locations = "classpath:test-common.properties")
 @Import(SecurityConfig.class)
 class AuthControllerTest {
 

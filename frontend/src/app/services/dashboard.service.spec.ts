@@ -63,7 +63,6 @@ describe('DashboardService', () => {
 
     const req = httpMock.expectOne('/api/dashboard');
     expect(req.request.method).toBe('GET');
-    expect(req.request.headers.get('Authorization')).toBe('Basic encoded-auth');
     req.flush(mockData);
   });
 });

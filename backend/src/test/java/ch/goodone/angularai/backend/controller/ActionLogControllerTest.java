@@ -33,6 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@org.springframework.test.context.TestPropertySource(locations = "classpath:test-common.properties")
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Import(SecurityConfig.class)
@@ -46,6 +47,9 @@ class ActionLogControllerTest {
 
     @MockitoBean
     private ActionLogService actionLogService;
+
+    @MockitoBean
+    private org.springframework.mail.javamail.JavaMailSender javaMailSender;
 
     @BeforeEach
     void setUp() {

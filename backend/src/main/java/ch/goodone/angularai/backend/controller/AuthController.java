@@ -215,7 +215,7 @@ public class AuthController {
                     logger.info("Token found for user");
                     if (t.isExpired()) {
                         logger.warn("Token expired for user");
-                        return ResponseEntity.badRequest().<Object>body(java.util.Map.of("reason", "expired", "email", t.getUser().getEmail()));
+                        return ResponseEntity.badRequest().<Object>body(Map.of("reason", "expired", "email", t.getUser().getEmail()));
                     }
                     User user = t.getUser();
                     user.setStatus(ch.goodone.angularai.backend.model.UserStatus.ACTIVE);
@@ -226,7 +226,7 @@ public class AuthController {
                 })
                 .orElseGet(() -> {
                     logger.error("Token NOT found in database");
-                    return ResponseEntity.badRequest().body(java.util.Map.of("reason", INVALID_VALUE));
+                    return ResponseEntity.badRequest().body(Map.of("reason", INVALID_VALUE));
                 });
     }
 

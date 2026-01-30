@@ -23,9 +23,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
+@org.springframework.test.context.TestPropertySource(locations = "classpath:test-common.properties")
 @ActiveProfiles("test")
 @Import(SecurityConfig.class)
 class PublicEndpointsTest {
+
+    @MockitoBean
+    private org.springframework.mail.javamail.JavaMailSender javaMailSender;
 
     @Autowired
     private WebApplicationContext context;
