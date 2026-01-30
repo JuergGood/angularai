@@ -33,6 +33,18 @@ public class ActionLog {
     @Column(name = "user_agent")
     private String userAgent;
 
+    @Column(name = "session_id")
+    private String sessionId;
+
+    @Column(name = "request_method")
+    private String requestMethod;
+
+    @Column(name = "request_uri")
+    private String requestUri;
+
+    @Column(name = "status_code")
+    private Integer statusCode;
+
     public ActionLog() {}
 
     public ActionLog(String login, String action, String details) {
@@ -78,4 +90,16 @@ public class ActionLog {
 
     public String getUserAgent() { return userAgent; }
     public void setUserAgent(String userAgent) { this.userAgent = userAgent; }
+
+    public String getSessionId() { return sessionId; }
+    public void setSessionId(String sessionId) { this.sessionId = sessionId; }
+
+    public String getRequestMethod() { return requestMethod; }
+    public void setRequestMethod(String requestMethod) { this.requestMethod = requestMethod; }
+
+    public String getRequestUri() { return requestUri; }
+    public void setRequestUri(String requestUri) { this.requestUri = requestUri; }
+
+    public Integer getStatusCode() { return statusCode; }
+    public void setStatusCode(Integer statusCode) { this.statusCode = statusCode; }
 }

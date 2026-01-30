@@ -52,7 +52,7 @@ public class SecurityConfig {
                 .headers(headers -> headers
                     .frameOptions(org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                     .contentSecurityPolicy(csp -> csp
-                        .policyDirectives("default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';")
+                        .policyDirectives("default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';")
                     )
                     .httpStrictTransportSecurity(hsts -> hsts
                         .includeSubDomains(true)

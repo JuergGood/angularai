@@ -7,6 +7,7 @@ import org.springframework.context.annotation.Configuration;
 import javax.sql.DataSource;
 
 @Configuration
+@org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(name = "spring.flyway.enabled", matchIfMissing = true)
 public class FlywayConfig {
 
     @Bean(initMethod = "migrate")

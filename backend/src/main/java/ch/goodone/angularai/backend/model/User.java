@@ -1,10 +1,13 @@
 package ch.goodone.angularai.backend.model;
 
 import jakarta.persistence.*;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "users")
+@Audited
 @SuppressWarnings("JpaDataSourceORMInspection")
 public class User {
 
@@ -23,6 +26,7 @@ public class User {
     private String login;
 
     @Column(name = "password")
+    @NotAudited
     private String password;
 
     @Column(name = "email", unique = true, nullable = false)

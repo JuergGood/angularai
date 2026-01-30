@@ -1,10 +1,12 @@
 package ch.goodone.angularai.backend.model;
 
 import jakarta.persistence.*;
+import org.hibernate.envers.Audited;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "tasks")
+@Audited
 @SuppressWarnings("JpaDataSourceORMInspection")
 public class Task {
 

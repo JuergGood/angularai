@@ -13,4 +13,6 @@ import java.util.List;
 public interface ActionLogRepository extends JpaRepository<ActionLog, Long>, JpaSpecificationExecutor<ActionLog> {
     List<ActionLog> findAllByOrderByTimestampDesc(Pageable pageable);
     long countByTimestampAfter(LocalDateTime timestamp);
+    long countByIpAddressAndActionAndTimestampAfter(String ipAddress, String action, LocalDateTime timestamp);
+    long countByLoginAndActionAndTimestampAfter(String login, String action, LocalDateTime timestamp);
 }

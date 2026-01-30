@@ -4,6 +4,9 @@ import ch.goodone.angularai.backend.dto.ActionLogDTO;
 import ch.goodone.angularai.backend.model.ActionLog;
 import ch.goodone.angularai.backend.repository.ActionLogRepository;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -18,25 +21,51 @@ import java.util.List;
 @Service
 public class ActionLogService {
     
+    private static final Logger logger = LoggerFactory.getLogger(ActionLogService.class);
     private static final String ACTION_FIELD = "action";
 
     private final ActionLogRepository actionLogRepository;
     private final IpLocationService ipLocationService;
+    private final HttpServletRequest request;
 
-    public ActionLogService(ActionLogRepository actionLogRepository, IpLocationService ipLocationService) {
+    public ActionLogService(ActionLogRepository actionLogRepository, IpLocationService ipLocationService, HttpServletRequest request) {
         this.actionLogRepository = actionLogRepository;
         this.ipLocationService = ipLocationService;
+        this.request = request;
     }
 
     @Transactional
     public void log(String login, String action, String details) {
         ActionLog actionLog = new ActionLog(login, action, details);
+        populateForensicData(actionLog);
         actionLogRepository.save(actionLog);
+    }
+
+    private void populateForensicData(ActionLog log) {
+        if (request != null) {
+            log.setRequestMethod(request.getMethod());
+            log.setRequestUri(request.getRequestURI());
+            if (request.getSession(false) != null) {
+                log.setSessionId(request.getSession().getId());
+            }
+            if (log.getIpAddress() == null) {
+                String ip = request.getRemoteAddr();
+                String xForwardedFor = request.getHeader("X-Forwarded-For");
+                if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
+                    ip = xForwardedFor.split(",")[0];
+                }
+                log.setIpAddress(ip);
+            }
+            if (log.getUserAgent() == null) {
+                log.setUserAgent(request.getHeader("User-Agent"));
+            }
+        }
     }
 
     @Async
     @Transactional
     public void logLogin(String login, String ip, String userAgent) {
+        detectAttackPatterns(login, ip);
         IpLocationService.GeoLocation location = ipLocationService.lookup(ip);
         
         String uaDetails = userAgent != null ? userAgent : "Unknown";
@@ -48,8 +77,22 @@ public class ActionLogService {
         log.setLatitude(location.getLatitude());
         log.setLongitude(location.getLongitude());
         log.setUserAgent(uaDetails);
+        populateForensicData(log);
         
         actionLogRepository.save(log);
+    }
+
+    private void detectAttackPatterns(String login, String ip) {
+        LocalDateTime oneMinuteAgo = LocalDateTime.now().minusMinutes(1);
+        long failedLoginsFromIp = actionLogRepository.countByIpAddressAndActionAndTimestampAfter(ip, "LOGIN_FAILURE", oneMinuteAgo);
+        if (failedLoginsFromIp > 10) {
+            logger.warn("ALERT: Potential Credential Stuffing detected from IP: {}", ip);
+        }
+
+        long failedLoginsForUser = actionLogRepository.countByLoginAndActionAndTimestampAfter(login, "LOGIN_FAILURE", oneMinuteAgo);
+        if (failedLoginsForUser > 5) {
+            logger.warn("ALERT: Potential Brute Force detected for User: {}", login);
+        }
     }
 
     public Page<ActionLogDTO> getLogs(Pageable pageable, String type, LocalDateTime start, LocalDateTime end) {

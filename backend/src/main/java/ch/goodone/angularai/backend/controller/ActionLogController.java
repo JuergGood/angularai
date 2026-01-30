@@ -24,10 +24,14 @@ public class ActionLogController {
 
     @GetMapping
     public Page<ActionLogDTO> getLogs(
+            org.springframework.security.core.Authentication authentication,
             Pageable pageable,
             @RequestParam(required = false) String type,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime startDate,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime endDate) {
+        if (authentication != null) {
+            actionLogService.log(authentication.getName(), "LOGS_VIEWED", "User viewed action logs");
+        }
         return actionLogService.getLogs(pageable, type, startDate, endDate);
     }
 
