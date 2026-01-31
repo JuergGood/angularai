@@ -15,13 +15,14 @@ export class AuthService {
 
   init() {
     this.isInitializing.set(true);
-    // Check if user is already logged in via session cookie
+    // Check if user is already logged in via session cookie or JWT
     this.http.get<User>(`${this.apiUrl}/info`).subscribe({
       next: (user) => {
         this.currentUser.set(user);
         this.isInitializing.set(false);
       },
       error: () => {
+        localStorage.removeItem('jwt_token');
         this.currentUser.set(null);
         this.isInitializing.set(false);
       }
@@ -38,6 +39,9 @@ export class AuthService {
     });
     return this.http.post<User>(`${this.apiUrl}/login`, {}, { headers }).pipe(
       tap(user => {
+        if (user && (user as any).token) {
+          localStorage.setItem('jwt_token', (user as any).token);
+        }
         this.currentUser.set(user);
       })
     );
@@ -64,10 +68,14 @@ export class AuthService {
 
   logout() {
     this.http.post(`${this.apiUrl}/logout`, {}).subscribe({
-      next: () => this.currentUser.set(null),
+      next: () => {
+        localStorage.removeItem('jwt_token');
+        this.currentUser.set(null);
+      },
       error: (err) => {
         console.error('Logout error:', err);
         // Still clear user locally even if server call fails
+        localStorage.removeItem('jwt_token');
         this.currentUser.set(null);
       }
     });

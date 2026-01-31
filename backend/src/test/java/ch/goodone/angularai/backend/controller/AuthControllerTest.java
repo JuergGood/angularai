@@ -12,6 +12,7 @@ import ch.goodone.angularai.backend.repository.VerificationTokenRepository;
 import ch.goodone.angularai.backend.service.ActionLogService;
 import ch.goodone.angularai.backend.service.CaptchaService;
 import ch.goodone.angularai.backend.service.EmailService;
+import ch.goodone.angularai.backend.service.JwtService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,6 +55,9 @@ class AuthControllerTest {
 
     @MockitoBean
     private EmailService emailService;
+
+    @MockitoBean
+    private JwtService jwtService;
 
     @MockitoBean
     private VerificationTokenRepository verificationTokenRepository;

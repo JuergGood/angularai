@@ -29,12 +29,20 @@
                                                          {
                                                              "name":  "APP_BASE_URL",
                                                              "value":  "https://goodone.ch"
+                                                         },
+                                                         {
+                                                             "name":  "JWT_ENABLED",
+                                                             "value":  "false"
                                                          }
                                                      ],
                                      "secrets":  [
                                                      {
                                                          "name":  "IPSTACK_API_KEY",
                                                          "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:IPSTACK_API_KEY::"
+                                                     },
+                                                     {
+                                                         "name":  "JWT_SECRET",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:JWT_SECRET::"
                                                      },
                                                      {
                                                          "name":  "RECAPTCHA_1_SITE_KEY",

@@ -10,6 +10,7 @@ import ch.goodone.angularai.backend.repository.VerificationTokenRepository;
 import ch.goodone.angularai.backend.service.ActionLogService;
 import ch.goodone.angularai.backend.service.CaptchaService;
 import ch.goodone.angularai.backend.service.EmailService;
+import ch.goodone.angularai.backend.service.JwtService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
@@ -41,6 +42,7 @@ public class AuthController {
     private final ActionLogService actionLogService;
     private final CaptchaService captchaService;
     private final EmailService emailService;
+    private final JwtService jwtService;
     private final VerificationTokenRepository verificationTokenRepository;
     private final PasswordRecoveryTokenRepository passwordRecoveryTokenRepository;
 
@@ -50,12 +52,16 @@ public class AuthController {
     @org.springframework.beans.factory.annotation.Value("${app.base-url}")
     private String baseUrl;
 
-    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, ActionLogService actionLogService, CaptchaService captchaService, EmailService emailService, VerificationTokenRepository verificationTokenRepository, PasswordRecoveryTokenRepository passwordRecoveryTokenRepository) {
+    @org.springframework.beans.factory.annotation.Value("${app.security.jwt.enabled:false}")
+    private boolean jwtEnabled;
+
+    public AuthController(UserRepository userRepository, PasswordEncoder passwordEncoder, ActionLogService actionLogService, CaptchaService captchaService, EmailService emailService, JwtService jwtService, VerificationTokenRepository verificationTokenRepository, PasswordRecoveryTokenRepository passwordRecoveryTokenRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.actionLogService = actionLogService;
         this.captchaService = captchaService;
         this.emailService = emailService;
+        this.jwtService = jwtService;
         this.verificationTokenRepository = verificationTokenRepository;
         this.passwordRecoveryTokenRepository = passwordRecoveryTokenRepository;
     }
@@ -95,7 +101,13 @@ public class AuthController {
         
         actionLogService.logLogin(user.getLogin(), ip, ua);
         
-        return ResponseEntity.ok(UserDTO.fromEntity(user));
+        UserDTO userDTO = UserDTO.fromEntity(user);
+        if (jwtEnabled && authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.UserDetails) {
+            String token = jwtService.generateToken((org.springframework.security.core.userdetails.UserDetails) authentication.getPrincipal());
+            userDTO.setToken(token);
+        }
+        
+        return ResponseEntity.ok(userDTO);
     }
 
     @GetMapping("/info")

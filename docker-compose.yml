@@ -38,6 +38,8 @@ services:
       - ADMIN_EMAIL=${ADMIN_EMAIL}
       - USER_EMAIL=${USER_EMAIL}
       - ADMIN_READ_EMAIL=${ADMIN_READ_EMAIL}
+      - JWT_ENABLED=${JWT_ENABLED:-false}
+      - JWT_SECRET=${JWT_SECRET}
       - NVD_API_KEY=${NVD_API_KEY}
     volumes:
       - ./data:/app/data

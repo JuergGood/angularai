@@ -2,16 +2,21 @@ package ch.goodone.angularai.backend.config;
 
 import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -24,8 +29,11 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Value("${app.security.jwt.enabled:false}")
+    private boolean jwtEnabled;
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtAuthFilter) {
         try {
             http
                 .cors(Customizer.withDefaults())
@@ -33,14 +41,22 @@ public class SecurityConfig {
                     .csrfTokenRepository(org.springframework.security.web.csrf.CookieCsrfTokenRepository.withHttpOnlyFalse())
                     .csrfTokenRequestHandler(new org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler())
                     .ignoringRequestMatchers("/api/auth/logout", "/h2-console/**")
-                )
-                .securityContext(context -> context
+                    .disable() // Disable CSRF for JWT if enabled, or keep it if session based. For simplicity in this transition, we might disable it if jwtEnabled
+                );
+
+            if (jwtEnabled) {
+                http.csrf(csrf -> csrf.disable());
+                http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+            } else {
+                http.securityContext(context -> context
                     .securityContextRepository(new org.springframework.security.web.context.HttpSessionSecurityContextRepository())
                 )
                 .sessionManagement(session -> session
-                    .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.IF_REQUIRED)
-                )
-                .authorizeHttpRequests(auth -> auth
+                    .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                );
+            }
+
+            http.authorizeHttpRequests(auth -> auth
                     .requestMatchers("/api/auth/**", "/api/system/**", "/h2-console/**").permitAll()
                     .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                     .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/admin/**").hasAnyRole("ADMIN", "ADMIN_READ")
@@ -70,11 +86,20 @@ public class SecurityConfig {
                 .httpBasic(hb -> hb.authenticationEntryPoint((request, response, authException) -> 
                     response.sendError(jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED, authException.getMessage())
                 ));
+
+            if (jwtEnabled) {
+                http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
+            }
             
             return http.build();
         } catch (Exception e) {
             throw new IllegalStateException("Failed to configure security filter chain", e);
         }
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 
     @Bean

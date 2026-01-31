@@ -39,6 +39,7 @@ public class UserDTO {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private java.time.LocalDateTime createdAt;
     private String recaptchaToken;
+    private String token;
 
     public UserDTO() {
     }
@@ -188,5 +189,13 @@ public class UserDTO {
 
     public void setRecaptchaToken(String recaptchaToken) {
         this.recaptchaToken = recaptchaToken;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
