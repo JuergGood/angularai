@@ -29,6 +29,7 @@
         <module>backend</module>
         <module>frontend</module>
         <module>test-client</module>
+        <module>presentation</module>
     </modules>
 
     <build>
