@@ -24,7 +24,12 @@ RUN mvn -f backend/pom.xml clean package -DskipTests
 
 # Stage 3: Final runtime image
 FROM eclipse-temurin:25-jre-alpine
+# Create a non-root user
+RUN addgroup -S spring && adduser -S spring -G spring
 WORKDIR /app
 COPY --from=backend-build /app/backend/target/aibackend-*.jar app.jar
+# Create data directory and set permissions
+RUN mkdir -p data/dependency-check && chown -R spring:spring /app
 EXPOSE 8080
+USER spring:spring
 ENTRYPOINT ["java", "-jar", "app.jar"]
