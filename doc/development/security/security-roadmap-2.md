@@ -56,6 +56,7 @@ Building upon the successful implementation of the initial security roadmap, thi
     1. Register at [snyk.io](https://snyk.io/).
     2. Go to **Account Settings** -> **API Token**.
     3. Copy the token and add it as a Secret named `SNYK_TOKEN` in your GitHub repository settings.
+- **Snyk Integration**: The GitHub integration has been established (Integration ID: `6655f303-76c0-4e01-8118-f5f9947e4ab0`).
 
 ## Summary of Goals
 

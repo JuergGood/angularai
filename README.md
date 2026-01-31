@@ -87,6 +87,7 @@ The project documentation is organized in the `doc/` directory. For a comprehens
 
 ### Technical Details
 - [Architecture Overview](doc/architecture/Architecture.md)
+- [MCP & Autonomous Agents](doc/development/common/mcp-architecture.md)
 - [Core Workflows](doc/architecture/workflows/use-cases.md)
 - [Development Standards](doc/development/common/Development-Standards.md)
 - [Frontend Development](doc/development/frontend/Frontend-Development.md)

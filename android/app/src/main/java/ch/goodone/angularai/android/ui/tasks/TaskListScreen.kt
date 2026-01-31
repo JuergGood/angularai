@@ -76,7 +76,6 @@ fun TaskListScreen(
 ) {
     val state = viewModel.state.value
     val statusFilter by viewModel.statusFilter.collectAsState()
-    var showFilterMenu by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {

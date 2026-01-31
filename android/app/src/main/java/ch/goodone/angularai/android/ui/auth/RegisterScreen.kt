@@ -45,7 +45,6 @@ fun RegisterScreen(
     viewModel: AuthViewModel = hiltViewModel()
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
     
     var firstName by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }

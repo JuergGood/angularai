@@ -8,6 +8,7 @@ AngularAI is a modern, full-stack application featuring an Angular frontend, a S
 ## 🏗 Architecture & Design
 
 - **[Architecture Overview](Architecture.md)**: High-level design, tech stack, and project structure.
+- **[MCP & Autonomous Agents](../development/common/mcp-architecture.md)**: Details on the AI-driven development environment and protocol.
 - **[Core Workflows & Use Cases](workflows/use-cases.md)**: Detailed visualization of system behavior and user interactions.
 - **[Component Interaction](workflows/registration-workflows.md)**: Sequence diagrams and technical flow descriptions.
 

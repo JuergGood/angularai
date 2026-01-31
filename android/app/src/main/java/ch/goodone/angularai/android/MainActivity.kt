@@ -147,90 +147,6 @@ fun MainDrawerContent(
     }
 }
 
-@Composable
-fun MainNavHost(
-    navController: androidx.navigation.NavHostController,
-    padding: PaddingValues,
-    isLoggedIn: Boolean,
-    scope: kotlinx.coroutines.CoroutineScope,
-    onSaveTask: () -> Unit,
-    onBack: () -> Unit
-) {
-    NavHost(
-        navController = navController,
-        startDestination = if (isLoggedIn) "dashboard" else "login",
-        modifier = Modifier.padding(padding)
-    ) {
-        composable("login") {
-            LoginScreen(
-                onLoginSuccess = { user ->
-                    if (user.role == "ROLE_ADMIN" || user.role == "ROLE_ADMIN_READ") {
-                        navController.navigate("dashboard") { popUpTo("login") { inclusive = true } }
-                    } else {
-                        navController.navigate("tasks") { popUpTo("login") { inclusive = true } }
-                    }
-                },
-                onNavigateToRegister = { navController.navigate("register") }
-            )
-        }
-        composable("register") {
-            RegisterScreen(
-                onRegisterSuccess = { navController.navigate("login") },
-                onNavigateToLogin = { navController.navigate("login") }
-            )
-        }
-        composable("dashboard") {
-            DashboardScreen(
-                onNavigateToTasks = { navController.navigate("tasks") },
-                onNavigateToLogs = { navController.navigate("logs") },
-                onNavigateToUsers = { navController.navigate("admin") }
-            )
-        }
-        composable("tasks") {
-            TaskListScreen(
-                onAddTask = { navController.navigate("task_edit") },
-                onTaskClick = { task -> navController.navigate("task_edit?taskId=${task.id}") }
-            )
-        }
-        composable(
-            route = "task_edit?taskId={taskId}",
-            arguments = listOf(navArgument("taskId") {
-                type = NavType.LongType
-                defaultValue = -1L
-            })
-        ) { backStackEntry ->
-            val taskId = backStackEntry.arguments?.getLong("taskId")?.let { if (it == -1L) null else it }
-            TaskEditScreen(
-                taskId = taskId,
-                onSave = onSaveTask,
-                onBack = onBack
-            )
-        }
-        composable("profile") {
-            ProfileScreen()
-        }
-        composable("admin") {
-            AdminUserListScreen(
-                onUserClick = { user -> navController.navigate("admin_edit/${user.id}") },
-                onAddUser = { navController.navigate("admin_edit/0") }
-            )
-        }
-        composable(
-            route = "admin_edit/{userId}",
-            arguments = listOf(navArgument("userId") { type = NavType.LongType })
-        ) { backStackEntry ->
-            val userId = backStackEntry.arguments?.getLong("userId")
-            AdminUserEditScreen(
-                userId = userId ?: 0,
-                onSave = { navController.popBackStack() },
-                onBack = { navController.popBackStack() }
-            )
-        }
-        composable("logs") {
-            LogScreen()
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -245,11 +161,9 @@ fun MainApp(
     val currentUser by authViewModel.currentUser.collectAsState()
     val isLoggedIn = currentUser != null
     val isAdmin = currentUser?.role == "ROLE_ADMIN" || currentUser?.role == "ROLE_ADMIN_READ"
-    val canEditAdmin = currentUser?.role == "ROLE_ADMIN"
 
     var showSettingsMenu by remember { mutableStateOf(false) }
     var showHelpDialog by remember { mutableStateOf(false) }
-    val systemInfo by systemViewModel.systemInfo
 
     LaunchedEffect(isLoggedIn) {
         if (isLoggedIn) {
@@ -296,7 +210,6 @@ fun MainApp(
             topBar = {
                 MainTopBar(
                     isLoggedIn = isLoggedIn,
-                    systemInfo = systemInfo,
                     scope = scope,
                     drawerState = drawerState,
                     onSettingsClick = { showSettingsMenu = true }
@@ -306,7 +219,6 @@ fun MainApp(
             MainNavHost(
                 navController = navController,
                 padding = padding,
-                isLoggedIn = isLoggedIn,
                 isAdmin = isAdmin,
                 onSaveTask = { navController.popBackStack() },
                 onBack = { navController.popBackStack() }
@@ -319,7 +231,6 @@ fun MainApp(
 fun MainNavHost(
     navController: androidx.navigation.NavHostController,
     padding: PaddingValues,
-    isLoggedIn: Boolean,
     isAdmin: Boolean,
     onSaveTask: () -> Unit,
     onBack: () -> Unit
@@ -417,7 +328,6 @@ fun MainNavHost(
 @Composable
 fun MainTopBar(
     isLoggedIn: Boolean,
-    systemInfo: ch.goodone.angularai.android.data.remote.dto.SystemInfoDTO?,
     scope: kotlinx.coroutines.CoroutineScope,
     drawerState: DrawerState,
     onSettingsClick: () -> Unit
