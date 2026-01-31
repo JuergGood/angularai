@@ -44,15 +44,25 @@ Building upon the successful implementation of the initial security roadmap, thi
 - **Implemented**: Added `h2-file` Spring profile.
 - **Config**: Mounts H2 database to `./data/angularai` for persistence across container restarts.
 
-### 3.3 Container Security Scanning
-- **Note**: This is an infrastructure/CI-CD task. Integration of Trivy/Snyk is recommended for the deployment pipeline.
+### 3.3 Container & Dependency Security Scanning [DONE]
+- **Implemented**: Integration of **Trivy** and **Snyk** into the GitHub Actions pipeline (`code-review.yml`).
+- **Scope**:
+    - **Trivy (Image)**: Scans the production Docker image for OS and library vulnerabilities.
+    - **Trivy (Config)**: Scans the `Dockerfile` for security misconfigurations.
+    - **Snyk (Open Source)**: Scans Maven (Backend) and npm (Frontend) dependencies for known vulnerabilities.
+    - **Snyk (Container)**: Provides an alternative scan for the Docker image.
+- **Enforcement**: Fails the build if **CRITICAL** or **HIGH** vulnerabilities are found.
+- **Requirement**: Requires `SNYK_TOKEN` to be added to GitHub Secrets. To obtain a token:
+    1. Register at [snyk.io](https://snyk.io/).
+    2. Go to **Account Settings** -> **API Token**.
+    3. Copy the token and add it as a Secret named `SNYK_TOKEN` in your GitHub repository settings.
 
 ## Summary of Goals
 
-| Goal | Component | Complexity | Priority |
-|------|-----------|------------|----------|
-| Rate Limiting | Backend/Nginx | Medium | High |
-| Strict CSP | Frontend | High | Medium |
-| Image Scanning | CI/CD | Low | High |
-| Secrets Manager | Infrastructure | Medium | Medium |
-| H2 Persistence | Infrastructure | Low | High |
+| Goal | Component | Complexity | Priority | Status |
+|------|-----------|------------|----------|--------|
+| Rate Limiting | Backend/Nginx | Medium | High | [DONE] |
+| Strict CSP | Frontend | High | Medium | [DONE] |
+| Image & Dependency Scan | CI/CD | Low | High | [DONE] |
+| Secrets Manager | Infrastructure | Medium | Medium | [DONE] |
+| H2 Persistence | Infrastructure | Low | High | [DONE] |
