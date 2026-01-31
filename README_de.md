@@ -77,6 +77,7 @@ npm run lint
 - [Administrator-Handbuch](doc/userguide/admin-guide.md)
 - [FAQ](doc/userguide/faq.md)
 - [MCP & Autonome Agenten](doc/development/common/mcp-architecture.md)
+- [Übermittlung von Snyk-Ergebnissen](doc/development/security/transmitting-snyk-results.md)
 - [Confluence-Exportskript](scripts/md_to_confluence.py)
 - [Android-Bauanleitung](doc/ai/android/android-build-instructions.md)
 - [AWS-Setup und Infrastruktur](doc/ai/aws/aws_setup.md)
