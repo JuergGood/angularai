@@ -7,7 +7,12 @@ import java.io.File;
 
 public class DetailedInspector {
     public static void main(String[] args) throws Exception {
-        String[] files = {"../doc/history/presentations/template-company.pptx", "../doc/history/presentations/template.pptx", "../doc/history/presentations/SoftwareEntwicklungAI.pptx"};
+        String[] files = {
+            "presentations/template-company.pptx", 
+            "presentations/template.pptx", 
+            "presentations/SoftwareEntwicklungAI.pptx",
+            "presentations/generated/SoftwareEntwicklungAI_Python.pptx"
+        };
         
         for (String filePath : files) {
             File file = new File(filePath);

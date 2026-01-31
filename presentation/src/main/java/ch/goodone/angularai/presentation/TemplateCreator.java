@@ -18,6 +18,7 @@ public class TemplateCreator {
      * - Title Slide: [Layout: "Titelfolie weiss" (TITLE_ONLY)]
      *   - Title: [Shape: "Titel 1", ID: 2, PH Type: title, Anchor: (24.08, 148.44, 715, 373.9)]
      *   - Subtitle: [Shape: "Untertitel 2", ID: 3, PH Type: subTitle, Anchor: (24.08, 22.66, 715, 67.9)]
+     *   - Background Image: [Shape: "Bildplatzhalter 1", ID: 4, Anchor: (0, 0, 720, 540)]
      * - Title and Content: [Layout: "Titel und Inhalt" (TITLE_ONLY)]
      *   - Title: [Shape: "Titel 1", ID: 2, PH Type: title, Anchor: (24.08, 22.66, 801.7, 67.9)]
      *   - Content: [Shape: "Textplatzhalter 4", ID: 5, PH Type: body, Anchor: (24.08, 148.44, 801.7, 373.9)]
@@ -30,10 +31,12 @@ public class TemplateCreator {
      *   - Character Properties: [Font: "Frutiger for ZKB Light", Size: 9pt, Color: ZKB Blue (#003cd3)]
      * - Footer: [PH Type: ftr, ID: 3, Anchor: (48.16, 535.41, 777.62, 15.01)]
      *   - Found in "template-company.pptx" -> Slide Master -> Shape: "Fuzeilenplatzhalter 3"
+     *   - Character Properties: [Font: "Frutiger for ZKB Light", Size: 9pt, Color: Grey (#808080)]
      *   - Note: The footer text in the company template is usually empty or contains generic metadata.
      */
 
     public static void main(String[] args) throws Exception {
+        org.apache.poi.util.IOUtils.setByteArrayMaxOverride(200000000); // Allow up to 200MB
         String outputPath = "../doc/history/presentations/template.pptx";
         String referencePath = "../doc/history/presentations/reference.pptx";
         File file = new File(outputPath);
@@ -52,7 +55,27 @@ public class TemplateCreator {
             // Setup Master
             XSLFSlideMaster master = ppt.getSlideMasters().get(0);
             
-            // 1. Force Theme Fonts to Frutiger
+            // Clean all existing slides from reference.pptx to start fresh
+            System.out.println("Cleaning existing slides in main pass: " + ppt.getSlides().size());
+            while (ppt.getSlides().size() > 0) {
+                ppt.removeSlide(0);
+            }
+            
+            // Clean up notes slides and other residual parts
+            for (XSLFSlideMaster m : ppt.getSlideMasters()) {
+                // We can't easily remove notes masters via POI high-level API, 
+                // but we can ensure they are not used.
+            }
+
+            // Save once to apply slide removal before doing anything else
+            try (FileOutputStream out = new FileOutputStream(file)) {
+                ppt.write(out);
+            }
+            
+            // Re-open fresh
+            ppt.close();
+            ppt = new XMLSlideShow(new java.io.FileInputStream(file));
+            master = ppt.getSlideMasters().get(0);
             XSLFTheme theme = master.getTheme();
             if (theme != null) {
                 CTOfficeStyleSheet styleSheet = theme.getXmlObject();
@@ -75,6 +98,11 @@ public class TemplateCreator {
             createTitleAndContentLayout(master);
             createTwoContentLayout(master);
 
+            // Add Footer and Slide Number to all layouts (optional, usually done in Master)
+            for (XSLFSlideLayout layout : master.getSlideLayouts()) {
+                addFooterAndSlideNumber(layout);
+            }
+
             // Re-assign IDs globally before writing
             FinalResultFixer.validatePackageIntegrity(ppt);
 
@@ -83,6 +111,53 @@ public class TemplateCreator {
                 ppt.write(out);
             }
             ppt.close();
+            
+            // Explicitly delete any residual slide files if possible or just use a fresh empty slideshow
+            // if reference.pptx existed, it might have slides.
+            
+            // Re-open and remove all slides to ensure we have a clean reference-only template
+            try (XMLSlideShow ppt2 = new XMLSlideShow(new java.io.FileInputStream(file))) {
+                int count = ppt2.getSlides().size();
+                System.out.println("Cleaning " + count + " slides from template...");
+                if (count > 0) {
+                    for (int i = count - 1; i >= 0; i--) {
+                        ppt2.removeSlide(i);
+                    }
+                    try (FileOutputStream out = new FileOutputStream(file)) {
+                        ppt2.write(out);
+                    }
+                }
+            }
+            
+            // SECOND PASS: ensure NO slides exist
+            try (XMLSlideShow ppt3 = new XMLSlideShow(new java.io.FileInputStream(file))) {
+                if (ppt3.getSlides().size() > 0) {
+                     System.err.println("CRITICAL: Template still contains " + ppt3.getSlides().size() + " slides after cleanup!");
+                     while (ppt3.getSlides().size() > 0) {
+                        ppt3.removeSlide(0);
+                    }
+                    try (FileOutputStream out = new FileOutputStream(file)) {
+                        ppt3.write(out);
+                    }
+                }
+            }
+            
+            // THIRD PASS: Final check
+            try (XMLSlideShow ppt4 = new XMLSlideShow(new java.io.FileInputStream(file))) {
+                System.out.println("Final slide count in template: " + ppt4.getSlides().size());
+            }
+
+            // Also repair reference.pptx if it exists and we used it
+            if (refFile.exists()) {
+                System.out.println("Repairing reference.pptx integrity...");
+                try (XMLSlideShow refPpt = new XMLSlideShow(new java.io.FileInputStream(refFile))) {
+                    FinalResultFixer.validatePackageIntegrity(refPpt);
+                    try (FileOutputStream out = new FileOutputStream(refFile)) {
+                        refPpt.write(out);
+                    }
+                }
+            }
+
             System.out.println("Template created successfully at " + outputPath);
         } catch (Exception e) {
             System.err.println("Error creating template: " + e.getMessage());
@@ -93,7 +168,7 @@ public class TemplateCreator {
     private static void createTitleSlideLayout(XSLFSlideMaster master) {
         XSLFSlideLayout layout = null;
         for (XSLFSlideLayout l : master.getSlideLayouts()) {
-            if (l.getType() == SlideLayout.TITLE) { // "TITLE" is usually Layout 0 in reference.pptx
+            if (l.getType() == SlideLayout.TITLE) {
                 layout = l;
                 break;
             }
@@ -101,6 +176,36 @@ public class TemplateCreator {
         if (layout == null) return;
         
         System.out.println("Updating Title Slide layout...");
+        
+        // Background picture for Title Slide (referenced from template-company.pptx)
+        try {
+            File bgFile = new File("presentations/files/images/AiRace.png");
+            if (!bgFile.exists()) {
+                // Try relative to current dir if run from presentation dir
+                bgFile = new File("files/images/AiRace.png");
+            }
+            if (!bgFile.exists()) {
+                // Try relative to project root
+                bgFile = new File("presentation/presentations/files/images/AiRace.png");
+            }
+            
+            if (bgFile.exists()) {
+                System.out.println("Adding background picture: " + bgFile.getAbsolutePath());
+                byte[] pictureData = java.nio.file.Files.readAllBytes(bgFile.toPath());
+                XSLFPictureData pd = layout.getSlideShow().addPicture(pictureData, XSLFPictureData.PictureType.PNG);
+                XSLFPictureShape pic = layout.createPicture(pd);
+                pic.setAnchor(new Rectangle2D.Double(0, 0, 720, 540));
+                
+                // For layouts, we can't easily set child order to back via high-level API
+                // but usually the first created shape is at the bottom.
+            } else {
+                System.err.println("Background file not found: " + bgFile.getAbsolutePath());
+            }
+        } catch (Exception e) {
+            System.err.println("Could not add background to Title Slide: " + e.getMessage());
+            e.printStackTrace();
+        }
+
         for (XSLFShape s : layout.getShapes()) {
             if (s instanceof XSLFTextShape) {
                 XSLFTextShape ts = (XSLFTextShape) s;
@@ -109,10 +214,23 @@ public class TemplateCreator {
                 
                 if (ph == Placeholder.CENTERED_TITLE || ph == Placeholder.TITLE) {
                     ts.setAnchor(new Rectangle2D.Double(24, 148, 715, 374));
-                    applyStyle(ts, ZKB_BLUE, 36.0, true);
+                    ts.clearText();
+                    XSLFTextParagraph p = ts.addNewTextParagraph();
+                    XSLFTextRun r = p.addNewTextRun();
+                    r.setFontFamily("Frutiger for ZKB Light");
+                    r.setFontSize(36.0);
+                    r.setFontColor(ZKB_BLUE);
+                    r.setBold(true);
+                    r.setText(""); 
                 } else if (ph == Placeholder.SUBTITLE) {
                     ts.setAnchor(new Rectangle2D.Double(24, 23, 715, 20));
-                    applyStyle(ts, ZKB_BLUE, 14.0, false);
+                    ts.clearText();
+                    XSLFTextParagraph p = ts.addNewTextParagraph();
+                    XSLFTextRun r = p.addNewTextRun();
+                    r.setFontFamily("Frutiger for ZKB Light");
+                    r.setFontSize(14.0);
+                    r.setFontColor(ZKB_BLUE);
+                    r.setText(""); 
                 }
             }
         }
@@ -137,10 +255,23 @@ public class TemplateCreator {
                 
                 if (ph == Placeholder.TITLE) {
                     ts.setAnchor(new Rectangle2D.Double(24, 23, 802, 68));
-                    applyStyle(ts, ZKB_BLUE, 24.0, true);
+                    ts.clearText();
+                    XSLFTextParagraph p = ts.addNewTextParagraph();
+                    XSLFTextRun r = p.addNewTextRun();
+                    r.setFontFamily("Frutiger for ZKB Light");
+                    r.setFontSize(24.0);
+                    r.setFontColor(ZKB_BLUE);
+                    r.setBold(true);
+                    r.setText(""); 
                 } else if (ph == Placeholder.BODY || ph == Placeholder.CONTENT) {
                     ts.setAnchor(new Rectangle2D.Double(24, 148, 802, 374));
-                    applyStyle(ts, Color.BLACK, 18.0, false);
+                    ts.clearText();
+                    XSLFTextParagraph p = ts.addNewTextParagraph();
+                    XSLFTextRun r = p.addNewTextRun();
+                    r.setFontFamily("Frutiger for ZKB Light");
+                    r.setFontSize(18.0);
+                    r.setFontColor(Color.BLACK);
+                    r.setText(""); 
                 } else if (ph == Placeholder.SLIDE_NUMBER) {
                     ts.setAnchor(new Rectangle2D.Double(24, 535, 100, 20));
                     applyStyle(ts, ZKB_BLUE, 9.0, false);
@@ -169,7 +300,14 @@ public class TemplateCreator {
                 
                 if (ph == Placeholder.TITLE) {
                     ts.setAnchor(new Rectangle2D.Double(24, 23, 802, 68));
-                    applyStyle(ts, ZKB_BLUE, 24.0, true);
+                    ts.clearText();
+                    XSLFTextParagraph p = ts.addNewTextParagraph();
+                    XSLFTextRun r = p.addNewTextRun();
+                    r.setFontFamily("Frutiger for ZKB Light");
+                    r.setFontSize(24.0);
+                    r.setFontColor(ZKB_BLUE);
+                    r.setBold(true);
+                    r.setText(""); 
                 } else if (ph == Placeholder.BODY || ph == Placeholder.CONTENT) {
                     if (contentIdx == 0) {
                         ts.setAnchor(new Rectangle2D.Double(24, 148, 380, 374));
@@ -177,7 +315,13 @@ public class TemplateCreator {
                     } else {
                         ts.setAnchor(new Rectangle2D.Double(446, 148, 380, 374));
                     }
-                    applyStyle(ts, Color.BLACK, 18.0, false);
+                    ts.clearText();
+                    XSLFTextParagraph p = ts.addNewTextParagraph();
+                    XSLFTextRun r = p.addNewTextRun();
+                    r.setFontFamily("Frutiger for ZKB Light");
+                    r.setFontSize(18.0);
+                    r.setFontColor(Color.BLACK);
+                    r.setText(""); 
                 } else if (ph == Placeholder.SLIDE_NUMBER) {
                     ts.setAnchor(new Rectangle2D.Double(24, 535, 100, 20));
                     applyStyle(ts, ZKB_BLUE, 9.0, false);
@@ -208,8 +352,13 @@ public class TemplateCreator {
         XSLFTextShape footer = sheet.createAutoShape();
         footer.setPlaceholder(Placeholder.FOOTER);
         footer.setAnchor(new Rectangle2D.Double(150, 535, 600, 20));
-        footer.setText("AngularAI - Softwareentwicklung mit AI");
-        applyStyle(footer, Color.GRAY, 9.0, false);
+        footer.clearText(); // Ensure no dummy text
+        XSLFTextParagraph fp = footer.addNewTextParagraph();
+        XSLFTextRun fr = fp.addNewTextRun();
+        fr.setFontFamily("Frutiger for ZKB Light");
+        fr.setFontSize(9.0);
+        fr.setFontColor(Color.GRAY);
+        fr.setText(""); // Keep it empty for Pandoc/Generator to fill
     }
 
     private static void applyStyle(XSLFTextShape ts, Color color, double fontSize, boolean bold) {
