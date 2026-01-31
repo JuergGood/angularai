@@ -4,7 +4,9 @@ AngularAI is designed to be easily deployable using containerization and cloud s
 
 ## Docker
 
-The application is containerized using a single multi-stage Dockerfile. The `docker-compose.yml` file in the root directory orchestrates the services:
+The application is containerized using a single multi-stage Dockerfile. For details on how we optimized build times, see [Docker Build Optimization](Docker-Optimization.md).
+
+The `docker-compose.yml` file in the root directory orchestrates the services:
 - **app**: The unified Spring Boot + Angular application.
 - **db**: (Optional/Prod) PostgreSQL database.
 

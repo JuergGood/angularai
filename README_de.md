@@ -26,6 +26,37 @@ Die Anwendung ist verfügbar unter:
 - Backend API: [http://localhost:8080/api](http://localhost:8080/api)
 - H2-Konsole: [http://localhost:8080/h2-console](http://localhost:8080/h2-console) (JDBC URL: `jdbc:h2:mem:testdb`)
 
+### H2 Connection Details
+
+Please try connecting with the **absolute path** used inside the Docker container:
+
+1.  **Try this JDBC URL first**:
+    `jdbc:h2:file:/app/data/angularai;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE`
+
+2.  **Alternative (if the above fails)**:
+    `jdbc:h2:file:/data/angularai;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE`
+
+### Verification
+If you are connected to the correct database, you should see more than just `INFORMATION_SCHEMA` and `Users` in the left sidebar. You should specifically see:
+*   `ACTION_LOG`
+*   `USERS`
+*   `TASKS`
+*   `FLYWAY_SCHEMA_HISTORY`
+
+If the sidebar still only shows `INFORMATION_SCHEMA`, it means H2 has just created a brand new, empty database file at that location because it couldn't find the existing one.
+
+### Summary of Connection Details for Docker:
+*   **Driver Class**: `org.h2.Driver`
+*   **JDBC URL**: `jdbc:h2:file:/app/data/angularai;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE`
+*   **User Name**: `sa`
+*   **Password**: (leave empty)
+
+Once connected to the correct database, you can run:
+```sql
+SELECT * FROM ACTION_LOG;
+```
+(H2 usually defaults to uppercase for table names in the UI, so `ACTION_LOG` should work there).
+
 ## Deployment-Skripte
 
 Skripte für gängige Deployment-Aufgaben finden Sie im Ordner `scripts/` (PowerShell und Windows CMD). **Hinweis: PowerShell-Skripte laden Variablen automatisch aus Ihrer lokalen `.env`-Datei.**

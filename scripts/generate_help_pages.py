@@ -10,6 +10,7 @@ SOURCE_FILES = {
         ("user-guide", "doc/user-guide/user-guide.md"),
         ("faq", "doc/user-guide/faq.md"),
         ("release-notes", "doc/user-guide/release-notes.md"),
+        ("docker-optimization", "doc/infrastructure/Docker-Optimization.md"),
         ("admin-guide", "doc/admin-guide/admin-guide.md"),
         ("android-build", "doc/development/android/android-build.md"),
         ("backend-dev", "doc/development/backend/Backend-Development.md"),

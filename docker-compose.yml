@@ -9,6 +9,7 @@ services:
       - "8080:8080"
       - "80:8080"
     environment:
+      - DOCKER_BUILDKIT=1
       - SPRING_PROFILES_ACTIVE=h2-file
       - IPSTACK_API_KEY=${IPSTACK_API_KEY}
       - IPSTACK_API_URL=${IPSTACK_API_URL}

@@ -6,10 +6,6 @@
     <mat-card-content style="padding: 24px;">
       <!-- CR-REG-02: reactive form -->
       <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
-        <p class="verification-hint">
-          <mat-icon inline="true">info</mat-icon>
-          <span>{{ 'REGISTER.VERIFICATION_HINT' | translate }}</span>
-        </p>
         <div class="form-grid full-width-name">
           <mat-form-field appearance="outline" subscriptSizing="dynamic">
             <mat-label>{{ 'ADMIN.FULL_NAME' | translate }}</mat-label>
@@ -129,6 +125,11 @@
             }
           </button>
         </div>
+
+        <p class="verification-hint">
+          <mat-icon inline="true">info</mat-icon>
+          <span>{{ 'REGISTER.VERIFICATION_HINT' | translate }}</span>
+        </p>
 
         @if (error) {
           <p class="error">{{ error | translate }}</p>

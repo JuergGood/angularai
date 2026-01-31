@@ -101,11 +101,11 @@ public class AuthController {
     @GetMapping("/info")
     public ResponseEntity<UserDTO> getAuthInfo(Authentication authentication) {
         if (authentication == null || !authentication.isAuthenticated()) {
-            return ResponseEntity.status(401).build();
+            return ResponseEntity.ok(null);
         }
         return userRepository.findByLogin(authentication.getName())
                 .map(user -> ResponseEntity.ok(UserDTO.fromEntity(user)))
-                .orElse(ResponseEntity.status(401).build());
+                .orElse(ResponseEntity.ok(null));
     }
 
     @PostMapping("/logout")

@@ -184,7 +184,7 @@ class TaskControllerTest {
         mockMvc.perform(post("/api/tasks/analyze")
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
-                .content("some input"))
+                .content("{\"input\":\"some input\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.title").value("Analyzed Task"))
                 .andExpect(jsonPath("$.priority").value("HIGH"));

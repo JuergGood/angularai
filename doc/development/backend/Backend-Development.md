@@ -30,8 +30,33 @@ To run the backend locally:
 
 ## Database
 
-- **H2 (Default)**: Used for local development and testing. Access the console at `http://localhost:8080/h2-console`.
-- **PostgreSQL**: Supported for production-like environments. See [PostgreSQL Setup](postgres_setup.md) for details.
+### H2 Database (Local Development)
+The application uses H2 as the default database for local development and testing.
+
+- **Console URL**: [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
+- **Settings**:
+    - **Driver Class**: `org.h2.Driver`
+    - **JDBC URL (Memory)**: `jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1` (Default for local IDE runs)
+    - **JDBC URL (File/Docker)**: `jdbc:h2:file:./data/angularai;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE` (When using Docker or `h2-file` profile)
+    - **User Name**: `sa`
+    - **Password**: (leave empty)
+
+**Note**: To access the console in a Docker environment, ensure you use the `8080` port directly.
+
+```powershell
+docker compose logs app | Select-String "jdbc:h2"
+```
+
+Database JDBC URL [jdbc:h2:file:./data/testdb]
+
+jdbc:h2:file:./data/testdb;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
+
+```sql
+SELECT * FROM ACTION_LOG;
+```
+
+### PostgreSQL
+Supported for production-like environments. See [PostgreSQL Setup](postgres_setup.md) for details.
 
 ## API Documentation
 

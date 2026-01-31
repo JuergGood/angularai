@@ -73,7 +73,7 @@ export class TaskService {
   }
 
   analyzeTask(input: string): Observable<Task> {
-    return this.http.post<Task>(`${this.apiUrl}/analyze`, input, { headers: this.getHeaders() });
+    return this.http.post<Task>(`${this.apiUrl}/analyze`, { input }, { headers: this.getHeaders() });
   }
 
   bulkPatchTasks(ids: number[], patch: Partial<Task>): Observable<Task[]> {

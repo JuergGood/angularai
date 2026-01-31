@@ -96,6 +96,7 @@ The project documentation is organized in the `doc/` directory. For a comprehens
 - [Deployment & Infrastructure](doc/infrastructure/Deployment.md)
 
 ### Deployment & Tools
+- [Docker Build Optimization](doc/infrastructure/Docker-Optimization.md)
 - [Confluence Export Script](scripts/md_to_confluence.py)
 - [Android Development](doc/development/android/Android-Development.md)
 - [PostgreSQL Setup](doc/development/backend/postgres_setup.md)

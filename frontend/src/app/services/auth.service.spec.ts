@@ -94,6 +94,16 @@ describe('AuthService', () => {
     expect(service.isInitializing()).toBe(false);
   });
 
+  it('should handle init when no user logged in', () => {
+    service.init();
+
+    const req = httpMock.expectOne('/api/auth/info');
+    req.flush(null);
+
+    expect(service.currentUser()).toBeNull();
+    expect(service.isInitializing()).toBe(false);
+  });
+
   it('should handle init error', () => {
     service.init();
 

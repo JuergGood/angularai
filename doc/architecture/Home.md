@@ -50,4 +50,4 @@ docker compose up --build
 The application will be available at:
 - Frontend: [http://localhost](http://localhost)
 - Backend API: [http://localhost:8080/api](http://localhost:8080/api)
-- H2 Console: [http://localhost:8080/h2-console](http://localhost:8080/h2-console) (JDBC URL: `jdbc:h2:mem:testdb`)
+- H2 Console: [http://localhost:8080/h2-console](http://localhost:8080/h2-console) (JDBC URL: `jdbc:h2:file:./data/angularai;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE`)

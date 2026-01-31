@@ -63,8 +63,14 @@ export class AuthService {
   }
 
   logout() {
-    this.http.post(`${this.apiUrl}/logout`, {}).subscribe();
-    this.currentUser.set(null);
+    this.http.post(`${this.apiUrl}/logout`, {}).subscribe({
+      next: () => this.currentUser.set(null),
+      error: (err) => {
+        console.error('Logout error:', err);
+        // Still clear user locally even if server call fails
+        this.currentUser.set(null);
+      }
+    });
   }
 
   isLoggedIn(): boolean {

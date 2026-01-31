@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                     .csrfTokenRepository(org.springframework.security.web.csrf.CookieCsrfTokenRepository.withHttpOnlyFalse())
                     .csrfTokenRequestHandler(new org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler())
+                    .ignoringRequestMatchers("/api/auth/logout", "/h2-console/**")
                 )
                 .securityContext(context -> context
                     .securityContextRepository(new org.springframework.security.web.context.HttpSessionSecurityContextRepository())
@@ -47,11 +48,19 @@ public class SecurityConfig {
                     .requestMatchers("/api/**").authenticated()
                     .anyRequest().permitAll()
                 )
+                .logout(logout -> logout
+                    .logoutUrl("/api/auth/logout")
+                    .logoutSuccessHandler((request, response, authentication) -> {
+                        response.setStatus(jakarta.servlet.http.HttpServletResponse.SC_OK);
+                    })
+                    .invalidateHttpSession(true)
+                    .deleteCookies("JSESSIONID")
+                )
                 .exceptionHandling(e -> e.authenticationEntryPoint(new org.springframework.security.web.authentication.HttpStatusEntryPoint(org.springframework.http.HttpStatus.UNAUTHORIZED)))
                 .headers(headers -> headers
                     .frameOptions(org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig::sameOrigin)
                     .contentSecurityPolicy(csp -> csp
-                        .policyDirectives("default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self';")
+                        .policyDirectives("default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.googletagmanager.com https://www.google.com/recaptcha/ https://www.gstatic.com/recaptcha/; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.gstatic.com/recaptcha/; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https://www.google-analytics.com https://*.google-analytics.com https://www.gstatic.com/recaptcha/; connect-src 'self' https://www.google-analytics.com https://*.google-analytics.com https://*.analytics.google.com https://www.google.com; frame-src 'self' https://www.google.com/recaptcha/ https://recaptcha.google.com/;")
                     )
                     .httpStrictTransportSecurity(hsts -> hsts
                         .includeSubDomains(true)
@@ -99,7 +108,8 @@ public class SecurityConfig {
             "http://localhost:4200",
             "http://127.0.0.1:4200",
             "http://localhost:80",
-            "http://localhost"
+            "http://localhost",
+            "https://goodone.ch"
         ));
         // Keep some patterns for mobile/development if strictly necessary, but prefer explicit list
         configuration.setAllowedOriginPatterns(List.of(

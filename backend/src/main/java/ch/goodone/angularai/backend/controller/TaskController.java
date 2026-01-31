@@ -45,7 +45,8 @@ public class TaskController {
     }
 
     @PostMapping("/analyze")
-    public TaskDTO analyzeTask(@RequestBody String input) {
+    public TaskDTO analyzeTask(@RequestBody Map<String, String> payload) {
+        String input = payload.get("input");
         TaskParserService.ParsedTask parsed = taskParserService.parse(input);
         TaskDTO dto = new TaskDTO();
         dto.setTitle(parsed.title());

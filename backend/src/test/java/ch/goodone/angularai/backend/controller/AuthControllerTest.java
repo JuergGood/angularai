@@ -89,9 +89,10 @@ class AuthControllerTest {
     }
 
     @Test
-    void info_shouldReturnUnauthorized_whenNotAuthenticated() throws Exception {
+    void info_shouldReturnOkWithNull_whenNotAuthenticated() throws Exception {
         mockMvc.perform(get("/api/auth/info"))
-                .andExpect(status().isUnauthorized());
+                .andExpect(status().isOk())
+                .andExpect(content().string(""));
     }
 
     @Test
