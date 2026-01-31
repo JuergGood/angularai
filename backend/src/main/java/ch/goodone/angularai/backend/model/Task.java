@@ -76,7 +76,6 @@ public class Task {
         this.dueDate = dueDate;
         this.priority = priority;
         this.user = user;
-        this.status = TaskStatus.OPEN;
         this.createdAt = java.time.LocalDateTime.now();
         this.updatedAt = java.time.LocalDateTime.now();
     }

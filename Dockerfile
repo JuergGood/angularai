@@ -14,6 +14,7 @@ ENV NVD_API_KEY=$NVD_API_KEY
 COPY pom.xml .
 COPY dependency-check-suppressions.xml .
 COPY backend/pom.xml backend/
+COPY backend/checkstyle.xml backend/
 COPY backend/src backend/src
 # Copy frontend build output to backend static resources
 COPY --from=frontend-build /app/frontend/dist/frontend /app/backend/src/main/resources/static

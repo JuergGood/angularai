@@ -24,8 +24,8 @@ object DataService {
             TaskDTO(
                 title = "Paging Task #$i",
                 description = "Automated task for paging verification #$i",
-                priority = Priority.values()[i % 3],
-                status = TaskStatus.values()[i % 3],
+                priority = Priority.entries[i % 3],
+                status = TaskStatus.entries[i % 3],
                 dueDate = LocalDate.now().plusDays(i.toLong() % 30)
             )
         }
