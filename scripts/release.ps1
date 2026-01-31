@@ -19,7 +19,7 @@ Write-Host "Syncing version across project..."
 .\scripts\sync-version.ps1
 
 # 3. Update Release Notes (Add commits since last tag if it doesn't exist)
-$releaseNotesPath = "doc/userguide/release-notes.md"
+$releaseNotesPath = "doc/user-guide/release-notes.md"
 if (Test-Path $releaseNotesPath) {
     $content = Get-Content $releaseNotesPath -Raw
     $versionHeader = "## Version $NewVersion ($ReleaseDate)"

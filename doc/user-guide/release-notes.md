@@ -1,5 +1,42 @@
 # Release Notes
 
+## Version 1.0.6 (2026-01-31)
+*   Add Snyk scans for Android, scripts, and IaC with SARIF reports; update security docs
+*   Enhance security and use non-root users in Kubernetes and Docker setups. Adjust frontend to listen on port 8080, update backend and frontend Dockerfiles to run as non-root, and refine Kubernetes configurations for both services with improved security contexts.
+*   **- **Checkstyle Configuration and Snyk Integration****: Updated Checkstyle config path and added checkstyle.xml to Docker context. Migrated from `values()` to `entries` for `Priority` and `TaskStatus` in `DataService`. Removed default `TaskStatus` initialization in `Task` constructor. Added Snyk integration guide for CI/CD pipeline security scanning.
+*   **Update GitHub Actions workflow**: Save Snyk reports as artifacts
+*   Update Gradle build script and dependencies
+*   Add Snyk results transmission documentation and export script
+*   - Integrate MCP & Autonomous Agents documentation and update relevant architecture details. - Refactor `MainActivity` to clean up navigation logic. - Enhance task status with additional `COMPLETED` enum. - Adjust build configuration for testing. - Remove unnecessary components and utilize updated mock versions. - Establish GitHub Snyk integration detailed in security roadmap.
+*   Implement Trivy and Snyk scans in CI/CD pipeline
+*   Enhance UI navigation and update components
+*   Add static analysis checks and improve code formatting
+*   Remove outdated presentation files for cleanup
+*   Add presentation module with Maven setup and utilities
+*   Add `JavaMailSender` mock to tests, align profile configurations, and update npm dependencies. Introduced shared test properties file and removed authorization header checks in mock requests.
+*   **Finalize Security Roadmap Level 2**: Implement API rate limiting, strict CSP, and advanced audit logging with Hibernate Envers. Complete dependency pinning and enhance security monitoring with real-time alerts. Optimize observability with forensic context and session tracking.
+*   Add advanced security roadmap, enhance reCAPTCHA handling, and refine tests
+*   Remove `sonar-issues-v2.json` to clean up outdated static analysis artifacts.
+*   Add comprehensive unit tests for components and enhance security handling
+*   Automate UI screenshot updates for documentation with Playwright tests
+*   Optimize test user setup in `TaskControllerTest` and enhance user registration handling
+*   Refactor `TaskParserService` and optimize input sanitation, improve logging consistency with constants, and enhance task metrics endpoint in `TaskController`.
+*   Refactor build scripts and documentation for consistency
+*   **Update German FAQ**: improve password reset guidance and clarify user role
+*   Remove outdated documentation related to Angular's action log and admin guide for improved repository clarity.
+*   Add documentation for backend and development standards
+*   Remove outdated workflow documentation and relocate essential diagrams and use cases to the architecture directory for improved clarity and organization.
+*   Remove outdated documentation related to AngularAI, Android, and system architecture to improve repository clarity and organization.
+*   Remove outdated documentation for better repository organization.
+*   - Add support for `h2-file` storage on AWS Fargate and local Docker environments - Integrate EFS configuration and task definition updates for persistence in AWS - Update `docker-compose.yml`
+*   Add landing message feature across backend, frontend, and e2e tests
+*   Implement user account deletion feature and update e2e tests
+*   Implement password recovery feature and enhance login error handling
+*   Add Markdown to DOCX conversion script and enhance AWS deployment process
+*   Add email verification component and update verification flow
+*   Add .dockerignore for optimized build efficiency and test cleanup
+
+
 ## Version 1.0.5 (2026-01-25)
 *   **Infrastructure**: Update environment variables configuration
 *   **Security**: Add resend verification feature and enhance email verification UX
@@ -47,6 +84,7 @@
 *   **Foundation**: Established the core project structure with Spring Boot backend and Angular standalone components.
 *   **Infrastructure**: Set up Docker-based deployment and Nginx reverse proxy configuration.
 *   **Architecture**: Defined the "AngularAI" ecosystem diagrams and core design principles.
+
 
 
 
