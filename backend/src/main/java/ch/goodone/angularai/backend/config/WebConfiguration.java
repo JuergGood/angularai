@@ -26,8 +26,8 @@ public class WebConfiguration implements WebMvcConfigurer {
                         }
 
                         // Forward to index.html if the resource doesn't exist (SPA routing)
-                        // but only if it's not an API request
-                        if (!resourcePath.startsWith("api/")) {
+                        // but only if it's not an API request or H2 console request
+                        if (!resourcePath.startsWith("api/") && !resourcePath.startsWith("h2-console")) {
                             return location.createRelative("index.html");
                         }
 

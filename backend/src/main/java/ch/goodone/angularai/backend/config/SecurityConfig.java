@@ -40,7 +40,7 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf
                     .csrfTokenRepository(org.springframework.security.web.csrf.CookieCsrfTokenRepository.withHttpOnlyFalse())
                     .csrfTokenRequestHandler(new org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler())
-                    .ignoringRequestMatchers("/api/auth/logout", "/h2-console/**")
+                    .ignoringRequestMatchers("/api/auth/logout")
                     .disable() // Disable CSRF for JWT if enabled, or keep it if session based. For simplicity in this transition, we might disable it if jwtEnabled
                 );
 
@@ -57,7 +57,8 @@ public class SecurityConfig {
             }
 
             http.authorizeHttpRequests(auth -> auth
-                    .requestMatchers("/api/auth/**", "/api/system/**", "/h2-console/**").permitAll()
+                    .requestMatchers("/api/auth/**", "/api/system/**").permitAll()
+                    .requestMatchers("/h2-console/**").hasRole("ADMIN")
                     .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                     .requestMatchers(org.springframework.http.HttpMethod.GET, "/api/admin/**").hasAnyRole("ADMIN", "ADMIN_READ")
                     .requestMatchers("/api/admin/**").hasRole("ADMIN")

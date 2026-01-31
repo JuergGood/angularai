@@ -127,6 +127,14 @@
                                                      {
                                                          "name":  "ADMIN_READ_EMAIL",
                                                          "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:ADMIN_READ_EMAIL::"
+                                                     },
+                                                     {
+                                                         "name":  "H2_USERNAME",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:H2_USERNAME::"
+                                                     },
+                                                     {
+                                                         "name":  "H2_PASSWORD",
+                                                         "valueFrom":  "arn:aws:secretsmanager:eu-central-1:426141506813:secret:goodone-config-NCy6aP:H2_PASSWORD::"
                                                      }
                                                  ],
                                      "logConfiguration":  {
