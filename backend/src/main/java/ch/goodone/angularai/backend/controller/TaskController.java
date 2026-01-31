@@ -12,7 +12,16 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -51,8 +60,8 @@ public class TaskController {
     @GetMapping
     @Operation(summary = "Get current user's tasks with filtering and sorting")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "List of tasks retrieved successfully"),
-            @ApiResponse(responseCode = "401", description = "Unauthorized")
+        @ApiResponse(responseCode = "200", description = "List of tasks retrieved successfully"),
+        @ApiResponse(responseCode = "401", description = "Unauthorized")
     })
     public List<TaskDTO> getMyTasks(
             @RequestParam(required = false) String status,
@@ -119,7 +128,9 @@ public class TaskController {
         metrics.put("completed", completed);
         
         long overdue = tasks.stream().filter(t -> {
-            if (t.getDueDate() == null) return false;
+            if (t.getDueDate() == null) {
+                return false;
+            }
             return t.getDueDate().isBefore(LocalDate.now()) && !"DONE".equals(t.getStatus());
         }).count();
         metrics.put("overdue", overdue);

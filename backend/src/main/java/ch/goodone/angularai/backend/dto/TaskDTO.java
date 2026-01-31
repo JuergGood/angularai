@@ -20,7 +20,8 @@ public class TaskDTO {
     private java.time.LocalDateTime completedAt;
     private java.util.List<String> tags;
 
-    public TaskDTO() {}
+    public TaskDTO() {
+    }
 
     public TaskDTO(Long id, String title, String description, LocalDate dueDate, Priority priority, String status, Integer position) {
         this.id = id;
@@ -49,36 +50,91 @@ public class TaskDTO {
         return dto;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getTitle() {
+        return title;
+    }
 
-    public LocalDate getDueDate() { return dueDate; }
-    public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public Priority getPriority() { return priority; }
-    public void setPriority(Priority priority) { this.priority = priority; }
+    public String getDescription() {
+        return description;
+    }
 
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public Integer getPosition() { return position; }
-    public void setPosition(Integer position) { this.position = position; }
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
 
-    public java.time.LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(java.time.LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
 
-    public java.time.LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(java.time.LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public Priority getPriority() {
+        return priority;
+    }
 
-    public java.time.LocalDateTime getCompletedAt() { return completedAt; }
-    public void setCompletedAt(java.time.LocalDateTime completedAt) { this.completedAt = completedAt; }
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
 
-    public java.util.List<String> getTags() { return tags; }
-    public void setTags(java.util.List<String> tags) { this.tags = tags; }
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
+    }
+
+    public java.time.LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(java.time.LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public java.time.LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(java.time.LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public java.time.LocalDateTime getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(java.time.LocalDateTime completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public java.util.List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(java.util.List<String> tags) {
+        this.tags = tags;
+    }
 }

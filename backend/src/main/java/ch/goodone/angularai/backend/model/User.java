@@ -1,6 +1,14 @@
 package ch.goodone.angularai.backend.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 import java.time.LocalDate;
@@ -52,7 +60,8 @@ public class User {
     @Column(name = "created_at", nullable = false, updatable = false)
     private java.time.LocalDateTime createdAt;
 
-    public User() {}
+    public User() {
+    }
 
     public User(String login, String email) {
         this.login = login;
@@ -86,39 +95,99 @@ public class User {
         }
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getFirstName() { return firstName; }
-    public void setFirstName(String firstName) { this.firstName = firstName; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getLastName() { return lastName; }
-    public void setLastName(String lastName) { this.lastName = lastName; }
+    public String getFirstName() {
+        return firstName;
+    }
 
-    public String getLogin() { return login; }
-    public void setLogin(String login) { this.login = login; }
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
 
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public String getLastName() {
+        return lastName;
+    }
 
-    public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
 
-    public String getPhone() { return phone; }
-    public void setPhone(String phone) { this.phone = phone; }
+    public String getLogin() {
+        return login;
+    }
 
-    public UserStatus getStatus() { return status; }
-    public void setStatus(UserStatus status) { this.status = status; }
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
-    public LocalDate getBirthDate() { return birthDate; }
-    public void setBirthDate(LocalDate birthDate) { this.birthDate = birthDate; }
+    public String getPassword() {
+        return password;
+    }
 
-    public String getAddress() { return address; }
-    public void setAddress(String address) { this.address = address; }
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-    public Role getRole() { return role; }
-    public void setRole(Role role) { this.role = role; }
+    public String getEmail() {
+        return email;
+    }
 
-    public java.time.LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(java.time.LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    public UserStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(UserStatus status) {
+        this.status = status;
+    }
+
+    public LocalDate getBirthDate() {
+        return birthDate;
+    }
+
+    public void setBirthDate(LocalDate birthDate) {
+        this.birthDate = birthDate;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public Role getRole() {
+        return role;
+    }
+
+    public void setRole(Role role) {
+        this.role = role;
+    }
+
+    public java.time.LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(java.time.LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }

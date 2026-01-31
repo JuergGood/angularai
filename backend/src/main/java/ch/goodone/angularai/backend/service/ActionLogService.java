@@ -50,9 +50,9 @@ public class ActionLogService {
             }
             if (log.getIpAddress() == null) {
                 String ip = request.getRemoteAddr();
-                String xForwardedFor = request.getHeader("X-Forwarded-For");
-                if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
-                    ip = xForwardedFor.split(",")[0];
+                String xforwardedFor = request.getHeader("X-Forwarded-For");
+                if (xforwardedFor != null && !xforwardedFor.isEmpty()) {
+                    ip = xforwardedFor.split(",")[0];
                 }
                 log.setIpAddress(ip);
             }

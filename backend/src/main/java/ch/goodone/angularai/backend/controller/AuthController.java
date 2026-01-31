@@ -18,7 +18,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Locale;
 import java.util.Map;
@@ -163,7 +169,7 @@ public class AuthController {
             return ResponseEntity.badRequest().body("Password is required");
         }
         if (userDTO.getPassword().length() < 8) {
-             return ResponseEntity.badRequest().body("Password does not meet requirements");
+            return ResponseEntity.badRequest().body("Password does not meet requirements");
         }
         if (userDTO.getEmail() == null || userDTO.getEmail().isBlank()) {
             return ResponseEntity.badRequest().body("Email is required");

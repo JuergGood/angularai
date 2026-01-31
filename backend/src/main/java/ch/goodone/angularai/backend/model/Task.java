@@ -1,6 +1,20 @@
 package ch.goodone.angularai.backend.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.PreUpdate;
+import jakarta.persistence.Table;
 import org.hibernate.envers.Audited;
 import java.time.LocalDate;
 
@@ -53,7 +67,8 @@ public class Task {
     @Column(name = "tag")
     private java.util.List<String> tags = new java.util.ArrayList<>();
 
-    public Task() {}
+    public Task() {
+    }
 
     public Task(String title, String description, LocalDate dueDate, Priority priority, User user) {
         this.title = title;
@@ -81,22 +96,50 @@ public class Task {
         updatedAt = java.time.LocalDateTime.now();
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getTitle() { return title; }
-    public void setTitle(String title) { this.title = title; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getDescription() { return description; }
-    public void setDescription(String description) { this.description = description; }
+    public String getTitle() {
+        return title;
+    }
 
-    public LocalDate getDueDate() { return dueDate; }
-    public void setDueDate(LocalDate dueDate) { this.dueDate = dueDate; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public Priority getPriority() { return priority; }
-    public void setPriority(Priority priority) { this.priority = priority; }
+    public String getDescription() {
+        return description;
+    }
 
-    public TaskStatus getStatus() { return status; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDate getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDate dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public Priority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Priority priority) {
+        this.priority = priority;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
     public void setStatus(TaskStatus status) {
         this.status = status;
         if (status == TaskStatus.DONE) {
@@ -106,21 +149,51 @@ public class Task {
         }
     }
 
-    public Integer getPosition() { return position; }
-    public void setPosition(Integer position) { this.position = position; }
+    public Integer getPosition() {
+        return position;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public void setPosition(Integer position) {
+        this.position = position;
+    }
 
-    public java.time.LocalDateTime getCreatedAt() { return createdAt; }
-    public void setCreatedAt(java.time.LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public User getUser() {
+        return user;
+    }
 
-    public java.time.LocalDateTime getUpdatedAt() { return updatedAt; }
-    public void setUpdatedAt(java.time.LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-    public java.time.LocalDateTime getCompletedAt() { return completedAt; }
-    public void setCompletedAt(java.time.LocalDateTime completedAt) { this.completedAt = completedAt; }
+    public java.time.LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
-    public java.util.List<String> getTags() { return tags; }
-    public void setTags(java.util.List<String> tags) { this.tags = tags; }
+    public void setCreatedAt(java.time.LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public java.time.LocalDateTime getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(java.time.LocalDateTime updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    public java.time.LocalDateTime getCompletedAt() {
+        return completedAt;
+    }
+
+    public void setCompletedAt(java.time.LocalDateTime completedAt) {
+        this.completedAt = completedAt;
+    }
+
+    public java.util.List<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(java.util.List<String> tags) {
+        this.tags = tags;
+    }
 }

@@ -54,6 +54,22 @@ Um das Backend von IntelliJ auszuführen, müssen Sie sicherstellen, dass die er
 Navigieren Sie zu `frontend/` und führen Sie `npm install` und dann `npm start` aus.
 Der Angular-Entwicklungsserver ist so konfiguriert, dass er `/api`-Anfragen an `http://localhost:8080` weiterleitet. Stellen Sie sicher, dass das Backend läuft.
 
+### Statische Analyse & Linting
+
+Bevor Sie Code committen, stellen Sie sicher, dass er alle statischen Analyseprüfungen besteht.
+
+**Backend (Java):**
+```bash
+mvn checkstyle:check
+mvn pmd:check
+```
+
+**Frontend (Web):**
+```bash
+cd frontend
+npm run lint
+```
+
 ## Dokumentation
 
 - [Benutzerhandbuch](doc/userguide/user-guide.md)

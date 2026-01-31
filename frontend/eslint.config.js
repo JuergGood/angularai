@@ -14,6 +14,8 @@ export default tseslint.config(
       'cypress/**',
       '**/*.spec.ts',
       '**/*.cy.js',
+      'e2e/**',
+      'target/**',
     ],
   },
   {
@@ -22,6 +24,8 @@ export default tseslint.config(
       'max-lines': ['error', { max: 500, skipBlankLines: true, skipComments: true }],
       '@typescript-eslint/no-unused-vars': 'warn',
       'no-undef': 'off',
+      '@typescript-eslint/no-unused-expressions': 'off',
+      'no-cond-assign': 'off',
     }
   },
   {

@@ -3,7 +3,11 @@ package ch.goodone.angularai.backend.config;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
-import jakarta.servlet.*;
+import jakarta.servlet.Filter;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletRequest;
+import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -38,9 +42,9 @@ public class RateLimitingFilter implements Filter {
         if (path.startsWith("/api/auth/login") || path.startsWith("/api/auth/register")) {
             String clientIp = httpRequest.getRemoteAddr();
             // Handle X-Forwarded-For if behind a proxy
-            String xForwardedFor = httpRequest.getHeader("X-Forwarded-For");
-            if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
-                clientIp = xForwardedFor.split(",")[0];
+            String xforwardedFor = httpRequest.getHeader("X-Forwarded-For");
+            if (xforwardedFor != null && !xforwardedFor.isEmpty()) {
+                clientIp = xforwardedFor.split(",")[0];
             }
 
             Bucket bucket = buckets.computeIfAbsent(clientIp, k -> createNewBucket());

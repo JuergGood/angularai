@@ -6,7 +6,8 @@ public class SystemInfoDTO {
     private String mode;
     private String landingMessage;
 
-    public SystemInfoDTO() {}
+    public SystemInfoDTO() {
+    }
 
     public SystemInfoDTO(String backendVersion, String frontendVersion, String mode) {
         this(backendVersion, frontendVersion, mode, null);

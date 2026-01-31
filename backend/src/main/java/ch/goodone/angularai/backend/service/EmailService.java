@@ -129,30 +129,101 @@ public class EmailService {
         private String bestRegards;
         private String team;
 
-        public String getUrl() { return url; }
-        public void setUrl(String url) { this.url = url; }
-        public boolean isGerman() { return isGerman; }
-        public void setGerman(boolean german) { isGerman = german; }
-        public boolean isVerification() { return isVerification; }
-        public void setVerification(boolean verification) { isVerification = verification; }
-        public String getTitle() { return title; }
-        public void setTitle(String title) { this.title = title; }
-        public String getWelcome() { return welcome; }
-        public void setWelcome(String welcome) { this.welcome = welcome; }
-        public String getThanks() { return thanks; }
-        public void setThanks(String thanks) { this.thanks = thanks; }
-        public String getInstruction() { return instruction; }
-        public void setInstruction(String instruction) { this.instruction = instruction; }
-        public String getButtonText() { return buttonText; }
-        public void setButtonText(String buttonText) { this.buttonText = buttonText; }
-        public String getFallbackText() { return fallbackText; }
-        public void setFallbackText(String fallbackText) { this.fallbackText = fallbackText; }
-        public String getIgnoreText() { return ignoreText; }
-        public void setIgnoreText(String ignoreText) { this.ignoreText = ignoreText; }
-        public String getBestRegards() { return bestRegards; }
-        public void setBestRegards(String bestRegards) { this.bestRegards = bestRegards; }
-        public String getTeam() { return team; }
-        public void setTeam(String team) { this.team = team; }
+        public String getUrl() {
+            return url;
+        }
+
+        public void setUrl(String url) {
+            this.url = url;
+        }
+
+        public boolean isGerman() {
+            return isGerman;
+        }
+
+        public void setGerman(boolean german) {
+            this.isGerman = german;
+        }
+
+        public boolean isVerification() {
+            return isVerification;
+        }
+
+        public void setVerification(boolean verification) {
+            this.isVerification = verification;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getWelcome() {
+            return welcome;
+        }
+
+        public void setWelcome(String welcome) {
+            this.welcome = welcome;
+        }
+
+        public String getThanks() {
+            return thanks;
+        }
+
+        public void setThanks(String thanks) {
+            this.thanks = thanks;
+        }
+
+        public String getInstruction() {
+            return instruction;
+        }
+
+        public void setInstruction(String instruction) {
+            this.instruction = instruction;
+        }
+
+        public String getButtonText() {
+            return buttonText;
+        }
+
+        public void setButtonText(String buttonText) {
+            this.buttonText = buttonText;
+        }
+
+        public String getFallbackText() {
+            return fallbackText;
+        }
+
+        public void setFallbackText(String fallbackText) {
+            this.fallbackText = fallbackText;
+        }
+
+        public String getIgnoreText() {
+            return ignoreText;
+        }
+
+        public void setIgnoreText(String ignoreText) {
+            this.ignoreText = ignoreText;
+        }
+
+        public String getBestRegards() {
+            return bestRegards;
+        }
+
+        public void setBestRegards(String bestRegards) {
+            this.bestRegards = bestRegards;
+        }
+
+        public String getTeam() {
+            return team;
+        }
+
+        public void setTeam(String team) {
+            this.team = team;
+        }
     }
 
     private String resolveTitle(boolean isGerman, boolean isVerification) {

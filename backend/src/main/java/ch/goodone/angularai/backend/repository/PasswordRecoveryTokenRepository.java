@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface PasswordRecoveryTokenRepository extends JpaRepository<PasswordRecoveryToken, Long> {
     Optional<PasswordRecoveryToken> findByToken(String token);
+
     void deleteByUser(User user);
 }

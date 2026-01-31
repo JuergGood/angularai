@@ -22,6 +22,7 @@ This document outlines the best practices and standards for the AngularAI projec
     - Use Bash scripts instead of PowerShell in all documentation (`.md` files) to ensure cross-platform compatibility and consistency.
     - **Markdown Code Blocks**: Always use the `bash` language tag for terminal commands (even if they are PowerShell) to ensure the 'Run' icon is visible in the editor.
     - **One Command per Block**: Avoid using 'or' statements or multiple alternative options within a single code block. If multiple options exist, create a separate `bash` code block for each one.
+    - **Presentation Content**: When editing `presentation/presentations/presentation-slides.md`, stay as close as possible to a Pandoc-compatible format. While additional layout directives for the custom Python pipeline are accepted, maintaining basic Pandoc compatibility ensures a functional fallback if the advanced pipeline fails.
 
 ## Backend Development (Spring Boot)
 
@@ -73,3 +74,28 @@ This document outlines the best practices and standards for the AngularAI projec
 ## Deployment & Environments
 - **Local Dev**: Use `npm start` (Angular) and the Spring Boot application (IntelliJ). The Angular proxy (`proxy.conf.json`) handles routing to the backend on `localhost:8080`.
 - **Docker**: Use `docker compose up --build`. Nginx handles the reverse proxying of `/api` requests to the `backend` container.
+
+## Static Analysis & Linting
+
+Before committing code, ensure it passes all static analysis checks. The CI/CD pipeline will fail if there are any violations.
+
+### 1. Backend (Java)
+Run Checkstyle and PMD locally to identify code style and potential bugs.
+
+Run Checkstyle:
+```bash
+mvn checkstyle:check
+```
+
+Run PMD:
+```bash
+mvn pmd:check
+```
+
+### 2. Frontend (Angular)
+Run ESLint to identify code style issues in TypeScript and HTML files.
+
+```bash
+cd frontend
+npm run lint
+```

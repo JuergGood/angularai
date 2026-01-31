@@ -19,7 +19,8 @@ public class ActionLogDTO {
     private Double longitude;
     private String userAgent;
 
-    public ActionLogDTO() {}
+    public ActionLogDTO() {
+    }
 
     public ActionLogDTO(Long id, LocalDateTime timestamp, String login, String action, String details) {
         this.id = id;
@@ -46,36 +47,91 @@ public class ActionLogDTO {
         return dto;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public LocalDateTime getTimestamp() { return timestamp; }
-    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getLogin() { return login; }
-    public void setLogin(String login) { this.login = login; }
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
 
-    public String getAction() { return action; }
-    public void setAction(String action) { this.action = action; }
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 
-    public String getDetails() { return details; }
-    public void setDetails(String details) { this.details = details; }
+    public String getLogin() {
+        return login;
+    }
 
-    public String getIpAddress() { return ipAddress; }
-    public void setIpAddress(String ipAddress) { this.ipAddress = ipAddress; }
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
-    public String getCountry() { return country; }
-    public void setCountry(String country) { this.country = country; }
+    public String getAction() {
+        return action;
+    }
 
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
+    public void setAction(String action) {
+        this.action = action;
+    }
 
-    public Double getLatitude() { return latitude; }
-    public void setLatitude(Double latitude) { this.latitude = latitude; }
+    public String getDetails() {
+        return details;
+    }
 
-    public Double getLongitude() { return longitude; }
-    public void setLongitude(Double longitude) { this.longitude = longitude; }
+    public void setDetails(String details) {
+        this.details = details;
+    }
 
-    public String getUserAgent() { return userAgent; }
-    public void setUserAgent(String userAgent) { this.userAgent = userAgent; }
+    public String getIpAddress() {
+        return ipAddress;
+    }
+
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
 }

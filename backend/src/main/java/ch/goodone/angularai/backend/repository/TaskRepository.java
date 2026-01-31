@@ -11,8 +11,12 @@ import java.util.List;
 
 public interface TaskRepository extends JpaRepository<Task, Long>, JpaSpecificationExecutor<Task> {
     List<Task> findByUserOrderByPositionAsc(User user);
+
     long countByStatus(TaskStatus status);
+
     List<Task> findByPriorityInOrderByIdDesc(java.util.Collection<Priority> priorities, Pageable pageable);
+
     long countByCreatedAtAfter(java.time.LocalDateTime timestamp);
+
     long countByStatusAndCreatedAtAfter(TaskStatus status, java.time.LocalDateTime timestamp);
 }

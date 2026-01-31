@@ -1,6 +1,9 @@
 package ch.goodone.angularai.backend.service;
 
-import ch.goodone.angularai.backend.dto.*;
+import ch.goodone.angularai.backend.dto.ActionLogDTO;
+import ch.goodone.angularai.backend.dto.DashboardDTO;
+import ch.goodone.angularai.backend.dto.TaskDTO;
+import ch.goodone.angularai.backend.dto.UserDTO;
 import ch.goodone.angularai.backend.model.Priority;
 import ch.goodone.angularai.backend.model.TaskStatus;
 import ch.goodone.angularai.backend.repository.ActionLogRepository;

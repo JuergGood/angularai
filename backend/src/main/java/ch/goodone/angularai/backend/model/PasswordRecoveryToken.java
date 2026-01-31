@@ -1,6 +1,14 @@
 package ch.goodone.angularai.backend.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -22,7 +30,8 @@ public class PasswordRecoveryToken {
     @Column(nullable = false)
     private LocalDateTime expiryDate;
 
-    public PasswordRecoveryToken() {}
+    public PasswordRecoveryToken() {
+    }
 
     public PasswordRecoveryToken(User user) {
         this.user = user;
@@ -30,17 +39,37 @@ public class PasswordRecoveryToken {
         this.expiryDate = LocalDateTime.now().plusHours(1);
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public String getToken() { return token; }
-    public void setToken(String token) { this.token = token; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public String getToken() {
+        return token;
+    }
 
-    public LocalDateTime getExpiryDate() { return expiryDate; }
-    public void setExpiryDate(LocalDateTime expiryDate) { this.expiryDate = expiryDate; }
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public LocalDateTime getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(LocalDateTime expiryDate) {
+        this.expiryDate = expiryDate;
+    }
     
     public boolean isExpired() {
         return LocalDateTime.now().isAfter(expiryDate);

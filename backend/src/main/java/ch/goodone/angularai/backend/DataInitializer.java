@@ -52,8 +52,12 @@ public class DataInitializer {
                 String adminReadMail = (adminReadEmail != null && !adminReadEmail.isBlank()) ? adminReadEmail : "admin-read@system.local";
 
                 // Secondary safety check: ensure they are not identical if coming from empty environment variables
-                if (userMail.equals(adminMail)) userMail = "user-" + userMail;
-                if (adminReadMail.equals(adminMail) || adminReadMail.equals(userMail)) adminReadMail = "read-" + adminReadMail;
+                if (userMail.equals(adminMail)) {
+                    userMail = "user-" + userMail;
+                }
+                if (adminReadMail.equals(adminMail) || adminReadMail.equals(userMail)) {
+                    adminReadMail = "read-" + adminReadMail;
+                }
 
                 User admin = new User("admin", adminMail);
                 admin.setFirstName("Admin");

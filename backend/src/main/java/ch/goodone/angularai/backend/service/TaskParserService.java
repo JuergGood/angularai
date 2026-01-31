@@ -57,7 +57,9 @@ public class TaskParserService {
     }
 
     private boolean isLikelyCsv(String[] parts) {
-        if (parts.length >= 3) return true;
+        if (parts.length >= 3) {
+            return true;
+        }
         if (parts.length == 2) {
             String secondPart = parts[1].trim();
             return parseDate(secondPart) != null || parsePriority(secondPart, null) != null || parseStatus(secondPart, null) != null;
@@ -74,8 +76,12 @@ public class TaskParserService {
 
         if (parts.length >= 3) {
             dueDate = parseDate(parts[2].trim());
-            if (parts.length > 3) priority = parsePriority(parts[3].trim(), Priority.MEDIUM);
-            if (parts.length > 4) status = parseStatus(parts[4].trim(), TaskStatus.OPEN);
+            if (parts.length > 3) {
+                priority = parsePriority(parts[3].trim(), Priority.MEDIUM);
+            }
+            if (parts.length > 4) {
+                status = parseStatus(parts[4].trim(), TaskStatus.OPEN);
+            }
         } else if (parts.length == 2) {
             return parseTwoPartCsv(title, description, parts[1].trim());
         }
@@ -97,8 +103,8 @@ public class TaskParserService {
 
     private int findStatusIndex(String[] tokens) {
         String lastToken = tokens[tokens.length - 1];
-        TaskStatus sFound = parseStatus(lastToken, null);
-        return (sFound != null) ? tokens.length - 1 : -1;
+        TaskStatus statusFound = parseStatus(lastToken, null);
+        return (statusFound != null) ? tokens.length - 1 : -1;
     }
 
     private int findPriorityIndex(String[] tokens, int excludeIdx1, int excludeIdx2, int excludeEnd2) {
@@ -273,6 +279,7 @@ public class TaskParserService {
         }
     }
 
+    @SuppressWarnings("PMD.PreserveStackTrace")
     private LocalDate parseIsoShortDate(String input) {
         try {
             String[] parts = input.split("-");
@@ -301,12 +308,24 @@ public class TaskParserService {
         LocalDate today = LocalDate.now();
 
         switch (text) {
-            case "today", "heute", "heut" -> { return today; }
-            case "tomorrow", "morgen" -> { return today.plusDays(1); }
-            case "übermorgen" -> { return today.plusDays(2); }
-            case "yesterday", "gestern" -> { return today.minusDays(1); }
-            case "week", "woche", "nächste woche", "next week" -> { return today.plusWeeks(1); }
-            default -> { return parseXDays(text, today); }
+            case "today", "heute", "heut" -> {
+                return today;
+            }
+            case "tomorrow", "morgen" -> {
+                return today.plusDays(1);
+            }
+            case "übermorgen" -> {
+                return today.plusDays(2);
+            }
+            case "yesterday", "gestern" -> {
+                return today.minusDays(1);
+            }
+            case "week", "woche", "nächste woche", "next week" -> {
+                return today.plusWeeks(1);
+            }
+            default -> {
+                return parseXDays(text, today);
+            }
         }
     }
 

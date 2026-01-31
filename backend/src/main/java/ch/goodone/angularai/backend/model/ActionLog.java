@@ -1,6 +1,11 @@
 package ch.goodone.angularai.backend.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
@@ -45,7 +50,8 @@ public class ActionLog {
     @Column(name = "status_code")
     private Integer statusCode;
 
-    public ActionLog() {}
+    public ActionLog() {
+    }
 
     public ActionLog(String login, String action, String details) {
         this(login, action, details, LocalDateTime.now());
@@ -58,48 +64,123 @@ public class ActionLog {
         this.timestamp = timestamp;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getId() {
+        return id;
+    }
 
-    public LocalDateTime getTimestamp() { return timestamp; }
-    public void setTimestamp(LocalDateTime timestamp) { this.timestamp = timestamp; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public String getLogin() { return login; }
-    public void setLogin(String login) { this.login = login; }
+    public LocalDateTime getTimestamp() {
+        return timestamp;
+    }
 
-    public String getAction() { return action; }
-    public void setAction(String action) { this.action = action; }
+    public void setTimestamp(LocalDateTime timestamp) {
+        this.timestamp = timestamp;
+    }
 
-    public String getDetails() { return details; }
-    public void setDetails(String details) { this.details = details; }
+    public String getLogin() {
+        return login;
+    }
 
-    public String getIpAddress() { return ipAddress; }
-    public void setIpAddress(String ipAddress) { this.ipAddress = ipAddress; }
+    public void setLogin(String login) {
+        this.login = login;
+    }
 
-    public String getCountry() { return country; }
-    public void setCountry(String country) { this.country = country; }
+    public String getAction() {
+        return action;
+    }
 
-    public String getCity() { return city; }
-    public void setCity(String city) { this.city = city; }
+    public void setAction(String action) {
+        this.action = action;
+    }
 
-    public Double getLatitude() { return latitude; }
-    public void setLatitude(Double latitude) { this.latitude = latitude; }
+    public String getDetails() {
+        return details;
+    }
 
-    public Double getLongitude() { return longitude; }
-    public void setLongitude(Double longitude) { this.longitude = longitude; }
+    public void setDetails(String details) {
+        this.details = details;
+    }
 
-    public String getUserAgent() { return userAgent; }
-    public void setUserAgent(String userAgent) { this.userAgent = userAgent; }
+    public String getIpAddress() {
+        return ipAddress;
+    }
 
-    public String getSessionId() { return sessionId; }
-    public void setSessionId(String sessionId) { this.sessionId = sessionId; }
+    public void setIpAddress(String ipAddress) {
+        this.ipAddress = ipAddress;
+    }
 
-    public String getRequestMethod() { return requestMethod; }
-    public void setRequestMethod(String requestMethod) { this.requestMethod = requestMethod; }
+    public String getCountry() {
+        return country;
+    }
 
-    public String getRequestUri() { return requestUri; }
-    public void setRequestUri(String requestUri) { this.requestUri = requestUri; }
+    public void setCountry(String country) {
+        this.country = country;
+    }
 
-    public Integer getStatusCode() { return statusCode; }
-    public void setStatusCode(Integer statusCode) { this.statusCode = statusCode; }
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    public void setUserAgent(String userAgent) {
+        this.userAgent = userAgent;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public String getRequestMethod() {
+        return requestMethod;
+    }
+
+    public void setRequestMethod(String requestMethod) {
+        this.requestMethod = requestMethod;
+    }
+
+    public String getRequestUri() {
+        return requestUri;
+    }
+
+    public void setRequestUri(String requestUri) {
+        this.requestUri = requestUri;
+    }
+
+    public Integer getStatusCode() {
+        return statusCode;
+    }
+
+    public void setStatusCode(Integer statusCode) {
+        this.statusCode = statusCode;
+    }
 }

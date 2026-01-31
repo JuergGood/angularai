@@ -59,6 +59,22 @@ To run the backend from IntelliJ, you must ensure that required environment vari
 Navigate to `frontend/` and run `npm install` and then `npm start`.
 The Angular development server is configured to proxy `/api` requests to `http://localhost:8080`. Ensure the backend is running.
 
+### Static Analysis & Linting
+
+Before committing code, ensure it passes all static analysis checks.
+
+**Backend (Java):**
+```bash
+mvn checkstyle:check
+mvn pmd:check
+```
+
+**Frontend (Web):**
+```bash
+cd frontend
+npm run lint
+```
+
 ## Documentation
 
 The project documentation is organized in the `doc/` directory. For a comprehensive overview, start with the **[Documentation Hub](doc/architecture/Home.md)**.
