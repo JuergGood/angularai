@@ -14,6 +14,9 @@ This document outlines the best practices and standards for the AngularAI projec
 - **Automation & Scripts**:
     - Always execute scripts and commands in a non-interactive mode. 
     - When deleting directories in PowerShell, always use the `-Recurse` and `-Force` parameters (e.g., `Remove-Item -Path "path/to/dir" -Recurse -Force`) to avoid user interaction prompts.
+    - **AWS CLI**: Always disable the AWS CLI pager to avoid interactive `--more--` prompts. 
+        - In scripts: set the environment variable `AWS_PAGER=""`.
+        - In manual commands or ad-hoc tool calls: append the `--no-cli-pager` flag to the `aws` command.
 - **Testing**: Maintain high test coverage (>80%) for both frontend and backend at all times.
 - **Docker First**: Ensure all changes are compatible with the Docker-based deployment.
 - **Language**: Always communicate in English for all interactions, thoughts, and documentation, unless explicitly requested otherwise by the user.

@@ -9,6 +9,9 @@ set CLUSTER_NAME=angular-boot
 set BACKEND_SERVICE=angularai-backend-test-service
 set FRONTEND_SERVICE=angularai-frontend-service
 
+:: Disable AWS CLI pager
+set AWS_PAGER=
+
 echo Starting AWS Deployment...
 
 :: Step 2: Build and Tag Backend Image

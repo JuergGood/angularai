@@ -1,7 +1,7 @@
-import { Component, computed, signal, effect, OnDestroy } from '@angular/core';
+import { Component, computed, signal, effect, OnDestroy, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink, RouterLinkActive, Router } from '@angular/router';
-import { MatSidenavModule } from '@angular/material/sidenav';
+import { RouterLink, RouterLinkActive, Router, NavigationEnd } from '@angular/router';
+import { MatSidenav, MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -308,6 +308,8 @@ import { TranslateModule } from '@ngx-translate/core';
   `]
 })
 export class SidenavComponent implements OnDestroy {
+  @ViewChild('sidenav') sidenav!: MatSidenav;
+
   isMobile = signal(false);
   isHandheld = signal(false);
   systemInfo = signal<SystemInfo | null>(null);

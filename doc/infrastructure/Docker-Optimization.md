@@ -27,10 +27,11 @@ COPY test-client/pom.xml test-client/
 
 # Step 2: Resolve and Cache Dependencies
 # BuildKit cache mounts persist the .m2 folder across builds.
+# We also resolve plugins to ensure they are cached before source code is copied.
 RUN --mount=type=cache,target=/root/.m2 \
-    mvn dependency:go-offline -B || true
+    mvn dependency:go-offline dependency:resolve-plugins -B || true
 RUN --mount=type=cache,target=/root/.m2 \
-    mvn -f backend/pom.xml dependency:go-offline -B || true
+    mvn -f backend/pom.xml dependency:go-offline dependency:resolve-plugins -B || true
 
 # Step 3: Copy volatile assets and source code
 COPY --from=frontend-build /app/frontend/dist /app/frontend/dist
@@ -55,7 +56,7 @@ RUN --mount=type=cache,target=/root/.npm \
 
 *   **Cache Mounts (BuildKit)**: Persists `~/.m2` and `~/.npm` across builds, preventing re-downloads even if `pom.xml` or `package.json` changes or previous layers are invalidated.
 *   **Selective File Copying**: By copying only configuration files first, we create layers that change infrequently.
-*   **Pre-fetching**: Using `mvn dependency:go-offline` ensures most artifacts are available before the source code is copied.
+*   **Pre-fetching**: Using `mvn dependency:go-offline` and `dependency:resolve-plugins` ensures most artifacts and plugins are available before the source code is copied.
 *   **Delayed Configuration Copying**: Secondary files like `dependency-check-suppressions.xml` are copied after the dependencies are cached.
 *   **Multi-Module Support**: The root `pom.xml` is copied to ensure Maven understands the project structure during the `go-offline` phase.
 

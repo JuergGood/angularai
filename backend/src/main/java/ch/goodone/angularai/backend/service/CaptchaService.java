@@ -17,27 +17,27 @@ public class CaptchaService {
     private final RestTemplate restTemplate;
     private final SystemSettingService systemSettingService;
 
-    @Value("${google.recaptcha.1.site.key}")
+    @Value("${google.recaptcha.1.site.key:}")
     private String siteKey1;
-    @Value("${google.recaptcha.1.secret.key}")
+    @Value("${google.recaptcha.1.secret.key:}")
     private String secretKey1;
     @Value("${google.recaptcha.1.project.id:}")
     private String projectId1;
     @Value("${google.recaptcha.1.api.key:}")
     private String apiKey1;
 
-    @Value("${google.recaptcha.2.site.key}")
+    @Value("${google.recaptcha.2.site.key:}")
     private String siteKey2;
-    @Value("${google.recaptcha.2.secret.key}")
+    @Value("${google.recaptcha.2.secret.key:}")
     private String secretKey2;
     @Value("${google.recaptcha.2.project.id:}")
     private String projectId2;
     @Value("${google.recaptcha.2.api.key:}")
     private String apiKey2;
 
-    @Value("${google.recaptcha.3.site.key}")
+    @Value("${google.recaptcha.3.site.key:}")
     private String siteKey3;
-    @Value("${google.recaptcha.3.secret.key}")
+    @Value("${google.recaptcha.3.secret.key:}")
     private String secretKey3;
     @Value("${google.recaptcha.3.project.id:}")
     private String projectId3;
@@ -89,10 +89,12 @@ public class CaptchaService {
     }
 
     public boolean verify(String token) {
+        int index = systemSettingService.getRecaptchaConfigIndex();
         String secret = getActiveSecret();
+        
         // For development/test environments where the key might be missing or set to a dummy value
-        if ("disabled".equals(secret)) {
-            logger.info("reCAPTCHA verification skipped (disabled) for config {}", systemSettingService.getRecaptchaConfigIndex());
+        if ("disabled".equals(secret) || "dummy".equals(secret)) {
+            logger.info("reCAPTCHA verification skipped (disabled/dummy) for config {}", index);
             return true;
         }
 
@@ -104,7 +106,8 @@ public class CaptchaService {
         String projectId = getActiveProjectId();
         String apiKey = getActiveApiKey();
 
-        if (projectId != null && !projectId.isBlank() && apiKey != null && !apiKey.isBlank()) {
+        if (projectId != null && !projectId.isBlank() && !"dummy".equals(projectId) 
+                && apiKey != null && !apiKey.isBlank() && !"dummy".equals(apiKey)) {
             return verifyEnterprise(token, projectId, apiKey);
         }
 

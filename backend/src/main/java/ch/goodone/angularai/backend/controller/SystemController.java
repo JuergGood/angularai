@@ -33,11 +33,11 @@ public class SystemController {
     @Value("${app.landing.message.de-ch:Willkommen bei GoodOne!}")
     private String landingMessageDeCh;
 
-    @Value("${google.recaptcha.1.site.key}")
+    @Value("${google.recaptcha.1.site.key:}")
     private String siteKey1;
-    @Value("${google.recaptcha.2.site.key}")
+    @Value("${google.recaptcha.2.site.key:}")
     private String siteKey2;
-    @Value("${google.recaptcha.3.site.key}")
+    @Value("${google.recaptcha.3.site.key:}")
     private String siteKey3;
 
     public SystemController(Environment environment, SystemSettingService systemSettingService) {

@@ -1,6 +1,9 @@
 # AWS Deployment Script
 # This script builds Docker images, pushes them to ECR, and restarts ECS services.
 
+# Disable AWS CLI pager to avoid interactive prompts
+$env:AWS_PAGER = ""
+
 # Load environment variables from .env file
 if (Test-Path ".\scripts\load-env.ps1") {
     . .\scripts\load-env.ps1
@@ -35,7 +38,18 @@ if ($LASTEXITCODE -ne 0) { Write-Error "ECR Authentication failed"; exit }
 
 # Step 2: Build and Tag Image
 Write-Host "Building and tagging App image..." -ForegroundColor Yellow
-docker build --no-cache -t angularai-app -f Dockerfile .
+# Use BuildKit features for better caching and security
+$env:DOCKER_BUILDKIT = "1"
+if ($env:NVD_API_KEY) {
+    # If NVD_API_KEY is in environment, use it as a secret
+    $secretFile = [System.IO.Path]::Combine([System.IO.Path]::GetTempPath(), "nvd_api_key.txt")
+    [System.IO.File]::WriteAllText($secretFile, $env:NVD_API_KEY)
+    docker build --secret id=NVD_API_KEY,src="$secretFile" -t angularai-app -f Dockerfile .
+    Remove-Item $secretFile
+} else {
+    # Fallback if no API key is provided
+    docker build -t angularai-app -f Dockerfile .
+}
 docker tag angularai-app:latest "$ECR_REGISTRY/angularai-app:$VERSION"
 docker tag angularai-app:latest "$ECR_REGISTRY/angularai-app:latest"
 if ($LASTEXITCODE -ne 0) { Write-Error "App build/tag failed"; exit }

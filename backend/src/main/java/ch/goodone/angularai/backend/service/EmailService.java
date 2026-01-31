@@ -19,10 +19,10 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    @Value("${spring.mail.from}")
+    @Value("${spring.mail.from:noreply@goodone.ch}")
     private String fromEmail;
 
-    @Value("${app.base-url}")
+    @Value("${app.base-url:https://goodone.ch}")
     private String baseUrl;
 
     public EmailService(JavaMailSender mailSender) {

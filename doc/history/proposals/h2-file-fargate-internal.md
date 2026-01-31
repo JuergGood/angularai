@@ -2,6 +2,8 @@
 
 This document contains the exact commands and resource IDs used to provision the H2 file storage infrastructure on AWS. **DO NOT COMMIT THIS FILE TO PUBLIC REPOSITORIES.**
 
+*Note: All commands below assume `AWS_PAGER=""` is set to avoid interactive prompts.*
+
 ## 1. Environment Details
 
 - **Region**: `eu-central-1`

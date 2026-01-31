@@ -11,6 +11,9 @@ SET FRONTEND_SERVICE=angularai-frontend-service
 SET BACKEND_REPO=angularai-backend
 SET FRONTEND_REPO=angularai-frontend
 
+:: Disable AWS CLI pager
+SET AWS_PAGER=
+
 echo ==========================================
 echo AngularAI: 1-Click Build and Deploy to AWS
 echo ==========================================

@@ -47,6 +47,25 @@ class CaptchaServiceTest {
     }
 
     @Test
+    void verify_ShouldReturnTrue_WhenDummy() {
+        ReflectionTestUtils.setField(captchaService, "secretKey1", "dummy");
+        when(systemSettingService.getRecaptchaConfigIndex()).thenReturn(1);
+
+        assertTrue(captchaService.verify("token"));
+    }
+
+    @Test
+    void verify_ShouldReturnTrue_WhenEnterpriseDummy() {
+        ReflectionTestUtils.setField(captchaService, "secretKey3", "disabled");
+        ReflectionTestUtils.setField(captchaService, "projectId3", "dummy");
+        ReflectionTestUtils.setField(captchaService, "apiKey3", "dummy");
+        when(systemSettingService.getRecaptchaConfigIndex()).thenReturn(3);
+
+        assertTrue(captchaService.verify("token"));
+        verify(restTemplate, never()).postForObject(anyString(), any(), any());
+    }
+
+    @Test
     void verify_ShouldReturnFalse_WhenTokenMissing() {
         when(systemSettingService.getRecaptchaConfigIndex()).thenReturn(1);
 

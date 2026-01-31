@@ -25,6 +25,7 @@ describe('SidenavComponent', () => {
     authServiceSpy = {
       isLoggedIn: vi.fn().mockReturnValue(true),
       isAdmin: vi.fn().mockReturnValue(false),
+      hasAdminWriteAccess: vi.fn().mockReturnValue(false),
       logout: vi.fn(),
       currentUser: signal({ firstName: 'Test' })
     };
@@ -176,5 +177,23 @@ describe('SidenavComponent', () => {
 
     component.showHelp();
     expect(dialogOpenSpy).toHaveBeenCalled();
+  });
+
+  it('should not show sidenav when not logged in', () => {
+    authServiceSpy.isLoggedIn.mockReturnValue(false);
+    const fixture = TestBed.createComponent(SidenavComponent);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('mat-sidenav')).toBeNull();
+  });
+
+  it('should show sidenav when logged in', () => {
+    authServiceSpy.isLoggedIn.mockReturnValue(true);
+    const fixture = TestBed.createComponent(SidenavComponent);
+    fixture.detectChanges();
+
+    const compiled = fixture.nativeElement as HTMLElement;
+    expect(compiled.querySelector('mat-sidenav')).not.toBeNull();
   });
 });

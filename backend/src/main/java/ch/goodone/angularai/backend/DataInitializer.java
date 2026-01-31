@@ -20,25 +20,25 @@ public class DataInitializer {
 
     private static final Logger logger = LoggerFactory.getLogger(DataInitializer.class);
 
-    @Value("${admin.password}")
+    @Value("${admin.password:admin123}")
     private String adminPassword;
 
-    @Value("${user.password}")
+    @Value("${user.password:user123}")
     private String userPassword;
 
-    @Value("${admin.read.password}")
+    @Value("${admin.read.password:admin123}")
     private String adminReadPassword;
 
     @Value("${user2.password:user123}")
     private String user2Password;
 
-    @Value("${admin.email}")
+    @Value("${admin.email:admin@goodone.ch}")
     private String adminEmail;
 
-    @Value("${user.email}")
+    @Value("${user.email:user@goodone.ch}")
     private String userEmail;
 
-    @Value("${admin.read.email}")
+    @Value("${admin.read.email:admin-read@goodone.ch}")
     private String adminReadEmail;
 
     @Bean
