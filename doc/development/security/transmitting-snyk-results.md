@@ -34,19 +34,19 @@ If you only have a few high-priority vulnerabilities, you can simply run the tes
 2.  **Copy the output** from the terminal.
 3.  **Paste into Chat**: Provide the text to Junie.
 
-## Method 3: Automated CI Artifacts (Advanced)
+## Method 3: Automated CI Artifacts
 
-We can update the GitHub Actions workflow to automatically generate these files on every push.
+The project's GitHub Actions workflow is configured to automatically generate these files on every push and upload them as artifacts.
 
-### Current Status:
-The current `code-review.yml` runs Snyk but doesn't save the results as artifacts.
+### Configuration
+See the [Snyk Integration Guide](snyk-integration-guide.md) for details on how to set up the required `SNYK_TOKEN`.
 
-### Proposed Improvement:
-Add a step to the `snyk` job in `.github/workflows/code-review.yml`:
+### Workflow Implementation
+The `snyk` job in `.github/workflows/code-review.yml` handles this:
 ```yaml
-      - name: Generate SARIF report
-        run: snyk test --sarif > snyk-results.sarif.json
-        continue-on-error: true # Ensure the step runs even if vulnerabilities are found
+      - name: Snyk Open Source Scan (Backend)
+        run: snyk test --severity-threshold=high --sarif > snyk-backend.sarif.json
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
@@ -54,7 +54,10 @@ Add a step to the `snyk` job in `.github/workflows/code-review.yml`:
         uses: actions/upload-artifact@v4
         with:
           name: snyk-results
-          path: snyk-results.sarif.json
+          path: |
+            snyk-backend.sarif.json
+            snyk-frontend.sarif.json
+            snyk-container.sarif.json
 ```
 
 ## How Junie Processes Results

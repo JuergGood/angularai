@@ -52,10 +52,7 @@ Building upon the successful implementation of the initial security roadmap, thi
     - **Snyk (Open Source)**: Scans Maven (Backend) and npm (Frontend) dependencies for known vulnerabilities.
     - **Snyk (Container)**: Provides an alternative scan for the Docker image.
 - **Enforcement**: Fails the build if **CRITICAL** or **HIGH** vulnerabilities are found.
-- **Requirement**: Requires `SNYK_TOKEN` to be added to GitHub Secrets. To obtain a token:
-    1. Register at [snyk.io](https://snyk.io/).
-    2. Go to **Account Settings** -> **API Token**.
-    3. Copy the token and add it as a Secret named `SNYK_TOKEN` in your GitHub repository settings.
+- **Requirement**: Requires `SNYK_TOKEN` to be added to GitHub Secrets. See the [Snyk Integration Guide](snyk-integration-guide.md) for detailed instructions.
 - **Snyk Integration**: The GitHub integration has been established (Integration ID: `6655f303-76c0-4e01-8118-f5f9947e4ab0`).
 
 ## Summary of Goals

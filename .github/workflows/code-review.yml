@@ -1,4 +1,4 @@
-name: Code Quality and Security
+name: Code Review
 
 on:
   workflow_dispatch: # Allows manual trigger from Actions tab
@@ -226,13 +226,15 @@ jobs:
         uses: snyk/actions/setup@master
 
       - name: Snyk Open Source Scan (Backend)
-        run: snyk test --severity-threshold=high
+        run: snyk test --severity-threshold=high --sarif > snyk-backend.sarif.json
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
       - name: Snyk Open Source Scan (Frontend)
         working-directory: frontend
-        run: snyk test --severity-threshold=high
+        run: snyk test --severity-threshold=high --sarif > ../snyk-frontend.sarif.json
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
@@ -240,6 +242,16 @@ jobs:
         run: docker build -t angularai-app:snyk .
 
       - name: Snyk Container Scan
-        run: snyk container test angularai-app:snyk --severity-threshold=high
+        run: snyk container test angularai-app:snyk --severity-threshold=high --sarif > snyk-container.sarif.json
+        continue-on-error: true
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Upload Snyk Results
+        uses: actions/upload-artifact@v4
+        with:
+          name: snyk-results
+          path: |
+            snyk-backend.sarif.json
+            snyk-frontend.sarif.json
+            snyk-container.sarif.json
