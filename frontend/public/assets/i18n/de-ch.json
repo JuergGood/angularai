@@ -8,6 +8,8 @@
     "PROFILE_DELETE": "Konto löschen",
     "PROFILE_DELETE_CONFIRM": "Sind Sie sicher, dass Sie Ihr Konto löschen möchten? Diese Aktion kann nicht rückgängig gemacht werden.",
     "PROFILE_DELETED_SUCCESS": "Ihr Konto wurde erfolgreich gelöscht.",
+    "PROFILE_EMAIL_VERIFICATION_SENT": "Ein Bestätigungslink wurde an Ihre neue E-Mail-Adresse gesendet. Bitte bestätigen Sie diesen, um die Änderung abzuschliessen.",
+    "PROFILE_PENDING_EMAIL": "Neue E-Mail-Adresse (Bestätigung ausstehend): {{email}}",
     "LOGOUT": "Abmelden",
     "LOGIN": "Anmelden",
     "SETTINGS": "Einstellungen",

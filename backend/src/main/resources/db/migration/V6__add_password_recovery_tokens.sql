@@ -1,4 +1,4 @@
-CREATE TABLE password_recovery_tokens (
+CREATE TABLE IF NOT EXISTS password_recovery_tokens (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     token VARCHAR(255) UNIQUE NOT NULL,
     user_id BIGINT NOT NULL,

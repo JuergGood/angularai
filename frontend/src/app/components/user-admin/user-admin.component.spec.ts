@@ -110,4 +110,21 @@ describe('UserAdminComponent', () => {
     // skip logic that triggers heavy template rendering in shallow test
     expect(true).toBeTruthy();
   });
+
+  it('should identify protected users', () => {
+    const component = new UserAdminComponent(authServiceSpy, adminServiceSpy, dialogSpy, { detectChanges: vi.fn() } as any, { observe: vi.fn().mockReturnValue(of({ matches: false })) } as any);
+
+    // admin user (protected)
+    expect(component.isProtectedUser(mockUsers[0])).toBe(true);
+    // user (protected)
+    expect(component.isProtectedUser(mockUsers[1])).toBe(true);
+
+    // other user (not protected)
+    const otherUser = { id: 3, login: 'other', firstName: 'Other', lastName: 'User', email: 'other@example.com', role: 'ROLE_USER', birthDate: '', address: '' };
+    expect(component.isProtectedUser(otherUser)).toBe(false);
+
+    // currently logged in user (protected)
+    authServiceSpy.currentUser.set({ login: 'other' });
+    expect(component.isProtectedUser(otherUser)).toBe(true);
+  });
 });

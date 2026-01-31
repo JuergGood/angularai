@@ -112,12 +112,23 @@ export class ProfileComponent implements OnInit {
       }
 
       this.userService.updateCurrentUser(userToSave).subscribe({
-        next: () => {
-          this.message = 'COMMON.SUCCESS';
+        next: (response) => {
+          if (response && response.user) {
+            this.user = response.user;
+          } else if (response) {
+            this.user = response;
+          }
+
+          if (response && response.message) {
+            this.snackBar.open(this.translate.instant('NAV.PROFILE_EMAIL_VERIFICATION_SENT'), 'OK', { duration: 5000 });
+            this.message = '';
+          } else {
+            this.message = 'COMMON.SUCCESS';
+          }
           this.cdr.detectChanges();
         },
-        error: () => {
-          this.message = 'COMMON.ERROR';
+        error: (err) => {
+          this.message = err.error || 'COMMON.ERROR';
           this.cdr.detectChanges();
         }
       });

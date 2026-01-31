@@ -1,1 +1,2 @@
-INSERT INTO system_settings (setting_key, setting_value) VALUES ('landing_message_enabled', 'true');
+-- Use MERGE to avoid duplicate key errors on inserts
+MERGE INTO system_settings KEY (setting_key) VALUES ('landing_message_enabled', 'true');

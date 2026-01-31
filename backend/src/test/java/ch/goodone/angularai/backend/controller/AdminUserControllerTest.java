@@ -115,13 +115,44 @@ class AdminUserControllerTest {
     @Test
     @WithMockUser(username = "admin", authorities = {"ROLE_ADMIN"})
     void shouldDeleteUser() throws Exception {
-        when(userRepository.findById(2L)).thenReturn(Optional.of(normalUser));
+        User otherUser = new User("other", "other@example.com");
+        otherUser.setId(99L);
+        when(userRepository.findById(99L)).thenReturn(Optional.of(otherUser));
 
-        mockMvc.perform(delete("/api/admin/users/2")
+        mockMvc.perform(delete("/api/admin/users/99")
                         .with(csrf()))
                 .andExpect(status().isNoContent());
 
-        verify(userRepository).delete(normalUser);
+        verify(userRepository).delete(otherUser);
+    }
+
+    @Test
+    @WithMockUser(username = "someadmin", authorities = {"ROLE_ADMIN"})
+    void shouldNotDeleteStandardUsers() throws Exception {
+        User stdAdmin = new User("admin", "admin@goodone.ch");
+        stdAdmin.setId(10L);
+        User stdUser = new User("user", "user@goodone.ch");
+        stdUser.setId(11L);
+        User stdAdminRead = new User("admin-read", "admin-read@goodone.ch");
+        stdAdminRead.setId(12L);
+
+        when(userRepository.findById(10L)).thenReturn(Optional.of(stdAdmin));
+        when(userRepository.findById(11L)).thenReturn(Optional.of(stdUser));
+        when(userRepository.findById(12L)).thenReturn(Optional.of(stdAdminRead));
+
+        mockMvc.perform(delete("/api/admin/users/10").with(csrf()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Cannot delete standard system users"));
+
+        mockMvc.perform(delete("/api/admin/users/11").with(csrf()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Cannot delete standard system users"));
+
+        mockMvc.perform(delete("/api/admin/users/12").with(csrf()))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string("Cannot delete standard system users"));
+
+        verify(userRepository, never()).delete(any());
     }
 
     @Test

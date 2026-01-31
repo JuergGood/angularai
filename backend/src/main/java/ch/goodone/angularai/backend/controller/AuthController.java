@@ -224,6 +224,12 @@ public class AuthController {
                         return ResponseEntity.badRequest().<Object>body(Map.of("reason", "expired", "email", t.getUser().getEmail()));
                     }
                     User user = t.getUser();
+                    if (user.getPendingEmail() != null) {
+                        logger.info("Confirming email change for user: {}", user.getLogin());
+                        user.setEmail(user.getPendingEmail());
+                        user.setPendingEmail(null);
+                        actionLogService.log(user.getLogin(), "USER_EMAIL_CHANGED", "User successfully changed email to: " + user.getEmail());
+                    }
                     user.setStatus(ch.goodone.angularai.backend.model.UserStatus.ACTIVE);
                     userRepository.save(user);
                     verificationTokenRepository.delete(t);

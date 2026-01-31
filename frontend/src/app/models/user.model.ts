@@ -5,6 +5,7 @@ export interface User {
     login: string;
     password?: string;
     email: string;
+    pendingEmail?: string;
     phone?: string;
     status?: string;
     birthDate?: string | null;

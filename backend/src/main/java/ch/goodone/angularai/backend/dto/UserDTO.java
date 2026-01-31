@@ -29,6 +29,7 @@ public class UserDTO {
     @NotBlank(message = "Email is required")
     @Email(message = "Invalid email format")
     private String email;
+    private String pendingEmail;
     private String phone;
     private String status;
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -66,6 +67,7 @@ public class UserDTO {
         dto.setLastName(user.getLastName());
         dto.setLogin(user.getLogin());
         dto.setEmail(user.getEmail());
+        dto.setPendingEmail(user.getPendingEmail());
         dto.setPhone(user.getPhone());
         dto.setStatus(user.getStatus() != null ? user.getStatus().name() : null);
         dto.setBirthDate(user.getBirthDate());
@@ -122,6 +124,14 @@ public class UserDTO {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPendingEmail() {
+        return pendingEmail;
+    }
+
+    public void setPendingEmail(String pendingEmail) {
+        this.pendingEmail = pendingEmail;
     }
 
     public String getPhone() {

@@ -117,6 +117,10 @@ public class AdminUserController {
                     if (user.getLogin().equals(authentication.getName())) {
                         return ResponseEntity.badRequest().body("Cannot delete your own account");
                     }
+                    // Protection of standard users
+                    if (List.of("admin", "user", "admin-read").contains(user.getLogin())) {
+                        return ResponseEntity.badRequest().body("Cannot delete standard system users");
+                    }
                     userRepository.delete(user);
                     actionLogService.log(authentication.getName(), "USER_DELETED", "Admin deleted user: " + user.getLogin());
                     return ResponseEntity.noContent().build();

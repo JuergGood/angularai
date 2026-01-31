@@ -1,7 +1,8 @@
-CREATE TABLE system_settings (
+CREATE TABLE IF NOT EXISTS system_settings (
     setting_key VARCHAR(255) PRIMARY KEY,
     setting_value VARCHAR(255)
 );
 
-INSERT INTO system_settings (setting_key, setting_value) VALUES ('geolocation_enabled', 'false');
-INSERT INTO system_settings (setting_key, setting_value) VALUES ('recaptcha_config_index', '2');
+-- Use MERGE to avoid duplicate key errors on inserts
+MERGE INTO system_settings KEY (setting_key) VALUES ('geolocation_enabled', 'false');
+MERGE INTO system_settings KEY (setting_key) VALUES ('recaptcha_config_index', '2');

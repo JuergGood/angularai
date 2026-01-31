@@ -11,13 +11,20 @@ FROM maven:3-eclipse-temurin-25-alpine AS backend-build
 WORKDIR /app
 ARG NVD_API_KEY
 ENV NVD_API_KEY=$NVD_API_KEY
+COPY --from=frontend-build /app/frontend/dist /app/frontend/dist
 COPY pom.xml .
 COPY dependency-check-suppressions.xml .
 COPY backend/pom.xml backend/
 COPY backend/checkstyle.xml backend/
 COPY backend/src backend/src
 # Copy frontend build output to backend static resources
-COPY --from=frontend-build /app/frontend/dist/frontend /app/backend/src/main/resources/static
+# Modern Angular (17+) might output to dist/frontend/browser
+RUN mkdir -p /app/backend/src/main/resources/static && \
+    if [ -d "/app/frontend/dist/frontend/browser" ]; then \
+        cp -r /app/frontend/dist/frontend/browser/* /app/backend/src/main/resources/static/; \
+    else \
+        cp -r /app/frontend/dist/frontend/* /app/backend/src/main/resources/static/; \
+    fi
 # Create data directory for dependency-check to allow volume mounting
 RUN mkdir -p data/dependency-check
 RUN mvn -f backend/pom.xml clean package -DskipTests

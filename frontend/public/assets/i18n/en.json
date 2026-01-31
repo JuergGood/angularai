@@ -8,6 +8,8 @@
     "PROFILE_DELETE": "Delete Account",
     "PROFILE_DELETE_CONFIRM": "Are you sure you want to delete your account? This action cannot be undone.",
     "PROFILE_DELETED_SUCCESS": "Your account has been deleted successfully.",
+    "PROFILE_EMAIL_VERIFICATION_SENT": "A verification link has been sent to your new email address. Please confirm it to complete the change.",
+    "PROFILE_PENDING_EMAIL": "New email address (pending confirmation): {{email}}",
     "LOGOUT": "Logout",
     "LOGIN": "Login",
     "SETTINGS": "Settings",

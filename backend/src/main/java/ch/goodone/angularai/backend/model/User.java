@@ -40,6 +40,9 @@ public class User {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
+    @Column(name = "pending_email")
+    private String pendingEmail;
+
     @Column(name = "phone", unique = true)
     private String phone;
 
@@ -141,6 +144,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPendingEmail() {
+        return pendingEmail;
+    }
+
+    public void setPendingEmail(String pendingEmail) {
+        this.pendingEmail = pendingEmail;
     }
 
     public String getPhone() {

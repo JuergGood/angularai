@@ -121,6 +121,10 @@ export class UserAdminComponent implements OnInit {
     }
   }
 
+  isProtectedUser(user: User): boolean {
+    return ['admin', 'user', 'admin-read'].includes(user.login) || user.login === this.authService.currentUser()?.login;
+  }
+
   deleteUser(user: User) {
     const dialogRef = this.dialog.open(ConfirmDialogComponent);
     dialogRef.afterClosed().subscribe(result => {

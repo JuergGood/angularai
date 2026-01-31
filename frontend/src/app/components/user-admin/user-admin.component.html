@@ -51,7 +51,7 @@
                       <mat-icon>{{ authService.hasAdminWriteAccess() ? 'edit' : 'visibility' }}</mat-icon>
                     </button>
                     @if (authService.hasAdminWriteAccess()) {
-                      <button mat-icon-button color="warn" (click)="deleteUser(user)" [disabled]="user.login === authService.currentUser()?.login" [title]="'ADMIN.DELETE' | translate">
+                      <button mat-icon-button color="warn" (click)="deleteUser(user)" [disabled]="isProtectedUser(user)" [title]="'ADMIN.DELETE' | translate">
                         <mat-icon>delete</mat-icon>
                       </button>
                     }
@@ -81,7 +81,7 @@
                   <mat-card-actions align="end">
                     <button mat-button color="primary" (click)="editUser(user)">{{ (authService.hasAdminWriteAccess() ? 'ADMIN.EDIT_USER' : 'ADMIN.VIEW_USER') | translate }}</button>
                     @if (authService.hasAdminWriteAccess()) {
-                      <button mat-button color="warn" (click)="deleteUser(user)" [disabled]="user.login === authService.currentUser()?.login">{{ 'ADMIN.DELETE' | translate }}</button>
+                      <button mat-button color="warn" (click)="deleteUser(user)" [disabled]="isProtectedUser(user)">{{ 'ADMIN.DELETE' | translate }}</button>
                     }
                   </mat-card-actions>
                 </mat-card>

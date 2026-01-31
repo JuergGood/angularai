@@ -7,22 +7,22 @@ import { FormsModule } from '@angular/forms';
 import { of, throwError } from 'rxjs';
 import { User } from '../../models/user.model';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import {
-  BrowserDynamicTestingModule,
-  platformBrowserDynamicTesting,
-} from '@angular/platform-browser-dynamic/testing';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { MatDialog } from '@angular/material/dialog';
 
 import { NO_ERRORS_SCHEMA, signal } from '@angular/core';
 
 describe('ProfileComponent', () => {
   let component: ProfileComponent;
-  let fixture: ComponentFixture<ProfileComponent>;
   let userServiceSpy: any;
   let authServiceSpy: any;
   let translateServiceSpy: any;
   let routerSpy: any;
+  let snackBarSpy: any;
+  let dialogSpy: any;
+  let cdrSpy: any;
 
   const mockUser: User = {
     firstName: 'John',
@@ -33,16 +33,7 @@ describe('ProfileComponent', () => {
     address: '123 St'
   } as User;
 
-  beforeEach(async () => {
-    // try {
-    //   TestBed.initTestEnvironment(
-    //     BrowserDynamicTestingModule,
-    //     platformBrowserDynamicTesting()
-    //   );
-    // } catch (e) {
-    //   // already initialized
-    // }
-
+  beforeEach(() => {
     userServiceSpy = {
       getCurrentUser: vi.fn().mockReturnValue(of(mockUser)),
       updateCurrentUser: vi.fn().mockReturnValue(of(mockUser))
@@ -55,47 +46,83 @@ describe('ProfileComponent', () => {
     routerSpy = {
       navigate: vi.fn()
     };
+    snackBarSpy = {
+      open: vi.fn()
+    };
+    dialogSpy = {
+      open: vi.fn()
+    };
+    cdrSpy = {
+      detectChanges: vi.fn()
+    };
 
     translateServiceSpy = {
       get: vi.fn().mockReturnValue(of('translated')),
-      onTranslationChange: of({}),
-      onLangChange: of({}),
-      onDefaultLangChange: of({}),
       instant: vi.fn().mockReturnValue('translated'),
       stream: vi.fn().mockReturnValue(of('translated')),
-      get currentLang() { return 'en'; }
+      currentLang: 'en'
     };
 
-    // await TestBed.configureTestingModule({
-    //   imports: [ProfileComponent, FormsModule, TranslateModule.forRoot()],
-    //   providers: [
-    //     { provide: UserService, useValue: userServiceSpy },
-    //     { provide: AuthService, useValue: authServiceSpy },
-    //     { provide: Router, useValue: routerSpy },
-    //     { provide: TranslateService, useValue: translateServiceSpy },
-    //     provideNoopAnimations()
-    //   ],
-    //   schemas: [NO_ERRORS_SCHEMA]
-    // }).compileComponents();
-
-    // fixture = TestBed.createComponent(ProfileComponent);
-    // component = fixture.componentInstance;
-    // fixture.detectChanges();
+    component = new ProfileComponent(
+      userServiceSpy,
+      authServiceSpy,
+      routerSpy,
+      cdrSpy,
+      dialogSpy,
+      snackBarSpy,
+      translateServiceSpy
+    );
   });
 
   it('should create', () => {
-    expect(true).toBeTruthy();
+    expect(component).toBeTruthy();
   });
 
-  it('should update profile', () => {
-    expect(true).toBeTruthy();
+  it('should update profile and handle direct user response', () => {
+    component.user = { ...mockUser };
+    userServiceSpy.updateCurrentUser.mockReturnValue(of({ ...mockUser, firstName: 'Updated' }));
+
+    component.onSubmit();
+
+    expect(userServiceSpy.updateCurrentUser).toHaveBeenCalled();
+    expect(component.user.firstName).toBe('Updated');
+    expect(component.message).toBe('COMMON.SUCCESS');
+  });
+
+  it('should update profile and handle wrapper response with message', () => {
+    component.user = { ...mockUser };
+    const wrappedResponse = {
+      message: 'Verification email sent',
+      user: { ...mockUser, pendingEmail: 'new@example.com' }
+    };
+    userServiceSpy.updateCurrentUser.mockReturnValue(of(wrappedResponse));
+
+    component.onSubmit();
+
+    expect(userServiceSpy.updateCurrentUser).toHaveBeenCalled();
+    expect(component.user.pendingEmail).toBe('new@example.com');
+    expect(snackBarSpy.open).toHaveBeenCalled();
+    expect(component.message).toBe('');
+  });
+
+  it('should handle error during update', () => {
+    component.user = { ...mockUser };
+    userServiceSpy.updateCurrentUser.mockReturnValue(throwError(() => ({ error: 'Error occurred' })));
+
+    component.onSubmit();
+
+    expect(component.message).toBe('Error occurred');
   });
 
   it('should logout and navigate to login', () => {
-    expect(true).toBeTruthy();
+    component.onLogout();
+    expect(authServiceSpy.logout).toHaveBeenCalled();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
   });
 
   it('should navigate to login on error loading user', () => {
-    expect(true).toBeTruthy();
+    userServiceSpy.getCurrentUser.mockReturnValue(throwError(() => 'error'));
+    component.ngOnInit();
+    expect(routerSpy.navigate).toHaveBeenCalledWith(['/login']);
   });
 });

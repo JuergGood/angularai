@@ -5,7 +5,9 @@ import ch.goodone.angularai.backend.dto.UserDTO;
 import ch.goodone.angularai.backend.model.Role;
 import ch.goodone.angularai.backend.model.User;
 import ch.goodone.angularai.backend.repository.UserRepository;
+import ch.goodone.angularai.backend.repository.VerificationTokenRepository;
 import ch.goodone.angularai.backend.service.ActionLogService;
+import ch.goodone.angularai.backend.service.EmailService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -44,6 +46,12 @@ class UserControllerTest {
     @MockitoBean
     private ActionLogService actionLogService;
 
+    @MockitoBean
+    private VerificationTokenRepository verificationTokenRepository;
+
+    @MockitoBean
+    private EmailService emailService;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
@@ -67,7 +75,7 @@ class UserControllerTest {
     }
 
     @Test
-    void updateCurrentUser_shouldUpdateAndReturnUser() throws Exception {
+    void updateCurrentUser_shouldUpdateProfileWithoutChangingEmail() throws Exception {
         String login = "testuser";
         String password = "password";
         User user = new User("Test", "User", login, passwordEncoder.encode(password), "test@example.com", LocalDate.of(1990, 1, 1), "Address", Role.ROLE_USER);
@@ -75,7 +83,7 @@ class UserControllerTest {
         when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
         when(userRepository.save(any(User.class))).thenReturn(user);
 
-        UserDTO updateDTO = new UserDTO(null, "Updated", "Name", login, "updated@example.com", LocalDate.of(1995, 5, 5), "New Address", "ROLE_USER");
+        UserDTO updateDTO = new UserDTO(null, "Updated", "Name", login, "test@example.com", LocalDate.of(1995, 5, 5), "New Address", "ROLE_USER");
 
         mockMvc.perform(put("/api/users/me")
                         .with(csrf())
@@ -84,8 +92,30 @@ class UserControllerTest {
                         .content(objectMapper.writeValueAsString(updateDTO)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.firstName").value("Updated"))
-                .andExpect(jsonPath("$.email").value("updated@example.com"))
+                .andExpect(jsonPath("$.email").value("test@example.com"))
                 .andExpect(jsonPath("$.address").value("New Address"));
+    }
+
+    @Test
+    void updateCurrentUser_shouldNotUpdateEmailImmediately() throws Exception {
+        String login = "testuser";
+        String password = "password";
+        User user = new User("Test", "User", login, passwordEncoder.encode(password), "test@example.com", LocalDate.of(1990, 1, 1), "Address", Role.ROLE_USER);
+        
+        when(userRepository.findByLogin(login)).thenReturn(Optional.of(user));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        UserDTO updateDTO = new UserDTO(null, "Test", "User", login, "new@example.com", LocalDate.of(1990, 1, 1), "Address", "ROLE_USER");
+
+        mockMvc.perform(put("/api/users/me")
+                        .with(csrf())
+                        .with(httpBasic(login, password))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDTO)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.message").value("Verification email sent to new address"))
+                .andExpect(jsonPath("$.user.email").value("test@example.com"))
+                .andExpect(jsonPath("$.user.pendingEmail").value("new@example.com"));
     }
 
     @Test

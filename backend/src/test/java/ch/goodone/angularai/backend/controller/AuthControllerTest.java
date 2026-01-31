@@ -5,6 +5,7 @@ import ch.goodone.angularai.backend.dto.UserDTO;
 import ch.goodone.angularai.backend.model.PasswordRecoveryToken;
 import ch.goodone.angularai.backend.model.Role;
 import ch.goodone.angularai.backend.model.User;
+import ch.goodone.angularai.backend.model.VerificationToken;
 import ch.goodone.angularai.backend.repository.PasswordRecoveryTokenRepository;
 import ch.goodone.angularai.backend.repository.UserRepository;
 import ch.goodone.angularai.backend.repository.VerificationTokenRepository;
@@ -100,6 +101,24 @@ class AuthControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"email\":\"nonexistent@example.com\"}"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void verify_shouldConfirmEmailChange_whenPendingEmailExists() throws Exception {
+        User user = new User("admin", "old@example.com");
+        user.setPendingEmail("new@example.com");
+        VerificationToken token = new VerificationToken(user);
+
+        when(verificationTokenRepository.findByToken("valid-token")).thenReturn(Optional.of(token));
+        when(userRepository.save(any(User.class))).thenReturn(user);
+
+        mockMvc.perform(get("/api/auth/verify")
+                        .param("token", "valid-token"))
+                .andExpect(status().isOk());
+
+        verify(userRepository).save(argThat(u -> 
+            "new@example.com".equals(u.getEmail()) && u.getPendingEmail() == null
+        ));
     }
 
     @Test
