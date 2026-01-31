@@ -4,7 +4,7 @@
     "containerDefinitions":  [
                                  {
                                      "name":  "backend",
-                                     "image":  "426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:1.0.5",
+                                     "image":  "426141506813.dkr.ecr.eu-central-1.amazonaws.com/angularai-backend:1.0.6",
                                      "essential":  true,
                                      "portMappings":  [
                                                           {
@@ -137,15 +137,15 @@
                                                                               "awslogs-stream-prefix":  "ecs"
                                                                           }
                                                           },
-                                      "mountPoints":  [
-                                                          {
-                                                              "containerPath":  "/app/data",
-                                                              "sourceVolume":  "h2-data",
-                                                              "readOnly":  false
-                                                          }
-                                                      ]
-                                  }
-                              ],
+                                     "mountPoints":  [
+                                                         {
+                                                             "containerPath":  "/app/data",
+                                                             "sourceVolume":  "h2-data",
+                                                             "readOnly":  false
+                                                         }
+                                                     ]
+                                 }
+                             ],
     "requiresCompatibilities":  [
                                     "FARGATE"
                                 ],
