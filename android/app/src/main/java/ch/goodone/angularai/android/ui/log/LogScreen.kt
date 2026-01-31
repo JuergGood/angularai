@@ -7,6 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FilterList
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -115,7 +116,7 @@ fun LogScreen(
                             Icon(Icons.Default.DateRange, contentDescription = "Select Dates", tint = if (state.startDate != null) MaterialTheme.colorScheme.primary else LocalContentColor.current)
                         }
                         IconButton(onClick = { viewModel.onClearFilter() }) {
-                            Icon(Icons.Default.Clear, contentDescription = "Clear Filters")
+                            Icon(Icons.Default.Close, contentDescription = "Clear Filters")
                         }
                         IconButton(onClick = { showClearConfirm = true }) {
                             Icon(Icons.Default.Delete, contentDescription = "Clear Logs", tint = Color.Red)

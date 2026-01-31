@@ -51,5 +51,5 @@ failureConditions:
     total: 50
 
 # Specify Qodana linter for analysis (Applied in CI/CD pipeline)
-linter: jetbrains/qodana-jvm:2024.3
+linter: jetbrains/qodana-jvm-community:2024.3
 # Use Ultimate linter to support coverage reports. Requires QODANA_TOKEN.

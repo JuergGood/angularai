@@ -185,12 +185,12 @@ fun StatusChip(status: TaskStatus) {
     val backgroundColor = when(status) {
         TaskStatus.OPEN -> Color.LightGray
         TaskStatus.IN_PROGRESS -> Color(0xFFBBDEFB)
-        TaskStatus.CLOSED -> Color(0xFFC8E6C9)
+        TaskStatus.COMPLETED, TaskStatus.CLOSED -> Color(0xFFC8E6C9)
     }
     val textColor = when(status) {
         TaskStatus.OPEN -> Color.DarkGray
         TaskStatus.IN_PROGRESS -> Color(0xFF1976D2)
-        TaskStatus.CLOSED -> Color(0xFF388E3C)
+        TaskStatus.COMPLETED, TaskStatus.CLOSED -> Color(0xFF388E3C)
     }
     
     Box(

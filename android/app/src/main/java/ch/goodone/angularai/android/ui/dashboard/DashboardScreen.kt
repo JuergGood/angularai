@@ -43,6 +43,7 @@ fun DashboardScreen(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RecentActivitySection(
     recentActivity: List<ch.goodone.angularai.android.data.remote.dto.ActionLogDTO>,
@@ -83,9 +84,10 @@ fun RecentActivitySection(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PriorityTasksSection(
-    priorityTasks: List<ch.goodone.angularai.android.domain.model.Task>,
+    priorityTasks: List<ch.goodone.angularai.android.data.remote.dto.TaskDTO>,
     onNavigateToTasks: () -> Unit
 ) {
     ElevatedCard(

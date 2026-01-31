@@ -181,13 +181,15 @@ fun MainNavHost(
         }
         composable("dashboard") {
             DashboardScreen(
-                onNavigateToTasks = { navController.navigate("tasks") }
+                onNavigateToTasks = { navController.navigate("tasks") },
+                onNavigateToLogs = { navController.navigate("logs") },
+                onNavigateToUsers = { navController.navigate("admin") }
             )
         }
         composable("tasks") {
             TaskListScreen(
                 onAddTask = { navController.navigate("task_edit") },
-                onEditTask = { taskId -> navController.navigate("task_edit?taskId=$taskId") }
+                onTaskClick = { task -> navController.navigate("task_edit?taskId=${task.id}") }
             )
         }
         composable(
@@ -209,7 +211,8 @@ fun MainNavHost(
         }
         composable("admin") {
             AdminUserListScreen(
-                onEditUser = { userId -> navController.navigate("admin_edit/$userId") }
+                onUserClick = { user -> navController.navigate("admin_edit/${user.id}") },
+                onAddUser = { navController.navigate("admin_edit/0") }
             )
         }
         composable(
@@ -414,7 +417,7 @@ fun MainNavHost(
 @Composable
 fun MainTopBar(
     isLoggedIn: Boolean,
-    systemInfo: ch.goodone.angularai.android.domain.model.SystemInfo?,
+    systemInfo: ch.goodone.angularai.android.data.remote.dto.SystemInfoDTO?,
     scope: kotlinx.coroutines.CoroutineScope,
     drawerState: DrawerState,
     onSettingsClick: () -> Unit

@@ -73,7 +73,6 @@ object NetworkModule {
         return OkHttpClient.Builder()
             .addInterceptor(logging)
             .addInterceptor(authInterceptor)
-            .cookieJar(okhttp3.JavaNetCookieJar(cookieManager))
             .build()
     }
 
