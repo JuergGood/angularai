@@ -10,15 +10,54 @@ The **SARIF** (Static Analysis Results Interchange Format) is the best way to tr
 
 ### Steps:
 1.  **Generate results locally** (if you have Snyk CLI installed):
-    ```powershell
-    # For Backend
-    snyk test --sarif > snyk-backend.sarif.json
-    
-    # For Frontend
-    cd frontend
-    snyk test --sarif > ../snyk-frontend.sarif.json
+
+    > **Note for Windows users**: If you are using the standalone Windows binary, use `snyk-win.exe` instead of `snyk` in the commands below.
+
+    **For Backend:**
+    ```bash
+    snyk-win test --sarif > snyk-backend.sarif.json
+    ```
+
+    **For Frontend:**
+
+    ```bash
+    snyk-win test --sarif > snyk-frontend.sarif.json
+    ```
+
+    **For Android:**
+
+    ```bash
+    cd android
+    snyk-win test --sarif > ../snyk-android.sarif.json
     cd ..
     ```
+
+    **For Scripts:**
+
+    ```bash
+    cd scripts
+    snyk-win test --sarif > ../snyk-scripts.sarif.json
+    cd ..
+    ```
+
+    **For Infrastructure as Code (Kubernetes):**
+
+    ```bash
+    snyk-win iac test deploy/k8s/ --sarif > snyk-deploy.sarif.json
+    ```
+
+    **For Snyk Code (SAST):**
+
+    ```bash
+    snyk-win code test --sarif > snyk-code.sarif.json
+    ```
+
+    **For Containers:**
+
+    ```bash
+    snyk-win container test angularai-app:latest --sarif > snyk-container.sarif.json
+    ```
+
 2.  **Upload/Commit the file** to the repository (e.g., in a `tmp/snyk/` folder).
 3.  **Tell Junie**: "I have uploaded the Snyk results to `tmp/snyk/snyk-backend.sarif.json`. Please analyze and fix the issues."
 
@@ -28,8 +67,11 @@ If you only have a few high-priority vulnerabilities, you can simply run the tes
 
 ### Steps:
 1.  Run the test in your terminal:
+
+    > **Note for Windows users**: Use `snyk-win.exe` if you are using the standalone binary.
+
     ```bash
-    snyk test --severity-threshold=high
+    snyk-win test --severity-threshold=high
     ```
 2.  **Copy the output** from the terminal.
 3.  **Paste into Chat**: Provide the text to Junie.

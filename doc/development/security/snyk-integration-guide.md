@@ -33,7 +33,20 @@ You can manually trigger the workflow to test the integration:
 2.  Select the **Code Review** workflow on the left.
 3.  Click the **Run workflow** dropdown and then the **Run workflow** button.
 
-## 4. Troubleshooting
+## 4. Scan Targets
+
+The Snyk integration covers multiple areas of the project to ensure comprehensive security:
+
+-   **Open Source (SCA)**:
+    -   **Backend**: Analyzes `backend/pom.xml`.
+    -   **Frontend**: Analyzes `frontend/package.json`.
+    -   **Android**: Analyzes `android/app/build.gradle`.
+    -   **Scripts**: Analyzes `scripts/requirements.txt`.
+-   **Infrastructure as Code (IaC)**: Analyzes Kubernetes manifests in `deploy/k8s/`.
+-   **Static Analysis (SAST)**: Analyzes the source code across the entire project for common vulnerabilities.
+-   **Containers**: Analyzes the final Docker image for OS-level vulnerabilities.
+
+## 5. Troubleshooting
 
 If you still see an `Authentication error (SNYK-0005)`:
 - Ensure the secret name is exactly `SNYK_TOKEN` (all caps, underscore).
@@ -46,3 +59,21 @@ The workflow is configured to upload Snyk results as SARIF artifacts.
 1.  After a workflow run completes, scroll down to the **Artifacts** section.
 2.  Download `snyk-results-backend` or `snyk-results-frontend`.
 3.  You can provide these files to Junie for automated fixing.
+
+## 6. Local Scanning (Optional)
+
+If you have the Snyk CLI installed, you can run scans locally.
+
+### Installation
+- **npm**: `npm install -g snyk`
+- **Windows Standalone**: Download `snyk-win.exe` from [Snyk's GitHub releases](https://github.com/snyk/cli/releases).
+
+### Commands
+For local scanning, use `snyk` (or `snyk-win.exe` on Windows) followed by the desired command. 
+
+Example for backend:
+```bash
+snyk test
+```
+
+For more detailed local usage, see [Transmitting Snyk Results to Junie](transmitting-snyk-results.md).

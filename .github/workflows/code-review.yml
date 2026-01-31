@@ -238,6 +238,32 @@ jobs:
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
 
+      - name: Snyk Open Source Scan (Android)
+        working-directory: android
+        run: snyk test --severity-threshold=high --sarif > ../snyk-android.sarif.json
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Snyk Open Source Scan (Scripts)
+        working-directory: scripts
+        run: snyk test --severity-threshold=high --sarif > ../snyk-scripts.sarif.json
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Snyk Infrastructure as Code Scan (K8s)
+        run: snyk iac test deploy/k8s/ --severity-threshold=high --sarif > snyk-deploy.sarif.json
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
+      - name: Snyk Code Scan
+        run: snyk code test --severity-threshold=high --sarif > snyk-code.sarif.json
+        continue-on-error: true
+        env:
+          SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+
       - name: Build Docker image for Snyk
         run: docker build -t angularai-app:snyk .
 
@@ -254,4 +280,8 @@ jobs:
           path: |
             snyk-backend.sarif.json
             snyk-frontend.sarif.json
+            snyk-android.sarif.json
+            snyk-scripts.sarif.json
+            snyk-deploy.sarif.json
+            snyk-code.sarif.json
             snyk-container.sarif.json
